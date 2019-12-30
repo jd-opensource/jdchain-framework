@@ -7,8 +7,13 @@ import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.BytesValueList;
 import com.jd.blockchain.ledger.TransactionRequest;
 
-
-public interface ContractEventContext  {
+/**
+ * 合约事件上下文；
+ * 
+ * @author huanghaiquan
+ *
+ */
+public interface ContractEventContext {
 
 	/**
 	 * 当前账本哈希；
