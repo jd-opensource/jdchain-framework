@@ -23,14 +23,14 @@ public class TxContentBlob implements TransactionContent {
 	/**
 	 * 操作数量的最大值；
 	 */
-	public static final int MAX_OP_COUNT = NumberMask.SHORT.MAX_BOUNDARY_SIZE;
+	public static final int MAX_OP_COUNT = (int) NumberMask.SHORT.MAX_BOUNDARY_SIZE;
 
 	private List<Operation> operationList = new ArrayList<Operation>();
 
 	private HashDigest hash;
 
 	private HashDigest ledgerHash;
-	
+
 	private long time;
 
 	public TxContentBlob(HashDigest ledgerHash) {
@@ -82,12 +82,12 @@ public class TxContentBlob implements TransactionContent {
 			addOperation(op);
 		}
 	}
-	
+
 	@Override
 	public long getTimestamp() {
 		return time;
 	}
-	
+
 	public void setTime(long time) {
 		this.time = time;
 	}

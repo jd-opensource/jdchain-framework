@@ -39,7 +39,7 @@ public abstract class AbstractDynamicValueConverter implements DynamicValueConve
 	}
 	
 	protected int readSize(BytesInputStream bytesStream) {
-		return SIZE_HEAD.resolveMaskedNumber(bytesStream);
+		return (int)SIZE_HEAD.resolveMaskedNumber(bytesStream);
 	}
 
 }

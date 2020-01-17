@@ -47,7 +47,7 @@ public class SingleBytesSliceArray extends BytesSlice implements BytesSlices {
 
 	public static SingleBytesSliceArray resolveDynamic(BytesInputStream bytesStream) {
 		int p1  = bytesStream.getPosition();
-		int size = NumberMask.NORMAL.resolveMaskedNumber(bytesStream);
+		int size = (int)NumberMask.NORMAL.resolveMaskedNumber(bytesStream);
 		int dataOffset = bytesStream.getPosition();
 		bytesStream.skip(size);
 		int totalSize = bytesStream.getPosition() - p1;

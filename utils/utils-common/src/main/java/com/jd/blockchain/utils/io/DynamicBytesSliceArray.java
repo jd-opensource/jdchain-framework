@@ -38,14 +38,14 @@ public class DynamicBytesSliceArray implements BytesSlices {
 	
 	public static DynamicBytesSliceArray resolve(BytesInputStream bytesStream) {
 		int p1 = bytesStream.getPosition();
-		int count = NumberMask.NORMAL.resolveMaskedNumber(bytesStream);
+		int count = (int)NumberMask.NORMAL.resolveMaskedNumber(bytesStream);
 		
 		int[] offsets = new int[count];
 		int[] sizes = new int[count];
 		
 		int size;
 		for (int i = 0; i < count; i++) {
-			size = NumberMask.NORMAL.resolveMaskedNumber(bytesStream);
+			size = (int)NumberMask.NORMAL.resolveMaskedNumber(bytesStream);
 			sizes[i] = size;
 			offsets[i] = bytesStream.getPosition();
 			bytesStream.skip(size);

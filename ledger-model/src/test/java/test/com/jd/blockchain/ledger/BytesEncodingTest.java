@@ -1,14 +1,14 @@
 package test.com.jd.blockchain.ledger;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 
-import com.jd.blockchain.utils.io.BytesEncoding;
 import com.jd.blockchain.utils.io.NumberMask;
 
 public class BytesEncodingTest {
@@ -74,7 +74,7 @@ public class BytesEncodingTest {
 		assertTrue(size <= mask.getBoundarySize(sizebytes.length));
 
 		ByteArrayInputStream in = new ByteArrayInputStream(sizebytes);
-		int sizeResolved = mask.resolveMaskedNumber(in);
+		int sizeResolved = (int) mask.resolveMaskedNumber(in);
 
 		assertEquals(size, sizeResolved);
 

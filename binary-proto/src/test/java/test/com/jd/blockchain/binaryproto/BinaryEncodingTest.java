@@ -343,7 +343,7 @@ public class BinaryEncodingTest {
 
 	private int assertGenericRefContractArrayFields(byte[] bytes, int offset, Operation[] expectedOperations) {
 		// count of operations；
-		int opCount = NumberMask.NORMAL.resolveMaskedNumber(bytes, offset);
+		int opCount = (int)NumberMask.NORMAL.resolveMaskedNumber(bytes, offset);
 		byte opCountHeadBytes = bytes[offset];
 		int maskLen = NumberMask.NORMAL.resolveMaskLength(opCountHeadBytes);
 		offset += maskLen;

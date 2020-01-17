@@ -1,30 +1,34 @@
-package com.jd.blockchain.utils.io;
+package test.my.utils.io;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.jd.blockchain.utils.io.BytesInputStream;
+import com.jd.blockchain.utils.io.BytesSlice;
+import com.jd.blockchain.utils.io.RuntimeIOException;
+
 /**
- * {@link LongNumberMask} 数值掩码； <br>
+ * {@link NumberMask_v0} 数值掩码； <br>
  * 
- * {@link LongNumberMask} 定义了使用有限的字节表示一个特定范围的正整数的格式；<br>
+ * {@link NumberMask_v0} 定义了使用有限的字节表示一个特定范围的正整数的格式；<br>
  * 
- * {@link LongNumberMask} 用于表示数值的字节长度是动态的，根据数值的范围而定；<br>
+ * {@link NumberMask_v0} 用于表示数值的字节长度是动态的，根据数值的范围而定；<br>
  * 
- * 这个特点使得 {@link LongNumberMask} 适用于表示小数据片的头部尺寸；尤其当一个数据块是由大量表示不同属性的小数据片构成时，使用
- * {@link LongNumberMask} 可以得到更紧凑的字节流；
+ * 这个特点使得 {@link NumberMask_v0} 适用于表示小数据片的头部尺寸；尤其当一个数据块是由大量表示不同属性的小数据片构成时，使用
+ * {@link NumberMask_v0} 可以得到更紧凑的字节流；
  * 
  * <p>
- * 注：{@link LongNumberMask} 处理的数值范围处于 32 位整数(int)的范围，不处理 64 位整数(long)的情况; <br>
- * 这样的设计一方面是因为 {@link LongNumberMask#NORMAL} 已经可以表示通常情况下的足够大的数值范围(1G)，而 64
+ * 注：{@link NumberMask_v0} 处理的数值范围处于 32 位整数(int)的范围，不处理 64 位整数(long)的情况; <br>
+ * 这样的设计一方面是因为 {@link NumberMask_v0#NORMAL} 已经可以表示通常情况下的足够大的数值范围(1G)，而 64
  * 位整数(long)表示的长度已经远远超出单台计算机能够处理的内存数量；<br>
- * 另一方面是，采用嵌套的方式使用{@link LongNumberMask}也可以达到表示无限大小的数据的目的（如：使用
- * {@link LongNumberMask} 表示数据片数量，对每一个数据片再用一个{@link LongNumberMask}表示其数据长度）；
+ * 另一方面是，采用嵌套的方式使用{@link NumberMask_v0}也可以达到表示无限大小的数据的目的（如：使用 {@link NumberMask_v0}
+ * 表示数据片数量，对每一个数据片再用一个{@link NumberMask_v0}表示其数据长度）；
  * 
  * @author huanghaiquan
  *
  */
-public enum LongNumberMask {
+public enum NumberMask_v0 {
 
 	/**
 	 * 最短的头部，占用1字节；<br>
@@ -68,12 +72,7 @@ public enum LongNumberMask {
 	 * 
 	 * </pre>
 	 */
-	NORMAL((byte) 2),
-
-	/**
-	 * 短的头部，最多占用8字节；
-	 */
-	LONG((byte) 3);
+	NORMAL((byte) 2);
 
 	/**
 	 * 掩码位的个数；
@@ -85,26 +84,22 @@ public enum LongNumberMask {
 	 */
 	public final int MAX_HEADER_LENGTH;
 
-	public final long MAX_BOUNDARY_SIZE;
+	public final int MAX_BOUNDARY_SIZE;
 
 	/**
 	 * 此常量对于 TINY、SHORT、NORMAL 有效；
 	 */
-	public final long BOUNDARY_SIZE_0;
-	public final long BOUNDARY_SIZE_1;
-	public final long BOUNDARY_SIZE_2;
-	public final long BOUNDARY_SIZE_3;
-	public final long BOUNDARY_SIZE_4;
-	public final long BOUNDARY_SIZE_5;
-	public final long BOUNDARY_SIZE_6;
-	public final long BOUNDARY_SIZE_7;
+	public final int BOUNDARY_SIZE_0;
+	public final int BOUNDARY_SIZE_1;
+	public final int BOUNDARY_SIZE_2;
+	public final int BOUNDARY_SIZE_3;
 
-	private long[] boundarySizes;
+	 private int[] boundarySizes;
 
-	private LongNumberMask(byte bitCount) {
+	private NumberMask_v0(byte bitCount) {
 		this.BIT_COUNT = bitCount;
 		this.MAX_HEADER_LENGTH = 1 << bitCount;
-		this.boundarySizes = new long[MAX_HEADER_LENGTH];
+		this.boundarySizes = new int[MAX_HEADER_LENGTH];
 		for (byte i = 0; i < MAX_HEADER_LENGTH; i++) {
 			boundarySizes[i] = computeBoundarySize((byte) (i + 1));
 		}
@@ -116,40 +111,18 @@ public enum LongNumberMask {
 			BOUNDARY_SIZE_1 = -1;
 			BOUNDARY_SIZE_2 = -1;
 			BOUNDARY_SIZE_3 = -1;
-			BOUNDARY_SIZE_4 = -1;
-			BOUNDARY_SIZE_5 = -1;
-			BOUNDARY_SIZE_6 = -1;
-			BOUNDARY_SIZE_7 = -1;
 		} else if (bitCount == 1) {
 			// SHORT;
 			BOUNDARY_SIZE_0 = boundarySizes[0];
 			BOUNDARY_SIZE_1 = boundarySizes[1];
 			BOUNDARY_SIZE_2 = -1;
 			BOUNDARY_SIZE_3 = -1;
-			BOUNDARY_SIZE_4 = -1;
-			BOUNDARY_SIZE_5 = -1;
-			BOUNDARY_SIZE_6 = -1;
-			BOUNDARY_SIZE_7 = -1;
 		} else if (bitCount == 2) {
 			// NORMAL;
 			BOUNDARY_SIZE_0 = boundarySizes[0];
 			BOUNDARY_SIZE_1 = boundarySizes[1];
 			BOUNDARY_SIZE_2 = boundarySizes[2];
 			BOUNDARY_SIZE_3 = boundarySizes[3];
-			BOUNDARY_SIZE_4 = -1;
-			BOUNDARY_SIZE_5 = -1;
-			BOUNDARY_SIZE_6 = -1;
-			BOUNDARY_SIZE_7 = -1;
-		} else if (bitCount == 3) {
-			// LONG;
-			BOUNDARY_SIZE_0 = boundarySizes[0];
-			BOUNDARY_SIZE_1 = boundarySizes[1];
-			BOUNDARY_SIZE_2 = boundarySizes[2];
-			BOUNDARY_SIZE_3 = boundarySizes[3];
-			BOUNDARY_SIZE_4 = boundarySizes[4];
-			BOUNDARY_SIZE_5 = boundarySizes[5];
-			BOUNDARY_SIZE_6 = boundarySizes[6];
-			BOUNDARY_SIZE_7 = boundarySizes[7];
 		} else {
 			throw new IllegalArgumentException("Illegal bitCount!");
 		}
@@ -158,26 +131,27 @@ public enum LongNumberMask {
 	/**
 	 * 在指定的头部长度下能够表示的数据大小的临界值（不含）；
 	 *
-	 * @param headerLength 值范围必须大于 0 ，且小于等于 {@link #MAX_HEADER_LENGTH}
+	 * @param headerLength
+	 *            值范围必须大于 0 ，且小于等于 {@link #MAX_HEADER_LENGTH}
 	 * @return
 	 */
-	public long getBoundarySize(int headerLength) {
+	public int getBoundarySize(int headerLength) {
 		return boundarySizes[headerLength - 1];
 	}
 
-	private long computeBoundarySize(int headerLength) {
-		long boundarySize = 1L << (headerLength * 8 - BIT_COUNT);
-
+	private int computeBoundarySize(int headerLength) {
+		int boundarySize = 1 << (headerLength * 8 - BIT_COUNT);
 		return boundarySize;
 	}
 
 	/**
 	 * 获取能够表示指定的数值的掩码长度，即掩码所需的字节数；<br>
 	 * 
-	 * @param number 要表示的数值；如果值范围超出掩码的有效范围，将抛出 {@link IllegalArgumentException} 异常；
+	 * @param number
+	 *            要表示的数值；如果值范围超出掩码的有效范围，将抛出 {@link IllegalArgumentException} 异常；
 	 * @return
 	 */
-	public int getMaskLength(long number) {
+	public int getMaskLength(int number) {
 		if (number > -1) {
 			if (number < BOUNDARY_SIZE_0) {
 				return 1;
@@ -191,18 +165,6 @@ public enum LongNumberMask {
 			if (number < BOUNDARY_SIZE_3) {
 				return 4;
 			}
-			if (number < BOUNDARY_SIZE_4) {
-				return 5;
-			}
-			if (number < BOUNDARY_SIZE_5) {
-				return 6;
-			}
-			if (number < BOUNDARY_SIZE_6) {
-				return 7;
-			}
-			if (number < BOUNDARY_SIZE_7) {
-				return 8;
-			}
 		}
 		throw new IllegalArgumentException("Number is out of the illegal range! --[number=" + number + "]");
 	}
@@ -210,10 +172,11 @@ public enum LongNumberMask {
 	/**
 	 * 生成指定数值的掩码；
 	 * 
-	 * @param number 要表示的数值；如果值范围超出掩码的有效范围，将抛出 {@link IllegalArgumentException} 异常；
+	 * @param number
+	 *            要表示的数值；如果值范围超出掩码的有效范围，将抛出 {@link IllegalArgumentException} 异常；
 	 * @return
 	 */
-	public byte[] generateMask(long number) {
+	public byte[] generateMask(int number) {
 		// 计算掩码占用的字节长度；
 		int maskLen = getMaskLength(number);
 		byte[] maskBytes = new byte[maskLen];
@@ -221,13 +184,13 @@ public enum LongNumberMask {
 		return maskBytes;
 	}
 
-	public int writeMask(long number, byte[] buffer, int offset) {
+	public int writeMask(int number, byte[] buffer, int offset) {
 		// 计算掩码占用的字节长度；
 		int maskLen = getMaskLength(number);
 		return writeMask(number, maskLen, buffer, offset);
 	}
 
-	private int writeMask(long number, int maskLen, byte[] buffer, int offset) {
+	private int writeMask(int number, int maskLen, byte[] buffer, int offset) {
 		// 计算掩码占用的字节长度；
 		for (int i = maskLen; i > 0; i--) {
 			buffer[offset + i - 1] = (byte) ((number >>> 8 * (maskLen - i)) & 0xFF);
@@ -247,7 +210,7 @@ public enum LongNumberMask {
 	 * @param out
 	 * @return 写入的字节数；
 	 */
-	public int writeMask(long number, OutputStream out) {
+	public int writeMask(int number, OutputStream out) {
 		// 生成数据尺寸掩码；
 		byte[] maskBytes = generateMask(number);
 
@@ -262,7 +225,8 @@ public enum LongNumberMask {
 	/**
 	 * 解析掩码的头字节获得该掩码实例的完整长度；
 	 * 
-	 * @param bytes 掩码的头字节；即掩码的字节序列的首个字节；
+	 * @param bytes
+	 *            掩码的头字节；即掩码的字节序列的首个字节；
 	 * @return 返回掩码实例的完整长度；<br>
 	 *         注：在字节流中，对首字节解析获取该值后减 1，可以得到该掩码后续要读取的字节长度；
 	 */
@@ -277,7 +241,8 @@ public enum LongNumberMask {
 	/**
 	 * 解析掩码的头字节获得该掩码实例的完整长度；
 	 * 
-	 * @param headByte 掩码的头字节；即掩码的字节序列的首个字节；
+	 * @param headByte
+	 *            掩码的头字节；即掩码的字节序列的首个字节；
 	 * @return 返回掩码实例的完整长度；<br>
 	 *         注：在字节流中，对首字节解析获取该值后减 1，可以得到该掩码后续要读取的字节长度；
 	 */
@@ -294,7 +259,7 @@ public enum LongNumberMask {
 		return len;
 	}
 
-	public long resolveMaskedNumber(byte[] markBytes) {
+	public int resolveMaskedNumber(byte[] markBytes) {
 		return resolveMaskedNumber(markBytes, 0);
 	}
 
@@ -302,19 +267,19 @@ public enum LongNumberMask {
 	 * 从字节中解析掩码表示的数值；
 	 * 
 	 * @param markBytes
-	 * @param offset
+	 * @param headPos
 	 * @return
 	 */
-	public long resolveMaskedNumber(byte[] markBytes, int offset) {
-		int maskLen = resolveMaskLength(markBytes[offset]);
+	public int resolveMaskedNumber(byte[] markBytes, int headPos) {
+		int maskLen = resolveMaskLength(markBytes[headPos]);
 
 		// 清除首字节的标识位；
-		byte numberHead = (byte) (markBytes[offset] & (0xFF >>> BIT_COUNT));
+		byte numberHead = (byte) (markBytes[headPos] & (0xFF >>> BIT_COUNT));
 
 		// 转换字节大小；
-		long number = numberHead & 0xFF;
+		int number = numberHead & 0xFF;
 		for (int i = 1; i < maskLen; i++) {
-			number = (number << 8) | (markBytes[offset + i] & 0xFF);
+			number = (number << 8) | (markBytes[headPos + i] & 0xFF);
 		}
 
 		return number;
@@ -322,22 +287,20 @@ public enum LongNumberMask {
 
 	/**
 	 * 从字节中解析掩码表示的数值；
-	 * 
 	 * @param bytes bytes
 	 * @return int
 	 */
-	public long resolveMaskedNumber(BytesSlice bytes) {
+	public int resolveMaskedNumber(BytesSlice bytes) {
 		return resolveMaskedNumber(bytes, 0);
 	}
 
 	/**
 	 * 从字节中解析掩码表示的数值；
-	 * 
-	 * @param bytes  bytes
+	 * @param bytes bytes
 	 * @param offset offset
 	 * @return int
 	 */
-	public long resolveMaskedNumber(BytesSlice bytes, int offset) {
+	public int resolveMaskedNumber(BytesSlice bytes, int offset) {
 		byte headByte = bytes.getByte(offset);
 		int maskLen = resolveMaskLength(headByte);
 
@@ -345,7 +308,7 @@ public enum LongNumberMask {
 		byte numberHead = (byte) (headByte & (0xFF >>> BIT_COUNT));
 
 		// 转换字节大小；
-		long number = numberHead & 0xFF;
+		int number = numberHead & 0xFF;
 		for (int i = 1; i < maskLen; i++) {
 			number = (number << 8) | (bytes.getByte(offset + i) & 0xFF);
 		}
@@ -355,11 +318,10 @@ public enum LongNumberMask {
 
 	/**
 	 * 从字节中解析掩码表示的数值；
-	 * 
 	 * @param bytesStream
 	 * @return int
 	 */
-	public long resolveMaskedNumber(BytesInputStream bytesStream) {
+	public int resolveMaskedNumber(BytesInputStream bytesStream) {
 		byte headByte = bytesStream.readByte();
 		int maskLen = resolveMaskLength(headByte);
 
@@ -367,7 +329,7 @@ public enum LongNumberMask {
 		byte numberHead = (byte) (headByte & (0xFF >>> BIT_COUNT));
 
 		// 转换字节大小；
-		long number = numberHead & 0xFF;
+		int number = numberHead & 0xFF;
 		for (int i = 1; i < maskLen; i++) {
 			number = (number << 8) | (bytesStream.readByte() & 0xFF);
 		}
@@ -381,7 +343,7 @@ public enum LongNumberMask {
 	 * @param in
 	 * @return
 	 */
-	public long resolveMaskedNumber(InputStream in) {
+	public int resolveMaskedNumber(InputStream in) {
 		try {
 			byte[] buff = new byte[MAX_HEADER_LENGTH];
 			// 解析头字节；

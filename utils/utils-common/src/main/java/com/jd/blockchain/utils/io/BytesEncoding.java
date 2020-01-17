@@ -104,7 +104,7 @@ public class BytesEncoding {
 	}
 
 	public static byte[] read(NumberMask dataLengthMask, byte[] buffer, int offset) {
-		int size = dataLengthMask.resolveMaskedNumber(buffer, offset);
+		int size = (int)dataLengthMask.resolveMaskedNumber(buffer, offset);
 		int maskLen = dataLengthMask.resolveMaskLength(buffer[offset]);
 		offset += maskLen;
 		byte[] data = new byte[size];
@@ -141,7 +141,7 @@ public class BytesEncoding {
 	 */
 	public static byte[] read(NumberMask dataLengthMask, InputStream in) {
 		try {
-			int size = dataLengthMask.resolveMaskedNumber(in);
+			int size = (int)dataLengthMask.resolveMaskedNumber(in);
 			if (size == 0) {
 				return BytesUtils.EMPTY_BYTES;
 			}
