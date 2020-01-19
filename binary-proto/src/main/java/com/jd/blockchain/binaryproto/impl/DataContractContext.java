@@ -1,6 +1,8 @@
 package com.jd.blockchain.binaryproto.impl;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +27,7 @@ import com.jd.blockchain.binaryproto.FieldSpec;
 import com.jd.blockchain.binaryproto.impl.EnumSpecificationInfo.EnumConstant;
 import com.jd.blockchain.utils.io.BytesSerializable;
 import com.jd.blockchain.utils.io.BytesUtils;
+import com.jd.blockchain.utils.io.NumberMask;
 import com.jd.blockchain.utils.security.SHA256Hash;
 import com.jd.blockchain.utils.security.ShaUtils;
 
@@ -67,19 +70,31 @@ public class DataContractContext {
 
 	private static Map<PrimitiveType, Map<Class<?>, ValueConverter>> primitiveTypeConverters = new HashMap<>();
 
+	private static Map<PrimitiveType, Map<Class<?>, Map<NumberMask, ValueConverter>>> numberEncodingConverters = new HashMap<>();
+
 	static {
 		addConverterMapping(PrimitiveType.BOOLEAN, boolean.class, new BoolConverter());
 		addConverterMapping(PrimitiveType.BOOLEAN, Boolean.class, new BoolWrapperConverter());
-		addConverterMapping(PrimitiveType.INT8, byte.class, new Int8ByteConverter());
-		addConverterMapping(PrimitiveType.INT8, Byte.class, new Int8ByteWrapperConverter());
-		addConverterMapping(PrimitiveType.INT16, short.class, new Int16ShortConverter());
-		addConverterMapping(PrimitiveType.INT16, Short.class, new Int16ShortWrapperConverter());
-		addConverterMapping(PrimitiveType.INT16, char.class, new Int16CharConverter());
-		addConverterMapping(PrimitiveType.INT16, Character.class, new Int16CharWrapperConverter());
-		addConverterMapping(PrimitiveType.INT32, int.class, new Int32IntConverter());
-		addConverterMapping(PrimitiveType.INT32, Integer.class, new Int32IntWrapperConverter());
-		addConverterMapping(PrimitiveType.INT64, long.class, new Int64LongConverter());
-		addConverterMapping(PrimitiveType.INT64, Long.class, new Int64LongWrapperConverter());
+
+		addConverterMapping(PrimitiveType.INT8, byte.class, new Int8ByteConverter(), Int8ByteEncodingConverter.class);
+		addConverterMapping(PrimitiveType.INT8, Byte.class, new Int8ByteWrapperConverter(),
+				Int8ByteWrapperEncodingConverter.class);
+		addConverterMapping(PrimitiveType.INT16, short.class, new Int16ShortConverter(),
+				Int16ShortEncodingConverter.class);
+		addConverterMapping(PrimitiveType.INT16, Short.class, new Int16ShortWrapperConverter(),
+				Int16ShortWrapperEncodingConverter.class);
+		addConverterMapping(PrimitiveType.INT16, char.class, new Int16CharConverter(),
+				Int16CharEncodingConverter.class);
+		addConverterMapping(PrimitiveType.INT16, Character.class, new Int16CharWrapperConverter(),
+				Int16CharWrapperEncodingConverter.class);
+		addConverterMapping(PrimitiveType.INT32, int.class, new Int32IntConverter(), Int32IntEncodingConverter.class);
+		addConverterMapping(PrimitiveType.INT32, Integer.class, new Int32IntWrapperConverter(),
+				Int32IntWrapperEncodingConverter.class);
+		addConverterMapping(PrimitiveType.INT64, long.class, new Int64LongConverter(),
+				Int64LongEncodingConverter.class);
+		addConverterMapping(PrimitiveType.INT64, Long.class, new Int64LongWrapperConverter(),
+				Int64LongWrapperEncodingConverter.class);
+		
 		addConverterMapping(PrimitiveType.TEXT, String.class, new StringValueConverter());
 		addConverterMapping(PrimitiveType.BYTES, byte[].class, new BytesValueConverter());
 
@@ -99,6 +114,35 @@ public class DataContractContext {
 				return typeMap.get(contractType);
 			}
 		};
+	}
+
+	private static void initNumberEncodingConverterMapping(PrimitiveType protocalType, Class<?> javaType,
+			Class<? extends NumberEncodingConverter> numberEncodingConverterType) {
+		Map<Class<?>, Map<NumberMask, ValueConverter>> converterMap = numberEncodingConverters.get(protocalType);
+		if (converterMap == null) {
+			converterMap = new HashMap<>();
+			numberEncodingConverters.put(protocalType, converterMap);
+		}
+		Map<NumberMask, ValueConverter> converters = new HashMap<NumberMask, ValueConverter>();
+		converterMap.put(javaType, converters);
+
+		try {
+			Constructor<? extends ValueConverter> constructor = numberEncodingConverterType
+					.getConstructor(NumberMask.class);
+			for (NumberMask numMask : NumberMask.values()) {
+				ValueConverter converter = constructor.newInstance(numMask);
+				converters.put(numMask, converter);
+			}
+		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
+
+	private static void addConverterMapping(PrimitiveType protocalType, Class<?> javaType, ValueConverter converter,
+			Class<? extends NumberEncodingConverter> numberEncodingConverterType) {
+		addConverterMapping(protocalType, javaType, converter);
+		initNumberEncodingConverterMapping(protocalType, javaType, numberEncodingConverterType);
 	}
 
 	private static void addConverterMapping(PrimitiveType protocalType, Class<?> javaType, ValueConverter converter) {
@@ -503,10 +547,8 @@ public class DataContractContext {
 	 * 
 	 * 如果不具有继承关系，则返回 -1；
 	 * 
-	 * @param subsTypes
-	 *            子类型；
-	 * @param superType
-	 *            父类型；
+	 * @param subsTypes 子类型；
+	 * @param superType 父类型；
 	 * @return
 	 */
 	private static int computeExtendsionDistance(Class<?> subsTypes, Class<?> superType) {
@@ -594,7 +636,8 @@ public class DataContractContext {
 
 		FieldSpecInfo fieldSpec = null;
 		if (primitiveType != null) {
-			fieldSpec = new FieldSpecInfo(order, name, desc, primitiveType, repeatable, maxSize, dataType);
+			fieldSpec = new FieldSpecInfo(order, name, desc, primitiveType, annoField.numberEncoding(), repeatable,
+					maxSize, dataType);
 		} else if (enumSpecification != null) {
 			fieldSpec = new FieldSpecInfo(order, name, desc, enumSpecification, repeatable, dataType);
 		} else {

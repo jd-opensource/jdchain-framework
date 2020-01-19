@@ -4,6 +4,7 @@ import com.jd.blockchain.binaryproto.DataSpecification;
 import com.jd.blockchain.binaryproto.PrimitiveType;
 import com.jd.blockchain.binaryproto.EnumSpecification;
 import com.jd.blockchain.binaryproto.FieldSpec;
+import com.jd.blockchain.binaryproto.NumberEncoding;
 
 public class FieldSpecInfo implements FieldSpec {
 
@@ -17,6 +18,8 @@ public class FieldSpecInfo implements FieldSpec {
 
 	private PrimitiveType primitiveType;
 
+	private NumberEncoding numberEncoding;
+
 	private EnumSpecification enumSpec;
 
 	private DataSpecification contractTypeSpec;
@@ -27,8 +30,8 @@ public class FieldSpecInfo implements FieldSpec {
 
 	private boolean isGenericContract = false;
 
-	public FieldSpecInfo(int order, String name, String decription, PrimitiveType primitiveType, boolean repeatable,
-			int maxSize, Class<?> dataType) {
+	public FieldSpecInfo(int order, String name, String decription, PrimitiveType primitiveType,
+			NumberEncoding numberEncoding, boolean repeatable, int maxSize, Class<?> dataType) {
 		if (primitiveType == null) {
 			throw new IllegalArgumentException("primitiveType is null!");
 		}
@@ -36,6 +39,7 @@ public class FieldSpecInfo implements FieldSpec {
 		this.name = name;
 		this.description = decription;
 		this.primitiveType = primitiveType;
+		this.numberEncoding = numberEncoding;
 		this.repeatable = repeatable;
 		this.maxSize = maxSize;
 		this.dataType = dataType;
@@ -116,6 +120,10 @@ public class FieldSpecInfo implements FieldSpec {
 
 	public Class<?> getDataType() {
 		return dataType;
+	}
+
+	public NumberEncoding getNumberEncoding() {
+		return numberEncoding;
 	}
 
 }

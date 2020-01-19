@@ -110,6 +110,9 @@ public enum NumberMask {
 	 */
 	public final int MAX_HEADER_LENGTH;
 
+	/**
+	 * 最大边界值；
+	 */
 	public final long MAX_BOUNDARY_SIZE;
 
 	/**
@@ -282,6 +285,21 @@ public enum NumberMask {
 		} catch (IOException e) {
 			throw new RuntimeIOException(e.getMessage(), e);
 		}
+	}
+	
+	/**
+	 * 生成指定数值的掩码并写入到指定的输出流；
+	 * 
+	 * @param number
+	 * @param out
+	 * @return 写入的字节数；
+	 */
+	public int writeMask(long number, BytesOutputBuffer out) {
+		// 生成数据尺寸掩码；
+		byte[] maskBytes = generateMask(number);
+		
+		out.write(maskBytes);
+		return maskBytes.length;
 	}
 
 	/**

@@ -10,7 +10,7 @@ public class PrimitiveDatasImpl implements PrimitiveDatas {
 
 	private boolean enable;
 
-	private byte boy;
+	private Byte boy;
 	private short age;
 	private int id;
 	private String name;

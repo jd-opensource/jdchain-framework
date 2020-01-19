@@ -5,6 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.jd.blockchain.utils.io.NumberMask;
+
 /**
  * 标记一个接口的字段作为数据契约的字段；
  * <p>
@@ -51,6 +53,13 @@ public @interface DataField {
 	 * @return
 	 */
 	boolean refEnum() default false;
+
+	/**
+	 * 数值编码；只有 {@link #primitiveType()} 为整数(INT8 ~ INT64) 时有效；
+	 * 
+	 * @return
+	 */
+	NumberEncoding numberEncoding() default NumberEncoding.NONE;
 
 	/**
 	 * 嵌套的数据契约类型；
