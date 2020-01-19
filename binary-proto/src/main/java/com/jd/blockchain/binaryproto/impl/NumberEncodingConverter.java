@@ -19,6 +19,10 @@ public abstract class NumberEncodingConverter implements DynamicValueConverter {
 	public Class<?> getValueType() {
 		return valueType;
 	}
+	
+	public NumberMask getNumberMask() {
+		return numberMask;
+	}
 
 	@Override
 	public int encodeDynamicValue(Object value, BytesOutputBuffer buffer) {

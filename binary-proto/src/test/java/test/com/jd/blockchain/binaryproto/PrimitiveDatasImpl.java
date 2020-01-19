@@ -12,7 +12,11 @@ public class PrimitiveDatasImpl implements PrimitiveDatas {
 
 	private Byte boy;
 	private short age;
+	private int number;
 	private int id;
+	
+	private long[] sizes;
+	
 	private String name;
 
 	private long value;
@@ -54,6 +58,24 @@ public class PrimitiveDatasImpl implements PrimitiveDatas {
 		this.age = age;
 	}
 
+	@Override
+	public int getNumber() {
+		return number;
+	}
+	
+	public void setNumber(int number) {
+		this.number = number;
+	}
+	
+	@Override
+	public long[] getSizes() {
+		return sizes;
+	}
+	
+	public void setSizes(long[] sizes) {
+		this.sizes = sizes;
+	}
+	
 	@Override
 	public byte isBoy() {
 		return this.boy;

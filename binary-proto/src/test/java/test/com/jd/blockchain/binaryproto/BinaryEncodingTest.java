@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Random;
+
 import org.junit.Test;
 
 import com.jd.blockchain.binaryproto.BinaryProtocol;
@@ -18,6 +20,8 @@ import com.jd.blockchain.utils.net.NetworkAddress;
 
 public class BinaryEncodingTest {
 
+	private Random random = new Random();
+
 	/**
 	 * 此测试用例是对序列化过程的验证，包括：头部、基本类型的值（boolean、整数、字符串、字节数组、BytesSerializable）、字段顺序的正确性；
 	 */
@@ -30,12 +34,20 @@ public class BinaryEncodingTest {
 		pd.setEnable(true);
 		pd.setBoy((byte) 10);
 		pd.setAge((short) 100);
+		pd.setNumber(random.nextInt((int) NumberMask.NORMAL.MAX_BOUNDARY_SIZE));
 		pd.setName("John");
 		pd.setImage("Image of John".getBytes());
 		pd.setFlag('x');
 		pd.setValue(93239232);
 		pd.setConfig(Bytes.fromString("Configuration of something."));
 		pd.setNetworkAddress(networkAddress);
+
+		long[] sizes = new long[random.nextInt(100)];
+		long mask = -1 >>> 3;
+		for (int i = 0; i < sizes.length; i++) {
+			sizes[i] = (random.nextLong() & mask);
+		}
+		pd.setSizes(sizes);
 
 		byte[] bytes = BinaryProtocol.encode(pd, PrimitiveDatas.class);
 		int offset = 0;
@@ -68,6 +80,11 @@ public class BinaryEncodingTest {
 		offset += 2;
 		assertEquals(pd.getAge(), age);
 
+		int len = NumberMask.NORMAL.resolveMaskLength(bytes[offset]);
+		int number = (int) NumberMask.NORMAL.resolveMaskedNumber(bytes, offset);
+		offset += len;
+		assertEquals(pd.getNumber(), number);
+
 		byte[] nameBytes = BytesEncoding.readInNormal(bytes, offset);
 		String name = BytesUtils.toString(nameBytes);
 		int maskLen = NumberMask.NORMAL.resolveMaskLength(bytes[offset]);
@@ -77,6 +94,21 @@ public class BinaryEncodingTest {
 		long value = BytesUtils.toLong(bytes, offset);
 		offset += 8;
 		assertEquals(pd.getValue(), value);
+
+		len = NumberMask.NORMAL.resolveMaskLength(bytes[offset]);
+		int count = (int) NumberMask.NORMAL.resolveMaskedNumber(bytes, offset);
+		offset += len;
+		assertEquals(pd.getSizes() == null ? 0 : pd.getSizes().length, count);
+		if (pd.getSizes() != null) {
+			long[] sizes = new long[count];
+			for (int i = 0; i < count; i++) {
+				len = NumberMask.LONG.resolveMaskLength(bytes[offset]);
+				sizes[i] = NumberMask.LONG.resolveMaskedNumber(bytes, offset);
+				offset += len;
+
+				assertEquals(pd.getSizes()[i], sizes[i]);
+			}
+		}
 
 		byte[] image = BytesEncoding.readInNormal(bytes, offset);
 		maskLen = NumberMask.NORMAL.resolveMaskLength(bytes[offset]);
@@ -103,6 +135,44 @@ public class BinaryEncodingTest {
 		assertTrue(BytesUtils.equals(pd.getNetworkAddr().toBytes(), networkaddr));
 
 		return offset;
+	}
+
+	/**
+	 * 此测试用例是对序列化过程的验证，包括：头部、基本类型的值（boolean、整数、字符串、字节数组、BytesSerializable）、字段顺序的正确性；
+	 */
+	@Test
+	public void testEncoding_PrimitiveArrayEncoding() {
+		PrimitiveArrayTestData data1 = new PrimitiveArrayTestData();
+		PrimitiveArrayEncodingTestData data2 = new PrimitiveArrayEncodingTestData();
+
+		long[] sizes = new long[random.nextInt(100)];
+		for (int i = 0; i < sizes.length; i++) {
+			sizes[i] = 10;
+		}
+
+		data1.setValues(sizes);
+		data2.setValues(sizes);
+
+		byte[] bytes1 = BinaryProtocol.encode(data1, PrimitiveArrayData.class);
+		byte[] bytes2 = BinaryProtocol.encode(data2, PrimitiveArrayEncodingData.class);
+		{
+			int offset = 0;
+			int code = BytesUtils.toInt(bytes1, offset);
+			offset += 12;
+			assertEquals(0x11, code);
+
+			int len = NumberMask.NORMAL.getMaskLength(sizes.length);
+			assertEquals(12 + len + 8 * sizes.length, bytes1.length);
+		}
+		{
+			int offset = 0;
+			int code = BytesUtils.toInt(bytes2, offset);
+			offset += 12;
+			assertEquals(0x12, code);
+
+			int len = NumberMask.NORMAL.getMaskLength(sizes.length);
+			assertEquals(12 + len + 1 * sizes.length, bytes2.length);
+		}
 	}
 
 	@Test
@@ -307,8 +377,10 @@ public class BinaryEncodingTest {
 		assertEquals(refContractDatas.getPrimitive().getFlag(), decodeData.getPrimitive().getFlag());
 		assertEquals(refContractDatas.getPrimitive().getValue(), decodeData.getPrimitive().getValue());
 		assertEquals(refContractDatas.getPrimitive().getConfig(), decodeData.getPrimitive().getConfig());
-		assertEquals(refContractDatas.getPrimitive().getNetworkAddr().getHost(), decodeData.getPrimitive().getNetworkAddr().getHost());
-		assertEquals(refContractDatas.getPrimitive().getNetworkAddr().getPort(), decodeData.getPrimitive().getNetworkAddr().getPort());
+		assertEquals(refContractDatas.getPrimitive().getNetworkAddr().getHost(),
+				decodeData.getPrimitive().getNetworkAddr().getHost());
+		assertEquals(refContractDatas.getPrimitive().getNetworkAddr().getPort(),
+				decodeData.getPrimitive().getNetworkAddr().getPort());
 	}
 
 	/**
@@ -343,7 +415,7 @@ public class BinaryEncodingTest {
 
 	private int assertGenericRefContractArrayFields(byte[] bytes, int offset, Operation[] expectedOperations) {
 		// count of operations；
-		int opCount = (int)NumberMask.NORMAL.resolveMaskedNumber(bytes, offset);
+		int opCount = (int) NumberMask.NORMAL.resolveMaskedNumber(bytes, offset);
 		byte opCountHeadBytes = bytes[offset];
 		int maskLen = NumberMask.NORMAL.resolveMaskLength(opCountHeadBytes);
 		offset += maskLen;
@@ -370,7 +442,7 @@ public class BinaryEncodingTest {
 
 			assertEquals(opertionItemBytes.length, itemOffset);
 		}
-		
+
 		return offset;
 	}
 
@@ -464,7 +536,7 @@ public class BinaryEncodingTest {
 
 		// field: operation;
 		offset = assertGenericRefContractArrayFields(bytes, offset, operations);
-		
+
 		// primitive
 		assertEquals(compositeDatas.getAge(), BytesUtils.toShort(bytes, offset));
 		offset += 2;
@@ -522,8 +594,10 @@ public class BinaryEncodingTest {
 		assertEquals(compositeDatas.getPrimitive().getFlag(), decodeData.getPrimitive().getFlag());
 		assertEquals(compositeDatas.getPrimitive().getValue(), decodeData.getPrimitive().getValue());
 		assertEquals(compositeDatas.getPrimitive().getConfig(), decodeData.getPrimitive().getConfig());
-		assertEquals(compositeDatas.getPrimitive().getNetworkAddr().getHost(), decodeData.getPrimitive().getNetworkAddr().getHost());
-		assertEquals(compositeDatas.getPrimitive().getNetworkAddr().getPort(), decodeData.getPrimitive().getNetworkAddr().getPort());
+		assertEquals(compositeDatas.getPrimitive().getNetworkAddr().getHost(),
+				decodeData.getPrimitive().getNetworkAddr().getHost());
+		assertEquals(compositeDatas.getPrimitive().getNetworkAddr().getPort(),
+				decodeData.getPrimitive().getNetworkAddr().getPort());
 		assertEquals("Jerry", ((SubOperation) (decodeData.getOperations()[0])).getUserName());
 		assertEquals(compositeDatas.getLevel(), decodeData.getLevel());
 

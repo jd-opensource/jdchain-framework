@@ -78,6 +78,11 @@ public class FieldSpecInfo implements FieldSpec {
 	public PrimitiveType getPrimitiveType() {
 		return primitiveType;
 	}
+	
+	@Override
+	public NumberEncoding getNumberEncoding() {
+		return numberEncoding;
+	}
 
 	@Override
 	public EnumSpecification getRefEnum() {
@@ -122,8 +127,5 @@ public class FieldSpecInfo implements FieldSpec {
 		return dataType;
 	}
 
-	public NumberEncoding getNumberEncoding() {
-		return numberEncoding;
-	}
 
 }

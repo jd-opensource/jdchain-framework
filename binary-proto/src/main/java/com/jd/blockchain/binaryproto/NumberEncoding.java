@@ -13,26 +13,32 @@ public enum NumberEncoding {
 	/**
 	 * 不做编码；
 	 */
-	NONE,
+	NONE(null),
 
 	/**
 	 * 按照 {@link NumberMask#TINY} 进行编码，并校验数值的范围；
 	 */
-	TINY,
+	TINY(NumberMask.TINY),
 
 	/**
 	 * 按照 {@link NumberMask#SHORT} 进行编码，并校验数值的范围；
 	 */
-	SHORT,
+	SHORT(NumberMask.SHORT),
 
 	/**
 	 * 按照 {@link NumberMask#NORMAL} 进行编码，并校验数值的范围；
 	 */
-	NORMAL,
+	NORMAL(NumberMask.NORMAL),
 
 	/**
 	 * 按照 {@link NumberMask#LONG} 进行编码，并校验数值的范围；
 	 */
-	LONG;
+	LONG(NumberMask.LONG);
+
+	public final NumberMask MASK;
+
+	private NumberEncoding(NumberMask mask) {
+		this.MASK = mask;
+	}
 
 }

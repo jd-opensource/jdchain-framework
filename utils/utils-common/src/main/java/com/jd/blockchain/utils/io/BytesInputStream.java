@@ -17,10 +17,21 @@ public class BytesInputStream extends InputStream {
 		this.tail = offset + size;
 	}
 
+	/**
+	 * 当前读取位置；<br>
+	 * 
+	 * 也是输入流的原始字节数组的位置；
+	 * 
+	 * @return
+	 */
 	protected int getPosition() {
 		return posistion;
 	}
 
+	/**
+	 * 当前输入流的原始字节数组；
+	 * @return
+	 */
 	protected byte[] getOriginBytes() {
 		return bytes;
 	}
@@ -114,7 +125,8 @@ public class BytesInputStream extends InputStream {
 
 	/**
 	 * 读取指定数量的字节并返回对应的字符串；
-	 * @param size size
+	 * 
+	 * @param size    size
 	 * @param charset charset
 	 * @return String
 	 */
@@ -149,8 +161,8 @@ public class BytesInputStream extends InputStream {
 	}
 
 	/**
-	 * 从当前位置开始读取, 返回剩余字节的片段；；
-	 * 注：此操作不影响游标位置；
+	 * 从当前位置开始读取, 返回剩余字节的片段；； 注：此操作不影响游标位置；
+	 * 
 	 * @return BytesSlice
 	 */
 	public BytesSlice getSlice() {
@@ -237,4 +249,5 @@ public class BytesInputStream extends InputStream {
 		skip((int) n);
 		return n;
 	}
+	
 }

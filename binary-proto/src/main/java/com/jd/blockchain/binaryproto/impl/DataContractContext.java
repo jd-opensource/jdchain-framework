@@ -24,6 +24,7 @@ import com.jd.blockchain.binaryproto.EnumContract;
 import com.jd.blockchain.binaryproto.EnumField;
 import com.jd.blockchain.binaryproto.EnumSpecification;
 import com.jd.blockchain.binaryproto.FieldSpec;
+import com.jd.blockchain.binaryproto.NumberEncoding;
 import com.jd.blockchain.binaryproto.impl.EnumSpecificationInfo.EnumConstant;
 import com.jd.blockchain.utils.io.BytesSerializable;
 import com.jd.blockchain.utils.io.BytesUtils;
@@ -94,7 +95,7 @@ public class DataContractContext {
 				Int64LongEncodingConverter.class);
 		addConverterMapping(PrimitiveType.INT64, Long.class, new Int64LongWrapperConverter(),
 				Int64LongWrapperEncodingConverter.class);
-		
+
 		addConverterMapping(PrimitiveType.TEXT, String.class, new StringValueConverter());
 		addConverterMapping(PrimitiveType.BYTES, byte[].class, new BytesValueConverter());
 
@@ -154,7 +155,20 @@ public class DataContractContext {
 		converterMap.put(javaType, converter);
 	}
 
-	private static ValueConverter getPrimitiveTypeConverter(PrimitiveType protocalType, Class<?> javaType) {
+	private static ValueConverter getPrimitiveTypeConverter(PrimitiveType protocalType, Class<?> javaType,
+			NumberEncoding numberEncoding) {
+		if (numberEncoding != null && numberEncoding != NumberEncoding.NONE) {
+			Map<Class<?>, Map<NumberMask, ValueConverter>> typeConverters = numberEncodingConverters.get(protocalType);
+			if (typeConverters != null) {
+				Map<NumberMask, ValueConverter> encodingConverters = typeConverters.get(javaType);
+				if (encodingConverters != null) {
+					ValueConverter converter = encodingConverters.get(numberEncoding.MASK);
+					if (converter != null) {
+						return converter;
+					}
+				}
+			}
+		}
 		Map<Class<?>, ValueConverter> converterMap = primitiveTypeConverters.get(protocalType);
 		if (converterMap != null) {
 			ValueConverter converter = converterMap.get(javaType);
@@ -412,7 +426,7 @@ public class DataContractContext {
 		Object[] constants = enumSpec.getConstants();
 		PrimitiveType codeType = enumSpec.getValueType();
 
-		ValueConverter baseConverter = getPrimitiveTypeConverter(codeType, enumSpec.getDataType());
+		ValueConverter baseConverter = getPrimitiveTypeConverter(codeType, enumSpec.getDataType(), null);
 
 		EnumValueConverter valueConverter = new EnumValueConverter(enumType, codeType, values, constants,
 				(FixedValueConverter) baseConverter);
@@ -429,7 +443,7 @@ public class DataContractContext {
 	 */
 	private static FieldEncoder buildPrimitiveFieldEncoder(FieldDeclaredInfo fieldInfo, BinarySliceSpec sliceSpec) {
 		ValueConverter valueConverter = getPrimitiveTypeConverter(fieldInfo.fieldSpec.getPrimitiveType(),
-				fieldInfo.fieldSpec.getDataType());
+				fieldInfo.fieldSpec.getDataType(), fieldInfo.fieldSpec.getNumberEncoding());
 		return createFieldEncoder(sliceSpec, fieldInfo.fieldSpec, fieldInfo.reader, valueConverter);
 	}
 
@@ -452,15 +466,22 @@ public class DataContractContext {
 	}
 
 	private static BinarySliceSpec buildSlice(FieldSpecInfo fieldSpec) {
-		boolean fixed = false;
+
 		int len = -1;
 		PrimitiveType fixedValueType = null;
-		if (fieldSpec.getPrimitiveType() != null && fieldSpec.getPrimitiveType() != PrimitiveType.NIL) {
-			fixedValueType = fieldSpec.getPrimitiveType();
+
+		PrimitiveType specPrimitiveType = fieldSpec.getPrimitiveType();
+		if (specPrimitiveType != null && specPrimitiveType != PrimitiveType.NIL) {
+			NumberEncoding numberEncoding = fieldSpec.getNumberEncoding();
+			if (numberEncoding == null || numberEncoding == NumberEncoding.NONE
+					|| !numberEncodingConverters.containsKey(specPrimitiveType)) {
+				fixedValueType = fieldSpec.getPrimitiveType();
+			}
 		} else if (fieldSpec.getRefEnum() != null) {
 			fixedValueType = fieldSpec.getRefEnum().getValueType();
 		}
 
+		boolean fixed = false;
 		if (fixedValueType != null) {
 			switch (fixedValueType) {
 			case BOOLEAN:

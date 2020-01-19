@@ -44,7 +44,7 @@ public abstract class AbstractFieldEncoder implements FieldEncoder {
 		}
 	}
 
-	protected Object[] readArrayValue(Object dataContract) {
-		return (Object[]) readValue(dataContract);
-	}
+//	protected Object[] readArrayValue(Object dataContract) {
+//		return (Object[]) readValue(dataContract);
+//	}
 }
