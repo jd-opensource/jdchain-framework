@@ -1,18 +1,34 @@
 package com.jd.blockchain.ledger;
 
-public interface MerkleProof extends HashProof {
+import com.jd.blockchain.crypto.HashDigest;
 
-	MerkleNode getNode(int level);
-
-	default MerkleDataNode getDataNode() {
-		return (MerkleDataNode)getNode(0);
-	}
+public interface MerkleProof extends Iterable<HashDigest> {
 
 	/**
-	 * 返回字符串形式的哈希路径；
+	 * 返回根节点的哈希；
 	 * 
 	 * @return
 	 */
-	@Override
-	String toString();
+	HashDigest getRootHash();
+
+	/**
+	 * 返回数据节点的哈希；
+	 * 
+	 * @return
+	 */
+	HashDigest getDataHash();
+
+	/**
+	 * 返回哈希路径；
+	 * 
+	 * @return
+	 */
+	HashDigest[] getHashPaths();
+
+//	/**
+//	 * @return
+//	 */
+//	HashDigest getProofHash();
+
+	boolean equals(MerkleProof obj);
 }

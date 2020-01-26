@@ -52,7 +52,7 @@ public class DynamicArrayFieldEncoder extends AbstractFieldEncoder {
 		size += countBytes.length;
 
 		for (int i = 0; i < count; i++) {
-			size += valueConverter.encodeDynamicValue(Array.get(values,i), buffer);
+			size += valueConverter.encodeDynamicValue(Array.get(values, i), buffer);
 		}
 
 		return size;
@@ -69,14 +69,15 @@ public class DynamicArrayFieldEncoder extends AbstractFieldEncoder {
 
 	@Override
 	public Object decodeField(BytesSlices fieldBytes) {
-		Object[] values = (Object[]) Array.newInstance(valueConverter.getValueType(), fieldBytes.getCount());
+		int fieldCount = fieldBytes.getCount();
+		Object values = Array.newInstance(valueConverter.getValueType(), fieldCount);
 		BytesSlice itemSlice;
-		for (int i = 0; i < values.length; i++) {
+		for (int i = 0; i < fieldCount; i++) {
 			itemSlice = fieldBytes.getDataSlice(i);
 			if (itemSlice.getSize() == 0) {
-				values[i] = valueConverter.getDefaultValue();
+				Array.set(values, i, valueConverter.getDefaultValue());
 			} else {
-				values[i] = valueConverter.decodeValue(itemSlice);
+				Array.set(values, i, valueConverter.decodeValue(itemSlice));
 			}
 		}
 		return values;

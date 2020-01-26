@@ -7,9 +7,19 @@ package com.jd.blockchain.consts;
  *
  */
 public interface DataCodes {
-	
-	public static final int MERKLE_SNAPSHOT = 0x070;
 
+	public static final int MERKLE_SNAPSHOT = 0x070;
+	
+	public static final int MERKLE_DATA = 0x071;
+	
+	public static final int MERKLE_KEY = 0x072;
+	
+	public static final int MERKLE_LEAF = 0x073;
+	
+	public static final int MERKLE_PATH = 0x074;
+
+	
+	
 	public static final int BYTES_VALUE = 0x080;
 
 	public static final int BYTES_VALUE_LIST = 0x081;
@@ -122,14 +132,14 @@ public interface DataCodes {
 	public static final int ACCOUNT_HEADER = 0x710;
 
 	public static final int USER_ACCOUNT_HEADER = 0x800;
-	
+
 	public static final int USER_INFO = 0x801;
 
 	public static final int DATA = 0x900;
 
 	// contract related;
 	public static final int CONTRACT_ACCOUNT_HEADER = 0xA00;
-	
+
 	public static final int CONTRACT_INFO = 0xA01;
 
 	// ...0xA19
