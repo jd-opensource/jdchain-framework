@@ -7,16 +7,22 @@ import com.jd.blockchain.binaryproto.FieldSpec;
 import com.jd.blockchain.utils.io.BytesInputStream;
 import com.jd.blockchain.utils.io.BytesOutputBuffer;
 import com.jd.blockchain.utils.io.BytesSlices;
+import com.jd.blockchain.utils.io.NumberMask;
 import com.jd.blockchain.utils.io.SingleBytesSliceArray;
 
 public class DynamicFieldEncoder extends AbstractFieldEncoder {
 
 	private DynamicValueConverter valueConverter;
+	
+	private NumberMask numberMask;
 
 	public DynamicFieldEncoder(BinarySliceSpec sliceSpec, FieldSpec fieldSpec, Method reader,
 			DynamicValueConverter valueConverter) {
 		super(sliceSpec, fieldSpec, reader);
 		this.valueConverter = valueConverter;
+		if (valueConverter instanceof NumberEncodingConverter) {
+			numberMask = ((NumberEncodingConverter) valueConverter).getNumberMask();
+		}
 	}
 
 	@Override
@@ -30,7 +36,11 @@ public class DynamicFieldEncoder extends AbstractFieldEncoder {
 
 	@Override
 	public BytesSlices decode(BytesInputStream bytesStream) {
-		return SingleBytesSliceArray.resolveDynamic(bytesStream);
+		if (numberMask != null) {
+			return SingleBytesSliceArray.resolveNumber(numberMask, bytesStream);
+		}else {
+			return SingleBytesSliceArray.resolveDynamic(bytesStream);
+		}
 	}
 
 	@Override

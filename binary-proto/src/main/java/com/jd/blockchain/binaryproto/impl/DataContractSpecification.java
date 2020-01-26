@@ -18,7 +18,8 @@ public class DataContractSpecification implements DataSpecification {
 	private List<FieldSpec> fieldList;
 	private List<BinarySliceSpec> sliceList;
 
-	public DataContractSpecification(int code, long version, String name, String description, BinarySliceSpec[] slices, FieldSpec[] fields) {
+	public DataContractSpecification(int code, long version, String name, String description, BinarySliceSpec[] slices,
+			FieldSpec[] fields) {
 		this.code = code;
 		this.version = version;
 		this.name = name;
@@ -60,5 +61,30 @@ public class DataContractSpecification implements DataSpecification {
 	@Override
 	public String toHtml() {
 		throw new IllegalStateException("Not implemented!");
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder info = new StringBuilder();
+		info.append(String.format("---------- DataContract[%s-%s] ----------\r\n", code, version));
+		info.append(String.format("   code:%s\r\n", code));
+		info.append(String.format("version:%s\r\n", version));
+		info.append(String.format("   name:%s\r\n", name));
+		info.append(String.format("   desc:%s\r\n", description));
+		info.append(String.format("----- head -----\r\n"));
+		BinarySliceSpec headSliceSpec = sliceList.get(0);
+		info.append(String.format("slice--::[dynamic:%s; repeatable:%s; length:%s; name:%s; desc:%s]\r\n",
+				headSliceSpec.isDynamic(), headSliceSpec.isRepeatable(), headSliceSpec.getLength(),
+				headSliceSpec.getName(), headSliceSpec.getDescription()));
+
+		info.append(String.format("----- fields[%s] -----\r\n", fieldList.size()));
+		for (int i = 1; i < sliceList.size(); i++) {
+			headSliceSpec = sliceList.get(i);
+			info.append(String.format("slice-%s::[dynamic:%s; repeatable:%s; length:%s; name:%s; desc:%s]\r\n", i,
+					headSliceSpec.isDynamic(), headSliceSpec.isRepeatable(), headSliceSpec.getLength(),
+					headSliceSpec.getName(), headSliceSpec.getDescription()));
+		}
+
+		return info.toString();
 	}
 }
