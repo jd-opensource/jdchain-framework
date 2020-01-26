@@ -25,10 +25,4 @@ public interface MerkleProof extends Iterable<HashDigest> {
 	 */
 	HashDigest[] getHashPaths();
 
-//	/**
-//	 * @return
-//	 */
-//	HashDigest getProofHash();
-
-	boolean equals(MerkleProof obj);
 }
