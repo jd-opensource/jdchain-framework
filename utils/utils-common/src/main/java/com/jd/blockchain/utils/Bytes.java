@@ -180,18 +180,17 @@ public class Bytes implements BytesSerializable {
 		if (this.hashCode != oth.hashCode) {
 			return false;
 		}
-		boolean prefixIsEqual = false;
 		if (this.prefix == null && oth.prefix == null) {
-			prefixIsEqual = true;
+			return BytesUtils.equals(this.data, oth.data);
 		} else if (this.prefix == null) {
-			prefixIsEqual = false;
-		} else {
-			prefixIsEqual = this.prefix.equals(oth.prefix);
-		}
-		if (!prefixIsEqual) {
+			// this.prefix == null && oth.prefix != null
 			return false;
+		} else if (this.prefix.equals(oth.prefix)) {
+			// this.prefix != null && oth.prefix != null && this.prefix.equals(oth.prefix)
+			return BytesUtils.equals(this.data, oth.data);
 		}
-		return BytesUtils.equals(this.data, oth.data);
+		// this.prefix != null && oth.prefix != null && !this.prefix.equals(oth.prefix)
+		return false;
 	}
 
 	public int copyTo(byte[] buffer, int offset, int len) {
@@ -235,7 +234,7 @@ public class Bytes implements BytesSerializable {
 		}
 		return new Bytes(BytesUtils.toBytes(value));
 	}
-	
+
 	public String toUTF8String() {
 		return BytesUtils.toString(toBytes());
 	}
