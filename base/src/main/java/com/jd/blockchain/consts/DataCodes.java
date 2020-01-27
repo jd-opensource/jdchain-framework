@@ -12,11 +12,9 @@ public interface DataCodes {
 	
 	public static final int MERKLE_DATA = 0x071;
 	
-	public static final int MERKLE_KEY = 0x072;
+	public static final int MERKLE_LEAF = 0x072;
 	
-	public static final int MERKLE_LEAF = 0x073;
-	
-	public static final int MERKLE_PATH = 0x074;
+	public static final int MERKLE_PATH = 0x073;
 
 	
 	
