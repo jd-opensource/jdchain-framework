@@ -1,5 +1,6 @@
 package com.jd.blockchain.utils.hash;
 
+import com.jd.blockchain.utils.Bytes;
 import com.jd.blockchain.utils.io.BytesUtils;
 
 /**
@@ -61,6 +62,22 @@ public final class MurmurHash3 {
 				| ((buf[offset + 2] & 0xffL) << 16) | ((buf[offset + 1] & 0xffL) << 8) | ((buf[offset] & 0xffL)); // no
 																													// shift
 																													// needed
+	}
+	
+	/**
+	 * Gets a long from a byte buffer in little endian byte order.
+	 * 
+	 * @param buf    buf
+	 * @param offset offset
+	 * @return long
+	 */
+	public static final long getLongLittleEndian(Bytes buf, int offset) {
+		return ((long) buf.read(offset + 7) << 56) // no mask needed
+				| ((buf.read(offset + 6) & 0xffL) << 48) | ((buf.read(offset + 5) & 0xffL) << 40)
+				| ((buf.read(offset + 4) & 0xffL) << 32) | ((buf.read(offset + 3) & 0xffL) << 24)
+				| ((buf.read(offset + 2) & 0xffL) << 16) | ((buf.read(offset + 1) & 0xffL) << 8) | ((buf.read(offset) & 0xffL)); // no
+		// shift
+		// needed
 	}
 
 	/**
@@ -387,6 +404,107 @@ public final class MurmurHash3 {
 		out[1] = h2;
 	}
 	
+	
+	/**
+	 * Compute the MurmurHash3_x64_128 hash, and return the first 64 bits.
+	 * 
+	 * @param key    key
+	 * @param offset offset
+	 * @param len    len
+	 * @param seed   seed
+	 * @return The first 64 bits of hash;
+	 */
+	public static long murmurhash3_x64_64_1(Bytes key, int offset, int len, int seed) {
+		// The original algorithm does have a 32 bit unsigned seed.
+		// We have to mask to match the behavior of the unsigned types and prevent sign
+		// extension.
+		long h1 = seed & 0x00000000FFFFFFFFL;
+		long h2 = seed & 0x00000000FFFFFFFFL;
+		
+		final long c1 = 0x87c37b91114253d5L;
+		final long c2 = 0x4cf5ad432745937fL;
+		
+		int roundedEnd = offset + (len & 0xFFFFFFF0); // round down to 16 byte block
+		for (int i = offset; i < roundedEnd; i += 16) {
+			long k1 = getLongLittleEndian(key, i);
+			long k2 = getLongLittleEndian(key, i + 8);
+			k1 *= c1;
+			k1 = Long.rotateLeft(k1, 31);
+			k1 *= c2;
+			h1 ^= k1;
+			h1 = Long.rotateLeft(h1, 27);
+			h1 += h2;
+			h1 = h1 * 5 + 0x52dce729;
+			k2 *= c2;
+			k2 = Long.rotateLeft(k2, 33);
+			k2 *= c1;
+			h2 ^= k2;
+			h2 = Long.rotateLeft(h2, 31);
+			h2 += h1;
+			h2 = h2 * 5 + 0x38495ab5;
+		}
+		
+		long k1 = 0;
+		long k2 = 0;
+		
+		switch (len & 15) {
+		case 15:
+			k2 = (key.read(roundedEnd + 14) & 0xffL) << 48;
+		case 14:
+			k2 |= (key.read(roundedEnd + 13) & 0xffL) << 40;
+		case 13:
+			k2 |= (key.read(roundedEnd + 12) & 0xffL) << 32;
+		case 12:
+			k2 |= (key.read(roundedEnd + 11) & 0xffL) << 24;
+		case 11:
+			k2 |= (key.read(roundedEnd + 10) & 0xffL) << 16;
+		case 10:
+			k2 |= (key.read(roundedEnd + 9) & 0xffL) << 8;
+		case 9:
+			k2 |= (key.read(roundedEnd + 8) & 0xffL);
+			k2 *= c2;
+			k2 = Long.rotateLeft(k2, 33);
+			k2 *= c1;
+			h2 ^= k2;
+		case 8:
+			k1 = ((long) key.read(roundedEnd + 7)) << 56;
+		case 7:
+			k1 |= (key.read(roundedEnd + 6) & 0xffL) << 48;
+		case 6:
+			k1 |= (key.read(roundedEnd + 5) & 0xffL) << 40;
+		case 5:
+			k1 |= (key.read(roundedEnd + 4) & 0xffL) << 32;
+		case 4:
+			k1 |= (key.read(roundedEnd + 3) & 0xffL) << 24;
+		case 3:
+			k1 |= (key.read(roundedEnd + 2) & 0xffL) << 16;
+		case 2:
+			k1 |= (key.read(roundedEnd + 1) & 0xffL) << 8;
+		case 1:
+			k1 |= (key.read(roundedEnd) & 0xffL);
+			k1 *= c1;
+			k1 = Long.rotateLeft(k1, 31);
+			k1 *= c2;
+			h1 ^= k1;
+		}
+		
+		// ----------
+		// finalization
+		
+		h1 ^= len;
+		h2 ^= len;
+		
+		h1 += h2;
+		h2 += h1;
+		
+		h1 = fmix64(h1);
+		h2 = fmix64(h2);
+		
+		h1 += h2;
+		h2 += h1;
+		
+		return h1;
+	}
 	
 	/**
 	 * Compute the MurmurHash3_x64_128 hash, and return the first 64 bits.
