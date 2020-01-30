@@ -176,17 +176,27 @@ public class Bytes implements BytesSerializable {
 		if (this.hashCode != oth.hashCode) {
 			return false;
 		}
-		if (this.prefix == null && oth.prefix == null) {
-			return BytesUtils.equals(this.bytes, oth.bytes);
-		} else if (this.prefix == null) {
-			// this.prefix == null && oth.prefix != null
+		int size = this.size();
+		if (size != oth.size()) {
 			return false;
-		} else if (this.prefix.equals(oth.prefix)) {
-			// this.prefix != null && oth.prefix != null && this.prefix.equals(oth.prefix)
-			return BytesUtils.equals(this.bytes, oth.bytes);
 		}
-		// this.prefix != null && oth.prefix != null && !this.prefix.equals(oth.prefix)
-		return false;
+		for (int i = 0; i < size; i++) {
+			if (read(i) != oth.read(i)) {
+				return false;
+			}
+		}
+		return true;
+//		if (this.prefix == null && oth.prefix == null) {
+//			return BytesUtils.equals(this.bytes, oth.bytes);
+//		} else if (this.prefix == null) {
+//			// this.prefix == null && oth.prefix != null
+//			return false;
+//		} else if (this.prefix.equals(oth.prefix)) {
+//			// this.prefix != null && oth.prefix != null && this.prefix.equals(oth.prefix)
+//			return BytesUtils.equals(this.bytes, oth.bytes);
+//		}
+//		// this.prefix != null && oth.prefix != null && !this.prefix.equals(oth.prefix)
+//		return false;
 	}
 
 	public int copyTo(byte[] buffer, int offset, int len) {
@@ -212,7 +222,7 @@ public class Bytes implements BytesSerializable {
 	@Override
 	public byte[] toBytes() {
 		if (prefix == null || prefix.size() == 0) {
-			return bytes;
+			return bytes.clone();
 		}
 		int size = size();
 		byte[] buffer = new byte[size];
