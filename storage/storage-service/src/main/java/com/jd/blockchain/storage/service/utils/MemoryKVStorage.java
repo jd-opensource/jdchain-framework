@@ -21,7 +21,7 @@ public class MemoryKVStorage implements ExPolicyKVStorage, VersioningKVStorage, 
 	}
 
 	@Override
-	public DataEntry getEntry(Bytes key, long version) {
+	public DataEntry<Bytes, byte[]> getEntry(Bytes key, long version) {
 		return verStorage.getEntry(key, version);
 	}
 

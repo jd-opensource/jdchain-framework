@@ -6,11 +6,14 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jd.blockchain.storage.service.ExPolicyKVStorage;
 import com.jd.blockchain.storage.service.VersioningKVStorage;
 import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.Transactional;
 import com.jd.blockchain.utils.DataEntry;
+import com.jd.blockchain.utils.Transactional;
 
 /**
  * {@link BufferedKVStorage} 缓冲写入的KV存储；<br>
@@ -19,6 +22,8 @@ import com.jd.blockchain.utils.DataEntry;
  *
  */
 public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage, Transactional {
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(BufferedKVStorage.class);
 
 	private static int MAX_PARALLEL_DB_WRITE_SIZE = 500;
 	static {
@@ -149,6 +154,7 @@ public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage
 	 * 输出已缓冲的所有写入数据到原始存储，并清空缓冲区；
 	 */
 	public void flush() {
+		LOGGER.debug("--------------- Buffered KV Storage Start flushing... -------------- [origVersioningStorage={}]; [origExistanceStorage={}]\r\n", origVersioningStorage, origExistanceStorage);
 		if (parallel) {
 			parallelFlush();
 		} else {
@@ -156,6 +162,8 @@ public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage
 		}
 
 		clear();
+		
+		LOGGER.debug("--------------- Buffered KV Storage End flushing. --------------");
 	}
 
 	private void parallelFlush() {

@@ -42,7 +42,7 @@ public class VersioningKVStorageMap implements VersioningKVStorage, BytesMap<Byt
 	}
 
 	@Override
-	public DataEntry getEntry(Bytes key, long version) {
+	public DataEntry<Bytes, byte[]> getEntry(Bytes key, long version) {
 		VersioningWritingSet ws = versioningCache.get(key);
 		if (ws == null) {
 			return null;
@@ -195,12 +195,12 @@ public class VersioningKVStorageMap implements VersioningKVStorage, BytesMap<Byt
 			return startingVersion;
 		}
 
-		public DataEntry getEntry(long version) {
+		public DataEntry<Bytes, byte[]> getEntry(long version) {
 			byte[] value = get(version);
 			if (value == null) {
 				return null;
 			}
-			return new VersioningKVData(key, version, value);
+			return new VersioningKVData<Bytes, byte[]>(key, version, value);
 		}
 
 		public void flushTo(VersioningKVStorage storage) {
