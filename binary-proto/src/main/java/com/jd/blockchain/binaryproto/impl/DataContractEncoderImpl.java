@@ -12,7 +12,7 @@ import com.jd.blockchain.utils.io.BytesSlice;
 
 public class DataContractEncoderImpl implements DataContractEncoder {
 
-	private Class<?>[] contractTypeArray;
+	private Class<?>[] contractProxyTypes;
 
 	private Class<?> contractType;
 
@@ -28,15 +28,13 @@ public class DataContractEncoderImpl implements DataContractEncoder {
 	/**
 	 * @param contractType
 	 * @param specification
-	 * @param headEncoder
-	 *            头部编码器；
-	 * @param fieldEncoders
-	 *            按顺序排列的字段编码器列表；
+	 * @param headEncoder   头部编码器；
+	 * @param fieldEncoders 按顺序排列的字段编码器列表；
 	 */
 	public DataContractEncoderImpl(Class<?> contractType, DataSpecification specification, HeaderEncoder headEncoder,
 			FieldEncoder[] fieldEncoders) {
 		this.contractType = contractType;
-		this.contractTypeArray = new Class<?>[] { contractType };
+		this.contractProxyTypes = new Class<?>[] { contractType, DataContractProxy.class };
 		this.specification = specification;
 		this.headEncoder = headEncoder;
 		this.fieldEncoders = fieldEncoders;
@@ -52,8 +50,13 @@ public class DataContractEncoderImpl implements DataContractEncoder {
 		return headEncoder;
 	}
 
-	Class<?>[] getContractTypeAsArray() {
-		return contractTypeArray;
+	/**
+	 * 数据契约动态代理对象要实现的接口类型；
+	 * 
+	 * @return
+	 */
+	Class<?>[] getContractProxyTypes() {
+		return contractProxyTypes;
 	}
 
 	int getFieldCount() {
@@ -67,8 +70,7 @@ public class DataContractEncoderImpl implements DataContractEncoder {
 	/**
 	 * 通过字段的声明方法返回字段的序号；
 	 * 
-	 * @param declaredMethod
-	 *            声明并标注为数据契约字段的方法；注：不能是覆盖的非标注方法，也不能是实现方法；
+	 * @param declaredMethod 声明并标注为数据契约字段的方法；注：不能是覆盖的非标注方法，也不能是实现方法；
 	 * @return 字段序号； 如果不存在，则返回 -1；
 	 */
 	int getFieldId(Method declaredMethod) {
@@ -79,8 +81,7 @@ public class DataContractEncoderImpl implements DataContractEncoder {
 	/**
 	 * 通过字段的声明方法返回字段的编码器；
 	 * 
-	 * @param declaredMethod
-	 *            声明并标注为数据契约字段的方法；注：不能是覆盖的非标注方法，也不能是实现方法；
+	 * @param declaredMethod 声明并标注为数据契约字段的方法；注：不能是覆盖的非标注方法，也不能是实现方法；
 	 * @return
 	 */
 	FieldEncoder getFieldEncoder(Method declaredMethod) {
@@ -103,6 +104,17 @@ public class DataContractEncoderImpl implements DataContractEncoder {
 
 	@Override
 	public int encode(Object dataContract, BytesOutputBuffer buffer) {
+		if (dataContract instanceof DataContractProxy) {
+			//优化对数据动态代理对象的序列化，直接复制输出基础数组；
+			DataContractProxy proxy = (DataContractProxy) dataContract;
+			if (contractType == proxy.getContractType()) {
+				byte[] dataBytes = new byte[proxy.getTotalSize()];
+				proxy.writeBytes(dataBytes, 0);
+				buffer.write(dataBytes);
+				return dataBytes.length;
+			} 
+		}
+		
 		int size = 0;
 		size += headEncoder.encode(dataContract, buffer);
 		if (dataContract != null) {

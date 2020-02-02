@@ -342,7 +342,7 @@ public class DatasetHelper {
 			if (entries.length == 0) {
 				return (DataEntry<K2, V2>[]) entries;
 			}
-			return ArrayUtils.castTo(entries, DataEntry.class, e -> cast(e));
+			return ArrayUtils.cast(entries, DataEntry.class, e -> cast(e));
 		}
 
 		@Override

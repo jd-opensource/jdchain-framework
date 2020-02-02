@@ -12,7 +12,7 @@ public abstract class ArrayUtils {
 
 	}
 
-	public static <T, R> R[] castTo(T[] objs, Class<R> clazz, CastFunction<T, R> cf) {
+	public static <T, R> R[] cast(T[] objs, Class<R> clazz, CastFunction<T, R> cf) {
 		if (objs == null) {
 			return null;
 		}
@@ -50,11 +50,15 @@ public abstract class ArrayUtils {
 		return array;
 	}
 
-	public static <T> List<T> asList(T[] array) {
-		return asList(array, 0, array.length);
+	public static <T> Iterator<T> iterator(T[] array) {
+		return new ArrayIterator<T>(array);
 	}
 
-	public static <T> Set<T> asSet(T[] array) {
+	public static <T> List<T> asUnmodifiableList(T[] array) {
+		return asUnmodifiableList(array, 0, array.length);
+	}
+
+	public static <T> Set<T> mergeToSet(T[] array) {
 		if (array == null || array.length == 0) {
 			return Collections.emptySet();
 		}
@@ -65,7 +69,7 @@ public abstract class ArrayUtils {
 		return set;
 	}
 
-	public static <T> SortedSet<T> asSortedSet(T[] array) {
+	public static <T> SortedSet<T> mergeToSortedSet(T[] array) {
 		if (array == null || array.length == 0) {
 			return Collections.emptySortedSet();
 		}
@@ -76,11 +80,11 @@ public abstract class ArrayUtils {
 		return set;
 	}
 
-	public static <T> List<T> asList(T[] array, int fromIndex) {
-		return asList(array, fromIndex, array.length);
+	public static <T> List<T> asUnmodifiableList(T[] array, int fromIndex) {
+		return asUnmodifiableList(array, fromIndex, array.length);
 	}
 
-	public static <T> List<T> asList(T[] array, int fromIndex, int toIndex) {
+	public static <T> List<T> asUnmodifiableList(T[] array, int fromIndex, int toIndex) {
 		if (toIndex < fromIndex) {
 			throw new IllegalArgumentException("The toIndex less than fromIndex!");
 		}
@@ -111,7 +115,7 @@ public abstract class ArrayUtils {
 		if (array == null || array.length < 2) {
 			return;
 		}
-		
+
 		T t;
 		for (int i = 0, j = array.length - 1; i < j; i++, j--) {
 			t = array[i];

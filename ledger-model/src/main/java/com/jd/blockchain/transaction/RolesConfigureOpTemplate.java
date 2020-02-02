@@ -96,7 +96,7 @@ public class RolesConfigureOpTemplate implements RolesConfigurer, RolesConfigure
 
 		@Override
 		public RolePrivilegeConfigurer enable(LedgerPermission... permissions) {
-			List<LedgerPermission> permissionList = ArrayUtils.asList(permissions);
+			List<LedgerPermission> permissionList = ArrayUtils.asUnmodifiableList(permissions);
 			enableLedgerPermissions.addAll(permissionList);
 			disableLedgerPermissions.removeAll(permissionList);
 
@@ -105,7 +105,7 @@ public class RolesConfigureOpTemplate implements RolesConfigurer, RolesConfigure
 
 		@Override
 		public RolePrivilegeConfigurer disable(LedgerPermission... permissions) {
-			List<LedgerPermission> permissionList = ArrayUtils.asList(permissions);
+			List<LedgerPermission> permissionList = ArrayUtils.asUnmodifiableList(permissions);
 			disableLedgerPermissions.addAll(permissionList);
 			enableLedgerPermissions.removeAll(permissionList);
 
@@ -114,7 +114,7 @@ public class RolesConfigureOpTemplate implements RolesConfigurer, RolesConfigure
 
 		@Override
 		public RolePrivilegeConfigurer enable(TransactionPermission... permissions) {
-			List<TransactionPermission> permissionList = ArrayUtils.asList(permissions);
+			List<TransactionPermission> permissionList = ArrayUtils.asUnmodifiableList(permissions);
 			enableTxPermissions.addAll(permissionList);
 			disableTxPermissions.removeAll(permissionList);
 
@@ -123,7 +123,7 @@ public class RolesConfigureOpTemplate implements RolesConfigurer, RolesConfigure
 
 		@Override
 		public RolePrivilegeConfigurer disable(TransactionPermission... permissions) {
-			List<TransactionPermission> permissionList = ArrayUtils.asList(permissions);
+			List<TransactionPermission> permissionList = ArrayUtils.asUnmodifiableList(permissions);
 			disableTxPermissions.addAll(permissionList);
 			enableTxPermissions.removeAll(permissionList);
 

@@ -16,7 +16,7 @@ import java.io.OutputStream;
 public class BytesOutputBuffer {
 
 	private static final int DEFAULT_CAPACITY = 8;
-
+	
 	private volatile int size = 0;
 
 	private int capacity = 0;
@@ -73,6 +73,7 @@ public class BytesOutputBuffer {
 		buffers = newBuffers;
 		capacity = newCapacity;
 	}
+	
 	
 	/**
 	 * @param buffer buffer
