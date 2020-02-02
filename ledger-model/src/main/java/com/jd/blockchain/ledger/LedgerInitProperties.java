@@ -247,8 +247,7 @@ public class LedgerInitProperties {
 		initProps.consensusProvider = PropertiesUtils.getRequiredProperty(props, CONSENSUS_SERVICE_PROVIDER);
 		String consensusConfigFilePath = PropertiesUtils.getRequiredProperty(props, CONSENSUS_CONFIG);
 		try {
-			File consensusConfigFile = FileUtils.getFile(baseDirectory, consensusConfigFilePath);
-			initProps.consensusConfig = FileUtils.readProperties(consensusConfigFile);
+			initProps.consensusConfig = FileUtils.readPropertiesResouce(consensusConfigFilePath, baseDirectory);
 		} catch (FileNotFoundException e) {
 			throw new IllegalArgumentException(
 					String.format("Consensus config file[%s] doesn't exist! ", consensusConfigFilePath), e);
