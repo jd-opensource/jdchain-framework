@@ -31,6 +31,9 @@ public class BytesSerializableValueConverter extends AbstractDynamicValueConvert
 
 	@Override
 	public Object decodeValue(BytesSlice dataSlice) {
+		if (valueType == BytesSlice.class) {
+			return dataSlice;
+		}
 		if (dataSlice.getSize() == 0) {
 			return null;
 		}
