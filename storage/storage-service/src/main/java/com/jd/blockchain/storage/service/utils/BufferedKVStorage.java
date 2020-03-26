@@ -9,8 +9,8 @@ import java.util.concurrent.RecursiveTask;
 import com.jd.blockchain.storage.service.ExPolicyKVStorage;
 import com.jd.blockchain.storage.service.VersioningKVStorage;
 import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.Transactional;
 import com.jd.blockchain.utils.DataEntry;
+import com.jd.blockchain.utils.Transactional;
 
 /**
  * {@link BufferedKVStorage} 缓冲写入的KV存储；<br>
@@ -55,12 +55,9 @@ public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage
 	/**
 	 * 创建实例；
 	 * 
-	 * @param origExPolicyStorage
-	 *            原始的存储；
-	 * @param origVersioningStorage
-	 *            原始的存储；
-	 * @param parallel
-	 *            是否并行写入；
+	 * @param origExPolicyStorage   原始的存储；
+	 * @param origVersioningStorage 原始的存储；
+	 * @param parallel              是否并行写入；
 	 */
 	public BufferedKVStorage(ExPolicyKVStorage origExPolicyStorage, VersioningKVStorage origVersioningStorage,
 			boolean parallel) {
@@ -77,7 +74,7 @@ public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage
 		}
 		return ws.getLatestVersion();
 	}
-	
+
 	@Override
 	public DataEntry<Bytes, byte[]> getEntry(Bytes key, long version) {
 		VersioningWritingSet ws = versioningCache.get(key);
@@ -134,6 +131,7 @@ public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage
 					if (version == latestVersion) {
 						ws = new VersioningWritingSet(key, latestVersion, value);
 						versioningCache.put(key, ws);
+
 						return version + 1;
 					}
 					// 指定的版本不是最新版本；
@@ -182,17 +180,17 @@ public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage
 		}
 	}
 
-    @Override
-    public void batchBegin() {
-        // un support!!!
-    }
+	@Override
+	public void batchBegin() {
+		// un support!!!
+	}
 
-    @Override
-    public void batchCommit() {
-        // un support!!!
-    }
+	@Override
+	public void batchCommit() {
+		// un support!!!
+	}
 
-    private static class ParallelVersioningWritingTask extends RecursiveTask<Boolean> {
+	private static class ParallelVersioningWritingTask extends RecursiveTask<Boolean> {
 
 		private static final long serialVersionUID = -2603448698013687038L;
 
@@ -276,19 +274,19 @@ public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage
 
 	private void syncFlush() {
 		// 不必在“版本”和“存在性”这两类存储接口之间保证向下写入的顺序，也不必保证不同 key 向下写入的顺序；
-        if (versioningCache.isEmpty() && existanceCache.isEmpty()) {
-            return;
-        }
-        origVersioningStorage.batchBegin();
+		if (versioningCache.isEmpty() && existanceCache.isEmpty()) {
+			return;
+		}
+		origVersioningStorage.batchBegin();
 		for (VersioningWritingSet ws : versioningCache.values()) {
 			ws.flushTo(origVersioningStorage);
 		}
-        origVersioningStorage.batchCommit();
-        origExistanceStorage.batchBegin();
+		origVersioningStorage.batchCommit();
+		origExistanceStorage.batchBegin();
 		for (ExistanceWritingSet ws : existanceCache.values()) {
 			ws.flushTo(origExistanceStorage);
 		}
-        origExistanceStorage.batchCommit();
+		origExistanceStorage.batchCommit();
 	}
 
 	private void clear() {
@@ -433,12 +431,9 @@ public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage
 
 		/**
 		 * 
-		 * @param key
-		 *            键；
-		 * @param version
-		 *            新的版本；
-		 * @param value
-		 *            值；
+		 * @param key     键；
+		 * @param version 新的版本；
+		 * @param value   值；
 		 */
 		private VersioningWritingSet(Bytes key, long startingVersion, byte[] firstValue) {
 			this.key = key;
@@ -546,12 +541,9 @@ public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage
 
 		/**
 		 * 
-		 * @param key
-		 *            键；
-		 * @param value
-		 *            值；
-		 * @param initPolicy
-		 *            初始的写入策略；
+		 * @param key        键；
+		 * @param value      值；
+		 * @param initPolicy 初始的写入策略；
 		 */
 		private ExistanceWritingSet(Bytes key, byte[] value, ExPolicy initPolicy) {
 			this.key = key;

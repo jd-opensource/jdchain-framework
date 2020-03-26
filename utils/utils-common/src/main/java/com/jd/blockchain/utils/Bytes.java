@@ -34,58 +34,77 @@ public class Bytes implements BytesSerializable {
 	}
 
 	private final Bytes prefix;
+	
+	private final int prefixSize;
 
-	private final byte[] data;
+	private final byte[] bytes;
 
 	private final int hashCode;
 
 	public int size() {
-		return prefix == null ? data.length : prefix.size() + data.length;
+		return prefixSize + bytes.length;
 	}
+
+//	private int prefixSize() {
+//		return prefix == null ? 0 : prefix.size();
+//	}
 
 	public Bytes() {
 		prefix = null;
-		data = null;
+		prefixSize = 0;
+		bytes = BytesUtils.EMPTY_BYTES;
 		hashCode = hashCode(1);
 	}
 
-	public Bytes(byte[] data) {
-		if (data == null) {
-			throw new IllegalArgumentException("data is null!");
+	public Bytes(byte[] bytes) {
+		if (bytes == null) {
+			throw new IllegalArgumentException("The bytes data is null!");
 		}
 		this.prefix = null;
-		this.data = data;
+		this.prefixSize = 0;
+		this.bytes = bytes;
 		hashCode = hashCode(1);
 	}
 
-	public Bytes(Bytes prefix, byte[] data) {
-		if (data == null) {
-			throw new IllegalArgumentException("data is null!");
+	public Bytes(Bytes prefix, byte[] bytes) {
+		if (prefix == null) {
+			throw new IllegalArgumentException("Prefix is null!");
+		}
+		if (bytes == null) {
+			throw new IllegalArgumentException("The bytes data is null!");
 		}
 		this.prefix = prefix;
-		this.data = data;
-		// setPrefix(prefix);
+		this.prefixSize = prefix.size();
+		this.bytes = bytes;
 		hashCode = hashCode(1);
 	}
 
-	public Bytes(Bytes prefix, Bytes data) {
-		// setData(data.toBytes());
-		// setPrefix(prefix);
-		if (data == null) {
-			throw new IllegalArgumentException("data is null!");
+	public Bytes(Bytes prefix, Bytes bytes) {
+		if (prefix == null) {
+			throw new IllegalArgumentException("Prefix is null!");
+		}
+		if (bytes == null) {
+			throw new IllegalArgumentException("The bytes data is null!");
 		}
 		this.prefix = prefix;
-		this.data = data.toBytes();
+		this.prefixSize = prefix.size();
+		this.bytes = bytes.toBytes();
 
 		hashCode = hashCode(1);
 	}
 
-	// private void setData(byte[] data) {
-	// if (data == null) {
-	// throw new IllegalArgumentException("data is null!");
-	// }
-	// this.data = data;
-	// }
+	public byte read(int index) {
+		if (index < 0) {
+			throw new IndexOutOfBoundsException("Index is negative!");
+		}
+		if (index < prefixSize) {
+			return prefix.read(index);
+		}
+		if (index < (prefixSize + bytes.length)) {
+			return bytes[index-prefixSize];
+		}
+		throw new IndexOutOfBoundsException("Index is negative!");
+	}
 
 	/**
 	 * 返回当前的字节数组（不包含前缀对象）；
@@ -93,7 +112,7 @@ public class Bytes implements BytesSerializable {
 	 * @return byte[]
 	 */
 	protected byte[] getDirectBytes() {
-		return data;
+		return bytes;
 	}
 
 	public static Bytes fromString(String str) {
@@ -103,17 +122,6 @@ public class Bytes implements BytesSerializable {
 	public static Bytes fromBase58(String str) {
 		return new Bytes(Base58Utils.decode(str));
 	}
-
-	// /**
-	// * 连接指定的前缀后面；此操作并不会更改“prefix”参数；
-	// *
-	// * @param prefix
-	// * @return
-	// */
-	// private Bytes setPrefix(Bytes prefix) {
-	// this.prefix = prefix;
-	// return this;
-	// }
 
 	public Bytes concat(Bytes key) {
 		return new Bytes(this, key);
@@ -129,8 +137,8 @@ public class Bytes implements BytesSerializable {
 			size = prefix.writeTo(out);
 		}
 		try {
-			out.write(data);
-			size += data.length;
+			out.write(bytes);
+			size += bytes.length;
 			return size;
 		} catch (IOException e) {
 			throw new RuntimeIOException(e.getMessage(), e);
@@ -141,24 +149,12 @@ public class Bytes implements BytesSerializable {
 		if (prefix != null) {
 			result = prefix.hashCode(result);
 		}
-		for (byte element : data) {
+		for (byte element : bytes) {
 			result = 31 * result + element;
 		}
 
 		return result;
 	}
-
-	// private static int hashCode(byte a[], int offset, int len) {
-	// if (a == null)
-	// return 0;
-	//
-	// int result = 1;
-	// for (int i = 0; i < len; i++) {
-	// result = 31 * result + a[offset + i];
-	// }
-	//
-	// return result;
-	// }
 
 	@Override
 	public int hashCode() {
@@ -180,18 +176,27 @@ public class Bytes implements BytesSerializable {
 		if (this.hashCode != oth.hashCode) {
 			return false;
 		}
-		boolean prefixIsEqual = false;
-		if (this.prefix == null && oth.prefix == null) {
-			prefixIsEqual = true;
-		} else if (this.prefix == null) {
-			prefixIsEqual = false;
-		} else {
-			prefixIsEqual = this.prefix.equals(oth.prefix);
-		}
-		if (!prefixIsEqual) {
+		int size = this.size();
+		if (size != oth.size()) {
 			return false;
 		}
-		return BytesUtils.equals(this.data, oth.data);
+		for (int i = 0; i < size; i++) {
+			if (read(i) != oth.read(i)) {
+				return false;
+			}
+		}
+		return true;
+//		if (this.prefix == null && oth.prefix == null) {
+//			return BytesUtils.equals(this.bytes, oth.bytes);
+//		} else if (this.prefix == null) {
+//			// this.prefix == null && oth.prefix != null
+//			return false;
+//		} else if (this.prefix.equals(oth.prefix)) {
+//			// this.prefix != null && oth.prefix != null && this.prefix.equals(oth.prefix)
+//			return BytesUtils.equals(this.bytes, oth.bytes);
+//		}
+//		// this.prefix != null && oth.prefix != null && !this.prefix.equals(oth.prefix)
+//		return false;
 	}
 
 	public int copyTo(byte[] buffer, int offset, int len) {
@@ -207,8 +212,8 @@ public class Bytes implements BytesSerializable {
 		}
 		if (s < len) {
 			int l = len - s;
-			l = l < data.length ? l : data.length;
-			System.arraycopy(data, 0, buffer, offset + s, l);
+			l = l < bytes.length ? l : bytes.length;
+			System.arraycopy(bytes, 0, buffer, offset + s, l);
 			s += l;
 		}
 		return s;
@@ -217,7 +222,7 @@ public class Bytes implements BytesSerializable {
 	@Override
 	public byte[] toBytes() {
 		if (prefix == null || prefix.size() == 0) {
-			return data;
+			return bytes.clone();
 		}
 		int size = size();
 		byte[] buffer = new byte[size];
@@ -235,7 +240,7 @@ public class Bytes implements BytesSerializable {
 		}
 		return new Bytes(BytesUtils.toBytes(value));
 	}
-	
+
 	public String toUTF8String() {
 		return BytesUtils.toString(toBytes());
 	}

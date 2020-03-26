@@ -20,7 +20,7 @@ public class BytesSlice implements BytesSerializable {
 	public BytesSlice(byte[] bytes) {
 		this(bytes, 0, bytes.length);
 	}
-	
+
 	public BytesSlice(byte[] bytes, int offset) {
 		this(bytes, offset, bytes.length - offset);
 	}
@@ -53,6 +53,7 @@ public class BytesSlice implements BytesSerializable {
 
 	/**
 	 * 返回首个字节；
+	 * 
 	 * @param offset offset
 	 * @return byte
 	 */
@@ -141,15 +142,15 @@ public class BytesSlice implements BytesSerializable {
 		System.arraycopy(bytes, dataOffset, copy, 0, size);
 		return copy;
 	}
-	
+
 	public byte[] getBytesCopy(int offset) {
-		return getBytesCopy(offset, getSize() - offset) ;
+		return getBytesCopy(offset, getSize() - offset);
 	}
-	
+
 	public byte[] getBytesCopy(int offset, int size) {
 		int newOffset = dataOffset + offset;
 		checkBoundary(newOffset, size);
-		
+
 		if (size == 0) {
 			return BytesUtils.EMPTY_BYTES;
 		}
@@ -167,22 +168,44 @@ public class BytesSlice implements BytesSerializable {
 	}
 
 	protected void checkBoundary(int offset, int len) {
-		// assert offset >= dataOffset
-		// && offset + len <= dataOffset + this.size : "The accessing index is out of
-		// BytesSlice's bounds!";
 		if (offset < dataOffset || offset + len > dataOffset + this.size) {
 			throw new IndexOutOfBoundsException("The accessing index is out of BytesSlice's bounds!");
 		}
 	}
 
 	public BytesSlice getSlice(int offset) {
-		return getSlice(offset,  getSize() - offset);
+		return getSlice(offset, getSize() - offset);
 	}
-	
+
 	public BytesSlice getSlice(int offset, int size) {
 		int newOffset = dataOffset + offset;
 		checkBoundary(newOffset, size);
 		return new BytesSlice(bytes, newOffset, size);
+	}
+
+	/**
+	 * 从当前数据片段复制数据到指定的缓冲数组；
+	 * 
+	 * @param srcOffset     要复制的数据片段的起点位置；
+	 * @param dest       接收数据的缓冲数组；
+	 * @param destOffset 缓冲数组保存数据的起始位置；
+	 * @param size       要复制的字节大小；如果指定值超过当前数据片段的大小，在复制并返回实际复制的字节数；
+	 * @return 已复制的字节大小；
+	 */
+	public int copy(int srcOffset, byte[] dest, int destOffset, int size) {
+		if (srcOffset < 0 || srcOffset >= this.size) {
+			throw new IndexOutOfBoundsException("The argument \"srcOffset\" is out of BytesSlice's bounds!");
+		}
+		if (size < 0) {
+			throw new IllegalArgumentException("The \"size\" argument is negative!");
+		}
+		
+		int newOffset = dataOffset + srcOffset;
+		int count = this.size - srcOffset;
+		count = count < size ? count : size;
+		System.arraycopy(bytes, newOffset, dest, destOffset, count);
+		
+		return count;
 	}
 
 	@Override

@@ -57,7 +57,7 @@ public class FixedBytesSliceArray implements BytesSlices {
 	public static FixedBytesSliceArray resolve(BytesInputStream bytesStream, int itemSize) {
 		int p1 = bytesStream.getPosition();
 
-		int itemCount = NumberMask.NORMAL.resolveMaskedNumber(bytesStream);
+		int itemCount = (int)NumberMask.NORMAL.resolveMaskedNumber(bytesStream);
 		
 		int dataOffset = bytesStream.getPosition();
 		

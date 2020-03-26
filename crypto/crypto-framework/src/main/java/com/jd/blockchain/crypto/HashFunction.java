@@ -3,7 +3,7 @@ package com.jd.blockchain.crypto;
 public interface HashFunction extends CryptoFunction {
 
 	/**
-	 * 计算指定数据的 hash；
+	 * 计算指定数据的哈希值；
 	 * 
 	 * @param data
 	 * @return
@@ -11,12 +11,28 @@ public interface HashFunction extends CryptoFunction {
 	HashDigest hash(byte[] data);
 	
 	/**
-	 * 计算指定数据的 hash；
+	 * 计算指定数据的哈希值；
 	 * 
 	 * @param data
 	 * @return
 	 */
 	HashDigest hash(byte[] data, int offset, int len);
+	
+	/**
+	 * 计算指定数据的哈希值 ，返回未编码的原始哈希值；
+	 * 
+	 * @param data
+	 * @return
+	 */
+	byte[] rawHash(byte[] data);
+	
+	/**
+	 * 计算指定数据的 hash；
+	 * 
+	 * @param data
+	 * @return
+	 */
+	byte[] rawHash(byte[] data, int offset, int len);
 	
 
 	/**

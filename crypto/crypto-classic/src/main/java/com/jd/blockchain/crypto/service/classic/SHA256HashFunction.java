@@ -47,6 +47,26 @@ public class SHA256HashFunction implements HashFunction {
 	}
 
 	@Override
+	public byte[] rawHash(byte[] data) {
+		if (data == null) {
+			throw new CryptoException("data is null!");
+		}
+
+		byte[] digestBytes = SHA256Utils.hash(data);
+		return digestBytes;
+	}
+	
+	@Override
+	public byte[] rawHash(byte[] data, int offset, int len) {
+		if (data == null) {
+			throw new CryptoException("data is null!");
+		}
+
+		byte[] digestBytes = SHA256Utils.hash(data, offset, len);
+		return digestBytes;
+	}
+	
+	@Override
 	public boolean verify(HashDigest digest, byte[] data) {
 		HashDigest hashDigest = hash(data);
 		return Arrays.equals(hashDigest.toBytes(), digest.toBytes());

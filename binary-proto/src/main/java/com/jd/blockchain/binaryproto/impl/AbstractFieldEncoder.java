@@ -17,6 +17,7 @@ public abstract class AbstractFieldEncoder implements FieldEncoder {
 	public AbstractFieldEncoder(BinarySliceSpec sliceSpec, FieldSpec fieldSpec, Method reader) {
 		this.sliceSpec = sliceSpec;
 		this.fieldSpec = fieldSpec;
+		reader.setAccessible(true);
 		this.reader = reader;
 	}
 
@@ -44,7 +45,7 @@ public abstract class AbstractFieldEncoder implements FieldEncoder {
 		}
 	}
 
-	protected Object[] readArrayValue(Object dataContract) {
-		return (Object[]) readValue(dataContract);
-	}
+//	protected Object[] readArrayValue(Object dataContract) {
+//		return (Object[]) readValue(dataContract);
+//	}
 }

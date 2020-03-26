@@ -40,6 +40,13 @@ public interface FieldSpec {
 	PrimitiveType getPrimitiveType();
 
 	/**
+	 * 数值编码方式；
+	 * 
+	 * @return
+	 */
+	NumberEncoding getNumberEncoding();
+
+	/**
 	 * 字段的值引用的枚举契约；
 	 * <p>
 	 * 如果字段的值不是枚举契约类型，则返回 null；
@@ -56,9 +63,9 @@ public interface FieldSpec {
 	 * @return
 	 */
 	DataSpecification getRefContract();
-	
+
 	boolean isRepeatable();
-	
+
 //	/**
 //	 * 字段的值引用的PubKey；
 //	 * <p>
@@ -121,6 +128,7 @@ public interface FieldSpec {
 
 	/**
 	 * 是否引用了一个通用数据契约类型，实际的类型需要根据实际的对象实例来定；
+	 * 
 	 * @return
 	 */
 	boolean isGenericContract();

@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import com.jd.blockchain.utils.PathUtils;
+
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ResourceUtils;
 
 /**
@@ -393,6 +395,31 @@ public class FileUtils {
 		}
 	}
 
+	public static Properties readPropertiesAndClose(InputStream in) {
+		return readPropertiesAndClose(in, DEFAULT_CHARSET);
+	}
+
+	public static Properties readPropertiesAndClose(InputStream in, String charset) {
+		try {
+			InputStreamReader reader = new InputStreamReader(in, charset);
+			try {
+				Properties props = new Properties();
+				props.load(reader);
+				return props;
+			} finally {
+				reader.close();
+			}
+		} catch (IOException e) {
+			throw new RuntimeIOException(e.getMessage(), e);
+		} finally {
+			try {
+				in.close();
+			} catch (IOException e) {
+				throw new RuntimeIOException(e.getMessage(), e);
+			}
+		}
+	}
+
 	/**
 	 * 根据byte数组，生成文件 filePath 文件路径 fileName 文件名称（需要带后缀，如*.jar）
 	 */
@@ -485,24 +512,85 @@ public class FileUtils {
 	}
 
 	/**
-	 * 获取指定路径和位置的文件信息
+	 * 获取指定路径和位置的文件信息;
+	 * <p>
+	 * 
+	 * 对于打包到 jar 包中的资源文件，此操作将引发 FileNotFoundException 异常，需要通过流的方式来加载；
 	 *
-	 * @param dir
-	 *     指定路径，不要以"/"结尾
-	 * @param resourceLocation
-	 *     文件位置信息，可支持绝对路径、相对路径（相对dir）、classpath：前缀
+	 * @param resourceLocation 文件位置信息，可支持绝对路径、相对路径（相对dir）、classpath：前缀；
+	 *                         如果指定了绝对路径或者类路径，则忽略目录参数 dir;
+	 * @param parentDir        父目录的路径，不要以"/"结尾; 可选参数；
 	 * @return
 	 *
 	 * @throws FileNotFoundException
 	 */
-	public static File getFile(String dir, String resourceLocation) throws FileNotFoundException {
+	public static File getFile(String resourceLocation, String parentDir) throws FileNotFoundException {
 		if (resourceLocation.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+			// 对于打包到 jar 包中的资源文件，此操作将引发异常，需要通过流的方式来加载；
 			return ResourceUtils.getFile(resourceLocation);
 		}
 		if (resourceLocation.startsWith(PathUtils.PATH_SEPERATOR)) {
 			return new File(resourceLocation);
 		}
-		String totalPath = PathUtils.concatPaths(dir, resourceLocation);
+		String totalPath = PathUtils.concatPaths(parentDir, resourceLocation);
 		return new File(totalPath);
+	}
+
+	/**
+	 * 获取指定路径和位置的文件信息;
+	 * <p>
+	 * 
+	 * 对于打包到 jar 包中的资源文件，此操作将引发 FileNotFoundException 异常，需要通过流的方式来加载；
+	 *
+	 * @param resourceLocation 文件位置信息，可支持绝对路径、相对路径（相对dir）、classpath：前缀；
+	 *                         如果指定了绝对路径或者类路径，则忽略目录参数 dir;
+	 * @param parentDir        父目录的路径，不要以"/"结尾; 可选参数；
+	 * @return
+	 *
+	 * @throws FileNotFoundException
+	 */
+	public static InputStream read(String resourceLocation, String parentDir) {
+		try {
+			if (resourceLocation.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+				// 对于打包到 jar 包中的资源文件，此操作将引发异常，需要通过流的方式来加载；
+				String path = resourceLocation.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
+				ClassPathResource resource = new ClassPathResource(path);
+				return resource.getInputStream();
+			}
+			if (resourceLocation.startsWith(PathUtils.PATH_SEPERATOR)) {
+				return new FileInputStream(new File(resourceLocation));
+			}
+			String totalPath = PathUtils.concatPaths(parentDir, resourceLocation);
+			return new FileInputStream(new File(totalPath));
+		} catch (IOException e) {
+			throw new RuntimeIOException(e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * 获取指定路径和位置的文件信息;
+	 * <p>
+	 * 
+	 * 对于打包到 jar 包中的资源文件，此操作将引发 FileNotFoundException 异常，需要通过流的方式来加载；
+	 *
+	 * @param resourceLocation 文件位置信息，可支持绝对路径、相对路径（相对dir）、classpath：前缀；
+	 *                         如果指定了绝对路径或者类路径，则忽略目录参数 dir;
+	 * @param parentDir        父目录的路径，不要以"/"结尾; 可选参数；
+	 * @return
+	 *
+	 * @throws FileNotFoundException
+	 */
+	public static Properties readPropertiesResouce(String resourceLocation, String parentDir)
+			throws FileNotFoundException {
+		try {
+			InputStream in = read(resourceLocation, parentDir);
+			try {
+				return readProperties(in, DEFAULT_CHARSET);
+			} finally {
+				in.close();
+			}
+		} catch (IOException e) {
+			throw new RuntimeIOException(e.getMessage(), e);
+		}
 	}
 }

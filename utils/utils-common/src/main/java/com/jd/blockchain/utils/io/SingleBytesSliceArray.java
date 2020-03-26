@@ -15,10 +15,8 @@ public class SingleBytesSliceArray extends BytesSlice implements BytesSlices {
 	 *            数据片段的总数；
 	 * @param size
 	 *            单个数据片段的大小；
-	 */
-	/**
 	 * @param dataBytes
-	 * @param offset
+	 * @param totalSize
 	 * @param dataOffset
 	 * @param dataSize
 	 */
@@ -47,11 +45,20 @@ public class SingleBytesSliceArray extends BytesSlice implements BytesSlices {
 
 	public static SingleBytesSliceArray resolveDynamic(BytesInputStream bytesStream) {
 		int p1  = bytesStream.getPosition();
-		int size = NumberMask.NORMAL.resolveMaskedNumber(bytesStream);
+		int size = (int)NumberMask.NORMAL.resolveMaskedNumber(bytesStream);
 		int dataOffset = bytesStream.getPosition();
 		bytesStream.skip(size);
 		int totalSize = bytesStream.getPosition() - p1;
 		return new SingleBytesSliceArray(bytesStream.getOriginBytes(), totalSize, dataOffset, size);
+	}
+
+	public static BytesSlices resolveNumber(NumberMask numberMask, BytesInputStream bytesStream) {
+		int p1  = bytesStream.getPosition();
+		byte headByte = bytesStream.readByte();
+		int size = numberMask.resolveMaskLength(headByte);
+		bytesStream.skip(size - 1);
+		int totalSize = bytesStream.getPosition() - p1;
+		return new SingleBytesSliceArray(bytesStream.getOriginBytes(), totalSize, p1, size);
 	}
 	
 	public static SingleBytesSliceArray create(BytesInputStream bytesStream, int itemSize) {
@@ -63,5 +70,6 @@ public class SingleBytesSliceArray extends BytesSlice implements BytesSlices {
 	public static SingleBytesSliceArray create(byte[] dataBytes, int offset, int size) {
 		return new SingleBytesSliceArray(dataBytes, size, offset, size);
 	}
+
 
 }
