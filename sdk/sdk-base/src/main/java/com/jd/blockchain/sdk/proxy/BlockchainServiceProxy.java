@@ -11,6 +11,8 @@ import com.jd.blockchain.ledger.LedgerInfo;
 import com.jd.blockchain.ledger.LedgerMetadata;
 import com.jd.blockchain.ledger.LedgerTransaction;
 import com.jd.blockchain.ledger.ParticipantNode;
+import com.jd.blockchain.ledger.PreparedTransaction;
+import com.jd.blockchain.ledger.TransactionContent;
 import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.ledger.TransactionTemplate;
 import com.jd.blockchain.ledger.UserInfo;
@@ -19,7 +21,9 @@ import com.jd.blockchain.sdk.BlockchainEventListener;
 import com.jd.blockchain.sdk.BlockchainService;
 import com.jd.blockchain.sdk.converters.ClientResolveUtil;
 import com.jd.blockchain.transaction.BlockchainQueryService;
+import com.jd.blockchain.transaction.PreparedTx;
 import com.jd.blockchain.transaction.TransactionService;
+import com.jd.blockchain.transaction.TxRequestBuilder;
 import com.jd.blockchain.transaction.TxTemplate;
 
 public abstract class BlockchainServiceProxy implements BlockchainService {
@@ -35,8 +39,14 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	}
 
 	@Override
+	public PreparedTransaction prepareTransaction(TransactionContent content) {
+		TxRequestBuilder txReqBuilder = new TxRequestBuilder(content);
+		return new PreparedTx(txReqBuilder, getTransactionService(content.getLedgerHash()));
+	}
+
+	@Override
 	public BlockchainEventHandle addBlockchainEventListener(int filteredEventTypes, String filteredTxHash,
-			String filteredAccountAddress, BlockchainEventListener listener) {
+															String filteredAccountAddress, BlockchainEventListener listener) {
 		throw new IllegalStateException("Not implemented!");
 	}
 
@@ -44,16 +54,16 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	public LedgerInfo getLedger(HashDigest ledgerHash) {
 		return getQueryService(ledgerHash).getLedger(ledgerHash);
 	}
-	
+
 	@Override
 	public LedgerAdminInfo getLedgerAdminInfo(HashDigest ledgerHash) {
 		return getQueryService(ledgerHash).getLedgerAdminInfo(ledgerHash);
 	}
 
-    @Override
-    public ParticipantNode[] getConsensusParticipants(HashDigest ledgerHash) {
-        return getQueryService(ledgerHash).getConsensusParticipants(ledgerHash);
-    }
+	@Override
+	public ParticipantNode[] getConsensusParticipants(HashDigest ledgerHash) {
+		return getQueryService(ledgerHash).getConsensusParticipants(ledgerHash);
+	}
 
 	@Override
 	public LedgerMetadata getLedgerMetadata(HashDigest ledgerHash) {
@@ -80,57 +90,57 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 		return getQueryService(ledgerHash).getTransactionCount(ledgerHash, blockHash);
 	}
 
-    @Override
-    public long getTransactionTotalCount(HashDigest ledgerHash) {
-        return getQueryService(ledgerHash).getTransactionTotalCount(ledgerHash);
-    }
+	@Override
+	public long getTransactionTotalCount(HashDigest ledgerHash) {
+		return getQueryService(ledgerHash).getTransactionTotalCount(ledgerHash);
+	}
 
-    @Override
-    public long getDataAccountCount(HashDigest ledgerHash, long height) {
-        return getQueryService(ledgerHash).getDataAccountCount(ledgerHash, height);
-    }
+	@Override
+	public long getDataAccountCount(HashDigest ledgerHash, long height) {
+		return getQueryService(ledgerHash).getDataAccountCount(ledgerHash, height);
+	}
 
-    @Override
-    public long getDataAccountCount(HashDigest ledgerHash, HashDigest blockHash) {
-        return getQueryService(ledgerHash).getDataAccountCount(ledgerHash, blockHash);
-    }
+	@Override
+	public long getDataAccountCount(HashDigest ledgerHash, HashDigest blockHash) {
+		return getQueryService(ledgerHash).getDataAccountCount(ledgerHash, blockHash);
+	}
 
-    @Override
-    public long getDataAccountTotalCount(HashDigest ledgerHash) {
-        return getQueryService(ledgerHash).getDataAccountTotalCount(ledgerHash);
-    }
+	@Override
+	public long getDataAccountTotalCount(HashDigest ledgerHash) {
+		return getQueryService(ledgerHash).getDataAccountTotalCount(ledgerHash);
+	}
 
-    @Override
-    public long getUserCount(HashDigest ledgerHash, long height) {
-        return getQueryService(ledgerHash).getUserCount(ledgerHash, height);
-    }
+	@Override
+	public long getUserCount(HashDigest ledgerHash, long height) {
+		return getQueryService(ledgerHash).getUserCount(ledgerHash, height);
+	}
 
-    @Override
-    public long getUserCount(HashDigest ledgerHash, HashDigest blockHash) {
-        return getQueryService(ledgerHash).getUserCount(ledgerHash, blockHash);
-    }
+	@Override
+	public long getUserCount(HashDigest ledgerHash, HashDigest blockHash) {
+		return getQueryService(ledgerHash).getUserCount(ledgerHash, blockHash);
+	}
 
-    @Override
-    public long getUserTotalCount(HashDigest ledgerHash) {
-        return getQueryService(ledgerHash).getUserTotalCount(ledgerHash);
-    }
+	@Override
+	public long getUserTotalCount(HashDigest ledgerHash) {
+		return getQueryService(ledgerHash).getUserTotalCount(ledgerHash);
+	}
 
-    @Override
-    public long getContractCount(HashDigest ledgerHash, long height) {
-        return getQueryService(ledgerHash).getContractCount(ledgerHash, height);
-    }
+	@Override
+	public long getContractCount(HashDigest ledgerHash, long height) {
+		return getQueryService(ledgerHash).getContractCount(ledgerHash, height);
+	}
 
-    @Override
-    public long getContractCount(HashDigest ledgerHash, HashDigest blockHash) {
-        return getQueryService(ledgerHash).getContractCount(ledgerHash, blockHash);
-    }
+	@Override
+	public long getContractCount(HashDigest ledgerHash, HashDigest blockHash) {
+		return getQueryService(ledgerHash).getContractCount(ledgerHash, blockHash);
+	}
 
-    @Override
-    public long getContractTotalCount(HashDigest ledgerHash) {
-        return getQueryService(ledgerHash).getContractTotalCount(ledgerHash);
-    }
+	@Override
+	public long getContractTotalCount(HashDigest ledgerHash) {
+		return getQueryService(ledgerHash).getContractTotalCount(ledgerHash);
+	}
 
-    @Override
+	@Override
 	public LedgerTransaction[] getTransactions(HashDigest ledgerHash, long height, int fromIndex, int count) {
 		return getQueryService(ledgerHash).getTransactions(ledgerHash, height, fromIndex, count);
 	}
