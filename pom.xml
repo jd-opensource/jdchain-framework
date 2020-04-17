@@ -20,7 +20,7 @@
 		<module>binary-proto</module>
 		<module>crypto</module>
 		<module>ledger-model</module>
-		<module>contract-framework</module>
+		<module>contract</module>
 		<module>consensus-framework</module>
 		<module>storage</module>
 		<module>sdk</module>

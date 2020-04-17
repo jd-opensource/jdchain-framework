@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.jd.blockchain</groupId>
-		<artifactId>jdchain-framework</artifactId>
+		<artifactId>contract</artifactId>
 		<version>1.1.9-SNAPSHOT</version>
 	</parent>
-	<artifactId>contract-framework</artifactId>
+	<artifactId>contract-starter</artifactId>
 
 	<dependencies>
 		<dependency>
@@ -15,22 +15,17 @@
 			<artifactId>ledger-model</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.jd.blockchain</groupId>
-			<artifactId>utils-common</artifactId>
+			<artifactId>crypto-classic</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jd.blockchain</groupId>
+			<artifactId>crypto-sm</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>
