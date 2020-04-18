@@ -1,4 +1,4 @@
-package my.demo.maven.plugins.contract;
+package com.jd.blockchain.maven.plugins.contract;
 
 import java.io.File;
 
@@ -7,12 +7,14 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
-@Mojo(name = "pack", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true, requiresDependencyResolution = ResolutionScope.RUNTIME)
-public class JccPackingMojo extends AbstractContractMojo {
+import com.jd.blockchain.contract.archiver.CarArchiver;
+
+@Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true, requiresDependencyResolution = ResolutionScope.RUNTIME)
+public class PackageMojo extends AbstractContractMojo {
 
 	/**
 	 * Directory containing the classes and resource files that should be packaged
-	 * into the JAR.
+	 * into the CAR.
 	 */
 	@Parameter(defaultValue = "${project.build.outputDirectory}", required = true)
 	private File classesDirectory;
@@ -24,13 +26,13 @@ public class JccPackingMojo extends AbstractContractMojo {
 
 	@Override
 	protected String getClassifier() {
-		return "contract";
+		return null;
 	}
 
 	@Override
 	protected String getType() {
-		// java chain code / java contract code;
-		return "jcc";
+		// Contract Archive;
+		return CarArchiver.TYPE;
 	}
-
+	
 }
