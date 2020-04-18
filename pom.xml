@@ -21,6 +21,7 @@
 		<module>crypto</module>
 		<module>ledger-model</module>
 		<module>contract</module>
+		<module>plugins</module>
 		<module>consensus-framework</module>
 		<module>storage</module>
 		<module>sdk</module>
