@@ -21,16 +21,5 @@ public class PackageMojo extends AbstractContractMojo {
 	protected File getClassesDirectory() {
 		return classesDirectory;
 	}
-
-	@Override
-	protected String getClassifier() {
-		return null;
-	}
-
-	@Override
-	protected String getType() {
-		// Contract Archive;
-		return CarArchiver.TYPE;
-	}
 	
 }

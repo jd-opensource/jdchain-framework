@@ -1,4 +1,4 @@
-package com.jd.blockchain.maven.plugins.contract;
+package com.jd.blockchain.contract.archiver;
 
 public class ArchiveLayout {
 	

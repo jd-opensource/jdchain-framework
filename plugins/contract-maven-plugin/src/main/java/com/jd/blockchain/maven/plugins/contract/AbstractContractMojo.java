@@ -1,10 +1,9 @@
 package com.jd.blockchain.maven.plugins.contract;
 
 import java.io.File;
+import java.util.Properties;
 import java.util.Set;
 
-import org.apache.maven.archiver.ManifestConfiguration;
-import org.apache.maven.archiver.MavenArchiveConfiguration;
 import org.apache.maven.archiver.MavenArchiver;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
@@ -23,9 +22,13 @@ import org.apache.maven.shared.artifact.filter.collection.GroupIdFilter;
 import org.apache.maven.shared.artifact.filter.collection.ProjectTransitivityFilter;
 import org.apache.maven.shared.artifact.filter.collection.ScopeFilter;
 import org.apache.maven.shared.artifact.filter.collection.TypeFilter;
+import org.apache.maven.shared.utils.PropertyUtils;
 import org.apache.maven.shared.utils.StringUtils;
 
-import com.jd.blockchain.contract.archiver.CLibArchiver;
+import com.jd.blockchain.contract.archiver.Archive;
+import com.jd.blockchain.contract.archiver.CarArchiver;
+import com.jd.blockchain.contract.archiver.LibArchiver;
+import com.jd.blockchain.contract.archiver.CodeConfiguration;
 
 /**
  * Base class for creating a contract package from project classes.
@@ -39,7 +42,19 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 
 	private static final String[] DEFAULT_INCLUDES = new String[] { "**/**" };
 
-	private static final String CLASSPATH_PREFIX = "META-INF/libs/";
+	/**
+	 * List of files to include. Specified as fileset patterns which are relative to
+	 * the input directory whose contents is being packaged into the CAR.
+	 */
+	@Parameter
+	private String[] includes;
+
+	/**
+	 * List of files to exclude. Specified as fileset patterns which are relative to
+	 * the input directory whose contents is being packaged into the CAR.
+	 */
+	@Parameter
+	private String[] excludes;
 
 	/**
 	 * Directory containing the generated CAR file.
@@ -201,9 +216,7 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	 */
 	protected abstract File getClassesDirectory();
 
-	protected abstract String getClassifier();
-
-	protected abstract String getType();
+//	protected abstract String getClassifier();
 
 	/**
 	 * Returns the contract file to generate, based on an optional classifier.
@@ -212,32 +225,17 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	 * @param resultFinalName the name of the ear file
 	 * @return the file to generate
 	 */
-	protected File getCarFile(File basedir, String resultFinalName) {
+	private File getOutputFile(File basedir, String finalName, String extensionName) {
 		if (basedir == null) {
 			throw new IllegalArgumentException("basedir is not allowed to be null");
 		}
-		if (resultFinalName == null) {
+		if (finalName == null) {
 			throw new IllegalArgumentException("finalName is not allowed to be null");
 		}
 
-		StringBuilder fileName = new StringBuilder(resultFinalName);
+		StringBuilder fileName = new StringBuilder(finalName);
 
-		fileName.append("." + getType());
-
-		return new File(basedir, fileName.toString());
-	}
-
-	protected File getCLibFile(File basedir, String resultFinalName) {
-		if (basedir == null) {
-			throw new IllegalArgumentException("basedir is not allowed to be null");
-		}
-		if (resultFinalName == null) {
-			throw new IllegalArgumentException("finalName is not allowed to be null");
-		}
-
-		StringBuilder fileName = new StringBuilder(resultFinalName);
-
-		fileName.append(CLibArchiver.TYPE);
+		fileName.append("." + extensionName);
 
 		return new File(basedir, fileName.toString());
 	}
@@ -248,18 +246,16 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	 * @return The instance of File for the created archive file.
 	 * @throws MojoExecutionException in case of an error.
 	 */
-	public File createCarArchive() throws MojoExecutionException {
-
-		File carFile = getCarFile(outputDirectory, finalName);
-
+	private Archive createCarArchive(CodeConfiguration codeConfig, Set<Artifact> libraries)
+			throws MojoExecutionException {
 		try {
-			CodeConfiguration codeConfig = getCodeConfiguration();
-			
-			CarArchiver carArchiver = new CarArchiver(carFile, codeConfig, getDependencies());
-			carArchiver.setIncludedLibraries(!outputLibrary);
+			File carFile = getOutputFile(outputDirectory, finalName, CarArchiver.TYPE);
 
-			carFile = carArchiver.createArchive();
-			return carFile;
+			CarArchiver carArchiver = new CarArchiver(carFile, codeConfig, libraries);
+			carArchiver.setIncludedLibraries(!outputLibrary);
+			carArchiver.setCreatedBy(getCreatedBy());
+
+			return carArchiver.createArchive();
 		} catch (Exception e) {
 			throw new MojoExecutionException("Error occurred while generating CAR archive! --" + e.getMessage(), e);
 		}
@@ -268,8 +264,7 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	private CodeConfiguration getCodeConfiguration() throws MojoExecutionException {
 		File classesDirectory = getClassesDirectory();
 		if (!classesDirectory.exists()) {
-			throw new MojoExecutionException(
-					"The [" + getType() + "] package is empty! -- No content was marked for inclusion!");
+			throw new MojoExecutionException("The contract codes is empty! -- No content was marked for inclusion!");
 		}
 
 		CodeConfiguration codeConfig = new CodeConfiguration(classesDirectory);
@@ -285,37 +280,14 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	 * @return The instance of File for the created archive file.
 	 * @throws MojoExecutionException in case of an error.
 	 */
-	public File createClibArchive() throws MojoExecutionException {
+	private Archive createLibArchive(Set<Artifact> libraries) throws MojoExecutionException {
 
-		File clibFile = getCLibFile(outputDirectory, finalName);
-		MavenArchiver archiver = new MavenArchiver();
-		archiver.setCreatedBy(ContractMavenPlugin.DESCRIPTION_NAME, ContractMavenPlugin.GROUP_ID,
-				ContractMavenPlugin.ARTIFACT_ID);
-		archiver.setArchiver(new CLibArchiver());
-		archiver.setOutputFile(clibFile);
+		File clibFile = getOutputFile(outputDirectory, finalName, LibArchiver.TYPE);
 
-		// configure for Reproducible Builds based on outputTimestamp value
-		archiver.configureReproducible(outputTimestamp);
+		LibArchiver clibArchiver = new LibArchiver(clibFile, libraries);
+		clibArchiver.setCreatedBy(getCreatedBy());
 
-		MavenArchiveConfiguration carConfig = outputLibrary ? getCarConfiguration() : getCarClibConfiguration();
-
-//		try {
-//			File contentDirectory = getClassesDirectory();
-//			if (!contentDirectory.exists()) {
-//				throw new MojoExecutionException(
-//						"The [" + getType() + "] package is empty! -- No content was marked for inclusion!");
-//			} else {
-//				archiver.getArchiver().addDirectory(contentDirectory, getIncludes(), getExcludes());
-//			}
-//			
-//			archiver.createArchive(session, project, carConfig);
-//		} catch (Exception e) {
-//			throw new MojoExecutionException("Error occurred while generating CAR archive! --" + e.getMessage(), e);
-//		}
-		// TODO:
-		throw new IllegalStateException("Not implemented!");
-//		
-//		return clibFile;
+		return clibArchiver.createArchive();
 	}
 
 	/**
@@ -327,29 +299,34 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	public void execute() throws MojoExecutionException {
 		// abort if empty;
 		if (!getClassesDirectory().exists() || getClassesDirectory().list().length < 1) {
-			throw new MojoExecutionException("The " + getType() + " is empty! -- No content was marked for inclusion!");
+			throw new MojoExecutionException("The contract codes is empty! -- No content was marked for inclusion!");
 		}
 
-		// package;
-		File carFile = createCarArchive();
+		// configuration of contract code;
+		CodeConfiguration codeConfig = getCodeConfiguration();
 
-		File clibFile = null;
+		// libraries of dependencies;
+		Set<Artifact> libraries = getDependencies();
+
+		// package;
+		Archive car = createCarArchive(codeConfig, libraries);
+
+		Archive lib = null;
 		if (outputLibrary) {
-			clibFile = createClibArchive();
+			lib = createLibArchive(libraries);
 		}
 
 		// attach archives;
 		if (hasArtifact(getProject())) {
 			throw new MojoExecutionException("The current project has already set an artifact! "
-					+ "Cannot attach the generated " + getType() + " artifact to the project to replace them.");
+					+ "Cannot attach the generated " + car.getType() + " artifact to the project to replace them.");
 		}
-		getProject().getArtifact().setFile(carFile);
+		getProject().getArtifact().setFile(car.getOutputFile());
 
-		if (clibFile != null) {
-			projectHelper.attachArtifact(getProject(), getType(), CLibArchiver.TYPE, clibFile);
+		if (lib != null) {
+			projectHelper.attachArtifact(getProject(), car.getType(), lib.getType(), lib.getOutputFile());
 		}
 
-		getLog().info("Generated " + getType() + ": " + carFile.getAbsolutePath());
 	}
 
 	protected Set<Artifact> getDependencies() throws MojoExecutionException {
@@ -425,68 +402,33 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 		}
 	}
 
-	protected MavenArchiveConfiguration getCarConfiguration() {
-		return createCarConfiguration(null, true);
-	}
-
-	protected MavenArchiveConfiguration getCarClibConfiguration() {
-		return createCarConfiguration(CLASSPATH_PREFIX, false);
-	}
-
-	protected MavenArchiveConfiguration getClibConfiguration() {
-		return createCarConfiguration(CLASSPATH_PREFIX, false);
-	}
-
-	/**
-	 * 
-	 * Create an inner default archive configuration for the CAR archive. <br>
-	 * 
-	 * The archive configuration to use. See
-	 * <a href="http://maven.apache.org/shared/maven-archiver/index.html">Maven
-	 * Archiver Reference</a>.
-	 * 
-	 * @param classpathPrefix 类路径前缀；如果不为 null，则在 manifest 的“Class Path” 属性中加入依赖的包路径;
-	 * @param compress        是否压缩；
-	 * @return
-	 */
-	protected MavenArchiveConfiguration createCarConfiguration(String classpathPrefix, boolean compress) {
-		MavenArchiveConfiguration archiveConfig = new MavenArchiveConfiguration();
-
-		archiveConfig.getManifest().setAddClasspath(classpathPrefix != null);
-		archiveConfig.getManifest().setClasspathPrefix(classpathPrefix);
-		archiveConfig.getManifest().setClasspathLayoutType(ManifestConfiguration.CLASSPATH_LAYOUT_TYPE_SIMPLE);
-
-		archiveConfig.setCompress(compress);
-		archiveConfig.setAddMavenDescriptor(false);
-		archiveConfig.setForced(true);
-
-		return archiveConfig;
-	}
-
-	/**
-	 * @return true in case where the classifier is not {@code null} and contains
-	 *         something else than white spaces.
-	 */
-	protected boolean hasClassifier() {
-		boolean result = false;
-		if (getClassifier() != null && getClassifier().trim().length() > 0) {
-			result = true;
+	private static String getCreatedBy() {
+		String createdBy = ContractMavenPlugin.GROUP_ID + ":" + ContractMavenPlugin.ARTIFACT_ID;
+		String version = getCreatedByVersion(ContractMavenPlugin.GROUP_ID, ContractMavenPlugin.ARTIFACT_ID);
+		if (version != null) {
+			createdBy = createdBy + ":" + version;
 		}
+		return createdBy;
+	}
 
-		return result;
+	static String getCreatedByVersion(String groupId, String artifactId) {
+		final Properties properties = PropertyUtils.loadOptionalProperties(MavenArchiver.class
+				.getResourceAsStream("/META-INF/maven/" + groupId + "/" + artifactId + "/pom.properties"));
+
+		return properties.getProperty("version");
 	}
 
 	private String[] getIncludes() {
-//		if (includes != null && includes.length > 0) {
-//			return includes;
-//		}
+		if (includes != null && includes.length > 0) {
+			return includes;
+		}
 		return DEFAULT_INCLUDES;
 	}
 
 	private String[] getExcludes() {
-//		if (excludes != null && excludes.length > 0) {
-//			return excludes;
-//		}
+		if (excludes != null && excludes.length > 0) {
+			return excludes;
+		}
 		return DEFAULT_EXCLUDES;
 	}
 

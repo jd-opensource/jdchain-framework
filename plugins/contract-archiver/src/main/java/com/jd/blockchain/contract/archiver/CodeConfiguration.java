@@ -1,4 +1,4 @@
-package com.jd.blockchain.maven.plugins.contract;
+package com.jd.blockchain.contract.archiver;
 
 import java.io.File;
 import java.util.Arrays;
@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public class CodeConfiguration {
 
-	private File classesDirectory;
+	private File codebaseDirectory;
 
 	private Set<String> includeSet = new LinkedHashSet<String>();
 	private Set<String> excludeSet = new LinkedHashSet<String>();
@@ -22,14 +22,14 @@ public class CodeConfiguration {
 	/**
 	 * 代码类的编译出输出目录；
 	 * 
-	 * @param classesDirectory
+	 * @param codebaseDirectory
 	 */
-	public CodeConfiguration(File classesDirectory) {
-		this.classesDirectory = classesDirectory;
+	public CodeConfiguration(File codebaseDirectory) {
+		this.codebaseDirectory = codebaseDirectory;
 	}
 
-	public File getClassesDirectory() {
-		return classesDirectory;
+	public File getCodebaseDirectory() {
+		return codebaseDirectory;
 	}
 
 	public String[] getIncludes() {

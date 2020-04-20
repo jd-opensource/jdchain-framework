@@ -1,15 +1,12 @@
-package com.jd.blockchain.maven.plugins.contract;
+package com.jd.blockchain.contract.archiver;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashSet;
-import java.util.Properties;
 import java.util.Set;
 
-import org.apache.maven.archiver.MavenArchiver;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.shared.utils.PropertyUtils;
 import org.apache.maven.shared.utils.StringUtils;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
@@ -17,16 +14,16 @@ import org.codehaus.plexus.archiver.jar.Manifest;
 import org.codehaus.plexus.archiver.jar.ManifestException;
 
 /**
- * 代码打包器；
+ * The contract archiver；
  * 
  * @author huanghaiquan
  *
  */
-public abstract class CodeArchiver {
+public abstract class ContractArchiver {
 
 	private JarArchiver jarArchiver;
 
-	private boolean includedLibraries = false;
+	private String createdBy;
 
 	protected Set<Artifact> libraries = new LinkedHashSet<Artifact>();
 
@@ -36,8 +33,8 @@ public abstract class CodeArchiver {
 
 	private Manifest configuredManifest;
 
-	public CodeArchiver(File destJarFile) {
-		jarArchiver = new JarArchiver();
+	public ContractArchiver(File destJarFile) {
+		jarArchiver = new ExtJarArchiver(getArchiveType());
 		jarArchiver.setDestFile(destJarFile);
 	}
 
@@ -47,6 +44,14 @@ public abstract class CodeArchiver {
 
 	public void setCompress(boolean compress) {
 		jarArchiver.setCompress(compress);
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
 	}
 
 	public void addLibraries(Set<Artifact> libs) {
@@ -71,11 +76,11 @@ public abstract class CodeArchiver {
 		this.configuredManifest = manifest;
 	}
 
-	public File createArchive() throws MojoExecutionException {
+	public Archive createArchive() throws MojoExecutionException {
 		try {
 			ArchiveLayout layout = getArchiveLayout();
 
-			prepareClasses(layout);
+			prepareCodes(layout);
 
 			prepareManifest(layout);
 
@@ -83,7 +88,7 @@ public abstract class CodeArchiver {
 
 			jarArchiver.createArchive();
 
-			return jarArchiver.getDestFile();
+			return new ContractArchive(getArchiveType(), layout, jarArchiver.getDestFile());
 		} catch (ArchiverException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		} catch (ManifestException e) {
@@ -94,17 +99,30 @@ public abstract class CodeArchiver {
 	}
 
 	/**
+	 * Get the archive type, which is used as the extension name of the output
+	 * archive;
+	 * 
+	 * @return
+	 */
+	protected abstract String getArchiveType();
+
+	/**
 	 * Get the archive layout, which describes the style of directories placed the
 	 * compiled codes and the libraries;
 	 * 
 	 * @return
 	 */
-	public abstract ArchiveLayout getArchiveLayout();
+	protected abstract ArchiveLayout getArchiveLayout();
 
-	public abstract CodeConfiguration getClassesConfiguration();
+	/**
+	 * Get the configuration of the compiling contract codes;
+	 * 
+	 * @return
+	 */
+	protected abstract CodeConfiguration getCodeConfiguration();
 
 	private void prepareLibraries(ArchiveLayout layout) {
-		if (includedLibraries) {
+		if (layout.isIncludedLibraries()) {
 			addLibraries(jarArchiver, layout.getLibraryDirectory(), libraries);
 		}
 	}
@@ -134,8 +152,9 @@ public abstract class CodeArchiver {
 
 		addManifestAttribute(manifest, "Archive-Layout", layout.getName());
 
-		String createdBy = getCreatedBy();
-		addManifestAttribute(manifest, "Created-By", createdBy);
+		if (createdBy != null) {
+			addManifestAttribute(manifest, "Created-By", createdBy);
+		}
 
 		addManifestAttribute(manifest, "Build-Jdk-Spec", System.getProperty("java.specification.version"));
 		addManifestAttribute(manifest, "Build-Jdk",
@@ -145,10 +164,12 @@ public abstract class CodeArchiver {
 				System.getProperty("os.version"), System.getProperty("os.arch")));
 	}
 
-	private void prepareClasses(ArchiveLayout layout) {
-		CodeConfiguration classesConfig = getClassesConfiguration();
-		jarArchiver.addDirectory(classesConfig.getClassesDirectory(), layout.getCodeDirectory(), classesConfig.getIncludes(),
-				classesConfig.getExcludes());
+	private void prepareCodes(ArchiveLayout layout) {
+		CodeConfiguration codeConfig = getCodeConfiguration();
+		if (codeConfig != null) {
+			jarArchiver.addDirectory(codeConfig.getCodebaseDirectory(), layout.getCodeDirectory(),
+					codeConfig.getIncludes(), codeConfig.getExcludes());
+		}
 	}
 
 	private void addLibraries(JarArchiver jarArchiver, String libraryPathPrefix, Set<Artifact> libraries) {
@@ -191,27 +212,42 @@ public abstract class CodeArchiver {
 		}
 	}
 
-	public boolean isIncludedLibraries() {
-		return includedLibraries;
-	}
+	private static class ExtJarArchiver extends JarArchiver {
 
-	public void setIncludedLibraries(boolean includedLibraries) {
-		this.includedLibraries = includedLibraries;
-	}
-
-	private static String getCreatedBy() {
-		String createdBy = ContractMavenPlugin.GROUP_ID + ":" + ContractMavenPlugin.ARTIFACT_ID;
-		String version = getCreatedByVersion(ContractMavenPlugin.GROUP_ID, ContractMavenPlugin.ARTIFACT_ID);
-		if (version != null) {
-			createdBy = createdBy + ":" + version;
+		public ExtJarArchiver(String type) {
+			archiveType = type;
 		}
-		return createdBy;
+
 	}
 
-	static String getCreatedByVersion(String groupId, String artifactId) {
-		final Properties properties = PropertyUtils.loadOptionalProperties(MavenArchiver.class
-				.getResourceAsStream("/META-INF/maven/" + groupId + "/" + artifactId + "/pom.properties"));
+	private static class ContractArchive implements Archive {
 
-		return properties.getProperty("version");
+		private String type;
+
+		private ArchiveLayout layout;
+
+		private File outputFile;
+
+		public ContractArchive(String type, ArchiveLayout layout, File outputFile) {
+			this.type = type;
+			this.layout = layout;
+			this.outputFile = outputFile;
+		}
+
+		@Override
+		public String getType() {
+			return type;
+		}
+
+		@Override
+		public ArchiveLayout getLayout() {
+			return layout;
+		}
+
+		@Override
+		public File getOutputFile() {
+			return outputFile;
+		}
+
 	}
 }
