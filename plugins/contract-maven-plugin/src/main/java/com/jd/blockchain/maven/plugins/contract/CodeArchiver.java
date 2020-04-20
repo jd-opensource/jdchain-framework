@@ -16,28 +16,29 @@ import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.jar.Manifest;
 import org.codehaus.plexus.archiver.jar.ManifestException;
 
-public class ContractArchiver implements ArtifactArchiver {
-
-	public static final String ATTRIBUTE_CLASSPATH = "Class-Path";
-
-	public static final String DEFAULT_LIBPATH_PREFIX = "META-INF/libs/";
+/**
+ * 代码打包器；
+ * 
+ * @author huanghaiquan
+ *
+ */
+public abstract class CodeArchiver {
 
 	private JarArchiver jarArchiver;
 
-	private boolean addClasspath;
+	private boolean includedLibraries = false;
 
-	private String libraryPathPrefix = DEFAULT_LIBPATH_PREFIX;
+	protected Set<Artifact> libraries = new LinkedHashSet<Artifact>();
 
-	private boolean packLibraries = false;
+	/**
+	 * Default manifest;
+	 */
 
-	private Set<Artifact> libraries = new LinkedHashSet<Artifact>();
+	private Manifest configuredManifest;
 
-	private Manifest externalManifest;
-
-	public ContractArchiver(File destJarFile) {
+	public CodeArchiver(File destJarFile) {
 		jarArchiver = new JarArchiver();
 		jarArchiver.setDestFile(destJarFile);
-
 	}
 
 	public boolean isCompress() {
@@ -48,37 +49,17 @@ public class ContractArchiver implements ArtifactArchiver {
 		jarArchiver.setCompress(compress);
 	}
 
-	public String getLibraryPathPrefix() {
-		return libraryPathPrefix;
-	}
-
-	public void setLibraryPathPrefix(String libraryPathPrefix) {
-		this.libraryPathPrefix = libraryPathPrefix;
-	}
-
-	public boolean isAddClasspath() {
-		return addClasspath;
-	}
-
-	public void setAddClasspath(boolean addClasspath) {
-		this.addClasspath = addClasspath;
-	}
-
-	public void addDirectory(File directory, String[] includes, String[] excludes) {
-		jarArchiver.addDirectory(directory, includes, excludes);
-	}
-
 	public void addLibraries(Set<Artifact> libs) {
 		libraries.addAll(libs);
 	}
 
 	/**
-	 * Get external manifest;
+	 * Get configured manifest;
 	 * 
 	 * @return
 	 */
-	public Manifest getExternalManifest() {
-		return externalManifest;
+	public Manifest getConfiguredManifest() {
+		return configuredManifest;
 	}
 
 	/**
@@ -86,35 +67,19 @@ public class ContractArchiver implements ArtifactArchiver {
 	 * 
 	 * @param manifest
 	 */
-	public void setExternalManifest(Manifest manifest) {
-		this.externalManifest = manifest;
+	public void setConfiguredManifest(Manifest manifest) {
+		this.configuredManifest = manifest;
 	}
 
-	@Override
 	public File createArchive() throws MojoExecutionException {
 		try {
-			jarArchiver.setMinimalDefaultManifest(true);
+			ArchiveLayout layout = getArchiveLayout();
 
-			Manifest manifest = new Manifest();
-			handleDefaultEntries(manifest);
+			prepareClasses(layout);
 
-			String classpaths = null;
-			if (addClasspath) {
-				// use library path prefix as the classpath prefix;
-				classpaths = buildClasspaths(libraryPathPrefix, libraries);
-				if (classpaths.length() > 0) {
-					addManifestAttribute(manifest, ATTRIBUTE_CLASSPATH, classpaths.toString());
+			prepareManifest(layout);
 
-				}
-			}
-			if (packLibraries) {
-				addLibraries(jarArchiver, libraryPathPrefix, libraries);
-			}
-
-			jarArchiver.addConfiguredManifest(manifest);
-			if (externalManifest != null) {
-				jarArchiver.addConfiguredManifest(externalManifest);
-			}
+			prepareLibraries(layout);
 
 			jarArchiver.createArchive();
 
@@ -128,44 +93,90 @@ public class ContractArchiver implements ArtifactArchiver {
 		}
 	}
 
+	/**
+	 * Get the archive layout, which describes the style of directories placed the
+	 * compiled codes and the libraries;
+	 * 
+	 * @return
+	 */
+	public abstract ArchiveLayout getArchiveLayout();
+
+	public abstract CodeConfiguration getClassesConfiguration();
+
+	private void prepareLibraries(ArchiveLayout layout) {
+		if (includedLibraries) {
+			addLibraries(jarArchiver, layout.getLibraryDirectory(), libraries);
+		}
+	}
+
+	private void prepareManifest(ArchiveLayout layout) throws ManifestException {
+		Manifest manifest = new Manifest();
+
+		prepareDefaultManifest(layout, manifest);
+		prepareLibpaths(layout, manifest);
+
+		jarArchiver.addConfiguredManifest(manifest);
+
+		if (configuredManifest != null) {
+			jarArchiver.addConfiguredManifest(configuredManifest);
+		}
+	}
+
+	private void prepareLibpaths(ArchiveLayout layout, Manifest manifest) throws ManifestException {
+		String libpaths = createLibpaths(layout.getLibraryDirectory(), libraries);
+		if (libpaths.length() > 0) {
+			addManifestAttribute(manifest, "Lib-Path", libpaths.toString());
+		}
+	}
+
+	private void prepareDefaultManifest(ArchiveLayout layout, Manifest manifest) throws ManifestException {
+		jarArchiver.setMinimalDefaultManifest(true);
+
+		addManifestAttribute(manifest, "Archive-Layout", layout.getName());
+
+		String createdBy = getCreatedBy();
+		addManifestAttribute(manifest, "Created-By", createdBy);
+
+		addManifestAttribute(manifest, "Build-Jdk-Spec", System.getProperty("java.specification.version"));
+		addManifestAttribute(manifest, "Build-Jdk",
+				String.format("%s (%s)", System.getProperty("java.version"), System.getProperty("java.vendor")));
+
+		addManifestAttribute(manifest, "Build-Os", String.format("%s (%s; %s)", System.getProperty("os.name"),
+				System.getProperty("os.version"), System.getProperty("os.arch")));
+	}
+
+	private void prepareClasses(ArchiveLayout layout) {
+		CodeConfiguration classesConfig = getClassesConfiguration();
+		jarArchiver.addDirectory(classesConfig.getClassesDirectory(), layout.getCodeDirectory(), classesConfig.getIncludes(),
+				classesConfig.getExcludes());
+	}
+
 	private void addLibraries(JarArchiver jarArchiver, String libraryPathPrefix, Set<Artifact> libraries) {
 		for (Artifact lib : libraries) {
 			jarArchiver.addFile(lib.getFile(), libraryPathPrefix + lib.getFile().getName());
 		}
 	}
 
-	private String buildClasspaths(String classpathPrefix, Set<Artifact> libraries) {
-		if (!classpathPrefix.endsWith("/")) {
-			classpathPrefix += "/";
+	/**
+	 * Create the libpath string by combinates each libpath item separating by the
+	 * white space character.
+	 * 
+	 * @param libpathPrefix
+	 * @param libraries
+	 * @return
+	 */
+	private String createLibpaths(String libpathPrefix, Set<Artifact> libraries) {
+		if (!libpathPrefix.endsWith("/")) {
+			libpathPrefix += "/";
 		}
-		StringBuilder classpaths = new StringBuilder();
+		StringBuilder libpaths = new StringBuilder();
 		for (Artifact lib : libraries) {
-			if (classpaths.length() > 0) {
-				classpaths.append(" ");
+			if (libpaths.length() > 0) {
+				libpaths.append(" ");
 			}
-			classpaths.append(classpathPrefix + lib.getFile().getName());
+			libpaths.append(libpathPrefix + lib.getFile().getName());
 		}
-		return classpaths.toString();
-	}
-
-	protected Manifest createDefaultManifest() throws ManifestException {
-		Manifest manifest = new Manifest();
-		handleDefaultEntries(manifest);
-
-		return manifest;
-	}
-
-	protected void handleDefaultEntries(Manifest manifest) throws ManifestException {
-		String createdBy = getCreatedBy();
-		addManifestAttribute(manifest, "Created-By", createdBy);
-
-		addManifestAttribute(manifest, "Build-Jdk-Spec", System.getProperty("java.specification.version"));
-
-		addManifestAttribute(manifest, "Build-Jdk",
-				String.format("%s (%s)", System.getProperty("java.version"), System.getProperty("java.vendor")));
-
-		addManifestAttribute(manifest, "Build-Os", String.format("%s (%s; %s)", System.getProperty("os.name"),
-				System.getProperty("os.version"), System.getProperty("os.arch")));
+		return libpaths.toString();
 	}
 
 	private void addManifestAttribute(Manifest manifest, String key, String value) throws ManifestException {
@@ -180,12 +191,12 @@ public class ContractArchiver implements ArtifactArchiver {
 		}
 	}
 
-	public boolean isPackLibraries() {
-		return packLibraries;
+	public boolean isIncludedLibraries() {
+		return includedLibraries;
 	}
 
-	public void setPackLibraries(boolean packLibraries) {
-		this.packLibraries = packLibraries;
+	public void setIncludedLibraries(boolean includedLibraries) {
+		this.includedLibraries = includedLibraries;
 	}
 
 	private static String getCreatedBy() {

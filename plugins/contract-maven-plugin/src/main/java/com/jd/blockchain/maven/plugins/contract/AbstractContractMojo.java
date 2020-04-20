@@ -251,36 +251,32 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	public File createCarArchive() throws MojoExecutionException {
 
 		File carFile = getCarFile(outputDirectory, finalName);
-//		MavenArchiver archiver = new MavenArchiver();
-//		archiver.setCreatedBy(ContractMavenPlugin.DESCRIPTION_NAME, ContractMavenPlugin.GROUP_ID,
-//				ContractMavenPlugin.ARTIFACT_ID);
-//		archiver.setArchiver(new CarArchiver());
-//		archiver.setOutputFile(carFile);
-//
-//		// configure for Reproducible Builds based on outputTimestamp value
-//		archiver.configureReproducible(outputTimestamp);
-
-		MavenArchiveConfiguration carConfig = outputLibrary ? getCarConfiguration() : getCarClibConfiguration();
 
 		try {
-			File contentDirectory = getClassesDirectory();
-			if (!contentDirectory.exists()) {
-				throw new MojoExecutionException(
-						"The [" + getType() + "] package is empty! -- No content was marked for inclusion!");
-//			} else {
-//				archiver.getArchiver().addDirectory(contentDirectory, getIncludes(), getExcludes());
-			}
-
-			CarArchiver carArchiver = new CarArchiver(carFile, contentDirectory, getIncludes(), getExcludes(),
-					getDependencies());
+			CodeConfiguration codeConfig = getCodeConfiguration();
 			
+			CarArchiver carArchiver = new CarArchiver(carFile, codeConfig, getDependencies());
+			carArchiver.setIncludedLibraries(!outputLibrary);
+
 			carFile = carArchiver.createArchive();
-//			carArchiver.createArchive(session, project, carConfig);
+			return carFile;
 		} catch (Exception e) {
 			throw new MojoExecutionException("Error occurred while generating CAR archive! --" + e.getMessage(), e);
 		}
+	}
 
-		return carFile;
+	private CodeConfiguration getCodeConfiguration() throws MojoExecutionException {
+		File classesDirectory = getClassesDirectory();
+		if (!classesDirectory.exists()) {
+			throw new MojoExecutionException(
+					"The [" + getType() + "] package is empty! -- No content was marked for inclusion!");
+		}
+
+		CodeConfiguration codeConfig = new CodeConfiguration(classesDirectory);
+		codeConfig.addIncludes(getIncludes());
+		codeConfig.addExcludes(getExcludes());
+
+		return codeConfig;
 	}
 
 	/**
