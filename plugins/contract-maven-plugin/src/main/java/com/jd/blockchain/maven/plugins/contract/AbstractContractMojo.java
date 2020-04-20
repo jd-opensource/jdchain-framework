@@ -1,10 +1,12 @@
 package com.jd.blockchain.maven.plugins.contract;
 
 import java.io.File;
+import java.util.Set;
 
 import org.apache.maven.archiver.ManifestConfiguration;
 import org.apache.maven.archiver.MavenArchiveConfiguration;
 import org.apache.maven.archiver.MavenArchiver;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -12,9 +14,18 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
+import org.apache.maven.shared.artifact.filter.collection.ArtifactFilterException;
+import org.apache.maven.shared.artifact.filter.collection.ArtifactIdFilter;
+import org.apache.maven.shared.artifact.filter.collection.ArtifactsFilter;
+import org.apache.maven.shared.artifact.filter.collection.ClassifierFilter;
+import org.apache.maven.shared.artifact.filter.collection.FilterArtifacts;
+import org.apache.maven.shared.artifact.filter.collection.GroupIdFilter;
+import org.apache.maven.shared.artifact.filter.collection.ProjectTransitivityFilter;
+import org.apache.maven.shared.artifact.filter.collection.ScopeFilter;
+import org.apache.maven.shared.artifact.filter.collection.TypeFilter;
+import org.apache.maven.shared.utils.StringUtils;
 
 import com.jd.blockchain.contract.archiver.CLibArchiver;
-import com.jd.blockchain.contract.archiver.CarArchiver;
 
 /**
  * Base class for creating a contract package from project classes.
@@ -85,6 +96,98 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	private ArchiveSizeUnit maxCarSizeUnit;
 
 	/**
+	 * If we should exclude transitive dependencies
+	 */
+	@Parameter(property = "excludeTransitive", defaultValue = "false")
+	protected boolean excludeTransitive;
+
+	/**
+	 * Comma Separated list of Types to include. Empty String indicates include
+	 * everything (default).
+	 *
+	 */
+	@Parameter(property = "includeTypes", defaultValue = "")
+	protected String includeTypes;
+
+	/**
+	 * Comma Separated list of Types to exclude. Empty String indicates don't
+	 * exclude anything (default).
+	 *
+	 */
+	@Parameter(property = "excludeTypes", defaultValue = "")
+	protected String excludeTypes;
+
+	/**
+	 * Scope to include. An Empty string indicates all scopes (default). The scopes
+	 * being interpreted are the scopes as Maven sees them, not as specified in the
+	 * pom. In summary:
+	 * <ul>
+	 * <li><code>runtime</code> scope gives runtime and compile dependencies,</li>
+	 * <li><code>compile</code> scope gives compile, provided, and system
+	 * dependencies,</li>
+	 * <li><code>test</code> (default) scope gives all dependencies,</li>
+	 * <li><code>provided</code> scope just gives provided dependencies,</li>
+	 * <li><code>system</code> scope just gives system dependencies.</li>
+	 * </ul>
+	 *
+	 */
+	@Parameter(property = "includeScope", defaultValue = "")
+	protected String includeScope;
+
+	/**
+	 * Scope to exclude. An Empty string indicates no scopes (default).
+	 *
+	 */
+	@Parameter(property = "excludeScope", defaultValue = "")
+	protected String excludeScope;
+
+	/**
+	 * Comma Separated list of Classifiers to include. Empty String indicates
+	 * include everything (default).
+	 *
+	 */
+	@Parameter(property = "includeClassifiers", defaultValue = "")
+	protected String includeClassifiers;
+
+	/**
+	 * Comma Separated list of Classifiers to exclude. Empty String indicates don't
+	 * exclude anything (default).
+	 *
+	 */
+	@Parameter(property = "excludeClassifiers", defaultValue = "")
+	protected String excludeClassifiers;
+
+	/**
+	 * Comma separated list of Artifact names to exclude.
+	 *
+	 */
+	@Parameter(property = "excludeArtifactIds", defaultValue = "")
+	protected String excludeArtifactIds;
+
+	/**
+	 * Comma separated list of Artifact names to include. Empty String indicates
+	 * include everything (default).
+	 *
+	 */
+	@Parameter(property = "includeArtifactIds", defaultValue = "")
+	protected String includeArtifactIds;
+
+	/**
+	 * Comma separated list of GroupId Names to exclude.
+	 *
+	 */
+	@Parameter(property = "excludeGroupIds", defaultValue = "")
+	protected String excludeGroupIds;
+
+	/**
+	 * Comma separated list of GroupIds to include. Empty String indicates include
+	 * everything (default).
+	 *
+	 */
+	@Parameter(property = "includeGroupIds", defaultValue = "")
+	protected String includeGroupIds;
+
+	/**
 	 * @return the {@link #project}
 	 */
 	protected final MavenProject getProject() {
@@ -123,7 +226,7 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 
 		return new File(basedir, fileName.toString());
 	}
-	
+
 	protected File getCLibFile(File basedir, String resultFinalName) {
 		if (basedir == null) {
 			throw new IllegalArgumentException("basedir is not allowed to be null");
@@ -131,11 +234,11 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 		if (resultFinalName == null) {
 			throw new IllegalArgumentException("finalName is not allowed to be null");
 		}
-		
+
 		StringBuilder fileName = new StringBuilder(resultFinalName);
-		
+
 		fileName.append(CLibArchiver.TYPE);
-		
+
 		return new File(basedir, fileName.toString());
 	}
 
@@ -148,52 +251,58 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	public File createCarArchive() throws MojoExecutionException {
 
 		File carFile = getCarFile(outputDirectory, finalName);
-		MavenArchiver archiver = new MavenArchiver();
-		archiver.setCreatedBy(PluginConstants.DESC_NAME, PluginConstants.GROUP_ID, PluginConstants.ARTIFACT_ID);
-		archiver.setArchiver(new CarArchiver());
-		archiver.setOutputFile(carFile);
+//		MavenArchiver archiver = new MavenArchiver();
+//		archiver.setCreatedBy(ContractMavenPlugin.DESCRIPTION_NAME, ContractMavenPlugin.GROUP_ID,
+//				ContractMavenPlugin.ARTIFACT_ID);
+//		archiver.setArchiver(new CarArchiver());
+//		archiver.setOutputFile(carFile);
+//
+//		// configure for Reproducible Builds based on outputTimestamp value
+//		archiver.configureReproducible(outputTimestamp);
 
-		// configure for Reproducible Builds based on outputTimestamp value
-		archiver.configureReproducible(outputTimestamp);
-
-		MavenArchiveConfiguration carConfig = outputLibrary ? getCARConfig() : getCARLIBConfig();
+		MavenArchiveConfiguration carConfig = outputLibrary ? getCarConfiguration() : getCarClibConfiguration();
 
 		try {
 			File contentDirectory = getClassesDirectory();
 			if (!contentDirectory.exists()) {
 				throw new MojoExecutionException(
 						"The [" + getType() + "] package is empty! -- No content was marked for inclusion!");
-			} else {
-				archiver.getArchiver().addDirectory(contentDirectory, getIncludes(), getExcludes());
+//			} else {
+//				archiver.getArchiver().addDirectory(contentDirectory, getIncludes(), getExcludes());
 			}
 
-			archiver.createArchive(session, project, carConfig);
+			CarArchiver carArchiver = new CarArchiver(carFile, contentDirectory, getIncludes(), getExcludes(),
+					getDependencies());
+			
+			carFile = carArchiver.createArchive();
+//			carArchiver.createArchive(session, project, carConfig);
 		} catch (Exception e) {
 			throw new MojoExecutionException("Error occurred while generating CAR archive! --" + e.getMessage(), e);
 		}
-		
+
 		return carFile;
 	}
-	
+
 	/**
 	 * Generates the CLIB file.
 	 * 
 	 * @return The instance of File for the created archive file.
 	 * @throws MojoExecutionException in case of an error.
 	 */
-	public File createCLibArchive() throws MojoExecutionException {
-		
+	public File createClibArchive() throws MojoExecutionException {
+
 		File clibFile = getCLibFile(outputDirectory, finalName);
 		MavenArchiver archiver = new MavenArchiver();
-		archiver.setCreatedBy(PluginConstants.DESC_NAME, PluginConstants.GROUP_ID, PluginConstants.ARTIFACT_ID);
+		archiver.setCreatedBy(ContractMavenPlugin.DESCRIPTION_NAME, ContractMavenPlugin.GROUP_ID,
+				ContractMavenPlugin.ARTIFACT_ID);
 		archiver.setArchiver(new CLibArchiver());
 		archiver.setOutputFile(clibFile);
-		
+
 		// configure for Reproducible Builds based on outputTimestamp value
 		archiver.configureReproducible(outputTimestamp);
-		
-		MavenArchiveConfiguration carConfig = outputLibrary ? getCARConfig() : getCARLIBConfig();
-		
+
+		MavenArchiveConfiguration carConfig = outputLibrary ? getCarConfiguration() : getCarClibConfiguration();
+
 //		try {
 //			File contentDirectory = getClassesDirectory();
 //			if (!contentDirectory.exists()) {
@@ -207,7 +316,7 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 //		} catch (Exception e) {
 //			throw new MojoExecutionException("Error occurred while generating CAR archive! --" + e.getMessage(), e);
 //		}
-		
+		// TODO:
 		throw new IllegalStateException("Not implemented!");
 //		
 //		return clibFile;
@@ -227,10 +336,10 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 
 		// package;
 		File carFile = createCarArchive();
-		
+
 		File clibFile = null;
 		if (outputLibrary) {
-			clibFile = createCLibArchive();
+			clibFile = createClibArchive();
 		}
 
 		// attach archives;
@@ -239,13 +348,71 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 					+ "Cannot attach the generated " + getType() + " artifact to the project to replace them.");
 		}
 		getProject().getArtifact().setFile(carFile);
-		
+
 		if (clibFile != null) {
 			projectHelper.attachArtifact(getProject(), getType(), CLibArchiver.TYPE, clibFile);
 		}
 
-		
 		getLog().info("Generated " + getType() + ": " + carFile.getAbsolutePath());
+	}
+
+	protected Set<Artifact> getDependencies() throws MojoExecutionException {
+		// add filters in well known order, least specific to most specific
+		FilterArtifacts filter = new FilterArtifacts();
+
+		filter.addFilter(new ProjectTransitivityFilter(getProject().getDependencyArtifacts(), this.excludeTransitive));
+
+		filter.addFilter(new ScopeFilter(cleanToBeTokenizedString(this.includeScope),
+				cleanToBeTokenizedString(this.excludeScope)));
+
+		filter.addFilter(new TypeFilter(cleanToBeTokenizedString(this.includeTypes),
+				cleanToBeTokenizedString(this.excludeTypes)));
+
+		filter.addFilter(new ClassifierFilter(cleanToBeTokenizedString(this.includeClassifiers),
+				cleanToBeTokenizedString(this.excludeClassifiers)));
+
+		filter.addFilter(new GroupIdFilter(cleanToBeTokenizedString(this.includeGroupIds),
+				cleanToBeTokenizedString(this.excludeGroupIds)));
+
+		filter.addFilter(new ArtifactIdFilter(cleanToBeTokenizedString(this.includeArtifactIds),
+				cleanToBeTokenizedString(this.excludeArtifactIds)));
+
+		Set<Artifact> artifacts = getProject().getArtifacts();
+
+		try {
+			artifacts = filter.filter(artifacts);
+		} catch (ArtifactFilterException e) {
+			throw new MojoExecutionException(e.getMessage(), e);
+		}
+
+		artifacts = skipIgnoredDependencies(artifacts);
+
+		return artifacts;
+	}
+
+	/**
+	 * Removed the ignored dependencies;
+	 * 
+	 * @param artifacts
+	 * @return The included dependencies;
+	 * @throws MojoExecutionException
+	 */
+	private Set<Artifact> skipIgnoredDependencies(Set<Artifact> artifacts) throws MojoExecutionException {
+		FilterArtifacts filter = new FilterArtifacts();
+		filter.addFilter(getIgnoredArtifactFilter());
+
+		Set<Artifact> includedArtifacts;
+		try {
+			includedArtifacts = filter.filter(artifacts);
+		} catch (ArtifactFilterException e) {
+			throw new MojoExecutionException(e.getMessage(), e);
+		}
+
+		return includedArtifacts;
+	}
+
+	protected ArtifactsFilter getIgnoredArtifactFilter() {
+		return null;
 	}
 
 	/**
@@ -261,16 +428,16 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 			return false;
 		}
 	}
-	
-	protected MavenArchiveConfiguration getCARConfig() {
+
+	protected MavenArchiveConfiguration getCarConfiguration() {
 		return createCarConfiguration(null, true);
 	}
-	
-	protected MavenArchiveConfiguration getCARLIBConfig() {
+
+	protected MavenArchiveConfiguration getCarClibConfiguration() {
 		return createCarConfiguration(CLASSPATH_PREFIX, false);
 	}
-	
-	protected MavenArchiveConfiguration getCLIBConfig() {
+
+	protected MavenArchiveConfiguration getClibConfiguration() {
 		return createCarConfiguration(CLASSPATH_PREFIX, false);
 	}
 
@@ -292,7 +459,7 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 		archiveConfig.getManifest().setAddClasspath(classpathPrefix != null);
 		archiveConfig.getManifest().setClasspathPrefix(classpathPrefix);
 		archiveConfig.getManifest().setClasspathLayoutType(ManifestConfiguration.CLASSPATH_LAYOUT_TYPE_SIMPLE);
-		
+
 		archiveConfig.setCompress(compress);
 		archiveConfig.setAddMavenDescriptor(false);
 		archiveConfig.setForced(true);
@@ -325,5 +492,21 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 //			return excludes;
 //		}
 		return DEFAULT_EXCLUDES;
+	}
+
+	/**
+	 * clean up configuration string before it can be tokenized
+	 * 
+	 * @param str The str which should be cleaned.
+	 * @return cleaned up string.
+	 */
+	public static String cleanToBeTokenizedString(String str) {
+		String ret = "";
+		if (!StringUtils.isEmpty(str)) {
+			// remove initial and ending spaces, plus all spaces next to commas
+			ret = str.trim().replaceAll("[\\s]*,[\\s]*", ",");
+		}
+
+		return ret;
 	}
 }

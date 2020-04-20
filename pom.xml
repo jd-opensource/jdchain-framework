@@ -25,7 +25,6 @@
 		<module>consensus-framework</module>
 		<module>storage</module>
 		<module>sdk</module>
-		
 	</modules>
 
 

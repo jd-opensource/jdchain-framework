@@ -11,7 +11,5 @@
   <modules>
   	<module>contract-framework</module>
   	<module>contract-starter</module>
-  	<module>contract-archiver</module>
-  	<module>contract-maven-plugin</module>
   </modules>
 </project>
