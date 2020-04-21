@@ -61,9 +61,6 @@
 			<artifactId>procyon-compilertools</artifactId>
 		</dependency>
 
-		<!--<dependency> <groupId>com.alibaba</groupId> <artifactId>fastjson</artifactId> 
-			</dependency> -->
-
 		<!-- log dependency for test -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
