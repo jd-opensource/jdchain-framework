@@ -17,11 +17,11 @@
 			<artifactId>utils-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.jd.blockchain</groupId>
 			<artifactId>utils-web</artifactId>
 			<version>${project.version}</version>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>com.jd.blockchain</groupId>
@@ -31,11 +31,6 @@
 		<dependency>
 			<groupId>com.jd.blockchain</groupId>
 			<artifactId>crypto-framework</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jd.blockchain</groupId>
-			<artifactId>crypto-classic</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		

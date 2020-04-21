@@ -33,7 +33,7 @@ import com.jd.blockchain.contract.archiver.CodeConfiguration;
 /**
  * Base class for creating a contract package from project classes.
  * 
- * Reference {@link AbstractJarMojo}
+ * @author huanghaiquan
  *
  */
 public abstract class AbstractContractMojo extends AbstractMojo {
@@ -301,7 +301,7 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 		if (!getClassesDirectory().exists() || getClassesDirectory().list().length < 1) {
 			throw new MojoExecutionException("The contract codes is empty! -- No content was marked for inclusion!");
 		}
-
+		
 		// configuration of contract code;
 		CodeConfiguration codeConfig = getCodeConfiguration();
 
@@ -351,14 +351,44 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 				cleanToBeTokenizedString(this.excludeArtifactIds)));
 
 		Set<Artifact> artifacts = getProject().getArtifacts();
-
+		
+		if (getLog().isDebugEnabled()) {
+			getLog().debug("-------- All Dependencies["+artifacts.size()+"] --------");
+			int i = 0;
+			for (Artifact artifact : artifacts) {
+				getLog().debug(String.format("%s-- %s [%s]", i, artifact.toString(), artifact.getFile().getName()));
+				i++;
+			}
+			getLog().debug("----------------------------------");
+		}
+		
 		try {
 			artifacts = filter.filter(artifacts);
 		} catch (ArtifactFilterException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
+		
+		if (getLog().isDebugEnabled()) {
+			getLog().debug("-------- Filtered Dependencies["+artifacts.size()+"] --------");
+			int i = 0;
+			for (Artifact artifact : artifacts) {
+				getLog().debug(String.format("%s-- %s [%s]", i, artifact.toString(), artifact.getFile().getName()));
+				i++;
+			}
+			getLog().debug("----------------------------------");
+		}
 
 		artifacts = skipIgnoredDependencies(artifacts);
+
+		if (getLog().isDebugEnabled()) {
+			getLog().debug("-------- Exporting Dependencies["+artifacts.size()+"] --------");
+			int i = 0;
+			for (Artifact artifact : artifacts) {
+				getLog().debug(String.format("%s-- %s [%s]", i, artifact.toString(), artifact.getFile().getName()));
+				i++;
+			}
+			getLog().debug("----------------------------------");
+		}
 
 		return artifacts;
 	}

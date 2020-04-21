@@ -1,25 +1,32 @@
 package com.jd.blockchain.contract.archiver;
 
+/**
+ * ArchiveLayout describes the style of directories placed the compiled codes
+ * and the libraries.
+ * 
+ * @author huanghaiquan
+ *
+ */
 public class ArchiveLayout {
-	
+
 	private String name;
-	
+
 	private boolean includedLibraries;
-	
+
 	private String libraryDirectory = "META-INF/libs/";
-	
+
 	private String codeDirectory = "";
-	
+
 	private boolean compress;
-	
-	
+
 	public ArchiveLayout(String name, boolean compress, boolean includedLibraries) {
 		this.name = name;
 		this.compress = compress;
 		this.includedLibraries = includedLibraries;
 	}
-	
-	public ArchiveLayout(String name, boolean compress, boolean includedLibraries, String libraryDirectory, String codeDirectory) {
+
+	public ArchiveLayout(String name, boolean compress, boolean includedLibraries, String libraryDirectory,
+			String codeDirectory) {
 		this.name = name;
 		this.compress = compress;
 		this.includedLibraries = includedLibraries;
@@ -27,21 +34,17 @@ public class ArchiveLayout {
 		this.codeDirectory = codeDirectory;
 	}
 
-
 	public String getName() {
 		return name;
 	}
-
 
 	public String getLibraryDirectory() {
 		return libraryDirectory;
 	}
 
-
 	public String getCodeDirectory() {
 		return codeDirectory;
 	}
-
 
 	public boolean isCompress() {
 		return compress;
@@ -51,5 +54,4 @@ public class ArchiveLayout {
 		return includedLibraries;
 	}
 
-	
 }
