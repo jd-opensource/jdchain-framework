@@ -16,12 +16,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		
-		<!-- <dependency>
-			<groupId>com.jd.blockchain</groupId>
-			<artifactId>crypto-framework</artifactId>
-			<version>${project.version}</version>
-		</dependency> -->
-
 		<dependency>
 			<groupId>com.jd.blockchain</groupId>
 			<artifactId>crypto-classic</artifactId>

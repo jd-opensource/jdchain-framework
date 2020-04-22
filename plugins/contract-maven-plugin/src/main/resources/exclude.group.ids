@@ -1,0 +1,11 @@
+com.jd.blockchain,
+org.springframework,
+org.springframework.boot,
+org.bouncycastle,
+net.i2p.crypto,
+org.slf4j,
+org.apache.logging.log4j,
+commons-codec,
+commons-io,
+org.bitbucket.mstrobel,
+com.alibaba

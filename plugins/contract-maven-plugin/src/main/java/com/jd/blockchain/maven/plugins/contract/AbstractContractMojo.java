@@ -1,6 +1,10 @@
 package com.jd.blockchain.maven.plugins.contract;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.Properties;
 import java.util.Set;
 
@@ -15,20 +19,15 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.shared.artifact.filter.collection.ArtifactFilterException;
 import org.apache.maven.shared.artifact.filter.collection.ArtifactIdFilter;
-import org.apache.maven.shared.artifact.filter.collection.ArtifactsFilter;
-import org.apache.maven.shared.artifact.filter.collection.ClassifierFilter;
 import org.apache.maven.shared.artifact.filter.collection.FilterArtifacts;
 import org.apache.maven.shared.artifact.filter.collection.GroupIdFilter;
-import org.apache.maven.shared.artifact.filter.collection.ProjectTransitivityFilter;
-import org.apache.maven.shared.artifact.filter.collection.ScopeFilter;
-import org.apache.maven.shared.artifact.filter.collection.TypeFilter;
 import org.apache.maven.shared.utils.PropertyUtils;
 import org.apache.maven.shared.utils.StringUtils;
 
 import com.jd.blockchain.contract.archiver.Archive;
 import com.jd.blockchain.contract.archiver.CarArchiver;
-import com.jd.blockchain.contract.archiver.LibArchiver;
 import com.jd.blockchain.contract.archiver.CodeConfiguration;
+import com.jd.blockchain.contract.archiver.LibArchiver;
 
 /**
  * Base class for creating a contract package from project classes.
@@ -41,6 +40,10 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	private static final String[] DEFAULT_EXCLUDES = new String[] { "**/package.html" };
 
 	private static final String[] DEFAULT_INCLUDES = new String[] { "**/**" };
+
+	private static final String SYSTEM_EXCLUDE_GROUP_IDS_RESOURCE = "/exclude.group.ids";
+
+	private static final String SYSTEM_EXCLUDE_ARTIFACT_IDS_RESOURCE = "/exclude.artifact.ids";
 
 	/**
 	 * List of files to include. Specified as fileset patterns which are relative to
@@ -111,76 +114,14 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	private ArchiveSizeUnit maxCarSizeUnit;
 
 	/**
-	 * If we should exclude transitive dependencies
-	 */
-	@Parameter(property = "excludeTransitive", defaultValue = "false")
-	protected boolean excludeTransitive;
-
-	/**
-	 * Comma Separated list of Types to include. Empty String indicates include
-	 * everything (default).
-	 *
-	 */
-	@Parameter(property = "includeTypes", defaultValue = "")
-	protected String includeTypes;
-
-	/**
-	 * Comma Separated list of Types to exclude. Empty String indicates don't
-	 * exclude anything (default).
-	 *
-	 */
-	@Parameter(property = "excludeTypes", defaultValue = "")
-	protected String excludeTypes;
-
-	/**
-	 * Scope to include. An Empty string indicates all scopes (default). The scopes
-	 * being interpreted are the scopes as Maven sees them, not as specified in the
-	 * pom. In summary:
-	 * <ul>
-	 * <li><code>runtime</code> scope gives runtime and compile dependencies,</li>
-	 * <li><code>compile</code> scope gives compile, provided, and system
-	 * dependencies,</li>
-	 * <li><code>test</code> (default) scope gives all dependencies,</li>
-	 * <li><code>provided</code> scope just gives provided dependencies,</li>
-	 * <li><code>system</code> scope just gives system dependencies.</li>
-	 * </ul>
-	 *
-	 */
-	@Parameter(property = "includeScope", defaultValue = "")
-	protected String includeScope;
-
-	/**
-	 * Scope to exclude. An Empty string indicates no scopes (default).
-	 *
-	 */
-	@Parameter(property = "excludeScope", defaultValue = "")
-	protected String excludeScope;
-
-	/**
-	 * Comma Separated list of Classifiers to include. Empty String indicates
-	 * include everything (default).
-	 *
-	 */
-	@Parameter(property = "includeClassifiers", defaultValue = "")
-	protected String includeClassifiers;
-
-	/**
-	 * Comma Separated list of Classifiers to exclude. Empty String indicates don't
-	 * exclude anything (default).
-	 *
-	 */
-	@Parameter(property = "excludeClassifiers", defaultValue = "")
-	protected String excludeClassifiers;
-
-	/**
-	 * Comma separated list of Artifact names to exclude.
+	 * Comma(,) separated list of Artifact names to exclude.
 	 *
 	 */
 	@Parameter(property = "excludeArtifactIds", defaultValue = "")
 	protected String excludeArtifactIds;
 
 	/**
-	 * Comma separated list of Artifact names to include. Empty String indicates
+	 * Comma(,) separated list of Artifact names to include. Empty String indicates
 	 * include everything (default).
 	 *
 	 */
@@ -188,15 +129,15 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	protected String includeArtifactIds;
 
 	/**
-	 * Comma separated list of GroupId Names to exclude.
+	 * Comma(,) separated list of GroupId Names to exclude.
 	 *
 	 */
 	@Parameter(property = "excludeGroupIds", defaultValue = "")
 	protected String excludeGroupIds;
 
 	/**
-	 * Comma separated list of GroupIds to include. Empty String indicates include
-	 * everything (default).
+	 * Comma(,) separated list of GroupIds to include. Empty String indicates
+	 * include everything (default).
 	 *
 	 */
 	@Parameter(property = "includeGroupIds", defaultValue = "")
@@ -217,6 +158,46 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	protected abstract File getClassesDirectory();
 
 //	protected abstract String getClassifier();
+
+	/**
+	 * Generates the CONTRACT.
+	 * 
+	 * @throws MojoExecutionException in case of an error.
+	 *
+	 */
+	public void execute() throws MojoExecutionException {
+		// abort if empty;
+		if (!getClassesDirectory().exists() || getClassesDirectory().list().length < 1) {
+			throw new MojoExecutionException("The contract codes is empty! -- No content was marked for inclusion!");
+		}
+
+		// configuration of contract code;
+		CodeConfiguration codeConfig = getCodeConfiguration();
+
+		// libraries of dependencies;
+		Set<Artifact> libraries = getDependencies();
+		libraries = Collections.unmodifiableSet(libraries);
+
+		// package;
+		Archive car = createCarArchive(codeConfig, libraries);
+
+		Archive lib = null;
+		if (outputLibrary && libraries.size() > 0) {
+			lib = createLibArchive(libraries);
+		}
+
+		// attach archives;
+		if (hasArtifact(getProject())) {
+			throw new MojoExecutionException("The current project has already set an artifact! "
+					+ "Cannot attach the generated " + car.getType() + " artifact to the project to replace them.");
+		}
+		getProject().getArtifact().setFile(car.getOutputFile());
+
+		if (lib != null) {
+			projectHelper.attachArtifact(getProject(), car.getType(), lib.getType(), lib.getOutputFile());
+		}
+
+	}
 
 	/**
 	 * Returns the contract file to generate, based on an optional classifier.
@@ -290,70 +271,41 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 		return clibArchiver.createArchive();
 	}
 
-	/**
-	 * Generates the CONTRACT.
-	 * 
-	 * @throws MojoExecutionException in case of an error.
-	 *
-	 */
-	public void execute() throws MojoExecutionException {
-		// abort if empty;
-		if (!getClassesDirectory().exists() || getClassesDirectory().list().length < 1) {
-			throw new MojoExecutionException("The contract codes is empty! -- No content was marked for inclusion!");
-		}
-		
-		// configuration of contract code;
-		CodeConfiguration codeConfig = getCodeConfiguration();
-
-		// libraries of dependencies;
-		Set<Artifact> libraries = getDependencies();
-
-		// package;
-		Archive car = createCarArchive(codeConfig, libraries);
-
-		Archive lib = null;
-		if (outputLibrary) {
-			lib = createLibArchive(libraries);
-		}
-
-		// attach archives;
-		if (hasArtifact(getProject())) {
-			throw new MojoExecutionException("The current project has already set an artifact! "
-					+ "Cannot attach the generated " + car.getType() + " artifact to the project to replace them.");
-		}
-		getProject().getArtifact().setFile(car.getOutputFile());
-
-		if (lib != null) {
-			projectHelper.attachArtifact(getProject(), car.getType(), lib.getType(), lib.getOutputFile());
-		}
-
-	}
-
 	protected Set<Artifact> getDependencies() throws MojoExecutionException {
 		// add filters in well known order, least specific to most specific
 		FilterArtifacts filter = new FilterArtifacts();
 
-		filter.addFilter(new ProjectTransitivityFilter(getProject().getDependencyArtifacts(), this.excludeTransitive));
+//		filter.addFilter(new ProjectTransitivityFilter(getProject().getDependencyArtifacts(), this.excludeTransitive));
+//		
+//		filter.addFilter(new ScopeFilter(cleanToBeTokenizedString(this.includeScope),
+//				cleanToBeTokenizedString(this.excludeScope)));
+//
+//		filter.addFilter(new TypeFilter(cleanToBeTokenizedString(this.includeTypes),
+//				cleanToBeTokenizedString(this.excludeTypes)));
+//
+//		filter.addFilter(new ClassifierFilter(cleanToBeTokenizedString(this.includeClassifiers),
+//				cleanToBeTokenizedString(this.excludeClassifiers)));
 
-		filter.addFilter(new ScopeFilter(cleanToBeTokenizedString(this.includeScope),
-				cleanToBeTokenizedString(this.excludeScope)));
+		GroupIdFilter systemGroupIdFilter = new GroupIdFilter(null,
+				cleanToBeTokenizedString(getSystemExcludeGroupIds()));
+		filter.addFilter(systemGroupIdFilter);
 
-		filter.addFilter(new TypeFilter(cleanToBeTokenizedString(this.includeTypes),
-				cleanToBeTokenizedString(this.excludeTypes)));
+		GroupIdFilter userGroupIdFilter = new GroupIdFilter(cleanToBeTokenizedString(this.includeGroupIds),
+				cleanToBeTokenizedString(this.excludeGroupIds));
+		filter.addFilter(userGroupIdFilter);
 
-		filter.addFilter(new ClassifierFilter(cleanToBeTokenizedString(this.includeClassifiers),
-				cleanToBeTokenizedString(this.excludeClassifiers)));
+		ArtifactIdFilter systemArtifactIdFilter = new ArtifactIdFilter(null,
+				cleanToBeTokenizedString(getSystemExcludeArtifactIds()));
+		filter.addFilter(systemArtifactIdFilter);
 
-		filter.addFilter(new GroupIdFilter(cleanToBeTokenizedString(this.includeGroupIds),
-				cleanToBeTokenizedString(this.excludeGroupIds)));
-
-		filter.addFilter(new ArtifactIdFilter(cleanToBeTokenizedString(this.includeArtifactIds),
-				cleanToBeTokenizedString(this.excludeArtifactIds)));
+		ArtifactIdFilter userArtifactIdFilter = new ArtifactIdFilter(cleanToBeTokenizedString(this.includeArtifactIds),
+				cleanToBeTokenizedString(this.excludeArtifactIds));
+		filter.addFilter(userArtifactIdFilter);
 
 		Set<Artifact> artifacts = getProject().getArtifacts();
-		
+
 		if (getLog().isDebugEnabled()) {
-			getLog().debug("-------- All Dependencies["+artifacts.size()+"] --------");
+			getLog().debug("-------- All Dependencies[" + artifacts.size() + "] --------");
 			int i = 0;
 			for (Artifact artifact : artifacts) {
 				getLog().debug(String.format("%s-- %s [%s]", i, artifact.toString(), artifact.getFile().getName()));
@@ -361,27 +313,16 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 			}
 			getLog().debug("----------------------------------");
 		}
-		
+
 		try {
+			getLog().debug("filter dependencies...");
 			artifacts = filter.filter(artifacts);
 		} catch (ArtifactFilterException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
-		
-		if (getLog().isDebugEnabled()) {
-			getLog().debug("-------- Filtered Dependencies["+artifacts.size()+"] --------");
-			int i = 0;
-			for (Artifact artifact : artifacts) {
-				getLog().debug(String.format("%s-- %s [%s]", i, artifact.toString(), artifact.getFile().getName()));
-				i++;
-			}
-			getLog().debug("----------------------------------");
-		}
-
-		artifacts = skipIgnoredDependencies(artifacts);
 
 		if (getLog().isDebugEnabled()) {
-			getLog().debug("-------- Exporting Dependencies["+artifacts.size()+"] --------");
+			getLog().debug("-------- Exporting Dependencies[" + artifacts.size() + "] --------");
 			int i = 0;
 			for (Artifact artifact : artifacts) {
 				getLog().debug(String.format("%s-- %s [%s]", i, artifact.toString(), artifact.getFile().getName()));
@@ -393,29 +334,24 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 		return artifacts;
 	}
 
-	/**
-	 * Removed the ignored dependencies;
-	 * 
-	 * @param artifacts
-	 * @return The included dependencies;
-	 * @throws MojoExecutionException
-	 */
-	private Set<Artifact> skipIgnoredDependencies(Set<Artifact> artifacts) throws MojoExecutionException {
-		FilterArtifacts filter = new FilterArtifacts();
-		filter.addFilter(getIgnoredArtifactFilter());
-
-		Set<Artifact> includedArtifacts;
+	private String getSystemExcludeGroupIds() throws MojoExecutionException {
 		try {
-			includedArtifacts = filter.filter(artifacts);
-		} catch (ArtifactFilterException e) {
+			try (InputStream in = this.getClass().getResourceAsStream(SYSTEM_EXCLUDE_GROUP_IDS_RESOURCE)) {
+				return readText(in, "UTF-8");
+			}
+		} catch (IOException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
-
-		return includedArtifacts;
 	}
 
-	protected ArtifactsFilter getIgnoredArtifactFilter() {
-		return null;
+	private String getSystemExcludeArtifactIds() throws MojoExecutionException {
+		try {
+			try (InputStream in = this.getClass().getResourceAsStream(SYSTEM_EXCLUDE_ARTIFACT_IDS_RESOURCE)) {
+				return readText(in, "UTF-8");
+			}
+		} catch (IOException e) {
+			throw new MojoExecutionException(e.getMessage(), e);
+		}
 	}
 
 	/**
@@ -448,14 +384,24 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 		return properties.getProperty("version");
 	}
 
-	private String[] getIncludes() {
+	/**
+	 * The included classes;
+	 * 
+	 * @return
+	 */
+	protected String[] getIncludes() {
 		if (includes != null && includes.length > 0) {
 			return includes;
 		}
 		return DEFAULT_INCLUDES;
 	}
 
-	private String[] getExcludes() {
+	/**
+	 * The excluded classes;
+	 * 
+	 * @return
+	 */
+	protected String[] getExcludes() {
 		if (excludes != null && excludes.length > 0) {
 			return excludes;
 		}
@@ -476,5 +422,28 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 		}
 
 		return ret;
+	}
+
+	/**
+	 * 从流读取文本；
+	 * 
+	 * @param in      in
+	 * @param charset charset
+	 * @return String
+	 * @throws IOException exception
+	 */
+	private static String readText(InputStream in, String charset) throws IOException {
+		InputStreamReader reader = new InputStreamReader(in, charset);
+		try {
+			StringBuilder content = new StringBuilder();
+			char[] buffer = new char[64];
+			int len = 0;
+			while ((len = reader.read(buffer)) > 0) {
+				content.append(buffer, 0, len);
+			}
+			return content.toString();
+		} finally {
+			reader.close();
+		}
 	}
 }
