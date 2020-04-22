@@ -119,7 +119,7 @@ public abstract class ContractArchiver {
 	 * 
 	 * @return
 	 */
-	protected abstract CodeConfiguration getCodeConfiguration();
+	protected abstract CodeSettings getCodeSettings();
 
 	private void prepareLibraries(ArchiveLayout layout) {
 		if (layout.isIncludedLibraries()) {
@@ -165,10 +165,10 @@ public abstract class ContractArchiver {
 	}
 
 	private void prepareCodes(ArchiveLayout layout) {
-		CodeConfiguration codeConfig = getCodeConfiguration();
-		if (codeConfig != null) {
-			jarArchiver.addDirectory(codeConfig.getCodebaseDirectory(), layout.getCodeDirectory(),
-					codeConfig.getIncludes(), codeConfig.getExcludes());
+		CodeSettings codeSettings = getCodeSettings();
+		if (codeSettings != null) {
+			jarArchiver.addDirectory(codeSettings.getCodebaseDirectory(), layout.getCodeDirectory(),
+					codeSettings.getIncludes(), codeSettings.getExcludes());
 		}
 	}
 

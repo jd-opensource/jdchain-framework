@@ -15,14 +15,14 @@ public class CarArchiver extends ContractArchiver {
 	
 	public static final ArchiveLayout CODE_LIB_LAYOUT = new ArchiveLayout("CODE-LIB", false, true);
 	
-	private CodeConfiguration codeConfig;
+	private CodeSettings codeSettings;
 	
 	private boolean includedLibraries;
 	
-	public CarArchiver(File destJarFile, CodeConfiguration codeConfig,
+	public CarArchiver(File destJarFile, CodeSettings codeConfig,
 			Set<Artifact> libraries) {
 		super(destJarFile);
-		this.codeConfig = codeConfig;
+		this.codeSettings = codeConfig;
 		
 		addLibraries(libraries);
 	}
@@ -51,8 +51,8 @@ public class CarArchiver extends ContractArchiver {
 	}
 
 	@Override
-	protected CodeConfiguration getCodeConfiguration() {
-		return codeConfig;
+	protected CodeSettings getCodeSettings() {
+		return codeSettings;
 	}
 
 }

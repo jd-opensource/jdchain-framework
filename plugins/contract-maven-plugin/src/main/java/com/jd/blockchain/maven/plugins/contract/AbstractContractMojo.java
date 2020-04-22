@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Collections;
 import java.util.Properties;
 import java.util.Set;
 
@@ -26,8 +25,9 @@ import org.apache.maven.shared.utils.StringUtils;
 
 import com.jd.blockchain.contract.archiver.Archive;
 import com.jd.blockchain.contract.archiver.CarArchiver;
-import com.jd.blockchain.contract.archiver.CodeConfiguration;
+import com.jd.blockchain.contract.archiver.CodeSettings;
 import com.jd.blockchain.contract.archiver.LibArchiver;
+import com.jd.blockchain.maven.plugins.contract.analysis.DefaultCodeAnalyzer;
 
 /**
  * Base class for creating a contract package from project classes.
@@ -142,6 +142,9 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	 */
 	@Parameter(property = "includeGroupIds", defaultValue = "")
 	protected String includeGroupIds;
+	
+	
+	private CodeAnalyzer codeAnalyzer = new DefaultCodeAnalyzer();
 
 	/**
 	 * @return the {@link #project}
@@ -157,8 +160,6 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	 */
 	protected abstract File getClassesDirectory();
 
-//	protected abstract String getClassifier();
-
 	/**
 	 * Generates the CONTRACT.
 	 * 
@@ -171,15 +172,19 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 			throw new MojoExecutionException("The contract codes is empty! -- No content was marked for inclusion!");
 		}
 
-		// configuration of contract code;
-		CodeConfiguration codeConfig = getCodeConfiguration();
+		// settings about contract code;
+		CodeSettings codeSettings = getCodeSettings();
 
 		// libraries of dependencies;
 		Set<Artifact> libraries = getDependencies();
-		libraries = Collections.unmodifiableSet(libraries);
+		
+		// code analysis;
+		String[] excludes = codeAnalyzer.analyzeClassesExcludes(codeSettings.getCodebaseDirectory());
+		codeSettings.addExcludes(excludes);
+		libraries = codeAnalyzer.analyzeDependencies(libraries);
 
 		// package;
-		Archive car = createCarArchive(codeConfig, libraries);
+		Archive car = createCarArchive(codeSettings, libraries);
 
 		Archive lib = null;
 		if (outputLibrary && libraries.size() > 0) {
@@ -196,7 +201,6 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 		if (lib != null) {
 			projectHelper.attachArtifact(getProject(), car.getType(), lib.getType(), lib.getOutputFile());
 		}
-
 	}
 
 	/**
@@ -227,12 +231,12 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	 * @return The instance of File for the created archive file.
 	 * @throws MojoExecutionException in case of an error.
 	 */
-	private Archive createCarArchive(CodeConfiguration codeConfig, Set<Artifact> libraries)
+	private Archive createCarArchive(CodeSettings codeSettings, Set<Artifact> libraries)
 			throws MojoExecutionException {
 		try {
 			File carFile = getOutputFile(outputDirectory, finalName, CarArchiver.TYPE);
 
-			CarArchiver carArchiver = new CarArchiver(carFile, codeConfig, libraries);
+			CarArchiver carArchiver = new CarArchiver(carFile, codeSettings, libraries);
 			carArchiver.setIncludedLibraries(!outputLibrary);
 			carArchiver.setCreatedBy(getCreatedBy());
 
@@ -242,17 +246,17 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 		}
 	}
 
-	private CodeConfiguration getCodeConfiguration() throws MojoExecutionException {
+	private CodeSettings getCodeSettings() throws MojoExecutionException {
 		File classesDirectory = getClassesDirectory();
 		if (!classesDirectory.exists()) {
 			throw new MojoExecutionException("The contract codes is empty! -- No content was marked for inclusion!");
 		}
 
-		CodeConfiguration codeConfig = new CodeConfiguration(classesDirectory);
-		codeConfig.addIncludes(getIncludes());
-		codeConfig.addExcludes(getExcludes());
+		CodeSettings codeSettings = new CodeSettings(classesDirectory);
+		codeSettings.addIncludes(getIncludes());
+		codeSettings.addExcludes(getExcludes());
 
-		return codeConfig;
+		return codeSettings;
 	}
 
 	/**

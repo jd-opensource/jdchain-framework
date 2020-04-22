@@ -27,7 +27,7 @@ public class LibArchiver extends ContractArchiver {
 	}
 
 	@Override
-	protected CodeConfiguration getCodeConfiguration() {
+	protected CodeSettings getCodeSettings() {
 		return null;
 	}
 

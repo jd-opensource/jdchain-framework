@@ -12,7 +12,7 @@ import java.util.Set;
  * @author huanghaiquan
  *
  */
-public class CodeConfiguration {
+public class CodeSettings {
 
 	private File codebaseDirectory;
 
@@ -24,7 +24,7 @@ public class CodeConfiguration {
 	 * 
 	 * @param codebaseDirectory
 	 */
-	public CodeConfiguration(File codebaseDirectory) {
+	public CodeSettings(File codebaseDirectory) {
 		this.codebaseDirectory = codebaseDirectory;
 	}
 
@@ -41,11 +41,15 @@ public class CodeConfiguration {
 	}
 
 	public void addIncludes(String... includes) {
-		includeSet.addAll(Arrays.asList(includes));
+		if (includes != null) {
+			includeSet.addAll(Arrays.asList(includes));
+		}
 	}
 
 	public void addExcludes(String... excludes) {
-		excludeSet.addAll(Arrays.asList(excludes));
+		if (excludes != null) {
+			excludeSet.addAll(Arrays.asList(excludes));
+		}
 	}
 
 	public void addIncludes(Collection<String> includes) {
