@@ -196,10 +196,10 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 			throw new MojoExecutionException("The current project has already set an artifact! "
 					+ "Cannot attach the generated " + car.getType() + " artifact to the project to replace them.");
 		}
-		getProject().getArtifact().setFile(car.getOutputFile());
+		getProject().getArtifact().setFile(car.getFile());
 
 		if (lib != null) {
-			projectHelper.attachArtifact(getProject(), car.getType(), lib.getType(), lib.getOutputFile());
+			projectHelper.attachArtifact(getProject(), car.getType(), lib.getType(), lib.getFile());
 		}
 	}
 

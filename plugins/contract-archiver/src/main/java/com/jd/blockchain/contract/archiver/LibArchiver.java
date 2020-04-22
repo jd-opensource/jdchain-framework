@@ -9,7 +9,6 @@ public class LibArchiver extends ContractArchiver {
 	
 	public static final String TYPE = "lib";
 
-	public static final ArchiveLayout LIB_LAYOUT = new ArchiveLayout("LIB", false, true);
 
 	public LibArchiver(File destJarFile, Set<Artifact> dependencies) {
 		super(destJarFile);
@@ -23,7 +22,7 @@ public class LibArchiver extends ContractArchiver {
 
 	@Override
 	protected ArchiveLayout getArchiveLayout() {
-		return LIB_LAYOUT;
+		return ArchiveLayout.LIB_LAYOUT;
 	}
 
 	@Override

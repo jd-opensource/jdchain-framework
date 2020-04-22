@@ -19,5 +19,9 @@
 			<artifactId>maven-archiver</artifactId>
 			<version>${mavenArchiverVersion}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-loader</artifactId>
+		</dependency>
 	</dependencies>
 </project>

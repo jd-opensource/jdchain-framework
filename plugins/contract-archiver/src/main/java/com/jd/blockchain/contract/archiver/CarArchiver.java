@@ -9,11 +9,7 @@ public class CarArchiver extends ContractArchiver {
 
 	public static final String TYPE = "car";
 	
-	
-	
-	public static final ArchiveLayout CODE_LAYOUT = new ArchiveLayout("CODE", true, false);
-	
-	public static final ArchiveLayout CODE_LIB_LAYOUT = new ArchiveLayout("CODE-LIB", false, true);
+
 	
 	private CodeSettings codeSettings;
 	
@@ -45,9 +41,9 @@ public class CarArchiver extends ContractArchiver {
 	@Override
 	protected ArchiveLayout getArchiveLayout() {
 		if (includedLibraries && libraries.size() > 0) {
-			return CODE_LIB_LAYOUT;
+			return ArchiveLayout.CODE_LIB_LAYOUT;
 		}
-		return CODE_LAYOUT;
+		return ArchiveLayout.CODE_LAYOUT;
 	}
 
 	@Override

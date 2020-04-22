@@ -14,6 +14,6 @@ public interface Archive {
 	
 	ArchiveLayout getLayout();
 	
-	File getOutputFile();
+	File getFile();
 	
 }

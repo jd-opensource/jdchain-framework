@@ -88,7 +88,7 @@ public abstract class ContractArchiver {
 
 			jarArchiver.createArchive();
 
-			return new ContractArchive(getArchiveType(), layout, jarArchiver.getDestFile());
+			return new ContractFile(getArchiveType(), layout, jarArchiver.getDestFile());
 		} catch (ArchiverException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		} catch (ManifestException e) {
@@ -141,26 +141,27 @@ public abstract class ContractArchiver {
 	}
 
 	private void prepareLibpaths(ArchiveLayout layout, Manifest manifest) throws ManifestException {
-		String libpaths = createLibpaths(layout.getLibraryDirectory(), libraries);
+		String libpaths = ManifestUtils.generateLibpaths(layout.getLibraryDirectory(), libraries);
 		if (libpaths.length() > 0) {
-			addManifestAttribute(manifest, "Lib-Path", libpaths.toString());
+			addManifestAttribute(manifest, ManifestUtils.LIB_PATH_ATTR_NAME, libpaths.toString());
 		}
 	}
 
 	private void prepareDefaultManifest(ArchiveLayout layout, Manifest manifest) throws ManifestException {
 		jarArchiver.setMinimalDefaultManifest(true);
 
-		addManifestAttribute(manifest, "Archive-Layout", layout.getName());
+		addManifestAttribute(manifest, ManifestUtils.ARCHIVE_LAYOUT, layout.getName());
 
 		if (createdBy != null) {
-			addManifestAttribute(manifest, "Created-By", createdBy);
+			addManifestAttribute(manifest, ManifestUtils.CREATED_BY_ATTR_NAME , createdBy);
 		}
 
-		addManifestAttribute(manifest, "Build-Jdk-Spec", System.getProperty("java.specification.version"));
-		addManifestAttribute(manifest, "Build-Jdk",
+		addManifestAttribute(manifest, ManifestUtils.BUILD_JDK_SPEC_ATTR_NAME, System.getProperty("java.specification.version"));
+		
+		addManifestAttribute(manifest, ManifestUtils.BUILD_JDK_ATTR_NAME,
 				String.format("%s (%s)", System.getProperty("java.version"), System.getProperty("java.vendor")));
 
-		addManifestAttribute(manifest, "Build-Os", String.format("%s (%s; %s)", System.getProperty("os.name"),
+		addManifestAttribute(manifest,ManifestUtils.BUILD_OS_ATTR_NAME, String.format("%s (%s; %s)", System.getProperty("os.name"),
 				System.getProperty("os.version"), System.getProperty("os.arch")));
 	}
 
@@ -178,29 +179,8 @@ public abstract class ContractArchiver {
 		}
 	}
 
-	/**
-	 * Create the libpath string by combinates each libpath item separating by the
-	 * white space character.
-	 * 
-	 * @param libpathPrefix
-	 * @param libraries
-	 * @return
-	 */
-	private String createLibpaths(String libpathPrefix, Set<Artifact> libraries) {
-		if (!libpathPrefix.endsWith("/")) {
-			libpathPrefix += "/";
-		}
-		StringBuilder libpaths = new StringBuilder();
-		for (Artifact lib : libraries) {
-			if (libpaths.length() > 0) {
-				libpaths.append(" ");
-			}
-			libpaths.append(libpathPrefix + lib.getFile().getName());
-		}
-		return libpaths.toString();
-	}
 
-	private void addManifestAttribute(Manifest manifest, String key, String value) throws ManifestException {
+	private static void addManifestAttribute(Manifest manifest, String key, String value) throws ManifestException {
 		if (StringUtils.isEmpty(value)) {
 			// if the value is empty we have create an entry with an empty string
 			// to prevent null print in the manifest file
@@ -220,34 +200,4 @@ public abstract class ContractArchiver {
 
 	}
 
-	private static class ContractArchive implements Archive {
-
-		private String type;
-
-		private ArchiveLayout layout;
-
-		private File outputFile;
-
-		public ContractArchive(String type, ArchiveLayout layout, File outputFile) {
-			this.type = type;
-			this.layout = layout;
-			this.outputFile = outputFile;
-		}
-
-		@Override
-		public String getType() {
-			return type;
-		}
-
-		@Override
-		public ArchiveLayout getLayout() {
-			return layout;
-		}
-
-		@Override
-		public File getOutputFile() {
-			return outputFile;
-		}
-
-	}
 }
