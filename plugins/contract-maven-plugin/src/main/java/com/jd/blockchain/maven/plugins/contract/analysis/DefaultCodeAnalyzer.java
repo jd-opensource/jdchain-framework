@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 
 import com.jd.blockchain.maven.plugins.contract.AnalysisResult;
@@ -18,7 +19,7 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 	}
 
 	@Override
-	public AnalysisResult analyze(File classesDirectory, Set<Artifact> libraries) {
+	public AnalysisResult analyze(File classesDirectory, Set<Artifact> libraries) throws MojoExecutionException {
 		return new AnalysisResult(null, libraries);
 	}
 

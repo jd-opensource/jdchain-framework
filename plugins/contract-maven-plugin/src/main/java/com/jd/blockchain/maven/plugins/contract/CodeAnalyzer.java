@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * CodeAnalyzer
@@ -21,6 +22,6 @@ public interface CodeAnalyzer {
 	 * @param libraries        The libraries dependent on compilation phase
 	 * @return Return the analysis result;
 	 */
-	AnalysisResult analyze(File classesDirectory, Set<Artifact> libraries);
+	AnalysisResult analyze(File classesDirectory, Set<Artifact> libraries) throws MojoExecutionException;
 
 }
