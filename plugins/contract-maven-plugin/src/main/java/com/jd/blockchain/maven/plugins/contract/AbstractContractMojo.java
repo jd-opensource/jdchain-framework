@@ -144,7 +144,7 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	protected String includeGroupIds;
 	
 	
-	private CodeAnalyzer codeAnalyzer = new DefaultCodeAnalyzer();
+	private CodeAnalyzer codeAnalyzer;
 
 	/**
 	 * @return the {@link #project}
@@ -159,6 +159,11 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	 * @return get classes directory.
 	 */
 	protected abstract File getClassesDirectory();
+	
+	
+	public AbstractContractMojo() {
+		codeAnalyzer = new DefaultCodeAnalyzer(getLog());
+	}
 
 	/**
 	 * Generates the CONTRACT.
@@ -179,9 +184,9 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 		Set<Artifact> libraries = getDependencies();
 		
 		// code analysis;
-		String[] excludes = codeAnalyzer.analyzeClassesExcludes(codeSettings.getCodebaseDirectory());
-		codeSettings.addExcludes(excludes);
-		libraries = codeAnalyzer.analyzeDependencies(libraries);
+		AnalysisResult analysisResult = codeAnalyzer.analyze(codeSettings.getCodebaseDirectory(), libraries);
+		codeSettings.addExcludes(analysisResult.getExcludes());
+		libraries = analysisResult.getLibraries();
 
 		// package;
 		Archive car = createCarArchive(codeSettings, libraries);

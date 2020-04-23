@@ -17,17 +17,10 @@ public interface CodeAnalyzer {
 	 * Analyze the classes of contract codes under the classes directory, which is
 	 * the root of all packages;
 	 * 
-	 * @param classesDirectory
-	 * @return return the excluding class expressions;
+	 * @param classesDirectory The root directory of all contract code classes;
+	 * @param libraries        The libraries dependent on compilation phase
+	 * @return Return the analysis result;
 	 */
-	String[] analyzeClassesExcludes(File classesDirectory);
-
-	/**
-	 * Analyze the libraries, and return the available artifacts;
-	 * 
-	 * @param libraries
-	 * @return
-	 */
-	Set<Artifact> analyzeDependencies(Set<Artifact> libraries);
+	AnalysisResult analyze(File classesDirectory, Set<Artifact> libraries);
 
 }

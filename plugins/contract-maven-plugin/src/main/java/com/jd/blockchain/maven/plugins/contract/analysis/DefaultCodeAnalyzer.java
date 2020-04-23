@@ -4,19 +4,22 @@ import java.io.File;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.plugin.logging.Log;
 
+import com.jd.blockchain.maven.plugins.contract.AnalysisResult;
 import com.jd.blockchain.maven.plugins.contract.CodeAnalyzer;
 
 public class DefaultCodeAnalyzer implements CodeAnalyzer {
 
-	@Override
-	public String[] analyzeClassesExcludes(File classesDirectory) {
-		return null;
+	private Log logger;
+	
+	public DefaultCodeAnalyzer(Log logger) {
+		this.logger = logger;
 	}
 
 	@Override
-	public Set<Artifact> analyzeDependencies(Set<Artifact> libraries) {
-		return libraries;
+	public AnalysisResult analyze(File classesDirectory, Set<Artifact> libraries) {
+		return new AnalysisResult(null, libraries);
 	}
 
 }
