@@ -105,26 +105,51 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 			throw new MojoExecutionException("");
 		}
 		ContractLoaderData loaderData = new ContractLoaderData(classLoader);
+		Class<?> contractInterface = null;
+		// first loop
 		for (String className : classNames) {
 			try {
 				Class<?> clazz = classLoader.loadClass(className);
 				if (clazz.isAnnotationPresent(Contract.class) && clazz.isInterface()) {
-					if (!loaderData.isEmpty()) {
+					if (contractInterface != null) {
 						throw new MojoExecutionException("Contract must have one interface of @Contract only !!!");
 					} else {
-						try {
-							// 检查当前class's package
-							if (clazz.getName().startsWith("com.jd.blockchain.")) {
-								throw new MojoExecutionException("Can not use package [com.jd.blockchain] !!");
+						contractInterface = clazz;
+					}
+				}
+			} catch (ClassNotFoundException e) {
+				logger.debug("Load class error !!!", e);
+			}
+		}
+		if (contractInterface == null) {
+			return null;
+		}
+		// second loop
+		for (String className : classNames) {
+			try {
+				Class<?> clazz = classLoader.loadClass(className);
+				if (!clazz.isInterface()) {
+					Class<?>[] interfaces = clazz.getInterfaces();
+					for (Class<?> intf : interfaces) {
+						if (intf == contractInterface) {
+							if (!loaderData.isEmpty()) {
+								throw new MojoExecutionException("Contract must have one interface of @Contract only !!!");
+							} else {
+								try {
+									// 检查当前class's package
+									if (clazz.getName().startsWith("com.jd.blockchain.")) {
+										throw new MojoExecutionException("Can not use package [com.jd.blockchain] !!");
+									}
+									// 校验该class
+									ContractType.resolve(clazz);
+								} catch (Exception e) {
+									throw new MojoExecutionException(
+											String.format("Verify contract interface %s !!!", clazz.getName()), e);
+								}
+								logger.debug(String.format("Find contract interface %s !!!", clazz.getName()));
+								loaderData.initContractClass(clazz);
 							}
-							// 校验该class
-							ContractType.resolve(clazz);
-						} catch (Exception e) {
-							throw new MojoExecutionException(
-									String.format("Verify contract interface %s !!!", clazz.getName()), e);
 						}
-						logger.debug(String.format("Find contract interface %s !!!", clazz.getName()));
-						loaderData.initContractClass(clazz);
 					}
 				}
 			} catch (ClassNotFoundException e) {
@@ -145,8 +170,6 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 				continue;
 			}
 			String className = classNameToSeparator(entry.getKey());
-//			String className = entry.getKey().substring(0, entry.getKey().length() -
-//					ContractClassLoaderUtil.SUFFIX_CLASS_LENGTH);
 
 			String dotClassName = ContractJarUtils.dotClassName(className);
 			if (WHITELIST.isWhite(dotClassName) || BLACKLIST.isBlackClass(dotClassName)) {
@@ -204,7 +227,8 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 		if (classLoader != null) {
 			dotClassLoader = dotClass.getClassLoader().toString();
 		}
-		if (dotClassLoader != null && dotClassLoader.contains("URLClassLoader")) {
+		if (dotClassLoader != null && (dotClassLoader.contains("URLClassLoader") ||
+				dotClassLoader.contains("ContractClassLoader"))) {
 			// 说明是URLClassLoader，这个需要先从黑名单和白名单列表中操作
 			// 首先判断是否是黑名单，黑名单优先级最高
 			if (BLACKLIST.isBlack(dotClass, method.getMethodName())) {

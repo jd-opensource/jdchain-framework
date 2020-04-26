@@ -1,6 +1,5 @@
 package com.jd.blockchain.maven.plugins.contract.analysis.util;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
