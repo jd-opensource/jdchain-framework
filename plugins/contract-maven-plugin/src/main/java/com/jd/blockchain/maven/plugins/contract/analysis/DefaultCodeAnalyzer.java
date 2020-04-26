@@ -98,11 +98,11 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 		ContractClassLoader classLoader = ContractClassLoaderUtil.loadAllClassUnderDirectory(
 				classesDirectory, Thread.currentThread().getContextClassLoader(), false);
 		if (classLoader == null) {
-			throw new MojoExecutionException("");
+			throw new MojoExecutionException("Init classloader error !!!");
 		}
 		Set<String> classNames = classLoader.classNames();
 		if (classNames.isEmpty()) {
-			throw new MojoExecutionException("");
+			throw new MojoExecutionException("Can not load any class !!!");
 		}
 		ContractLoaderData loaderData = new ContractLoaderData(classLoader);
 		Class<?> contractInterface = null;
@@ -114,6 +114,18 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 					if (contractInterface != null) {
 						throw new MojoExecutionException("Contract must have one interface of @Contract only !!!");
 					} else {
+						//check package
+						if (clazz.getName().startsWith("com.jd.blockchain.")) {
+							throw new MojoExecutionException(String.format(
+									"Interface[%s] can not use package [com.jd.blockchain] !!!", clazz.getName()));
+						}
+						// check interface
+						try {
+							ContractType.resolve(clazz);
+						} catch (Exception e) {
+							throw new MojoExecutionException(
+									String.format("Verify contract interface %s !!!", clazz.getName()), e);
+						}
 						contractInterface = clazz;
 					}
 				}
@@ -133,20 +145,16 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 					for (Class<?> intf : interfaces) {
 						if (intf == contractInterface) {
 							if (!loaderData.isEmpty()) {
-								throw new MojoExecutionException("Contract must have one interface of @Contract only !!!");
+								throw new MojoExecutionException(String.format(
+										"Interface %s can have one implementation class only !!!", contractInterface.getName()));
 							} else {
-								try {
-									// 检查当前class's package
-									if (clazz.getName().startsWith("com.jd.blockchain.")) {
-										throw new MojoExecutionException("Can not use package [com.jd.blockchain] !!");
-									}
-									// 校验该class
-									ContractType.resolve(clazz);
-								} catch (Exception e) {
-									throw new MojoExecutionException(
-											String.format("Verify contract interface %s !!!", clazz.getName()), e);
+								// 检查当前class's package
+								if (clazz.getName().startsWith("com.jd.blockchain.")) {
+									throw new MojoExecutionException(String.format(
+											"%s can not use package [com.jd.blockchain] !!!", clazz));
 								}
-								logger.debug(String.format("Find contract interface %s !!!", clazz.getName()));
+								logger.debug(String.format("Find implementation class[%s] of contract interface %s !!!",
+										clazz.getName(), contractInterface.getName()));
 								loaderData.initContractClass(clazz);
 							}
 						}
