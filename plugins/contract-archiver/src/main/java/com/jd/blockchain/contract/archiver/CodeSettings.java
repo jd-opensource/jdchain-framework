@@ -19,6 +19,17 @@ public class CodeSettings {
 	private Set<String> includeSet = new LinkedHashSet<String>();
 	private Set<String> excludeSet = new LinkedHashSet<String>();
 
+
+	/**
+	 * The full name of interface which declares the contract event methods;
+	 */
+	private String declaringInterface;
+
+	/**
+	 * The full name of class which implements the contract interface;
+	 */
+	private String implementClass;
+	
 	/**
 	 * 代码类的编译出输出目录；
 	 * 
@@ -58,5 +69,21 @@ public class CodeSettings {
 
 	public void addExcludes(Collection<String> excludes) {
 		excludeSet.addAll(excludes);
+	}
+
+	public String getDeclaringInterface() {
+		return declaringInterface;
+	}
+
+	public void setDeclaringInterface(String declaringInterface) {
+		this.declaringInterface = declaringInterface;
+	}
+
+	public String getImplementClass() {
+		return implementClass;
+	}
+
+	public void setImplementClass(String implementClass) {
+		this.implementClass = implementClass;
 	}
 }

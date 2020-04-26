@@ -127,7 +127,7 @@ public abstract class ContractArchiver {
 		}
 	}
 
-	private void prepareManifest(ArchiveLayout layout) throws ManifestException {
+	private void prepareManifest(CodeSettings codeSettings, ArchiveLayout layout) throws ManifestException {
 		Manifest manifest = new Manifest();
 
 		prepareDefaultManifest(layout, manifest);
@@ -138,6 +138,10 @@ public abstract class ContractArchiver {
 		if (configuredManifest != null) {
 			jarArchiver.addConfiguredManifest(configuredManifest);
 		}
+		
+		//set contract interface and implement;
+		addManifestAttribute(manifest, ManifestUtils.CONTRACT_DECLARATION, codeSettings.getDeclaringInterface());
+		addManifestAttribute(manifest, ManifestUtils.CONTRACT_IMPLEMENT, codeSettings.getImplementClass());
 	}
 
 	private void prepareLibpaths(ArchiveLayout layout, Manifest manifest) throws ManifestException {

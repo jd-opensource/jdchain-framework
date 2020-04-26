@@ -6,6 +6,10 @@ import java.util.jar.Manifest;
 import org.apache.maven.artifact.Artifact;
 
 public class ManifestUtils {
+	
+	public static final String CONTRACT_DECLARATION = "Contr-Decl";
+	
+	public static final String CONTRACT_IMPLEMENT = "Contr-Impl";
 
 	public static final String LIB_PATH_ATTR_NAME = "Lib-Path";
 	public static final String CREATED_BY_ATTR_NAME = "Created-By";

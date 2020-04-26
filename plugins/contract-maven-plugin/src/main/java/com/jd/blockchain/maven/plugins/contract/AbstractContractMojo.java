@@ -185,7 +185,11 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 		
 		// code analysis;
 		AnalysisResult analysisResult = codeAnalyzer.analyze(codeSettings.getCodebaseDirectory(), libraries);
+		
+		codeSettings.setDeclaringInterface(analysisResult.getDeclaringInterface());
+		codeSettings.setImplementClass(analysisResult.getImplementClass());
 		codeSettings.addExcludes(analysisResult.getExcludes());
+		
 		libraries = analysisResult.getLibraries();
 
 		// package;
