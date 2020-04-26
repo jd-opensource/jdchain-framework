@@ -16,7 +16,7 @@ import java.util.Set;
  *
  * @author shaozhuguang
  */
-public class DefaultCodeAnalyzerTest {
+public class DefaultCodeAnalyzerTest_ {
 
     @Test
     public void test() throws Exception {
