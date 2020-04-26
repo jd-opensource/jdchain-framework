@@ -27,6 +27,7 @@ import com.jd.blockchain.maven.plugins.contract.CodeAnalyzer;
 import org.objectweb.asm.ClassReader;
 
 import static com.jd.blockchain.contract.ContractJarUtils.BLACK_CONF;
+import static com.jd.blockchain.maven.plugins.contract.analysis.util.ContractClassLoaderUtil.classNameToSeparator;
 import static com.jd.blockchain.maven.plugins.contract.analysis.util.ContractClassLoaderUtil.resolveConfig;
 
 public class DefaultCodeAnalyzer implements CodeAnalyzer {
@@ -54,13 +55,12 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 		// 1、加载所有的class文件，从class文件中扫描出所有携带注解的class，若不存在，则报错
 		ContractLoaderData loaderData = loadAllContractClasses(classesDirectory);
 		if (loaderData == null || loaderData.isEmpty()) {
-			logger.error("Can not find any interface have @Contract !!!");
 			throw new MojoExecutionException("Can not find any interface have @Contract !!!");
 		}
 
 		// 2、利用ASM加载所有的class和jar到集合中，然后集合黑名单进行递归判断
 		List<URL> urls = new ArrayList<>();
-		Map<String, byte[]> total = new HashMap<>(loaderData.getClassLoader().classes());
+		Map<String, byte[]> total = new HashMap<>(loaderData.getClassLoader().classesBySeparator());
 
 		for (Artifact artifact : libraries) {
 			try {
@@ -77,10 +77,8 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 				loaderData.getClassLoader());
 
 		Map<String, ContractClass> allContractClasses = resolveClasses(total);
-		List<Class<?>> contractClasses = loaderData.getContractClasses();
-		for (Class<?> clazz : contractClasses) {
-			verify(urlClassLoader, allContractClasses, clazz.getName());
-		}
+		Class<?> contractClass = loaderData.getContractClass();
+		verify(urlClassLoader, allContractClasses, contractClass.getName());
 		// release classloader
 		try {
 			urlClassLoader.close();
@@ -111,15 +109,23 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 			try {
 				Class<?> clazz = classLoader.loadClass(className);
 				if (clazz.isAnnotationPresent(Contract.class) && clazz.isInterface()) {
-					try {
-						// 校验该class
-						ContractType.resolve(clazz);
-					} catch (Exception e) {
-						logger.debug(String.format("Verify contract interface %s !!!", clazz.getName()), e);
-						continue;
+					if (!loaderData.isEmpty()) {
+						throw new MojoExecutionException("Contract must have one interface of @Contract only !!!");
+					} else {
+						try {
+							// 检查当前class's package
+							if (clazz.getName().startsWith("com.jd.blockchain.")) {
+								throw new MojoExecutionException("Can not use package [com.jd.blockchain] !!");
+							}
+							// 校验该class
+							ContractType.resolve(clazz);
+						} catch (Exception e) {
+							throw new MojoExecutionException(
+									String.format("Verify contract interface %s !!!", clazz.getName()), e);
+						}
+						logger.debug(String.format("Find contract interface %s !!!", clazz.getName()));
+						loaderData.initContractClass(clazz);
 					}
-					logger.debug(String.format("Find contract interface %s !!!", clazz.getName()));
-					loaderData.addClass(clazz);
 				}
 			} catch (ClassNotFoundException e) {
 				logger.debug("Load class error !!!", e);
@@ -138,7 +144,9 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 			if (classContent == null || classContent.length == 0) {
 				continue;
 			}
-			String className = entry.getKey().substring(0, entry.getKey().length() - 6);
+			String className = classNameToSeparator(entry.getKey());
+//			String className = entry.getKey().substring(0, entry.getKey().length() -
+//					ContractClassLoaderUtil.SUFFIX_CLASS_LENGTH);
 
 			String dotClassName = ContractJarUtils.dotClassName(className);
 			if (WHITELIST.isWhite(dotClassName) || BLACKLIST.isBlackClass(dotClassName)) {
@@ -155,11 +163,10 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 
 	private void verify(URLClassLoader urlClassLoader, Map<String, ContractClass> allContractClasses, String contractClass) throws MojoExecutionException {
 		// 获取MainClass
-		String mainClassKey = convertClassKey(contractClass);
+		String mainClassKey = classNameToSeparator(contractClass);
 		ContractClass mainContractClass = allContractClasses.get(mainClassKey);
 		if (mainContractClass == null) {
-			logger.error(String.format("Load contract class = [%s] null !!!", contractClass));
-			throw new MojoExecutionException("Contract class is null !!!");
+			throw new MojoExecutionException(String.format("Load contract class = [%s] null !!!", contractClass));
 		}
 		// 校验该Class中所有方法
 		Map<String, ContractMethod> methods = mainContractClass.getMethods();
@@ -201,7 +208,7 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 			// 说明是URLClassLoader，这个需要先从黑名单和白名单列表中操作
 			// 首先判断是否是黑名单，黑名单优先级最高
 			if (BLACKLIST.isBlack(dotClass, method.getMethodName())) {
-				throw new IllegalStateException(String.format("Class [%s] method [%s] is black !!!", dotClassName, method.getMethodName()));
+				throw new MojoExecutionException(String.format("Class [%s] method [%s] is black !!!", dotClassName, method.getMethodName()));
 			} else {
 				// 不是黑名单的情况下，判断是否为白名单
 				if (WHITELIST.isWhite(dotClass)) {
@@ -238,7 +245,7 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 			}
 			// 然后判断其是否为黑名单
 			if (BLACKLIST.isBlack(dotClass, method.getMethodName())) {
-				throw new IllegalStateException(String.format("Class [%s] method [%s] is black !!!", dotClassName, method.getMethodName()));
+				throw new MojoExecutionException(String.format("Class [%s] method [%s] is black !!!", dotClassName, method.getMethodName()));
 			}
 		}
 	}
@@ -264,15 +271,6 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 		} catch (Exception e) {
 			logger.debug(e);
 		}
-	}
-
-	private String convertClassKey(final String classKey) {
-		String newClassKey = classKey;
-		if (classKey.endsWith(".class")) {
-			newClassKey = classKey.substring(0, classKey.length() - 6);
-		}
-		newClassKey = newClassKey.replaceAll("\\.", "/");
-		return newClassKey;
 	}
 
 	private String managedKey(ContractMethod method) {
@@ -303,7 +301,7 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 
 	static final class ContractLoaderData {
 
-		private List<Class<?>> contractClasses = new ArrayList<>();
+		private Class<?> contractClass = null;
 
 		private ContractClassLoader classLoader;
 
@@ -311,16 +309,16 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 			this.classLoader = classLoader;
 		}
 
-		public void addClass(Class<?> clazz) {
-			contractClasses.add(clazz);
+		public void initContractClass(Class<?> clazz) {
+			contractClass = clazz;
 		}
 
 		public boolean isEmpty() {
-			return contractClasses.isEmpty();
+			return contractClass == null;
 		}
 
-		public List<Class<?>> getContractClasses() {
-			return contractClasses;
+		public Class<?> getContractClass() {
+			return contractClass;
 		}
 
 		public ContractClassLoader getClassLoader() {

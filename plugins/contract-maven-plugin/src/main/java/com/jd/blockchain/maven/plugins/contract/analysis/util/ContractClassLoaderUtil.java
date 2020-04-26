@@ -22,7 +22,7 @@ public class ContractClassLoaderUtil {
 
     static final String SUFFIX_DOT_CLASS = "." + SUFFIX_CLASS;
 
-    static final int SUFFIX_CLASS_LENGTH = SUFFIX_DOT_CLASS.length();
+    public static final int SUFFIX_CLASS_LENGTH = SUFFIX_DOT_CLASS.length();
 
     /**
      * load all class(name) by jar
@@ -210,5 +210,38 @@ public class ContractClassLoaderUtil {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    /**
+     * convert class name to new class name which separate by "/"
+     *
+     * @param className
+     * @return
+     */
+    public static String classNameToSeparator(String className) {
+        String newClassName = className;
+        if (className.endsWith(SUFFIX_DOT_CLASS)) {
+            newClassName = className.substring(0, className.length() - SUFFIX_CLASS_LENGTH);
+        }
+        newClassName = newClassName.replaceAll("\\.", "/");
+        return newClassName;
+    }
+
+    /**
+     * analyze package of class
+     *
+     * @param clazz
+     * @return
+     */
+    public static String packageName(Class<?> clazz) {
+        Package clazzPackage = clazz.getPackage();
+        if (clazzPackage != null) {
+            return clazzPackage.getName();
+        }
+        // 通过字符串解析处理
+        String classFullName = clazz.getName();
+        String classSimpleName = clazz.getSimpleName();
+        int lastIndexOf = classFullName.lastIndexOf("." + classSimpleName);
+        return classFullName.substring(0, lastIndexOf);
     }
 }
