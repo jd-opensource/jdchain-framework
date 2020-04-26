@@ -4,8 +4,6 @@ import java.util.Set;
 import java.util.jar.Manifest;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.shared.utils.StringUtils;
-import org.codehaus.plexus.archiver.jar.ManifestException;
 
 public class ManifestUtils {
 
@@ -20,7 +18,7 @@ public class ManifestUtils {
 
 	/**
 	 * Create the libpath string by combinates each libpath item separating by the
-	 * white space character.
+	 * white space chaOsracter.
 	 * 
 	 * @param libpathPrefix
 	 * @param libraries
