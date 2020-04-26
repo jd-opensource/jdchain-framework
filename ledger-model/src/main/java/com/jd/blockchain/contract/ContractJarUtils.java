@@ -17,9 +17,7 @@ import java.util.jar.JarOutputStream;
 
 public class ContractJarUtils {
 
-    public static final String BLACK_CONF = "blacks.conf";
-
-    public static final String WHITE_CONF = "whites.conf";
+    public static final String BLACK_CONF = "filter.black.conf";
 
     private static final String CONTRACT_MF = "META-INF/CONTRACT.MF";
 
@@ -36,15 +34,6 @@ public class ContractJarUtils {
             return true;
         }
         return packageName.startsWith(JDCHAIN_PACKAGE + ".");
-    }
-
-    public static List<String> loadWhiteConf() {
-
-        return resolveConfig(WHITE_CONF);
-    }
-
-    public static List<String> loadBlackConf() {
-        return resolveConfig(BLACK_CONF);
     }
 
     public static List<String> resolveConfig(String fileName) {
