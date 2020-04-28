@@ -9,9 +9,32 @@ package com.jd.blockchain.contract.archiver.deploy;
  */
 public class Signer {
 
+    /**
+     * public key
+     */
+    private String pubKey;
+
+    /**
+     * privacy now support
+     */
     private Privacy privacy;
 
     private KeyStore keyStore;
+
+    public boolean isValid() {
+        if (pubKey == null || privacy == null || privacy.getPrivKey() == null) {
+            return false;
+        }
+        return true;
+    }
+
+    public String getPubKey() {
+        return pubKey;
+    }
+
+    public void setPubKey(String pubKey) {
+        this.pubKey = pubKey;
+    }
 
     public Privacy getPrivacy() {
         return privacy;

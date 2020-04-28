@@ -40,6 +40,11 @@ public class Deployment {
         if (ledger == null || ledger.length() == 0) {
             throw new IllegalStateException("config of ledger is empty !!!");
         }
+        if (gateway == null) {
+            throw new IllegalStateException("config of gateway is empty !!!");
+        } else {
+            gateway.verify();
+        }
     }
 
     public String getLedger() {

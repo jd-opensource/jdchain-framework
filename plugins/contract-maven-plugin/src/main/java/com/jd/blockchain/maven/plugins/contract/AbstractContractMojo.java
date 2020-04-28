@@ -108,10 +108,10 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	 * Max size of the CAR file.
 	 */
 	@Parameter(property = "maxCarSize", defaultValue = "1")
-	private int maxCarSize;
+	protected int maxCarSize;
 
 	@Parameter(property = "maxCarSizeUnit", defaultValue = "MB")
-	private ArchiveSizeUnit maxCarSizeUnit;
+	protected ArchiveSizeUnit maxCarSizeUnit;
 
 	/**
 	 * Comma(,) separated list of Artifact names to exclude.

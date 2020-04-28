@@ -12,6 +12,23 @@ public class Gateway {
 
     private int port;
 
+    public Gateway() {
+    }
+
+    public Gateway(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
+
+    public void verify() {
+        if (host == null || host.length() == 0) {
+            throw new IllegalStateException("gateway's host is illegal !");
+        }
+        if (port <= 0 || port > 65535) {
+            throw new IllegalStateException("gateway's port is illegal !");
+        }
+    }
+
     public String getHost() {
         return host;
     }

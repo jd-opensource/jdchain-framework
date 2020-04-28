@@ -32,6 +32,18 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.jd.blockchain</groupId>
+			<artifactId>sdk-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jd.blockchain</groupId>
+			<artifactId>utils-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.ow2.asm</groupId>
 			<artifactId>asm</artifactId>
 			<version>5.0.4</version>
