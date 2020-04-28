@@ -171,6 +171,7 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 	 * @throws MojoExecutionException in case of an error.
 	 *
 	 */
+	@Override
 	public void execute() throws MojoExecutionException {
 		// abort if empty;
 		if (!getClassesDirectory().exists() || getClassesDirectory().list().length < 1) {

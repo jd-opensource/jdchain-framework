@@ -85,7 +85,8 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 		} catch (Exception e) {
 			logger.debug(e);
 		}
-		return new AnalysisResult(null, libraries);
+		return new AnalysisResult(loaderData.getContractInterface().getName(),
+                loaderData.getContractClass().getName(), null, libraries);
 	}
 
 	/**
@@ -136,6 +137,7 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 		if (contractInterface == null) {
 			return null;
 		}
+		loaderData.initContractInterface(contractInterface);
 		// second loop
 		for (String className : classNames) {
 			try {
@@ -339,6 +341,8 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 
 		private Class<?> contractClass = null;
 
+		private Class<?> contractInterface = null;
+
 		private ContractClassLoader classLoader;
 
 		public ContractLoaderData(ContractClassLoader classLoader) {
@@ -349,6 +353,10 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 			contractClass = clazz;
 		}
 
+        public void initContractInterface(Class<?> clazz) {
+            contractInterface = clazz;
+        }
+
 		public boolean isEmpty() {
 			return contractClass == null;
 		}
@@ -357,7 +365,11 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 			return contractClass;
 		}
 
-		public ContractClassLoader getClassLoader() {
+        public Class<?> getContractInterface() {
+            return contractInterface;
+        }
+
+        public ContractClassLoader getClassLoader() {
 			return classLoader;
 		}
 	}
