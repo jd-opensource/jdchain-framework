@@ -13,7 +13,7 @@ public class ContractAddress {
      */
     private String pubKey;
 
-    private Privacy privacy;
+    private String address;
 
     private KeyStore keyStore;
 
@@ -25,12 +25,12 @@ public class ContractAddress {
         this.pubKey = pubKey;
     }
 
-    public Privacy getPrivacy() {
-        return privacy;
+    public String getAddress() {
+        return address;
     }
 
-    public void setPrivacy(Privacy privacy) {
-        this.privacy = privacy;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public KeyStore getKeyStore() {

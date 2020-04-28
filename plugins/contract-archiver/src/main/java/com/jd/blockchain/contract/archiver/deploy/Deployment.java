@@ -52,6 +52,73 @@ public class Deployment {
         }
     }
 
+    public void resetGatewayHost(String gatewayHost) {
+        if (gatewayHost != null && gatewayHost.length() > 0) {
+            initGateway();
+            gateway.setHost(gatewayHost);
+        }
+    }
+
+    public void resetGatewayPort(int gatewayPort) {
+        if (gatewayPort > 0) {
+            initGateway();
+            gateway.setPort(gatewayPort);
+        }
+    }
+
+    public void resetContractPubKey(String pubKeyText) {
+        if (pubKeyText != null && pubKeyText.length() > 0) {
+            initContractAddress();
+            contractAddress.setPubKey(pubKeyText);
+        }
+    }
+
+    public void resetContractAddress(String addressText) {
+        if (addressText != null && addressText.length() > 0) {
+            initContractAddress();
+            contractAddress.setAddress(addressText);
+        }
+    }
+
+    public void resetSignerPubKey(String pubKeyText) {
+        if (pubKeyText != null && pubKeyText.length() > 0) {
+            initSigner();
+            signer.setPubKey(pubKeyText);
+        }
+    }
+
+    public void resetSignerPrivKey(String privKeyText) {
+        if (privKeyText != null && privKeyText.length() > 0) {
+            initSigner();
+            signer.setPrivKey(privKeyText);
+        }
+    }
+
+    public void resetSignerPrivKeyPwd(String privKeyPwdText) {
+        if (privKeyPwdText != null && privKeyPwdText.length() > 0) {
+            initSigner();
+            signer.setPrivKeyPwd(privKeyPwdText);
+        }
+    }
+
+    private void initGateway() {
+        if (gateway == null) {
+            gateway = new Gateway();
+        }
+    }
+
+    private void initContractAddress() {
+        if (contractAddress == null) {
+            contractAddress = new ContractAddress();
+        }
+    }
+
+    private void initSigner() {
+        if (signer == null) {
+            signer = new Signer();
+        }
+    }
+
     public String getLedger() {
         return ledger;
     }

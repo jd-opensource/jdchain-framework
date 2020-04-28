@@ -15,14 +15,20 @@ public class Signer {
     private String pubKey;
 
     /**
-     * privacy now support
+     * private Key
      */
-    private Privacy privacy;
+    private String privKey;
+
+    /**
+     * password of private Key
+     */
+    private String privKeyPwd;
 
     private KeyStore keyStore;
 
     public void verify() {
-        if (pubKey == null || privacy == null || privacy.getPrivKey() == null) {
+        if (pubKey == null || privKey == null || privKeyPwd == null ||
+                pubKey.length() == 0 || privKey.length() == 0 || privKeyPwd.length() == 0) {
             throw new IllegalStateException("signer's config is illegal !");
         }
     }
@@ -35,12 +41,20 @@ public class Signer {
         this.pubKey = pubKey;
     }
 
-    public Privacy getPrivacy() {
-        return privacy;
+    public String getPrivKey() {
+        return privKey;
     }
 
-    public void setPrivacy(Privacy privacy) {
-        this.privacy = privacy;
+    public void setPrivKey(String privKey) {
+        this.privKey = privKey;
+    }
+
+    public String getPrivKeyPwd() {
+        return privKeyPwd;
+    }
+
+    public void setPrivKeyPwd(String privKeyPwd) {
+        this.privKeyPwd = privKeyPwd;
     }
 
     public KeyStore getKeyStore() {

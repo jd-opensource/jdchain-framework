@@ -28,8 +28,69 @@ public class DeployMojo extends AbstractContractMojo {
 	@Parameter(defaultValue = "${project.build.outputDirectory}", required = true)
 	private File classesDirectory;
 
-    @Parameter(property = "deployment", required = true)
+	/**
+	 * Deployment config to deploy contract by mvn clean deploy in pom.xml
+	 */
+    @Parameter(property = "deployment")
 	private Deployment deployment;
+
+	/**
+	 * LedgerHash(Base58) to deploy contract by mvn com.jd.blockchain:contract:deploy
+	 * Its priority larger than {@link Deployment#ledger}
+	 */
+	@Parameter(property = "ledger")
+	private String ledger;
+
+	/**
+	 * total path of car file
+	 */
+	@Parameter(property = "carPath")
+	private String carPath;
+
+	/**
+	 * Gateway host which priority larger than {@link Gateway#host}
+	 */
+	@Parameter(property = "gatewayHost")
+    private String gatewayHost;
+
+	/**
+	 * Gateway host which priority larger than {@link Gateway#port}
+	 */
+	@Parameter(property = "gatewayPort")
+    private int gatewayPort;
+
+	/**
+	 * Contract public Key which priority larger than {@link ContractAddress#pubKey}
+	 */
+	@Parameter(property = "contractPubKey")
+    private String contractPubKey;
+
+	/**
+	 * Contract address which priority larger than {@link ContractAddress#address}
+	 */
+	@Parameter(property = "contractAddress")
+    private String contractAddress;
+
+	/**
+	 * Signer Public Key which priority larger than {@link Signer#pubKey}
+	 *
+	 */
+	@Parameter(property = "signerPubKey")
+	private String signerPubKey;
+
+	/**
+	 * Signer Private Key which priority larger than {@link Signer#privKey}
+	 *
+	 */
+	@Parameter(property = "signerPrivKey")
+    private String signerPrivKey;
+
+	/**
+	 * Signer Password of Private Key which priority larger than {@link Signer#privKeyPwd}
+	 *
+	 */
+	@Parameter(property = "signerPrivKeyPwd")
+    private String signerPrivKeyPwd;
 
 	@Override
 	protected File getClassesDirectory() {
@@ -39,10 +100,7 @@ public class DeployMojo extends AbstractContractMojo {
 	@Override
 	public void execute() throws MojoExecutionException {
 		// execute
-		File carFile = getProject().getArtifact().getFile();
-		if (carFile == null || !carFile.exists()) {
-			throw new MojoExecutionException("Can not find contract file !!!");
-		}
+		File carFile = initCarFile();
 
 		byte[] contractBytes;
 		try {
@@ -59,11 +117,8 @@ public class DeployMojo extends AbstractContractMojo {
 		}
 
 		// check config of deploy
-        try {
-            deployment.verify();
-        } catch (Exception e) {
-            throw new MojoExecutionException("deploy config error", e);
-        }
+		verifyAndInitArgs();
+
 		// contract BlockchainIdentity
 		BlockchainIdentity contractIdentity = toBlockchainIdentity(deployment.getContractAddress());
 
@@ -98,6 +153,54 @@ public class DeployMojo extends AbstractContractMojo {
 		}
 	}
 
+	private File initCarFile() throws MojoExecutionException {
+		File carFile;
+		if (carPath != null && carPath.length() > 0) {
+			carFile = new File(carPath);
+		} else {
+			carFile = getProject().getArtifact().getFile();
+		}
+		if (carFile == null || !carFile.exists()) {
+			throw new MojoExecutionException("Can not find contract file !!!");
+		}
+		return carFile;
+	}
+
+	private void verifyAndInitArgs() throws MojoExecutionException {
+		if (deployment == null) {
+			deployment = new Deployment();
+		}
+		if (ledger != null && ledger.length() > 0) {
+			deployment.setLedger(ledger);
+		}
+
+		resetGatewaySetting();
+		resetContractAddressSetting();
+		resetSignerSetting();
+
+		try {
+			deployment.verify();
+		} catch (Exception e) {
+			throw new MojoExecutionException("deploy config error", e);
+		}
+	}
+
+	private void resetGatewaySetting() {
+		deployment.resetGatewayHost(gatewayHost);
+		deployment.resetGatewayPort(gatewayPort);
+	}
+
+	private void resetContractAddressSetting() {
+		deployment.resetContractPubKey(contractPubKey);
+		deployment.resetContractAddress(contractAddress);
+	}
+
+	private void resetSignerSetting() {
+		deployment.resetSignerPubKey(signerPubKey);
+		deployment.resetSignerPrivKey(signerPrivKey);
+		deployment.resetSignerPrivKeyPwd(signerPrivKeyPwd);
+	}
+
 	private int carMaxBytesLength() {
 		switch (maxCarSizeUnit) {
 			case Byte:
@@ -119,12 +222,17 @@ public class DeployMojo extends AbstractContractMojo {
 	}
 
 	private BlockchainIdentity toBlockchainIdentity(ContractAddress contractAddress) {
-		if (contractAddress == null) {
+		if (contractAddress == null || contractAddress.getPubKey() == null ||
+				contractAddress.getPubKey().length() == 0) {
 			// create new identity
 			return BlockchainKeyGenerator.getInstance().generate().getIdentity();
 		}
 		String pubKeyText = contractAddress.getPubKey();
-		return new BlockchainIdentityData(toPubKey(pubKeyText));
+		String addressText = contractAddress.getAddress();
+		if (addressText == null || addressText.length() == 0) {
+			new BlockchainIdentityData(toPubKey(pubKeyText));
+		}
+		return new BlockchainIdentityData(Bytes.fromBase58(addressText), toPubKey(pubKeyText));
 	}
 
 	private PubKey toPubKey(String pubKeyText) {
@@ -167,11 +275,12 @@ public class DeployMojo extends AbstractContractMojo {
 	 * @param ptx
 	 */
 	private void sign(Signer signer, PreparedTransaction ptx) {
-		Privacy privacy = signer.getPrivacy();
+		String privKeyText = signer.getPrivKey();
+		String privKeyPwdText = signer.getPrivKeyPwd();
 		String pubKeyText = signer.getPubKey();
 		// PubKey pubKey, PrivKey privKey
 		PubKey pubKey = toPubKey(pubKeyText);
-		PrivKey privKey = toPrivKey(privacy.getPrivKey(), privacy.getPrivKeyPwd());
+		PrivKey privKey = toPrivKey(privKeyText, privKeyPwdText);
 		BlockchainKeypair keypair = new BlockchainKeypair(pubKey, privKey);
 		// sign
 		ptx.sign(keypair);
