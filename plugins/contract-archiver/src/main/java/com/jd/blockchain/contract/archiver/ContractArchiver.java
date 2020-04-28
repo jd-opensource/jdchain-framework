@@ -78,11 +78,12 @@ public abstract class ContractArchiver {
 
 	public Archive createArchive() throws MojoExecutionException {
 		try {
+			CodeSettings codeSettings = getCodeSettings();
 			ArchiveLayout layout = getArchiveLayout();
 
-			prepareCodes(layout);
+			prepareCodes(codeSettings, layout);
 
-			prepareManifest(layout);
+			prepareManifest(codeSettings, layout);
 
 			prepareLibraries(layout);
 
@@ -138,8 +139,8 @@ public abstract class ContractArchiver {
 		if (configuredManifest != null) {
 			jarArchiver.addConfiguredManifest(configuredManifest);
 		}
-		
-		//set contract interface and implement;
+
+		// set contract interface and implement;
 		addManifestAttribute(manifest, ManifestUtils.CONTRACT_DECLARATION, codeSettings.getDeclaringInterface());
 		addManifestAttribute(manifest, ManifestUtils.CONTRACT_IMPLEMENT, codeSettings.getImplementClass());
 	}
@@ -157,20 +158,20 @@ public abstract class ContractArchiver {
 		addManifestAttribute(manifest, ManifestUtils.ARCHIVE_LAYOUT, layout.getName());
 
 		if (createdBy != null) {
-			addManifestAttribute(manifest, ManifestUtils.CREATED_BY_ATTR_NAME , createdBy);
+			addManifestAttribute(manifest, ManifestUtils.CREATED_BY_ATTR_NAME, createdBy);
 		}
 
-		addManifestAttribute(manifest, ManifestUtils.BUILD_JDK_SPEC_ATTR_NAME, System.getProperty("java.specification.version"));
-		
+		addManifestAttribute(manifest, ManifestUtils.BUILD_JDK_SPEC_ATTR_NAME,
+				System.getProperty("java.specification.version"));
+
 		addManifestAttribute(manifest, ManifestUtils.BUILD_JDK_ATTR_NAME,
 				String.format("%s (%s)", System.getProperty("java.version"), System.getProperty("java.vendor")));
 
-		addManifestAttribute(manifest,ManifestUtils.BUILD_OS_ATTR_NAME, String.format("%s (%s; %s)", System.getProperty("os.name"),
-				System.getProperty("os.version"), System.getProperty("os.arch")));
+		addManifestAttribute(manifest, ManifestUtils.BUILD_OS_ATTR_NAME, String.format("%s (%s; %s)",
+				System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch")));
 	}
 
-	private void prepareCodes(ArchiveLayout layout) {
-		CodeSettings codeSettings = getCodeSettings();
+	private void prepareCodes(CodeSettings codeSettings, ArchiveLayout layout) {
 		if (codeSettings != null) {
 			jarArchiver.addDirectory(codeSettings.getCodebaseDirectory(), layout.getCodeDirectory(),
 					codeSettings.getIncludes(), codeSettings.getExcludes());
@@ -182,7 +183,6 @@ public abstract class ContractArchiver {
 			jarArchiver.addFile(lib.getFile(), libraryPathPrefix + lib.getFile().getName());
 		}
 	}
-
 
 	private static void addManifestAttribute(Manifest manifest, String key, String value) throws ManifestException {
 		if (StringUtils.isEmpty(value)) {
