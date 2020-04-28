@@ -21,8 +21,6 @@ public class ContractJarUtils {
 
     private static final String CONTRACT_MF = "META-INF/CONTRACT.MF";
 
-    private static final HashFunction HASH_FUNCTION = Crypto.getHashFunction("SHA256");
-
     private static final Random FILE_RANDOM = new Random();
 
     private static final byte[] JDCHAIN_MARK = "JDChain".getBytes(StandardCharsets.UTF_8);
@@ -99,75 +97,6 @@ public class ContractJarUtils {
         return dotClassName;
     }
 
-    public static void verify(String contractPath, byte[] chainCode) {
-        if (chainCode == null || chainCode.length == 0) {
-            throw new IllegalStateException("Contract's chaincode is empty !!!");
-        }
-        // 首先生成合约文件
-        File jarFile = newJarTempFile();
-        try {
-            FileUtils.writeByteArrayToFile(jarFile, chainCode);
-            // 校验合约文件
-            verify(contractPath, jarFile);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        } finally {
-            // 删除文件
-            try {
-                jarFile.deleteOnExit();
-            } catch (Exception e) {
-                // DO NOTHING
-            }
-        }
-    }
-
-    public static void verify(byte[] chainCode) {
-        verify(null, chainCode);
-    }
-
-    private static void verify(String contractPath, File jarFile) throws Exception {
-        // 首先判断jarFile中是否含有META-INF/JDCHAIN.TXT，并将其读出
-        URL jarUrl = new URL("jar:file:" + jarFile.getPath() + "!/" + CONTRACT_MF);
-        InputStream inputStream = jarUrl.openStream();
-        if (inputStream == null) {
-            throw new IllegalStateException(CONTRACT_MF + " IS NULL !!!");
-        }
-        byte[] bytes;
-
-        try {
-            bytes = IOUtils.toByteArray(inputStream);
-        } finally {
-            inputStream.close();
-        }
-        if (bytes == null || bytes.length == 0) {
-            throw new IllegalStateException(CONTRACT_MF + " IS Illegal !!!");
-        }
-        // 获取对应的Hash内容
-        String txt = new String(bytes, StandardCharsets.UTF_8);
-
-        // 生成新的Jar包文件，该文件路径与JarFile基本一致
-        File tempJar = newJarTempFile();
-        try {
-            // 复制除JDCHAIN.TXT之外的部分
-            copy(jarFile, tempJar, null, null, CONTRACT_MF);
-
-            // 生成新Jar包对应的Hash内容
-            String verifyTxt = contractMF(FileUtils.readFileToByteArray(tempJar));
-
-            // 校验Jar包内容
-            if (!txt.equals(verifyTxt)) {
-                throw new IllegalStateException(String.format("Jar [%s] verify Illegal !!!", jarFile.getName()));
-            }
-        } finally {
-            try {
-                // 删除临时文件
-                tempJar.deleteOnExit();
-            } catch (Exception e) {
-                // DO NOTHING
-            }
-        }
-    }
-
     public static void copy(File srcJar, File dstJar) throws IOException {
         copy(srcJar, dstJar, null, null, null);
     }
@@ -197,11 +126,6 @@ public class ContractJarUtils {
         jarOut.finish();
         jarOut.close();
         jarFile.close();
-    }
-
-    public static String contractMF(byte[] content) {
-        HashDigest hashDigest = HASH_FUNCTION.hash(BytesUtils.concat(content, JDCHAIN_MARK));
-        return "hash:" + hashDigest.toBase58();
     }
 
     public static JarEntry contractMFJarEntry() {

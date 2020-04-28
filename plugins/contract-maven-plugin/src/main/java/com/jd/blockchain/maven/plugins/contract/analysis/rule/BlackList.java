@@ -3,6 +3,8 @@ package com.jd.blockchain.maven.plugins.contract.analysis.rule;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.jd.blockchain.maven.plugins.contract.analysis.util.ContractClassLoaderUtil.packageName;
+
 /**
  * 黑名单
  *
@@ -10,8 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  */
 public class BlackList {
-
-    public static final String CONF_FILE = "filter.black.conf";
 
     public static final String COMMON_METHOD = "*";
 
@@ -82,7 +82,7 @@ public class BlackList {
 
     public boolean isCurrentClassBlack(Class<?> clazz, String methodName) {
 
-        String packageName = clazz.getPackage().getName();
+        String packageName = packageName(clazz);
         for (String bp : blackPackages) {
             if ((packageName + ".").equals(bp) || packageName.startsWith(bp)) {
                 return true;

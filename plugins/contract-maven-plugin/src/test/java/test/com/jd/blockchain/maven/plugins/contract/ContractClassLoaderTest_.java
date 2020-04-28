@@ -15,7 +15,7 @@ import java.util.Set;
  * @author shaozhuguang
  *
  */
-public class ContractClassLoaderTest {
+public class ContractClassLoaderTest_ {
 
     @Test
     public void testLoadClassName() {

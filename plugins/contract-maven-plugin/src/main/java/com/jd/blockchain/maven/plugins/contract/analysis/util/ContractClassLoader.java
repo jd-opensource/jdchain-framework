@@ -8,6 +8,8 @@ public class ContractClassLoader extends ClassLoader {
 
     private final Map<String, byte[]> classes = new HashMap<>();
 
+    private final Map<String, byte[]> classesBySeparator = new HashMap<>();
+
     public ContractClassLoader(ClassLoader parent) {
         super(parent);
     }
@@ -23,6 +25,8 @@ public class ContractClassLoader extends ClassLoader {
 
     public void add(String className, byte[] content) {
         classes.put(className, content);
+        String classNameBySep = ContractClassLoaderUtil.classNameToSeparator(className);
+        classesBySeparator.put(classNameBySep, content);
     }
 
     public Set<String> classNames() {
@@ -31,5 +35,13 @@ public class ContractClassLoader extends ClassLoader {
 
     public Map<String, byte[]> classes() {
         return classes;
+    }
+
+    /**
+     * return "." to "/" in className
+     * @return
+     */
+    public Map<String, byte[]> classesBySeparator() {
+        return classesBySeparator;
     }
 }
