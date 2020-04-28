@@ -273,6 +273,10 @@ public class DefaultCodeAnalyzer implements CodeAnalyzer {
 			// 1、不再需要获取其方法；
 			// 首先判断是否为白名单
 			if (WHITELIST.isWhite(dotClass)) {
+			    // 需要重新判断是否是黑名单，黑名单中会有一些从白名单挑出来的
+                if (BLACKLIST.isBlack(dotClass, method.getMethodName())) {
+                    throw new MojoExecutionException(String.format("Class [%s] method [%s] is black !!!", dotClassName, method.getMethodName()));
+                }
 				return;
 			}
 			// 然后判断其是否为黑名单
