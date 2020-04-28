@@ -6,7 +6,7 @@ public interface NodeServer {
 	
 	String getProviderName();
 	
-	ConsensusManageService getManageService();
+	ConsensusManageService getConsensusManageService();
 	
 	ServerSettings getSettings();
 	

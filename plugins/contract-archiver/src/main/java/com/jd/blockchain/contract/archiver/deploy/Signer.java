@@ -21,11 +21,10 @@ public class Signer {
 
     private KeyStore keyStore;
 
-    public boolean isValid() {
+    public void verify() {
         if (pubKey == null || privacy == null || privacy.getPrivKey() == null) {
-            return false;
+            throw new IllegalStateException("signer's config is illegal !");
         }
-        return true;
     }
 
     public String getPubKey() {

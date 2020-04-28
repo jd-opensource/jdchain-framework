@@ -37,13 +37,18 @@ public class Deployment {
      *
      */
     public void verify() {
-        if (ledger == null || ledger.length() == 0) {
-            throw new IllegalStateException("config of ledger is empty !!!");
-        }
+        // must have config of gateway
         if (gateway == null) {
             throw new IllegalStateException("config of gateway is empty !!!");
         } else {
             gateway.verify();
+        }
+
+        // must have config of signer
+        if (signer == null) {
+            throw new IllegalStateException("config of signer is empty !!!");
+        } else {
+            signer.verify();
         }
     }
 

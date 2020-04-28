@@ -72,27 +72,16 @@ public class DeployMojo extends AbstractContractMojo {
         GatewayServiceFactory serviceFactory = GatewayServiceFactory.connect(gateway.getHost(),
 				gateway.getPort(), false);
 		BlockchainService blockchainService = serviceFactory.getBlockchainService();
-		TransactionTemplate txTpl = blockchainService.newTransaction(ledgerHash());
+		HashDigest[] ledgerHashs = blockchainService.getLedgerHashs();
+		validAndInitLedger(ledgerHashs);
 
+		TransactionTemplate txTpl = blockchainService.newTransaction(ledgerHash());
 		// new operation of contract deploy
 		txTpl.contracts().deploy(contractIdentity, contractBytes);
-
 		// bew prepare transaction；
 		PreparedTransaction ptx = txTpl.prepare();
-
 		Signer signer = deployment.getSigner();
-		if (signer != null) {
-			if (signer.isValid()) {
-				Privacy privacy = signer.getPrivacy();
-				String pubKeyText = signer.getPubKey();
-				// PubKey pubKey, PrivKey privKey
-				PubKey pubKey = toPubKey(pubKeyText);
-				PrivKey privKey = toPrivKey(privacy.getPrivKey(), privacy.getPrivKeyPwd());
-				BlockchainKeypair keypair = new BlockchainKeypair(pubKey, privKey);
-				// sign
-				ptx.sign(keypair);
-			}
-		}
+		sign(signer, ptx);
 
 		try {
 			// commit and wait response
@@ -131,7 +120,7 @@ public class DeployMojo extends AbstractContractMojo {
 
 	private BlockchainIdentity toBlockchainIdentity(ContractAddress contractAddress) {
 		if (contractAddress == null) {
-			// create
+			// create new identity
 			return BlockchainKeyGenerator.getInstance().generate().getIdentity();
 		}
 		String pubKeyText = contractAddress.getPubKey();
@@ -144,5 +133,47 @@ public class DeployMojo extends AbstractContractMojo {
 
 	private PrivKey toPrivKey(String privKeyText, String base58Pwd) {
 		return KeyGenUtils.decodePrivKey(privKeyText, base58Pwd);
+	}
+
+	private void validAndInitLedger(HashDigest[] ledgerHashs) throws MojoExecutionException {
+		// check ledger hash
+		if (ledgerHashs == null || ledgerHashs.length == 0) {
+			throw new MojoExecutionException("Blockchain on line have not any ledgers !!!");
+		} else {
+			if (deployment.getLedger() == null || deployment.getLedger().length() == 0) {
+				// un set ledger then select first
+				deployment.setLedger(ledgerHashs[0].toBase58());
+			} else {
+				// check ledger hash
+				boolean haveLedger = false;
+				for (HashDigest hash : ledgerHashs) {
+					if (hash.toBase58().equals(deployment.getLedger())) {
+						haveLedger = true;
+						break;
+					}
+				}
+				if (!haveLedger) {
+					throw new MojoExecutionException(String.format(
+							"Blockchain on line can not find ledger {%s} !", deployment.getLedger()));
+				}
+			}
+		}
+	}
+
+	/**
+	 * add sign for transaction
+	 *
+	 * @param signer
+	 * @param ptx
+	 */
+	private void sign(Signer signer, PreparedTransaction ptx) {
+		Privacy privacy = signer.getPrivacy();
+		String pubKeyText = signer.getPubKey();
+		// PubKey pubKey, PrivKey privKey
+		PubKey pubKey = toPubKey(pubKeyText);
+		PrivKey privKey = toPrivKey(privacy.getPrivKey(), privacy.getPrivKeyPwd());
+		BlockchainKeypair keypair = new BlockchainKeypair(pubKey, privKey);
+		// sign
+		ptx.sign(keypair);
 	}
 }
