@@ -118,10 +118,8 @@ public class DeployMojo extends AbstractContractMojo {
 
 		// check config of deploy
 		verifyAndInitArgs();
-
 		// contract BlockchainIdentity
 		BlockchainIdentity contractIdentity = toBlockchainIdentity(deployment.getContractAddress());
-
         // connect gateway
 		Gateway gateway = deployment.getGateway();
         GatewayServiceFactory serviceFactory = GatewayServiceFactory.connect(gateway.getHost(),
@@ -129,28 +127,8 @@ public class DeployMojo extends AbstractContractMojo {
 		BlockchainService blockchainService = serviceFactory.getBlockchainService();
 		HashDigest[] ledgerHashs = blockchainService.getLedgerHashs();
 		validAndInitLedger(ledgerHashs);
-
-		TransactionTemplate txTpl = blockchainService.newTransaction(ledgerHash());
-		// new operation of contract deploy
-		txTpl.contracts().deploy(contractIdentity, contractBytes);
-		// bew prepare transaction；
-		PreparedTransaction ptx = txTpl.prepare();
-		Signer signer = deployment.getSigner();
-		sign(signer, ptx);
-
-		try {
-			// commit and wait response
-			TransactionResponse txResp = ptx.commit();
-			if (txResp.isSuccess()) {
-				// print
-				getLog().info(String.format("Contract deploy success, address = {%s}, blockHeight = {%s}",
-						contractIdentity.getAddress().toBase58(), txResp.getBlockHeight()));
-			} else {
-				throw new IllegalStateException(String.format("Tx's state = %s", txResp.getExecutionState()));
-			}
-		} catch (Exception e) {
-			throw new MojoExecutionException("Transaction commit error", e);
-		}
+		// create tx and send tx to gateway
+		createAndCommitTx(contractIdentity, blockchainService, contractBytes);
 	}
 
 	private File initCarFile() throws MojoExecutionException {
@@ -230,7 +208,7 @@ public class DeployMojo extends AbstractContractMojo {
 		String pubKeyText = contractAddress.getPubKey();
 		String addressText = contractAddress.getAddress();
 		if (addressText == null || addressText.length() == 0) {
-			new BlockchainIdentityData(toPubKey(pubKeyText));
+			return new BlockchainIdentityData(toPubKey(pubKeyText));
 		}
 		return new BlockchainIdentityData(Bytes.fromBase58(addressText), toPubKey(pubKeyText));
 	}
@@ -265,6 +243,30 @@ public class DeployMojo extends AbstractContractMojo {
 							"Blockchain on line can not find ledger {%s} !", deployment.getLedger()));
 				}
 			}
+		}
+	}
+
+	private void createAndCommitTx(BlockchainIdentity contractIdentity, BlockchainService blockchainService, byte[] contractBytes) throws MojoExecutionException{
+		TransactionTemplate txTpl = blockchainService.newTransaction(ledgerHash());
+		// new operation of contract deploy
+		txTpl.contracts().deploy(contractIdentity, contractBytes);
+		// bew prepare transaction；
+		PreparedTransaction ptx = txTpl.prepare();
+		Signer signer = deployment.getSigner();
+		sign(signer, ptx);
+
+		try {
+			// commit and wait response
+			TransactionResponse txResp = ptx.commit();
+			if (txResp.isSuccess()) {
+				// print
+				getLog().info(String.format("Contract deploy success, address = {%s}, blockHeight = {%s}",
+						contractIdentity.getAddress().toBase58(), txResp.getBlockHeight()));
+			} else {
+				throw new IllegalStateException(String.format("Tx's state = %s", txResp.getExecutionState()));
+			}
+		} catch (Exception e) {
+			throw new MojoExecutionException("Transaction commit error", e);
 		}
 	}
 
