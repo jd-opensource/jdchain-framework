@@ -10,10 +10,12 @@ import com.jd.blockchain.ledger.LedgerInfo;
 import com.jd.blockchain.ledger.LedgerMetadata;
 import com.jd.blockchain.ledger.LedgerTransaction;
 import com.jd.blockchain.ledger.ParticipantNode;
+import com.jd.blockchain.ledger.RoleSet;
 import com.jd.blockchain.ledger.Transaction;
 import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.ledger.TypedKVEntry;
 import com.jd.blockchain.ledger.UserInfo;
+import org.springframework.cglib.core.Block;
 
 /**
  * 区块链查询器；
@@ -325,4 +327,12 @@ public interface BlockchainQueryService {
 	 * @return
 	 */
 	BlockchainIdentity[] getContractAccounts(HashDigest ledgerHash, int fromIndex, int count);
+
+	/**
+	 * return user's roles;
+	 * @param ledgerHash
+	 * @param userAddress
+	 * @return
+	 */
+	RoleSet getUserRoles(HashDigest ledgerHash, String userAddress);
 }
