@@ -7,11 +7,6 @@
 		<version>1.2.0.RELEASE</version>
 	</parent>
 
-	<properties>
-		<binary-proto.version>0.5.0-SNAPSHOT</binary-proto.version>
-		<ledger-model.version>0.5.0-SNAPSHOT</ledger-model.version>
-
-	</properties>
 	<artifactId>utils-http</artifactId>
 	<dependencies>
 		<dependency>
