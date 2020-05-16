@@ -6,22 +6,11 @@
 	<parent>
 		<groupId>com.jd.blockchain</groupId>
 		<artifactId>jdchain-framework</artifactId>
-		<version>1.1.8.RELEASE</version>
+		<version>1.2.0.RELEASE</version>
 	</parent>
 	<artifactId>ledger-model</artifactId>
 
 	<dependencies>
-
-		<dependency>
-			<groupId>com.jd.blockchain</groupId>
-			<artifactId>utils-common</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jd.blockchain</groupId>
-			<artifactId>utils-web</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 
 		<dependency>
 			<groupId>com.jd.blockchain</groupId>
@@ -37,7 +26,10 @@
 			<groupId>com.jd.blockchain</groupId>
 			<artifactId>crypto-classic</artifactId>
 			<version>${project.version}</version>
+			<scope>test</scope>
+		
 		</dependency>
+		
 	</dependencies>
 
 </project>

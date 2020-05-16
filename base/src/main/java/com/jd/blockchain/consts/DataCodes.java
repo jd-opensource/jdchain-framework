@@ -44,6 +44,8 @@ public interface DataCodes {
 
 	public static final int TX_RETURN_MESSAGE = 0x230;
 
+	public static final int TX_SET = 0x240;
+
 	public static final int TX_OP = 0x300;
 
 	public static final int TX_OP_LEDGER_INIT = 0x301;
