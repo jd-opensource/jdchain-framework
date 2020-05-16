@@ -14,6 +14,11 @@ import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.utils.Bytes;
 import com.jd.blockchain.utils.io.BytesSlice;
 import com.jd.blockchain.utils.serialize.json.JSONSerializeUtils;
+import com.jd.blockchain.web.serializes.json.ConsumerJsonDeserializer;
+import com.jd.blockchain.web.serializes.json.ValueJsonSerializer;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -24,18 +29,24 @@ import com.jd.blockchain.utils.serialize.json.JSONSerializeUtils;
 
 public class ByteArrayObjectUtil {
 
-    public static final Class<?>[] BYTEARRAY_JSON_SERIALIZE_CLASS = new Class<?>[] {
+    private static final Class<?>[] BYTEARRAY_JSON_SERIALIZE_CLASS = new Class<?>[] {
             HashDigest.class,
             PubKey.class,
             SignatureDigest.class,
             Bytes.class,
             BytesSlice.class};
 
+    public static final List<Class<?>> BYTEARRAY_JSON_SERIALIZE_CLASS_ARRAY =
+            Arrays.asList(BYTEARRAY_JSON_SERIALIZE_CLASS);
+
     public static void init() {
+
+        ExtendJsonSerializer jsonSerializer = new ValueJsonSerializer();
+
         for (Class<?> byteArrayClass : BYTEARRAY_JSON_SERIALIZE_CLASS) {
             JSONSerializeUtils.configSerialization(byteArrayClass,
-                    ByteArrayObjectJsonSerializer.getInstance(byteArrayClass),
-                    ByteArrayObjectJsonDeserializer.getInstance(byteArrayClass));
+                    ByteArrayJsonSerializer.create(byteArrayClass, jsonSerializer),
+                    ByteArrayJsonDeserializer.create(byteArrayClass, new ConsumerJsonDeserializer(byteArrayClass)));
         }
     }
 }

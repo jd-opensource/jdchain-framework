@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.jd.blockchain</groupId>
+	<artifactId>contract-test-samples</artifactId>
+	<packaging>contract</packaging>
+	<version>1.0.0.RELEASE</version>
+	
+	<properties>
+		<framework.version>1.1.9-SNAPSHOT</framework.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.jd.blockchain</groupId>
+			<artifactId>contract-starter</artifactId>
+			<version>${framework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>19.0</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.jd.blockchain</groupId>
+				<artifactId>contract-maven-plugin</artifactId>
+				<version>${framework.version}</version>
+				<extensions>true</extensions>
+
+				<configuration>
+					<outputLibrary>true</outputLibrary>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+
+</project>

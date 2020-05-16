@@ -3,7 +3,6 @@ package com.jd.blockchain.sdk.proxy;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.ContractInfo;
-import com.jd.blockchain.ledger.TypedKVEntry;
 import com.jd.blockchain.ledger.KVInfoVO;
 import com.jd.blockchain.ledger.LedgerAdminInfo;
 import com.jd.blockchain.ledger.LedgerBlock;
@@ -12,9 +11,11 @@ import com.jd.blockchain.ledger.LedgerMetadata;
 import com.jd.blockchain.ledger.LedgerTransaction;
 import com.jd.blockchain.ledger.ParticipantNode;
 import com.jd.blockchain.ledger.PreparedTransaction;
+import com.jd.blockchain.ledger.RoleSet;
 import com.jd.blockchain.ledger.TransactionContent;
 import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.ledger.TransactionTemplate;
+import com.jd.blockchain.ledger.TypedKVEntry;
 import com.jd.blockchain.ledger.UserInfo;
 import com.jd.blockchain.sdk.BlockchainEventHandle;
 import com.jd.blockchain.sdk.BlockchainEventListener;
@@ -212,4 +213,10 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	public BlockchainIdentity[] getContractAccounts(HashDigest ledgerHash, int fromIndex, int count) {
 		return getQueryService(ledgerHash).getContractAccounts(ledgerHash, fromIndex, count);
 	}
+
+	@Override
+	public RoleSet getUserRoles(HashDigest ledgerHash, String userAddress){
+		return getQueryService(ledgerHash).getUserRoles(ledgerHash, userAddress);
+	}
+
 }
