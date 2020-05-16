@@ -163,4 +163,8 @@ public abstract class PrivilegeBitset<E extends Enum<?> & Int8Code> implements P
 		return permissionBits.cardinality() - PREFIX_CARDINALITY;
 	}
 
+	public String getPermission(){
+		return permissionBits.get(8,Integer.MAX_VALUE).toString();
+	}
+
 }

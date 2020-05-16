@@ -10,6 +10,7 @@ import com.jd.blockchain.ledger.LedgerInfo;
 import com.jd.blockchain.ledger.LedgerMetadata;
 import com.jd.blockchain.ledger.LedgerTransaction;
 import com.jd.blockchain.ledger.ParticipantNode;
+import com.jd.blockchain.ledger.PrivilegeSet;
 import com.jd.blockchain.ledger.RoleSet;
 import com.jd.blockchain.ledger.Transaction;
 import com.jd.blockchain.ledger.TransactionState;
@@ -335,4 +336,12 @@ public interface BlockchainQueryService {
 	 * @return
 	 */
 	RoleSet getUserRoles(HashDigest ledgerHash, String userAddress);
+
+	/**
+	 * return role's privileges;
+	 * @param ledgerHash
+	 * @param roleName
+	 * @return
+	 */
+	PrivilegeSet getRolePrivileges(HashDigest ledgerHash, String roleName);
 }
