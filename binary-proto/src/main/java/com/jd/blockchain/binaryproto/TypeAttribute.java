@@ -36,6 +36,8 @@ public interface TypeAttribute {
 	 * 
 	 * 与特定语言相关；
 	 * 
+	 * 对于 Java 语言，有 METHOD、FIELD;
+	 * 
 	 * @return
 	 */
 	String getReaderType();

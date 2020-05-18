@@ -1,5 +1,11 @@
 package com.jd.blockchain.binaryproto;
 
+/**
+ * 数据契约信息的格式化输出；
+ * 
+ * @author huanghaiquan
+ *
+ */
 public abstract class DataTypeFormat {
 
 	public abstract String toJSON();
@@ -30,6 +36,7 @@ public abstract class DataTypeFormat {
 
 	/**
 	 * 格式化输出数据契约的二进制序列格式；
+	 * 
 	 * @param dataSpecification
 	 * @return
 	 */
