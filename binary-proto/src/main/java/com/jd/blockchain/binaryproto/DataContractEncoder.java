@@ -24,7 +24,7 @@ public interface DataContractEncoder {
 	 * @return
 	 */
 	Class<?> getContractType();
-
+	
 	/**
 	 * 按照数据格式标准序列化输出指定的数据对象；
 	 * 
