@@ -96,7 +96,7 @@ public class DataContractEncoderImpl implements DataContractEncoder, DataTypeMap
 	}
 
 	@Override
-	public DataSpecification getSepcification() {
+	public DataSpecification getSpecification() {
 		return specification;
 	}
 

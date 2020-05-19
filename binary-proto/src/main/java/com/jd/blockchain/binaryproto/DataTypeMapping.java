@@ -15,7 +15,7 @@ public interface DataTypeMapping {
 	 * 
 	 * @return
 	 */
-	DataSpecification getSepcification();
+	DataSpecification getSpecification();
 
 	/**
 	 * 数据契约的接口类型；

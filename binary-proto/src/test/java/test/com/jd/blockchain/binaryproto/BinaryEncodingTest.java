@@ -92,7 +92,7 @@ public class BinaryEncodingTest {
 
 		byte[] bytes = BinaryProtocol.encode(pd, PrimitiveDatas.class);
 
-		DataSpecification contractSpec = encoder.getSepcification();
+		DataSpecification contractSpec = encoder.getSpecification();
 
 		List<FieldSpec> fields = contractSpec.getFields();
 		List<BinarySliceSpec> slices = contractSpec.getSlices();
