@@ -92,6 +92,10 @@ public interface DataCodes {
 	public static final int SECURITY_ROLE_INIT_SETTING = 0x421;
 
 	public static final int SECURITY_USER_AUTH_INIT_SETTING = 0x422;
+	
+	// event types;
+	public static final int EVENT_MESSAGE = 0x501;
+	
 
 	// contract types of metadata;
 	public static final int METADATA = 0x600;

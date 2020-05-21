@@ -3,18 +3,39 @@ package com.jd.blockchain.sdk;
 public interface BlockchainEventService {
 
 	/**
-	 * 注册区块链事件监听器；
+	 * 监听系统事件；
 	 * 
-	 * @param filteredEventTypes
-	 *            要监听的事件类型；
-	 * @param filteredTxHash
-	 *            要监听的交易；如果为 null，则不进行交易过滤；
-	 * @param filteredAccountAddress
-	 *            要监听的账户地址；如果为 null，这不进行账户地址过滤；
+	 * @param eventName
+	 * @param startSequence
 	 * @param listener
-	 *            监听器实例；
+	 * @return
 	 */
-	BlockchainEventHandle addBlockchainEventListener(int filteredEventTypes, String filteredTxHash,
-			String filteredAccountAddress, BlockchainEventListener listener);
+	EventListenerHandle<EventPoint> monitorSystemEvent(String eventName, long startSequence, BlockchainEventListener<EventPoint> listener);
+
+	/**
+	 * @param startingEventPoints
+	 * @param listener
+	 * @return
+	 */
+	EventListenerHandle<EventPoint> monitorSystemEvents(EventPoint[] startingEventPoints, BlockchainEventListener<EventPoint> listener);
+
+	/**
+	 * 监听用户事件；
+	 * 
+	 * @param eventAccount  事件账户地址；
+	 * @param eventName
+	 * @param startSequence
+	 * @param listener
+	 * @return
+	 */
+	EventListenerHandle<UserEventPoint> monitorUserEvent(String eventAccount, String eventName, long startSequence,
+			BlockchainEventListener<UserEventPoint> listener);
+
+	/**
+	 * @param startingEventPoints
+	 * @param listener
+	 * @return
+	 */
+	EventListenerHandle<UserEventPoint> monitorUserEvent(UserEventPoint[] startingEventPoints, BlockchainEventListener<UserEventPoint> listener);
 
 }

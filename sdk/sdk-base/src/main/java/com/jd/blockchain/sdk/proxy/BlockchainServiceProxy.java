@@ -17,7 +17,7 @@ import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.ledger.TransactionTemplate;
 import com.jd.blockchain.ledger.TypedKVEntry;
 import com.jd.blockchain.ledger.UserInfo;
-import com.jd.blockchain.sdk.BlockchainEventHandle;
+import com.jd.blockchain.sdk.EventListenerHandle;
 import com.jd.blockchain.sdk.BlockchainEventListener;
 import com.jd.blockchain.sdk.BlockchainService;
 import com.jd.blockchain.sdk.converters.ClientResolveUtil;
@@ -44,11 +44,12 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 		TxRequestBuilder txReqBuilder = new TxRequestBuilder(content);
 		return new PreparedTx(txReqBuilder, getTransactionService(content.getLedgerHash()));
 	}
-
+	
 	@Override
-	public BlockchainEventHandle addBlockchainEventListener(int filteredEventTypes, String filteredTxHash,
-															String filteredAccountAddress, BlockchainEventListener listener) {
-		throw new IllegalStateException("Not implemented!");
+	public EventListenerHandle monitorSystemEvent(String eventName, long startSequence,
+			BlockchainEventListener listener) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

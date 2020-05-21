@@ -3,6 +3,7 @@ package com.jd.blockchain.transaction;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.ContractInfo;
+import com.jd.blockchain.ledger.Event;
 import com.jd.blockchain.ledger.KVInfoVO;
 import com.jd.blockchain.ledger.LedgerAdminInfo;
 import com.jd.blockchain.ledger.LedgerBlock;
@@ -299,6 +300,29 @@ public interface BlockchainQueryService {
 	ContractInfo getContract(HashDigest ledgerHash, String address);
 
 	/**
+	 * 返回系统事件；
+	 * 
+	 * @param ledgerHash   账本哈希；
+	 * @param eventName    事件名；
+	 * @param fromSequence 开始的事件序列号；
+	 * @param maxCount     最大数量；
+	 * @return
+	 */
+	Event[] getSystemEvents(HashDigest ledgerHash, String eventName, long fromSequence, int maxCount);
+
+	/**
+	 * 返回自定义事件；
+	 * 
+	 * @param ledgerHash   账本哈希；
+	 * @param address      事件账户地址；
+	 * @param eventName    事件名；
+	 * @param fromSequence 开始的事件序列号；
+	 * @param maxCount     最大数量；
+	 * @return
+	 */
+	Event[] getUserEvents(HashDigest ledgerHash, String address, String eventName, long fromSequence, int maxCount);
+
+	/**
 	 * get users by ledgerHash and its range;
 	 * 
 	 * @param ledgerHash
@@ -330,6 +354,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * return user's roles;
+	 * 
 	 * @param ledgerHash
 	 * @param userAddress
 	 * @return
