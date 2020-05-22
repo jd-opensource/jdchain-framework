@@ -20,6 +20,6 @@ public interface UserPrivilege {
     RoleSet getRoleSet();
 
 	@DataField(order = 2, primitiveType = PrimitiveType.BYTES)
-	List<RolePrivileges> getRolePriviledge();
+	List<RolePrivileges> getRolePrivilege();
 
 }
