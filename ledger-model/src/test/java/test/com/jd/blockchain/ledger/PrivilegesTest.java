@@ -101,10 +101,10 @@ public class PrivilegesTest {
 		byte[] bytes = BinaryProtocol.encode(privileges, PrivilegeSet.class);
 
 		PrivilegeSet decodePrivileges = BinaryProtocol.decode(bytes);
-		List<LedgerPermission> ledgerPermissionList = decodePrivileges.getLedgerPrivilege().getPermission();
+		List<LedgerPermission> ledgerPermissionList = decodePrivileges.getLedgerPrivilege().getPrivilege();
 		Assert.assertTrue(ledgerPermissionList.contains(LedgerPermission.REGISTER_USER));
 		Assert.assertTrue(ledgerPermissionList.contains(LedgerPermission.APPROVE_TX));
-		List<TransactionPermission> transactionPermissionList = decodePrivileges.getTransactionPrivilege().getPermission();
+		List<TransactionPermission> transactionPermissionList = decodePrivileges.getTransactionPrivilege().getPrivilege();
 		Assert.assertTrue(transactionPermissionList.contains(TransactionPermission.DIRECT_OPERATION));
 	}
 }

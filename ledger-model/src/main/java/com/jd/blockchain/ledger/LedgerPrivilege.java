@@ -25,7 +25,7 @@ public class LedgerPrivilege extends PrivilegeBitset<LedgerPermission> {
 		return (LedgerPrivilege) super.clone();
 	}
 
-	public List<LedgerPermission> getPermission(){
+	public List<LedgerPermission> getPrivilege(){
 		List<LedgerPermission> permissionList = new ArrayList<>();
 		String permissionStr = super.cloneBitSet().get(8,Integer.MAX_VALUE).toString();
 		if(!StringUtils.isEmpty(permissionStr)){

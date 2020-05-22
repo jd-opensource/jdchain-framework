@@ -20,7 +20,7 @@ public class TransactionPrivilege extends PrivilegeBitset<TransactionPermission>
 	}
 
 
-	public List<TransactionPermission> getPermission(){
+	public List<TransactionPermission> getPrivilege(){
 		List<TransactionPermission> permissionList = new ArrayList<>();
 		String permissionStr = super.cloneBitSet().get(8,Integer.MAX_VALUE).toString();
 		if(!StringUtils.isEmpty(permissionStr)){

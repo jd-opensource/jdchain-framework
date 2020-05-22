@@ -87,7 +87,7 @@ public interface BlockchainQueryService {
 	LedgerBlock getBlock(HashDigest ledgerHash, HashDigest blockHash);
 
 	/**
-	 * 返回指定高度的区块中记录的交易总数；
+	 * 返回截至指定高度的区块，记录的交易总数；
 	 * 
 	 * @param ledgerHash
 	 * @param height
@@ -96,7 +96,7 @@ public interface BlockchainQueryService {
 	long getTransactionCount(HashDigest ledgerHash, long height);
 
 	/**
-	 * 返回指定高度的区块中记录的交易总数；
+	 * 返回截至指定高度的区块，记录的交易总数；
 	 * 
 	 * @param ledgerHash
 	 * @param blockHash
