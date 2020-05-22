@@ -18,6 +18,7 @@ import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.ledger.TransactionTemplate;
 import com.jd.blockchain.ledger.TypedKVEntry;
 import com.jd.blockchain.ledger.UserInfo;
+import com.jd.blockchain.ledger.UserPrivilege;
 import com.jd.blockchain.sdk.BlockchainEventHandle;
 import com.jd.blockchain.sdk.BlockchainEventListener;
 import com.jd.blockchain.sdk.BlockchainService;
@@ -223,5 +224,10 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	@Override
 	public PrivilegeSet getRolePrivileges(HashDigest ledgerHash, String roleName) {
 		return getQueryService(ledgerHash).getRolePrivileges(ledgerHash, roleName);
+	}
+
+	@Override
+	public UserPrivilege getUserPrivileges(HashDigest ledgerHash, String userAddress) {
+		return getQueryService(ledgerHash).getUserPrivileges(ledgerHash, userAddress);
 	}
 }

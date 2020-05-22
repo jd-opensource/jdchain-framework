@@ -16,6 +16,7 @@ import com.jd.blockchain.ledger.Transaction;
 import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.ledger.TypedKVEntry;
 import com.jd.blockchain.ledger.UserInfo;
+import com.jd.blockchain.ledger.UserPrivilege;
 import org.springframework.cglib.core.Block;
 
 /**
@@ -344,4 +345,12 @@ public interface BlockchainQueryService {
 	 * @return
 	 */
 	PrivilegeSet getRolePrivileges(HashDigest ledgerHash, String roleName);
+
+	/**
+	 * 返回user's priveleges;
+	 *
+	 * @param userAddress
+	 * @return
+	 */
+	UserPrivilege getUserPrivileges(HashDigest ledgerHash, String userAddress);
 }

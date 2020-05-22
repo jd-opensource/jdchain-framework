@@ -16,6 +16,7 @@ import com.jd.blockchain.ledger.Transaction;
 import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.ledger.TypedKVEntry;
 import com.jd.blockchain.ledger.UserInfo;
+import com.jd.blockchain.ledger.UserPrivilege;
 import com.jd.blockchain.sdk.BlockchainExtendQueryService;
 import com.jd.blockchain.sdk.converters.HashDigestToStringConverter;
 import com.jd.blockchain.sdk.converters.HashDigestsResponseConverter;
@@ -636,4 +637,16 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	@Override
 	PrivilegeSet getRolePrivileges(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 								   @PathParam(name="roleName") String roleName);
+
+	/**
+	 * get user's privilege;
+	 *
+	 * @param ledgerHash
+	 * @param userAddress
+	 * @return
+	 */
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/user-privilege/{userAddress}")
+	@Override
+	UserPrivilege getUserPrivileges(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+									 @PathParam(name="userAddress") String userAddress);
 }

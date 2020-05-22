@@ -92,6 +92,7 @@ public interface DataCodes {
 	public static final int SECURITY_ROLE_INIT_SETTING = 0x421;
 
 	public static final int SECURITY_USER_AUTH_INIT_SETTING = 0x422;
+	public static final int USER_PRIVILEGE = 0x423;
 
 	// contract types of metadata;
 	public static final int METADATA = 0x600;

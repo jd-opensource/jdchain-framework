@@ -2,6 +2,7 @@ package test.com.jd.blockchain.ledger;
 
 import static org.junit.Assert.*;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.jd.blockchain.binaryproto.BinaryProtocol;
@@ -9,6 +10,8 @@ import com.jd.blockchain.ledger.LedgerPermission;
 import com.jd.blockchain.ledger.PrivilegeSet;
 import com.jd.blockchain.ledger.Privileges;
 import com.jd.blockchain.ledger.TransactionPermission;
+
+import java.util.List;
 
 public class PrivilegesTest {
 
@@ -89,4 +92,19 @@ public class PrivilegesTest {
 		}
 	}
 
+	@Test
+	public void test2(){
+		Privileges privileges = Privileges.configure()
+				.enable(LedgerPermission.REGISTER_USER, LedgerPermission.APPROVE_TX)
+				.enable(TransactionPermission.DIRECT_OPERATION);
+
+		byte[] bytes = BinaryProtocol.encode(privileges, PrivilegeSet.class);
+
+		PrivilegeSet decodePrivileges = BinaryProtocol.decode(bytes);
+		List<LedgerPermission> ledgerPermissionList = decodePrivileges.getLedgerPrivilege().getPermission();
+		Assert.assertTrue(ledgerPermissionList.contains(LedgerPermission.REGISTER_USER));
+		Assert.assertTrue(ledgerPermissionList.contains(LedgerPermission.APPROVE_TX));
+		List<TransactionPermission> transactionPermissionList = decodePrivileges.getTransactionPrivilege().getPermission();
+		Assert.assertTrue(transactionPermissionList.contains(TransactionPermission.DIRECT_OPERATION));
+	}
 }
