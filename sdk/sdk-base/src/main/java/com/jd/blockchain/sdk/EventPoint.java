@@ -4,6 +4,6 @@ public interface EventPoint {
 	
 	String getEventName();
 	
-	String getSequence();
+	long getSequence();
 	
 }

@@ -5,12 +5,8 @@ import com.jd.blockchain.crypto.HashDigest;
 public interface EventContext<E extends EventPoint> {
 	
 	HashDigest getLedgerHash();
-	
-	
-	long getBlockHeight();
-	
-	
-	EventListenerHandle<E> getHandle();
-	
 
+	long getBlockHeight();
+
+	EventListenerHandle<E> getHandle();
 }

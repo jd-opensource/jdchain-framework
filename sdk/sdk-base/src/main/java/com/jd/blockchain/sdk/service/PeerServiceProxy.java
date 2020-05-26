@@ -4,6 +4,7 @@ import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.TransactionRequest;
 import com.jd.blockchain.ledger.TransactionResponse;
 import com.jd.blockchain.sdk.BlockchainException;
+import com.jd.blockchain.sdk.EventQueryService;
 import com.jd.blockchain.sdk.LedgerAccessContext;
 import com.jd.blockchain.sdk.proxy.BlockchainServiceProxy;
 import com.jd.blockchain.transaction.BlockchainQueryService;
@@ -65,6 +66,11 @@ public class PeerServiceProxy extends BlockchainServiceProxy implements Transact
 	@Override
 	protected BlockchainQueryService getQueryService(HashDigest ledgerHash) {
 		return getLedgerAccessContext(ledgerHash).getQueryService();
+	}
+
+	@Override
+	protected EventQueryService getEventQueryService(HashDigest ledgerHash) {
+		return null;
 	}
 
 	private LedgerAccessContext getLedgerAccessContext(HashDigest ledgerHash) {
