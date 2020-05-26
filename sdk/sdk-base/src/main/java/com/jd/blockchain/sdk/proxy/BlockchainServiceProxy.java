@@ -18,8 +18,6 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 
 	protected abstract BlockchainQueryService getQueryService(HashDigest ledgerHash);
 
-	protected abstract EventQueryService getEventQueryService(HashDigest ledgerHash);
-
 	@Override
 	public TransactionTemplate newTransaction(HashDigest ledgerHash) {
 		return new TxTemplate(ledgerHash, getTransactionService(ledgerHash));
@@ -34,7 +32,7 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	@Override
 	public EventListenerHandle<EventPoint> monitorSystemEvent(HashDigest ledgerHash, String eventName, long startSequence,
 															  BlockchainEventListener listener) {
-		SystemEventListenerHandle eventListenerHandle = new SystemEventListenerHandle(getEventQueryService(ledgerHash));
+		SystemEventListenerHandle eventListenerHandle = new SystemEventListenerHandle(getQueryService(ledgerHash));
 		eventListenerHandle.register(ledgerHash,
 				SystemEventPointData.createEventPoint(eventName, startSequence), listener);
 		return eventListenerHandle;
@@ -42,14 +40,14 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 
 	@Override
 	public EventListenerHandle<EventPoint> monitorSystemEvents(HashDigest ledgerHash, EventPoint[] startingEventPoints, BlockchainEventListener<EventPoint> listener) {
-		SystemEventListenerHandle eventListenerHandle = new SystemEventListenerHandle(getEventQueryService(ledgerHash));
+		SystemEventListenerHandle eventListenerHandle = new SystemEventListenerHandle(getQueryService(ledgerHash));
 		eventListenerHandle.register(ledgerHash, startingEventPoints, listener);
 		return eventListenerHandle;
 	}
 
 	@Override
 	public EventListenerHandle<UserEventPoint> monitorUserEvent(HashDigest ledgerHash, String eventAccount, String eventName, long startSequence, BlockchainEventListener<UserEventPoint> listener) {
-		UserEventListenerHandle eventListenerHandle = new UserEventListenerHandle(getEventQueryService(ledgerHash));
+		UserEventListenerHandle eventListenerHandle = new UserEventListenerHandle(getQueryService(ledgerHash));
 		eventListenerHandle.register(ledgerHash,
 				UserEventPointData.createEventPoint(eventAccount, eventName, startSequence), listener);
 		return eventListenerHandle;
@@ -57,7 +55,7 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 
 	@Override
 	public EventListenerHandle<UserEventPoint> monitorUserEvent(HashDigest ledgerHash, UserEventPoint[] startingEventPoints, BlockchainEventListener<UserEventPoint> listener) {
-		UserEventListenerHandle eventListenerHandle = new UserEventListenerHandle(getEventQueryService(ledgerHash));
+		UserEventListenerHandle eventListenerHandle = new UserEventListenerHandle(getQueryService(ledgerHash));
 		eventListenerHandle.register(ledgerHash, startingEventPoints, listener);
 		return eventListenerHandle;
 	}

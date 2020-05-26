@@ -1,7 +1,6 @@
 package com.jd.blockchain.sdk.client;
 
 import com.jd.blockchain.crypto.HashDigest;
-import com.jd.blockchain.sdk.EventQueryService;
 import com.jd.blockchain.sdk.proxy.BlockchainServiceProxy;
 import com.jd.blockchain.transaction.BlockchainQueryService;
 import com.jd.blockchain.transaction.TransactionService;
@@ -12,12 +11,9 @@ public class GatewayBlockchainServiceProxy extends BlockchainServiceProxy {
 
 	private TransactionService txService;
 
-	private EventQueryService eventQueryService;
-
-	public GatewayBlockchainServiceProxy(TransactionService txService, BlockchainQueryService queryService, EventQueryService eventQueryService) {
+	public GatewayBlockchainServiceProxy(TransactionService txService, BlockchainQueryService queryService) {
 		this.txService = txService;
 		this.queryService = queryService;
-		this.eventQueryService = eventQueryService;
 	}
 
 	@Override
@@ -33,10 +29,5 @@ public class GatewayBlockchainServiceProxy extends BlockchainServiceProxy {
 	@Override
 	protected BlockchainQueryService getQueryService(HashDigest ledgerHash) {
 		return queryService;
-	}
-
-	@Override
-	protected EventQueryService getEventQueryService(HashDigest ledgerHash) {
-		return eventQueryService;
 	}
 }

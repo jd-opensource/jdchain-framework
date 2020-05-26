@@ -1,20 +1,7 @@
 package com.jd.blockchain.sdk.proxy;
 
 import com.jd.blockchain.crypto.HashDigest;
-import com.jd.blockchain.ledger.BlockchainIdentity;
-import com.jd.blockchain.ledger.ContractInfo;
-import com.jd.blockchain.ledger.KVInfoVO;
-import com.jd.blockchain.ledger.LedgerAdminInfo;
-import com.jd.blockchain.ledger.LedgerBlock;
-import com.jd.blockchain.ledger.LedgerInfo;
-import com.jd.blockchain.ledger.LedgerMetadata;
-import com.jd.blockchain.ledger.LedgerTransaction;
-import com.jd.blockchain.ledger.ParticipantNode;
-import com.jd.blockchain.ledger.RoleSet;
-import com.jd.blockchain.ledger.Transaction;
-import com.jd.blockchain.ledger.TransactionState;
-import com.jd.blockchain.ledger.TypedKVEntry;
-import com.jd.blockchain.ledger.UserInfo;
+import com.jd.blockchain.ledger.*;
 import com.jd.blockchain.sdk.BlockchainExtendQueryService;
 import com.jd.blockchain.sdk.converters.HashDigestToStringConverter;
 import com.jd.blockchain.sdk.converters.HashDigestsResponseConverter;
@@ -574,6 +561,40 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	ContractInfo getContract(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
                               @PathParam(name="address") String address);
 
+	/**
+	 * 返回系统事件列表；
+	 *
+	 *
+	 * @param ledgerHash   账本哈希；
+	 * @param eventName    事件名；
+	 * @param fromSequence 开始的事件序列号；
+	 * @param maxCount     最大数量；
+	 * @return
+	 */
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/{eventName}")
+	@Override
+	Event[] getSystemEvents(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+							@PathParam(name="eventName") String eventName,
+							@RequestParam(name = "fromSequence", required = false) long fromSequence,
+							@RequestParam(name = "maxCount", required = false) int maxCount);
+
+	/**
+	 * 返回用户时间列表；
+	 *
+	 * @param ledgerHash   账本哈希；
+	 * @param address      事件账户地址；
+	 * @param eventName    事件名；
+	 * @param fromSequence 开始的事件序列号；
+	 * @param maxCount     最大数量；
+	 * @return
+	 */
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/{address}/{eventName}")
+	@Override
+	Event[] getUserEvents(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+						  @PathParam(name="address") String address,
+						  @PathParam(name="eventName") String eventName,
+						  @RequestParam(name = "fromSequence", required = false) long fromSequence,
+						  @RequestParam(name = "maxCount", required = false) int maxCount);
 
 	/**
 	 * get more users by fromIndex and count;

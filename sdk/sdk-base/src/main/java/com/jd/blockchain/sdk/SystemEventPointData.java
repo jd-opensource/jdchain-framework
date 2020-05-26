@@ -1,9 +1,21 @@
 package com.jd.blockchain.sdk;
 
+/**
+ * 系统事件实现类
+ *
+ * @author shaozhuguang
+ *
+ */
 public class SystemEventPointData implements EventPoint {
 
+    /**
+     * 监听的事件名称
+     */
     private String eventName;
 
+    /**
+     * 起始的序列号
+     */
     private long sequence;
 
     public SystemEventPointData(String eventName, long sequence) {

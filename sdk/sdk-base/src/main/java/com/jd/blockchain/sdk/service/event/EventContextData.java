@@ -3,6 +3,13 @@ package com.jd.blockchain.sdk.service.event;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.sdk.*;
 
+/**
+ * 事件上下文对象
+ *
+ * @author shaozhuguang
+ *
+ * @param <E>
+ */
 public class EventContextData<E extends EventPoint> implements EventContext {
 
     private HashDigest ledgerHash;

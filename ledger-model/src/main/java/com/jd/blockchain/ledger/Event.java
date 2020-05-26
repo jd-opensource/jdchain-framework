@@ -1,6 +1,8 @@
 package com.jd.blockchain.ledger;
 
 import com.jd.blockchain.binaryproto.DataContract;
+import com.jd.blockchain.binaryproto.DataField;
+import com.jd.blockchain.binaryproto.PrimitiveType;
 import com.jd.blockchain.consts.DataCodes;
 import com.jd.blockchain.crypto.HashDigest;
 
@@ -18,6 +20,7 @@ public interface Event {
 	 * 
 	 * @return
 	 */
+	@DataField(order = 1, primitiveType = PrimitiveType.TEXT)
 	String getName();
 
 	/**
@@ -25,6 +28,7 @@ public interface Event {
 	 * 
 	 * @return
 	 */
+	@DataField(order = 2, primitiveType = PrimitiveType.INT64)
 	long getSequence();
 
 	/**
@@ -32,6 +36,7 @@ public interface Event {
 	 * 
 	 * @return
 	 */
+	@DataField(order=3, refContract = true)
 	BytesValue getContent();
 
 	/**
@@ -39,6 +44,7 @@ public interface Event {
 	 * 
 	 * @return
 	 */
+	@DataField(order = 4, primitiveType = PrimitiveType.BYTES)
 	HashDigest getTransactionSource();
 
 	/**
@@ -46,5 +52,14 @@ public interface Event {
 	 * 
 	 * @return
 	 */
+	@DataField(order = 5, primitiveType = PrimitiveType.TEXT)
 	String getContractSource();
+
+	/**
+	 * 产生事件的区块高度
+	 *
+	 * @return
+	 */
+	@DataField(order = 6, primitiveType = PrimitiveType.INT64)
+	long getBlockHeight();
 }
