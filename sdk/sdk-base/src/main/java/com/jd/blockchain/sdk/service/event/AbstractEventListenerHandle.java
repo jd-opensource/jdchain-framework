@@ -165,6 +165,10 @@ public abstract class AbstractEventListenerHandle<E extends EventPoint> implemen
         return eventPointSet;
     }
 
+    /**
+     * 取消监听
+     *         线程池会停止相关调用，但并不会马上停止
+     */
     @Override
     public void cancel() {
         if (isRegistered && executor != null) {
