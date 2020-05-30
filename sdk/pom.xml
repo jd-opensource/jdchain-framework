@@ -13,6 +13,7 @@
 		<module>sdk-rpc</module>
 		<module>sdk-base</module>
 		<module>sdk-client</module>
+		<module>sdk-manager</module>
     </modules>
 
 </project>

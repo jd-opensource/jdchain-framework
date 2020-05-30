@@ -14,11 +14,19 @@ public interface StateMachineReplicate {
 	/**
 	 * 获取最新的状态编号；<br>
 	 * 
-	 * 注：新的状态编号总数比旧的状态编号大；
+	 * 注：
 	 * 
 	 * @return
 	 */
 	long getLatestStateID(String realmName);
+
+	/**
+	 * 获取最新的视图编号；<br>
+	 *
+	 *
+	 * @return
+	 */
+	int getLatestViewID(String realmName);
 
 	/**
 	 * 返回指定状态编号的快照；
