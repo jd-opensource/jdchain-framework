@@ -13,6 +13,11 @@ public class UserEventPointData extends SystemEventPointData implements UserEven
      */
     private String eventAccount;
 
+    public UserEventPointData(String eventAccount, String eventName) {
+        super(eventName);
+        this.eventAccount = eventAccount;
+    }
+
     public UserEventPointData(String eventAccount, String eventName, long sequence) {
         super(eventName, sequence);
         this.eventAccount = eventAccount;
