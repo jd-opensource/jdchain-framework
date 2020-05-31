@@ -11,4 +11,6 @@ public interface ContractInfo extends BlockchainIdentity, MerkleSnapshot {
     @DataField(order=4, primitiveType= PrimitiveType.BYTES)
     byte[] getChainCode();
 
+    @DataField(order=5, primitiveType= PrimitiveType.INT64)
+    long getChaincodeVersion();
 }

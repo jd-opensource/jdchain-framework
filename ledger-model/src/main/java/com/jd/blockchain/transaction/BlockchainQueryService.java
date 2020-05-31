@@ -2,6 +2,8 @@ package com.jd.blockchain.transaction;
 
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.BlockchainIdentity;
+import com.jd.blockchain.ledger.BytesValueList;
+import com.jd.blockchain.ledger.ContractEventSendOperation;
 import com.jd.blockchain.ledger.ContractInfo;
 import com.jd.blockchain.ledger.KVInfoVO;
 import com.jd.blockchain.ledger.LedgerAdminInfo;
@@ -15,6 +17,7 @@ import com.jd.blockchain.ledger.Transaction;
 import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.ledger.TypedKVEntry;
 import com.jd.blockchain.ledger.UserInfo;
+import com.jd.blockchain.utils.Bytes;
 import org.springframework.cglib.core.Block;
 
 /**
@@ -299,6 +302,16 @@ public interface BlockchainQueryService {
 	ContractInfo getContract(HashDigest ledgerHash, String address);
 
 	/**
+	 * 返回合约账户信息；
+	 *
+	 * @param ledgerHash
+	 * @param address
+	 * @param version
+	 * @return
+	 */
+	ContractInfo getContract(HashDigest ledgerHash, String address, long version);
+
+	/**
 	 * get users by ledgerHash and its range;
 	 * 
 	 * @param ledgerHash
@@ -335,4 +348,5 @@ public interface BlockchainQueryService {
 	 * @return
 	 */
 	RoleSet getUserRoles(HashDigest ledgerHash, String userAddress);
+
 }

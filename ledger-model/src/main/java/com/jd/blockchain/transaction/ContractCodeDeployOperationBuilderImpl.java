@@ -11,4 +11,9 @@ public class ContractCodeDeployOperationBuilderImpl implements ContractCodeDeplo
 		return op;
 	}
 
+	@Override
+	public ContractCodeDeployOperation deploy(BlockchainIdentity id, byte[] chainCode, long version) {
+		ContractCodeDeployOpTemplate op = new ContractCodeDeployOpTemplate(id, chainCode, version);
+		return op;
+	}
 }

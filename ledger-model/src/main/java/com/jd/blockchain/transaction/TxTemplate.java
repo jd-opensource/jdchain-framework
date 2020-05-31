@@ -96,6 +96,18 @@ public class TxTemplate implements TransactionTemplate {
 	}
 
 	@Override
+	public <T> T contract(Bytes address, long version, Class<T> contractIntf) {
+		stateManager.operate();
+		return txBuilder.contract(address, version, contractIntf);
+	}
+
+	@Override
+	public <T> T contract(String address, long version, Class<T> contractIntf) {
+		stateManager.operate();
+		return txBuilder.contract(address, version, contractIntf);
+	}
+
+	@Override
 	public void close() throws IOException {
 		if (!stateManager.close()) {
 			Collection<OperationResultHandle> handlers = txBuilder.getReturnValuehandlers();

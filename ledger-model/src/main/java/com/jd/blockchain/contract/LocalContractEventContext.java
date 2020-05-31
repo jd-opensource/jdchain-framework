@@ -18,6 +18,7 @@ public class LocalContractEventContext implements ContractEventContext,Cloneable
     private TransactionRequest transactionRequest;
     private Set<BlockchainIdentity> txSigners;
     private LedgerContext ledgerContext;
+    private long chainCodeVersion;
 
     public LocalContractEventContext(HashDigest ledgeHash, String event){
         this.ledgeHash = ledgeHash;
@@ -95,6 +96,15 @@ public class LocalContractEventContext implements ContractEventContext,Cloneable
 
     public LocalContractEventContext setArgs(BytesValueList args) {
         this.args = args;
+        return this;
+    }
+
+    public long getChainCodeVersion() {
+        return chainCodeVersion;
+    }
+
+    public LocalContractEventContext setChainCodeVersion(long chainCodeVersion) {
+        this.chainCodeVersion = chainCodeVersion;
         return this;
     }
 }

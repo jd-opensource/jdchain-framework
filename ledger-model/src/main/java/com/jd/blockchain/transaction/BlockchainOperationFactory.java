@@ -111,12 +111,22 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	@Override
 	public <T> T contract(String address, Class<T> contractIntf) {
-		return contractInvoProxyBuilder.create(address, contractIntf, contractEventSendOpBuilder);
+		return contractInvoProxyBuilder.create(address, -1L, contractIntf, contractEventSendOpBuilder);
 	}
 
 	@Override
 	public <T> T contract(Bytes address, Class<T> contractIntf) {
-		return contractInvoProxyBuilder.create(address, contractIntf, contractEventSendOpBuilder);
+		return contractInvoProxyBuilder.create(address, -1L, contractIntf, contractEventSendOpBuilder);
+	}
+
+	@Override
+	public <T> T contract(String address, long version, Class<T> contractIntf) {
+		return contractInvoProxyBuilder.create(address, version, contractIntf, contractEventSendOpBuilder);
+	}
+
+	@Override
+	public <T> T contract(Bytes address, long version, Class<T> contractIntf) {
+		return contractInvoProxyBuilder.create(address, version, contractIntf, contractEventSendOpBuilder);
 	}
 
 	/**
@@ -298,6 +308,13 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 			operationList.add(op);
 			return op;
 		}
+
+		@Override
+		public ContractCodeDeployOperation deploy(BlockchainIdentity id, byte[] chainCode, long version) {
+			ContractCodeDeployOperation op = CONTRACT_CODE_DEPLOY_OP_BUILDER.deploy(id, chainCode, version);
+			operationList.add(op);
+			return op;
+		}
 	}
 
 	private class ParticipantRegisterOperationBuilderFilter implements ParticipantRegisterOperationBuilder {
@@ -328,6 +345,18 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		@Override
 		public synchronized ContractEventSendOperation send(Bytes address, String event, BytesValueList args) {
 			ContractEventSendOpTemplate op = new ContractEventSendOpTemplate(address, event, args);
+			operationList.add(op);
+			return op;
+		}
+
+		@Override
+		public ContractEventSendOperation send(String address, long version, String event, BytesValueList args) {
+			return send(Bytes.fromBase58(address), version, event, args);
+		}
+
+		@Override
+		public synchronized ContractEventSendOperation send(Bytes address, long version, String event, BytesValueList args) {
+			ContractEventSendOpTemplate op = new ContractEventSendOpTemplate(address, version, event, args);
 			operationList.add(op);
 			return op;
 		}

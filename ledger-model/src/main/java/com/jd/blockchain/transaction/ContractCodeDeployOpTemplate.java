@@ -13,6 +13,7 @@ public class ContractCodeDeployOpTemplate implements ContractCodeDeployOperation
 	private BlockchainIdentity contractID;
 
 	private byte[] chainCode;
+	private long chainCodeVersion;
 
 	public ContractCodeDeployOpTemplate() {
 	}
@@ -20,6 +21,12 @@ public class ContractCodeDeployOpTemplate implements ContractCodeDeployOperation
 	public ContractCodeDeployOpTemplate(BlockchainIdentity contractID, byte[] chainCode) {
 		this.contractID = contractID;
 		this.chainCode = chainCode;
+	}
+
+	public ContractCodeDeployOpTemplate(BlockchainIdentity contractID, byte[] chainCode, long chainCodeVersion) {
+		this.contractID = contractID;
+		this.chainCode = chainCode;
+		this.chainCodeVersion = chainCodeVersion;
 	}
 
 	@Override
@@ -38,4 +45,7 @@ public class ContractCodeDeployOpTemplate implements ContractCodeDeployOperation
 		return null;
 	}
 
+	public long getChainCodeVersion() {
+		return chainCodeVersion;
+	}
 }
