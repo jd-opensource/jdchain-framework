@@ -123,21 +123,11 @@ public class TxBuilder implements TransactionBuilder {
 
 	@Override
 	public <T> T contract(Bytes address, Class<T> contractIntf) {
-		return opFactory.contract(address, -1L, contractIntf);
+		return opFactory.contract(address, contractIntf);
 	}
 
 	@Override
 	public <T> T contract(String address, Class<T> contractIntf) {
-		return opFactory.contract(address, -1L, contractIntf);
-	}
-
-	@Override
-	public <T> T contract(Bytes address, long version, Class<T> contractIntf) {
-		return opFactory.contract(address, version, contractIntf);
-	}
-
-	@Override
-	public <T> T contract(String address, long version, Class<T> contractIntf) {
-		return opFactory.contract(address, version, contractIntf);
+		return opFactory.contract(address, contractIntf);
 	}
 }

@@ -22,26 +22,6 @@ public interface EventOperator {
 	 */
 	<T> T contract(Bytes address, Class<T> contractIntf);
 
-	/**
-	 * 创建调用合约的代理实例；
-	 *
-	 * @param address
-	 * @param version
-	 * @param contractIntf
-	 * @return
-	 */
-	<T> T contract(String address, long version, Class<T> contractIntf);
-
-	/**
-	 * 创建调用合约的代理实例；
-	 *
-	 * @param address
-	 * @param version
-	 * @param contractIntf
-	 * @return
-	 */
-	<T> T contract(Bytes address, long version, Class<T> contractIntf);
-
 //	/**
 //	 * 执行合约异步等待应答结果
 //	 *

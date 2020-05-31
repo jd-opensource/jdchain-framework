@@ -55,6 +55,16 @@ public enum TransactionState {
 	REJECTED_BY_SECURITY_POLICY((byte) 0x10),
 
 	/**
+	 * 账户注册冲突；
+	 */
+	ACCOUNT_REGISTER_CONFLICT((byte) 0x12),
+
+	/**
+	 * 合约写入时版本冲突；
+	 */
+	CONTRACT_VERSION_CONFLICT((byte) 0x05),
+
+	/**
 	 * 由于在错误的账本上执行交易而被丢弃；
 	 */
 	IGNORED_BY_WRONG_LEDGER((byte) 0x40),

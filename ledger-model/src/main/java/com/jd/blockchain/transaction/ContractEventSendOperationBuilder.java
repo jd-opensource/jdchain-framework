@@ -21,22 +21,4 @@ public interface ContractEventSendOperationBuilder {
 	 * @return
 	 */
 	ContractEventSendOperation send(Bytes address, String event, BytesValueList args);
-
-	/**
-	 * @param address 合约地址；
-	 * @param version 版本号;
-	 * @param event   事件名；
-	 * @param args    事件参数；
-	 * @return
-	 */
-	ContractEventSendOperation send(String address, long version, String event, BytesValueList args);
-
-	/**
-	 * @param address 合约地址；
-	 * @param version 版本号;
-	 * @param event   事件名；
-	 * @param args    事件参数；
-	 * @return
-	 */
-	ContractEventSendOperation send(Bytes address, long version, String event, BytesValueList args);
 }

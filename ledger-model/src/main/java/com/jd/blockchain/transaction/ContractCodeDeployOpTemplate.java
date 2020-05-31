@@ -13,7 +13,7 @@ public class ContractCodeDeployOpTemplate implements ContractCodeDeployOperation
 	private BlockchainIdentity contractID;
 
 	private byte[] chainCode;
-	private long chainCodeVersion;
+	private long chainCodeVersion = -1L;
 
 	public ContractCodeDeployOpTemplate() {
 	}

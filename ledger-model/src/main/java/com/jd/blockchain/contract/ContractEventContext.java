@@ -71,6 +71,6 @@ public interface ContractEventContext {
 	 * get contract's version;
 	 * @return
 	 */
-	long getChainCodeVersion();
+	long getVersion();
 
 }

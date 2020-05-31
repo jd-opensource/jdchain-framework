@@ -19,12 +19,7 @@ public class ContractEventSendOpTemplate implements ContractEventSendOperation {
 	private ContractInvocation invocation;
 
 	public ContractEventSendOpTemplate(Bytes contractAddress, String event, BytesValueList args) {
-		this(contractAddress, -1L, event, args);
-	}
-
-	public ContractEventSendOpTemplate(Bytes contractAddress, long version, String event, BytesValueList args) {
 		this.contractAddress = contractAddress;
-		this.version =version;
 		this.event = event;
 		this.args = args;
 	}
@@ -56,5 +51,4 @@ public class ContractEventSendOpTemplate implements ContractEventSendOperation {
 	public long getVersion() {
 		return version;
 	}
-
 }

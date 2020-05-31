@@ -119,16 +119,6 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		return contractInvoProxyBuilder.create(address, -1L, contractIntf, contractEventSendOpBuilder);
 	}
 
-	@Override
-	public <T> T contract(String address, long version, Class<T> contractIntf) {
-		return contractInvoProxyBuilder.create(address, version, contractIntf, contractEventSendOpBuilder);
-	}
-
-	@Override
-	public <T> T contract(Bytes address, long version, Class<T> contractIntf) {
-		return contractInvoProxyBuilder.create(address, version, contractIntf, contractEventSendOpBuilder);
-	}
-
 	/**
 	 * 返回已经定义的操作列表；
 	 * 
@@ -345,18 +335,6 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		@Override
 		public synchronized ContractEventSendOperation send(Bytes address, String event, BytesValueList args) {
 			ContractEventSendOpTemplate op = new ContractEventSendOpTemplate(address, event, args);
-			operationList.add(op);
-			return op;
-		}
-
-		@Override
-		public ContractEventSendOperation send(String address, long version, String event, BytesValueList args) {
-			return send(Bytes.fromBase58(address), version, event, args);
-		}
-
-		@Override
-		public synchronized ContractEventSendOperation send(Bytes address, long version, String event, BytesValueList args) {
-			ContractEventSendOpTemplate op = new ContractEventSendOpTemplate(address, version, event, args);
 			operationList.add(op);
 			return op;
 		}
