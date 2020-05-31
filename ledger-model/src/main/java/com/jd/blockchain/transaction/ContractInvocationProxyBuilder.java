@@ -17,15 +17,15 @@ public class ContractInvocationProxyBuilder {
 
 	private Map<Class<?>, ContractType> contractTypes = new ConcurrentHashMap<>();
 
-	public <T> T create(String address, Class<T> contractIntf, ContractEventSendOperationBuilder contractEventBuilder) {
-		return create(Bytes.fromBase58(address), contractIntf, contractEventBuilder);
+	public <T> T create(String address, long version, Class<T> contractIntf, ContractEventSendOperationBuilder contractEventBuilder) {
+		return create(Bytes.fromBase58(address), version, contractIntf, contractEventBuilder);
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T create(Bytes address, Class<T> contractIntf, ContractEventSendOperationBuilder contractEventBuilder) {
+	public <T> T create(Bytes address, long version, Class<T> contractIntf, ContractEventSendOperationBuilder contractEventBuilder) {
 		ContractType contractType = resolveContractType(contractIntf);
 
-		ContractInvocationHandler proxyHandler = new ContractInvocationHandler(address, contractType, contractEventBuilder);
+		ContractInvocationHandler proxyHandler = new ContractInvocationHandler(address, version, contractType, contractEventBuilder);
 
 		T proxy = (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
 				new Class<?>[] { contractIntf }, proxyHandler);

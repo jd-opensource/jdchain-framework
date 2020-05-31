@@ -27,5 +27,8 @@ public interface ContractCodeDeployOperation extends Operation {
      */
 	@DataField(order=4, refContract = true)
     DigitalSignature getAddressSignature();
+
+	@DataField(order=5, primitiveType=PrimitiveType.INT64)
+	long getChainCodeVersion();
 	
 }

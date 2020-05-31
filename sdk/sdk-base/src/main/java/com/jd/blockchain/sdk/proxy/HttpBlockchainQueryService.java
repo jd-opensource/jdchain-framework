@@ -574,6 +574,18 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	ContractInfo getContract(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
                               @PathParam(name="address") String address);
 
+	/**
+	 * 返回合约账户信息；
+	 *
+	 * @param ledgerHash
+	 * @param address
+	 * @return
+	 */
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/contracts/address/{address}/version/{version}")
+	@Override
+	ContractInfo getContract(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+							 @PathParam(name="address") String address, @PathParam(name="version") long version);
+
 
 	/**
 	 * get more users by fromIndex and count;

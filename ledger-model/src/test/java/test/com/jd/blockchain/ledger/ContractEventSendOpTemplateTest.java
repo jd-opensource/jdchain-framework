@@ -34,6 +34,7 @@ import com.jd.blockchain.utils.Bytes;
 public class ContractEventSendOpTemplateTest {
 
 	private ContractEventSendOpTemplate data;
+	private ContractEventSendOpTemplate data4Version;
 
 	@Before
 	public void initContractEventSendOpTemplate() {
@@ -43,10 +44,11 @@ public class ContractEventSendOpTemplateTest {
 		String contractAddress = "zhangsan-address", event = "zhangsan-event";
 		BytesValueList args = new BytesDataList(TypedValue.fromText("zhangsan-args"));
 		data = new ContractEventSendOpTemplate(Bytes.fromString(contractAddress), event, args);
+		data4Version = new ContractEventSendOpTemplate(Bytes.fromString(contractAddress), 0L, event, args);
 	}
 
 	@Test
-	public void testSerialize_ContractEventSendOperation() throws Exception {
+	public void testSerialize_ContractEventSendOperation() {
 		byte[] serialBytes = BinaryProtocol.encode(data, ContractEventSendOperation.class);
 		ContractEventSendOperation resolvedData = BinaryProtocol.decode(serialBytes);
 		System.out.println("------Assert start ------");
@@ -59,8 +61,31 @@ public class ContractEventSendOpTemplateTest {
 	}
 
 	@Test
-	public void testSerialize_Operation() throws Exception {
+	public void testSerialize_Operation() {
 		byte[] serialBytes = BinaryProtocol.encode(data, Operation.class);
+		Operation resolvedData = BinaryProtocol.decode(serialBytes);
+		System.out.println("------Assert start ------");
+		System.out.println(resolvedData);
+		System.out.println("------Assert OK ------");
+	}
+
+	@Test
+	public void testSerialize_ContractEventSendOperation4Version() {
+		byte[] serialBytes = BinaryProtocol.encode(data4Version, ContractEventSendOperation.class);
+		ContractEventSendOperation resolvedData = BinaryProtocol.decode(serialBytes);
+		System.out.println("------Assert start ------");
+		assertEquals(resolvedData.getContractAddress(), data4Version.getContractAddress());
+		assertEquals(resolvedData.getEvent(), data4Version.getEvent());
+		assertEquals(resolvedData.getVersion(), data4Version.getVersion());
+		byte[] expectedBytes = BinaryProtocol.encode(resolvedData.getArgs(), BytesValueList.class);
+		byte[] actualBytes = BinaryProtocol.encode(data4Version.getArgs(), BytesValueList.class);
+		assertArrayEquals(expectedBytes, actualBytes);
+		System.out.println("------Assert OK ------");
+	}
+
+	@Test
+	public void testSerialize_Operation4Version() {
+		byte[] serialBytes = BinaryProtocol.encode(data4Version, Operation.class);
 		Operation resolvedData = BinaryProtocol.decode(serialBytes);
 		System.out.println("------Assert start ------");
 		System.out.println(resolvedData);
