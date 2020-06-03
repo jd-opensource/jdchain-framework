@@ -179,6 +179,21 @@ public class LedgerInitProperties {
 		return String.format("%s.%s", partAddrStr, partPropKey);
 	}
 
+	public static LedgerInitProperties createDefault(byte[] ledgerSeed, String ledgerName, Date createdTime,
+			Properties consensusConfig) {
+		LedgerInitProperties initProps = new LedgerInitProperties(ledgerSeed);
+		initProps.ledgerName = ledgerName;
+		initProps.createdTime = createdTime.getTime();
+		initProps.consensusProvider = "com.jd.blockchain.consensus.bftsmart.BftsmartConsensusProvider";
+		initProps.consensusConfig = consensusConfig;
+		initProps.cryptoProperties.providers = new String[] {
+				"com.jd.blockchain.crypto.service.classic.ClassicCryptoService",
+				"com.jd.blockchain.crypto.service.sm.SMCryptoService" };
+		initProps.cryptoProperties.verifyHash=true;
+		initProps.cryptoProperties.hashAlgorithm="SHA256";
+		return initProps;
+	}
+
 	public static LedgerInitProperties resolve(String initSettingFile) {
 		Properties props = FileUtils.readProperties(initSettingFile, "UTF-8");
 		File realFile = new File(initSettingFile);
