@@ -58,17 +58,17 @@ public class ParticipantManager {
 		this.httpConnectionManager = new ServiceConnectionManager();
 	}
 
-	public void activePeer(NetworkAddress httpServiceEndpoint, NetworkAddress newParticipant, String base58LedgerHash, BlockchainKeypair user) {
+	public TransactionResponse activePeer(NetworkAddress httpServiceEndpoint, NetworkAddress newParticipant, String base58LedgerHash, BlockchainKeypair user, AsymmetricKeypair signerKeyPair) {
 
 		HashDigest ledgerHash = new HashDigest(Base58Utils.decode(base58LedgerHash));
 
-		activePeer(httpServiceEndpoint, newParticipant, ledgerHash, user);
+		return activePeer(httpServiceEndpoint, newParticipant, ledgerHash, user, signerKeyPair);
 	}
 
-	public TransactionResponse activePeer(NetworkAddress httpServiceEndpoint, NetworkAddress newParticipant, HashDigest ledgerHash, BlockchainKeypair user) {
+	public TransactionResponse activePeer(NetworkAddress httpServiceEndpoint, NetworkAddress newParticipant, HashDigest ledgerHash, BlockchainKeypair user, AsymmetricKeypair signerKeyPair) {
 
 		//existed signer
-		AsymmetricKeypair keyPair = new BlockchainKeypair(pubKey1, privkey1);
+//		AsymmetricKeypair keyPair = new BlockchainKeypair(pubKey1, privkey1);
 
 		// 创建一笔激活参与方的操作；
 		TransactionService txService = createTransactionService(new ServiceEndpoint(new NetworkAddress(httpServiceEndpoint.getHost(), httpServiceEndpoint.getPort())));
@@ -79,7 +79,7 @@ public class ParticipantManager {
 
 		PreparedTransaction prepTx = txTemp.prepare();
 
-		prepTx.sign(keyPair);
+		prepTx.sign(signerKeyPair);
 
 
 		TransactionResponse transactionResponse = prepTx.commit();
