@@ -79,6 +79,8 @@ public interface DataCodes {
 	public static final int TX_OP_USER_ROLE_AUTHORIZE_ENTRY = 0x374;
 
 	public static final int TX_OP_EVENT_ACC_REG = 0x380;
+	public static final int TX_OP_EVENT_PUBLISH = 0x381;
+	public static final int TX_OP_EVENT_PUBLISH_ENTITY = 0x382;
 
 	// enum types of permissions;
 	public static final int ENUM_TX_PERMISSION = 0x401;

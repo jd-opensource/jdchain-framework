@@ -1,0 +1,50 @@
+package com.jd.blockchain.transaction;
+
+import com.jd.blockchain.ledger.EventPublishOperation;
+import com.jd.blockchain.utils.Bytes;
+
+public interface EventPublishOperationBuilder {
+
+    /**
+     * 事件发布操作；
+     *
+     * @return
+     */
+    EventPublishOperation getOperation();
+
+    /**
+     * 发布字节数组；
+     *
+     * @param name    键；
+     * @param content 值；byte[]格式
+     * @return
+     */
+    EventPublishOperationBuilder publish(String name, byte[] content);
+
+    /**
+     * 发布字节数组；
+     *
+     * @param name    键；
+     * @param content 值；Bytes格式
+     * @return
+     */
+    EventPublishOperationBuilder publish(String name, Bytes content);
+
+    /**
+     * 发布字符；
+     *
+     * @param name    键；
+     * @param content 值；String格式
+     * @return
+     */
+    EventPublishOperationBuilder publish(String name, String content);
+
+    /**
+     * 发布64位整数；
+     *
+     * @param name    键；
+     * @param content 值；long格式
+     * @return
+     */
+    EventPublishOperationBuilder publish(String name, long content);
+}
