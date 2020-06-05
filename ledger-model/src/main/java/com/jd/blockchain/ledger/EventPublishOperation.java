@@ -13,7 +13,7 @@ import com.jd.blockchain.utils.Bytes;
 public interface EventPublishOperation extends Operation {
 
     @DataField(order = 1, primitiveType = PrimitiveType.BYTES)
-    Bytes getAccountAddress();
+    Bytes getEventAddress();
 
     @DataField(order = 2, list = true, refContract = true)
     EventEntry[] getEvents();

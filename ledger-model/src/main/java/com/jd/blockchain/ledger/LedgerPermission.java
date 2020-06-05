@@ -86,7 +86,17 @@ public enum LedgerPermission implements Int8Code{
 	 * 
 	 * 如果不具备此项权限，则无法作为共识节点接入并对交易进行共识；
 	 */
-	CONSENSUS_TX((byte) 0x0C);
+	CONSENSUS_TX((byte) 0x0C),
+
+	/**
+	 * 注册事件账户；<br>
+	 */
+	REGISTER_EVENT_ACCOUNT((byte) 0x0D),
+
+	/**
+	 * 发布事件；<br>
+	 */
+	WRITE_EVENT_ACCOUNT((byte) 0x0E);
 
 	@EnumField(type = PrimitiveType.INT8)
 	public final byte CODE;

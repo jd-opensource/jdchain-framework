@@ -7,7 +7,7 @@ import com.jd.blockchain.consts.DataCodes;
 import com.jd.blockchain.crypto.HashDigest;
 
 @DataContract(code= DataCodes.BLOCK_BODY)
-public interface BlockBody extends  LedgerDataSnapshot{
+public interface BlockBody extends  LedgerDataSnapshot, LedgerEventSnapshot{
 	
 	@DataField(order=2, primitiveType = PrimitiveType.BYTES)
 	HashDigest getPreviousHash();

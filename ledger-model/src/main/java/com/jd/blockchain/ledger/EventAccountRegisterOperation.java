@@ -13,6 +13,6 @@ package com.jd.blockchain.ledger;
 public interface EventAccountRegisterOperation extends Operation {
 
     @DataField(order = 2, refContract = true)
-    BlockchainIdentity getUserAccountID();
+    BlockchainIdentity getEventAccountID();
 
 }

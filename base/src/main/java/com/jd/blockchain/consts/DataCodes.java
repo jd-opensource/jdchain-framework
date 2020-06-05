@@ -34,6 +34,8 @@ public interface DataCodes {
 
 	public static final int LEDGER_ADMIN_INFO = 0x131;
 
+	public static final int EVENT_SNAPSHOT = 0x132;
+
 	public static final int TX = 0x200;
 
 	public static final int TX_LEDGER = 0x201;

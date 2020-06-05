@@ -3,7 +3,6 @@ package com.jd.blockchain.transaction;
 import com.jd.blockchain.binaryproto.DataContractRegistry;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.EventAccountRegisterOperation;
-import com.jd.blockchain.ledger.UserRegisterOperation;
 
 /**
  * @Author: zhangshuang
@@ -12,18 +11,22 @@ import com.jd.blockchain.ledger.UserRegisterOperation;
  */
 public class EventAccountRegisterOpTemplate implements EventAccountRegisterOperation {
 
-    private BlockchainIdentity userID;
+    static {
+        DataContractRegistry.register(EventAccountRegisterOperation.class);
+    }
+
+    private BlockchainIdentity accountID;
 
     public EventAccountRegisterOpTemplate() {
     }
 
-    public EventAccountRegisterOpTemplate(BlockchainIdentity userID) {
-        this.userID = userID;
+    public EventAccountRegisterOpTemplate(BlockchainIdentity accountID) {
+        this.accountID = accountID;
     }
 
     @Override
-    public BlockchainIdentity getUserAccountID() {
-        return userID;
+    public BlockchainIdentity getEventAccountID() {
+        return accountID;
     }
 
 

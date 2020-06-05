@@ -14,25 +14,25 @@ public class EventPublishOpTemplate implements EventPublishOperation {
         DataContractRegistry.register(EventPublishOperation.class);
     }
 
-    private Bytes accountAddress;
+    private Bytes eventAddress;
 
     private Map<String, EventPublishOperation.EventEntry> events = new LinkedHashMap<>();
 
     public EventPublishOpTemplate() {
     }
 
-    public EventPublishOpTemplate(Bytes accountAddress) {
-        this.accountAddress = accountAddress;
+    public EventPublishOpTemplate(Bytes eventAddress) {
+        this.eventAddress = eventAddress;
     }
 
-    public EventPublishOpTemplate(Bytes accountAddress, Map<String, EventPublishOperation.EventEntry> events) {
-        this.accountAddress = accountAddress;
+    public EventPublishOpTemplate(Bytes eventAddress, Map<String, EventPublishOperation.EventEntry> events) {
+        this.eventAddress = eventAddress;
         this.events = events;
     }
 
     @Override
-    public Bytes getAccountAddress() {
-        return accountAddress;
+    public Bytes getEventAddress() {
+        return eventAddress;
     }
 
     @Override
