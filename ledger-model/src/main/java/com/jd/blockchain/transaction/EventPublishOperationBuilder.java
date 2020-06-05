@@ -15,36 +15,40 @@ public interface EventPublishOperationBuilder {
     /**
      * 发布字节数组；
      *
-     * @param name    键；
-     * @param content 值；byte[]格式
+     * @param name     键；
+     * @param content  值；byte[]格式
+     * @param sequence 预期序号；
      * @return
      */
-    EventPublishOperationBuilder publish(String name, byte[] content);
+    EventPublishOperationBuilder publish(String name, byte[] content, long sequence);
 
     /**
      * 发布字节数组；
      *
-     * @param name    键；
-     * @param content 值；Bytes格式
+     * @param name     键；
+     * @param content  值；Bytes格式
+     * @param sequence 预期序号；
      * @return
      */
-    EventPublishOperationBuilder publish(String name, Bytes content);
+    EventPublishOperationBuilder publish(String name, Bytes content, long sequence);
 
     /**
      * 发布字符；
      *
-     * @param name    键；
-     * @param content 值；String格式
+     * @param name     键；
+     * @param content  值；String格式
+     * @param sequence 预期序号；
      * @return
      */
-    EventPublishOperationBuilder publish(String name, String content);
+    EventPublishOperationBuilder publish(String name, String content, long sequence);
 
     /**
      * 发布64位整数；
      *
-     * @param name    键；
-     * @param content 值；long格式
+     * @param name     键；
+     * @param content  值；long格式
+     * @param sequence 预期序号；
      * @return
      */
-    EventPublishOperationBuilder publish(String name, long content);
+    EventPublishOperationBuilder publish(String name, long content, long sequence);
 }

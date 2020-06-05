@@ -9,9 +9,12 @@ public class EventData implements EventPublishOperation.EventEntry {
 
     private BytesValue content;
 
-    public EventData(String name, BytesValue content) {
+    private long sequence;
+
+    public EventData(String name, BytesValue content, long sequence) {
         this.name = name;
         this.content = content;
+        this.sequence = sequence;
     }
 
     @Override
@@ -22,6 +25,11 @@ public class EventData implements EventPublishOperation.EventEntry {
     @Override
     public BytesValue getContent() {
         return content;
+    }
+
+    @Override
+    public long getSequence() {
+        return sequence;
     }
 
 }

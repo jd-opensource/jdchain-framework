@@ -27,5 +27,8 @@ public interface EventPublishOperation extends Operation {
 
         @DataField(order = 2, refContract = true)
         BytesValue getContent();
+
+        @DataField(order = 3, primitiveType = PrimitiveType.INT64)
+        long getSequence();
     }
 }

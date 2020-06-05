@@ -19,30 +19,30 @@ public class EventPublishOperationBuilderImpl implements EventPublishOperationBu
     }
 
     @Override
-    public EventPublishOperationBuilder publish(String name, byte[] content) {
+    public EventPublishOperationBuilder publish(String name, byte[] content, long sequence) {
         BytesValue bytesValue = TypedValue.fromBytes(content);
-        operation.publish(name, bytesValue);
+        operation.publish(name, bytesValue, sequence);
         return this;
     }
 
     @Override
-    public EventPublishOperationBuilder publish(String name, Bytes content) {
+    public EventPublishOperationBuilder publish(String name, Bytes content, long sequence) {
         BytesValue bytesValue = TypedValue.fromBytes(content);
-        operation.publish(name, bytesValue);
+        operation.publish(name, bytesValue, sequence);
         return this;
     }
 
     @Override
-    public EventPublishOperationBuilder publish(String name, String content) {
+    public EventPublishOperationBuilder publish(String name, String content, long sequence) {
         BytesValue bytesValue = TypedValue.fromText(content);
-        operation.publish(name, bytesValue);
+        operation.publish(name, bytesValue, sequence);
         return this;
     }
 
     @Override
-    public EventPublishOperationBuilder publish(String name, long content) {
+    public EventPublishOperationBuilder publish(String name, long content, long sequence) {
         BytesValue bytesValue = TypedValue.fromInt64(content);
-        operation.publish(name, bytesValue);
+        operation.publish(name, bytesValue, sequence);
         return this;
     }
 }

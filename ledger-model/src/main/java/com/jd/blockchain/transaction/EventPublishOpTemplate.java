@@ -40,8 +40,8 @@ public class EventPublishOpTemplate implements EventPublishOperation {
         return events.values().toArray(new EventPublishOperation.EventEntry[events.size()]);
     }
 
-    public void publish(String key, BytesValue value) {
-        this.publish(new EventData(key, value));
+    public void publish(String key, BytesValue value, long sequence) {
+        this.publish(new EventData(key, value, sequence));
     }
 
     public void publish(EventEntry event) {
