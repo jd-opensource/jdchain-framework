@@ -50,9 +50,19 @@ public enum TransactionState {
 	PARTICIPANT_DOES_NOT_EXIST((byte) 0x06),
 
 	/**
+	 * 合约执行错误；
+	 */
+	CONTRACT_EXECUTE_ERROR((byte) 0x07),
+
+	/**
 	 * 被安全策略拒绝；
 	 */
 	REJECTED_BY_SECURITY_POLICY((byte) 0x10),
+
+	/**
+	 * 账户注册冲突；
+	 */
+	ACCOUNT_REGISTER_CONFLICT((byte) 0x12),
 
 	/**
 	 * 由于在错误的账本上执行交易而被丢弃；
@@ -108,7 +118,12 @@ public enum TransactionState {
 	/**
 	 * 共识错误；
 	 */
-	CONSENSUS_ERROR((byte) 0x82);
+	CONSENSUS_ERROR((byte) 0x82),
+
+	/**
+	 * 空区块错误；
+	 */
+	EMPTY_BLOCK_ERROR((byte) 0x83);
 
 	@EnumField(type = PrimitiveType.INT8)
 	public final byte CODE;
