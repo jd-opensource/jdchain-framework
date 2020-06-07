@@ -3,6 +3,7 @@ package com.jd.blockchain.ledger;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,7 +25,9 @@ import com.jd.blockchain.utils.codec.HexUtils;
 import com.jd.blockchain.utils.io.FileUtils;
 import com.jd.blockchain.utils.net.NetworkAddress;
 
-public class LedgerInitProperties {
+public class LedgerInitProperties implements Serializable {
+
+	private static final long serialVersionUID = 6261483113521649870L;
 
 	// 账本种子；
 	public static final String LEDGER_SEED = "ledger.seed";
@@ -189,8 +192,8 @@ public class LedgerInitProperties {
 		initProps.cryptoProperties.providers = new String[] {
 				"com.jd.blockchain.crypto.service.classic.ClassicCryptoService",
 				"com.jd.blockchain.crypto.service.sm.SMCryptoService" };
-		initProps.cryptoProperties.verifyHash=true;
-		initProps.cryptoProperties.hashAlgorithm="SHA256";
+		initProps.cryptoProperties.verifyHash = true;
+		initProps.cryptoProperties.hashAlgorithm = "SHA256";
 		return initProps;
 	}
 
@@ -395,7 +398,9 @@ public class LedgerInitProperties {
 		this.roles = roles;
 	}
 
-	public static class CryptoProperties {
+	public static class CryptoProperties implements Serializable {
+
+		private static final long serialVersionUID = -2464539697473908124L;
 
 		private String[] providers;
 
@@ -435,7 +440,9 @@ public class LedgerInitProperties {
 	 * @author huanghaiquan
 	 *
 	 */
-	public static class ParticipantProperties implements ParticipantNode {
+	public static class ParticipantProperties implements ParticipantNode, Serializable {
+
+		private static final long serialVersionUID = 7038013516766733725L;
 
 		private int id;
 
