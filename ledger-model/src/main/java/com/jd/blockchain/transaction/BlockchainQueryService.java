@@ -311,6 +311,15 @@ public interface BlockchainQueryService {
 	Event[] getSystemEvents(HashDigest ledgerHash, String eventName, long fromSequence, int maxCount);
 
 	/**
+	 * 返回自定义事件账户；
+	 * @param ledgerHash
+	 * @param fromIndex
+	 * @param count
+	 * @return
+	 */
+	BlockchainIdentity[] getUserEventAccounts(HashDigest ledgerHash, int fromIndex, int count);
+
+	/**
 	 * 返回自定义事件；
 	 * 
 	 * @param ledgerHash   账本哈希；

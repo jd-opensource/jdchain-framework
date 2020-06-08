@@ -12,6 +12,9 @@ import com.jd.blockchain.utils.http.PathParam;
 import com.jd.blockchain.utils.http.RequestBody;
 import com.jd.blockchain.utils.http.RequestParam;
 import com.jd.blockchain.utils.web.client.WebResponseConverterFactory;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * 作为内部使用的适配接口，用于声明 HTTP 协议的服务请求；
@@ -577,6 +580,20 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 							@PathParam(name="eventName") String eventName,
 							@RequestParam(name = "fromSequence", required = false) long fromSequence,
 							@RequestParam(name = "maxCount", required = false) int maxCount);
+
+	/**
+	 * 返回用户事件账户列表;
+	 *
+	 * @param ledgerHash
+	 * @param fromIndex
+	 * @param count
+	 * @return
+	 */
+	@HttpAction(method=HttpMethod.GET, path = "ledgers/{ledgerHash}/events/user/accounts")
+	@Override
+	BlockchainIdentity[] getUserEventAccounts(@PathParam(name="ledgerHash")  HashDigest ledgerHash,
+													 @RequestParam(name = "fromIndex", required = false) int fromIndex,
+													 @RequestParam(name = "count", required = false) int count);
 
 	/**
 	 * 返回用户时间列表；

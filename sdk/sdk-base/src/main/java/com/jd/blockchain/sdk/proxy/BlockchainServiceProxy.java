@@ -154,6 +154,11 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	}
 
 	@Override
+	public BlockchainIdentity[] getUserEventAccounts(HashDigest ledgerHash, int fromIndex, int count) {
+		return getQueryService(ledgerHash).getUserEventAccounts(ledgerHash, fromIndex, count);
+	}
+
+	@Override
 	public LedgerTransaction[] getTransactions(HashDigest ledgerHash, long height, int fromIndex, int count) {
 		return getQueryService(ledgerHash).getTransactions(ledgerHash, height, fromIndex, count);
 	}
