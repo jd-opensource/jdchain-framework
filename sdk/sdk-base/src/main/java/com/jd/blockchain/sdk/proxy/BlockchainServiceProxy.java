@@ -3,6 +3,7 @@ package com.jd.blockchain.sdk.proxy;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.ContractInfo;
+import com.jd.blockchain.ledger.DataAccountInfo;
 import com.jd.blockchain.ledger.KVInfoVO;
 import com.jd.blockchain.ledger.LedgerAdminInfo;
 import com.jd.blockchain.ledger.LedgerBlock;
@@ -167,7 +168,7 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	}
 
 	@Override
-	public BlockchainIdentity getDataAccount(HashDigest ledgerHash, String address) {
+	public DataAccountInfo getDataAccount(HashDigest ledgerHash, String address) {
 		return getQueryService(ledgerHash).getDataAccount(ledgerHash, address);
 	}
 

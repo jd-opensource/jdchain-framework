@@ -3,6 +3,7 @@ package com.jd.blockchain.transaction;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.ContractInfo;
+import com.jd.blockchain.ledger.DataAccountInfo;
 import com.jd.blockchain.ledger.KVInfoVO;
 import com.jd.blockchain.ledger.LedgerAdminInfo;
 import com.jd.blockchain.ledger.LedgerBlock;
@@ -250,7 +251,7 @@ public interface BlockchainQueryService {
 	 * @param address
 	 * @return
 	 */
-	BlockchainIdentity getDataAccount(HashDigest ledgerHash, String address);
+	DataAccountInfo getDataAccount(HashDigest ledgerHash, String address);
 
 	/**
 	 * 返回数据账户中指定的键的最新值； <br>
