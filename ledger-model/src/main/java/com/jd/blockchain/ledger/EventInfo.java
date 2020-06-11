@@ -2,6 +2,7 @@ package com.jd.blockchain.ledger;
 
 import com.jd.blockchain.binaryproto.DataContractRegistry;
 import com.jd.blockchain.crypto.HashDigest;
+import com.jd.blockchain.utils.Bytes;
 
 public class EventInfo implements Event {
 
@@ -15,6 +16,7 @@ public class EventInfo implements Event {
     private HashDigest transactionSource;
     private String contractSource;
     private long blockHeight;
+    private Bytes eventAccount;
 
     public EventInfo(Event event) {
         this.name = event.getName();
@@ -23,8 +25,18 @@ public class EventInfo implements Event {
         this.transactionSource = event.getTransactionSource();
         this.contractSource = event.getContractSource();
         this.blockHeight = event.getBlockHeight();
+        this.eventAccount = event.getEventAccount();
     }
 
+
+    public EventInfo(Bytes eventAccount, String name, long sequence, BytesValue content, HashDigest transactionSource, long blockHeight) {
+        this.name = name;
+        this.sequence = sequence;
+        this.content = content;
+        this.transactionSource = transactionSource;
+        this.blockHeight = blockHeight;
+        this.eventAccount = eventAccount;
+    }
 
     public EventInfo(String name, long sequence, BytesValue content, HashDigest transactionSource, long blockHeight) {
         this.name = name;
@@ -32,6 +44,15 @@ public class EventInfo implements Event {
         this.content = content;
         this.transactionSource = transactionSource;
         this.blockHeight = blockHeight;
+    }
+
+    public EventInfo(Bytes eventAccount, String name, long sequence, BytesValue content, String contractSource, long blockHeight) {
+        this.name = name;
+        this.sequence = sequence;
+        this.content = content;
+        this.contractSource = contractSource;
+        this.blockHeight = blockHeight;
+        this.eventAccount = eventAccount;
     }
 
     public EventInfo(String name, long sequence, BytesValue content, String contractSource, long blockHeight) {
@@ -72,6 +93,11 @@ public class EventInfo implements Event {
         return blockHeight;
     }
 
+    @Override
+    public Bytes getEventAccount() {
+        return eventAccount;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -94,5 +120,9 @@ public class EventInfo implements Event {
 
     public void setBlockHeight(long blockHeight) {
         this.blockHeight = blockHeight;
+    }
+
+    public void setEventAccount(Bytes eventAccount) {
+        this.eventAccount = eventAccount;
     }
 }

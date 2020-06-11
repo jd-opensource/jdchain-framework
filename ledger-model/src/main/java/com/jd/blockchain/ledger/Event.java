@@ -5,6 +5,7 @@ import com.jd.blockchain.binaryproto.DataField;
 import com.jd.blockchain.binaryproto.PrimitiveType;
 import com.jd.blockchain.consts.DataCodes;
 import com.jd.blockchain.crypto.HashDigest;
+import com.jd.blockchain.utils.Bytes;
 
 /**
  * 事件；
@@ -14,7 +15,6 @@ import com.jd.blockchain.crypto.HashDigest;
  */
 @DataContract(code = DataCodes.EVENT_MESSAGE)
 public interface Event {
-
 	/**
 	 * 事件名；
 	 * 
@@ -62,4 +62,12 @@ public interface Event {
 	 */
 	@DataField(order = 6, primitiveType = PrimitiveType.INT64)
 	long getBlockHeight();
+
+	/**
+	 * 事件账户地址，系统事件此字段为空
+	 *
+	 * @return
+	 */
+	@DataField(order = 7, primitiveType = PrimitiveType.BYTES)
+	Bytes getEventAccount();
 }
