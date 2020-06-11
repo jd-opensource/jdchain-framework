@@ -9,7 +9,7 @@ import com.jd.blockchain.utils.net.NetworkAddress;
 public class ParticipantStateUpdateOperationBuilderImpl implements ParticipantStateUpdateOperationBuilder {
 
     @Override
-    public ParticipantStateUpdateOperation update(BlockchainIdentity blockchainIdentity, NetworkAddress networkAddress, ParticipantNodeState participantNodeState) {
-        return new ParticipantStateUpdateOpTemplate(blockchainIdentity, networkAddress, participantNodeState);
+    public ParticipantStateUpdateOperation update(BlockchainIdentity blockchainIdentity, ParticipantNodeState participantNodeState) {
+        return new ParticipantStateUpdateOpTemplate(blockchainIdentity, participantNodeState);
     }
 }

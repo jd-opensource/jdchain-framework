@@ -1,10 +1,7 @@
 package com.jd.blockchain.sdk.mananger;
 
 import com.jd.blockchain.crypto.*;
-import com.jd.blockchain.ledger.BlockchainKeypair;
-import com.jd.blockchain.ledger.ParticipantNodeState;
-import com.jd.blockchain.ledger.PreparedTransaction;
-import com.jd.blockchain.ledger.TransactionResponse;
+import com.jd.blockchain.ledger.*;
 import com.jd.blockchain.transaction.TransactionService;
 import com.jd.blockchain.transaction.TxRequestBuilder;
 import com.jd.blockchain.transaction.TxTemplate;
@@ -34,14 +31,14 @@ public class ParticipantManager {
 		this.httpConnectionManager = new ServiceConnectionManager();
 	}
 
-	public TransactionResponse activePeer(NetworkAddress httpServiceEndpoint, NetworkAddress newParticipant, String base58LedgerHash, BlockchainKeypair user, AsymmetricKeypair signerKeyPair) {
+	public TransactionResponse activePeer(NetworkAddress httpServiceEndpoint, String base58LedgerHash, BlockchainIdentity user, AsymmetricKeypair signerKeyPair) {
 
 		HashDigest ledgerHash = new HashDigest(Base58Utils.decode(base58LedgerHash));
 
-		return activePeer(httpServiceEndpoint, newParticipant, ledgerHash, user, signerKeyPair);
+		return activePeer(httpServiceEndpoint, ledgerHash, user, signerKeyPair);
 	}
 
-	public TransactionResponse activePeer(NetworkAddress httpServiceEndpoint, NetworkAddress newParticipant, HashDigest ledgerHash, BlockchainKeypair user, AsymmetricKeypair signerKeyPair) {
+	public TransactionResponse activePeer(NetworkAddress httpServiceEndpoint, HashDigest ledgerHash, BlockchainIdentity userIdentity, AsymmetricKeypair signerKeyPair) {
 
 		//existed signer
 //		AsymmetricKeypair keyPair = new BlockchainKeypair(pubKey1, privkey1);
@@ -51,7 +48,7 @@ public class ParticipantManager {
 
 		TxTemplate txTemp = new TxTemplate(ledgerHash, txService);
 
-		txTemp.states().update(user.getIdentity(), newParticipant, ParticipantNodeState.ACTIVED);
+		txTemp.states().update(userIdentity, ParticipantNodeState.ACTIVED);
 
 		PreparedTransaction prepTx = txTemp.prepare();
 
