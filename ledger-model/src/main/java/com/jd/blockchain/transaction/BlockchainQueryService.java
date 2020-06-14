@@ -305,10 +305,37 @@ public interface BlockchainQueryService {
 	 * @param ledgerHash   账本哈希；
 	 * @param eventName    事件名；
 	 * @param fromSequence 开始的事件序列号；
-	 * @param maxCount     最大数量；
+	 * @param count        最大数量；
 	 * @return
 	 */
-	Event[] getSystemEvents(HashDigest ledgerHash, String eventName, long fromSequence, int maxCount);
+	Event[] getSystemEvents(HashDigest ledgerHash, String eventName, long fromSequence, int count);
+
+	/**
+	 * 返回系统事件名称总数； <br>
+	 *
+	 * @param ledgerHash
+	 * @return
+	 */
+	long getSystemEventNameTotalCount(HashDigest ledgerHash);
+
+	/**
+	 * 返回系统事件名称列表； <br>
+	 *
+	 * @param ledgerHash
+	 * @param fromIndex
+	 * @param count
+	 * @return
+	 */
+	Event[] getSystemEventNames(HashDigest ledgerHash, int fromIndex, int count);
+
+	/**
+	 * 返回指定系统事件名称下事件总数； <br>
+	 *
+	 * @param ledgerHash
+	 * @param eventName
+	 * @return
+	 */
+	long getSystemEventsTotalCount(HashDigest ledgerHash, String eventName);
 
 	/**
 	 * 返回自定义事件账户；
@@ -320,16 +347,61 @@ public interface BlockchainQueryService {
 	BlockchainIdentity[] getUserEventAccounts(HashDigest ledgerHash, int fromIndex, int count);
 
 	/**
+	 * 返回事件账户信息；
+	 *
+	 * @param ledgerHash
+	 * @param address
+	 * @return
+	 */
+	BlockchainIdentity getUserEventAccount(HashDigest ledgerHash, String address);
+
+	/**
+	 * 返回事件账户总数； <br>
+	 *
+	 * @param ledgerHash
+	 * @return
+	 */
+	long getUserEventAccountTotalCount(HashDigest ledgerHash);
+
+	/**
+	 * 返回指定事件账户事件名称总数； <br>
+	 *
+	 * @param ledgerHash
+	 * @param address
+	 * @return
+	 */
+	long getUserEventNameTotalCount(HashDigest ledgerHash, String address);
+
+	/**
+	 * 返回指定事件账户事件名称列表； <br>
+	 *
+	 * @param ledgerHash
+	 * @param address
+	 * @return
+	 */
+	Event[] getUserEventNames(HashDigest ledgerHash, String address, int fromIndex, int count);
+
+	/**
+	 * 返回指定事件账户，指定事件名称下事件总数； <br>
+	 *
+	 * @param ledgerHash
+	 * @param address
+	 * @param eventName
+	 * @return
+	 */
+	long getUserEventsTotalCount(HashDigest ledgerHash, String address, String eventName);
+
+	/**
 	 * 返回自定义事件；
 	 * 
 	 * @param ledgerHash   账本哈希；
 	 * @param address      事件账户地址；
 	 * @param eventName    事件名；
 	 * @param fromSequence 开始的事件序列号；
-	 * @param maxCount     最大数量；
+	 * @param count        最大数量；
 	 * @return
 	 */
-	Event[] getUserEvents(HashDigest ledgerHash, String address, String eventName, long fromSequence, int maxCount);
+	Event[] getUserEvents(HashDigest ledgerHash, String address, String eventName, long fromSequence, int count);
 
 	/**
 	 * get users by ledgerHash and its range;

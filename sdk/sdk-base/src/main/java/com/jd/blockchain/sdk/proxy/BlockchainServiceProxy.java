@@ -237,12 +237,52 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	}
 
 	@Override
-	public Event[] getSystemEvents(HashDigest ledgerHash, String eventName, long fromSequence, int maxCount) {
-		return getQueryService(ledgerHash).getSystemEvents(ledgerHash, eventName, fromSequence, maxCount);
+	public Event[] getSystemEvents(HashDigest ledgerHash, String eventName, long fromSequence, int count) {
+		return getQueryService(ledgerHash).getSystemEvents(ledgerHash, eventName, fromSequence, count);
 	}
 
 	@Override
-	public Event[] getUserEvents(HashDigest ledgerHash, String address, String eventName, long fromSequence, int maxCount) {
-		return getQueryService(ledgerHash).getUserEvents(ledgerHash, address, eventName, fromSequence, maxCount);
+	public Event[] getUserEvents(HashDigest ledgerHash, String address, String eventName, long fromSequence, int count) {
+		return getQueryService(ledgerHash).getUserEvents(ledgerHash, address, eventName, fromSequence, count);
+	}
+
+	@Override
+	public long getSystemEventNameTotalCount(HashDigest ledgerHash) {
+		return getQueryService(ledgerHash).getSystemEventNameTotalCount(ledgerHash);
+	}
+
+	@Override
+	public Event[] getSystemEventNames(HashDigest ledgerHash, int fromIndex, int maxCount) {
+		return getQueryService(ledgerHash).getSystemEventNames(ledgerHash, fromIndex, maxCount);
+	}
+
+	@Override
+	public long getSystemEventsTotalCount(HashDigest ledgerHash, String eventName) {
+		return getQueryService(ledgerHash).getSystemEventsTotalCount(ledgerHash, eventName);
+	}
+
+	@Override
+	public BlockchainIdentity getUserEventAccount(HashDigest ledgerHash, String address) {
+		return getQueryService(ledgerHash).getUserEventAccount(ledgerHash, address);
+	}
+
+	@Override
+	public long getUserEventAccountTotalCount(HashDigest ledgerHash) {
+		return getQueryService(ledgerHash).getUserEventAccountTotalCount(ledgerHash);
+	}
+
+	@Override
+	public long getUserEventNameTotalCount(HashDigest ledgerHash, String address) {
+		return getQueryService(ledgerHash).getUserEventNameTotalCount(ledgerHash, address);
+	}
+
+	@Override
+	public long getUserEventsTotalCount(HashDigest ledgerHash, String address, String eventName) {
+		return getQueryService(ledgerHash).getUserEventsTotalCount(ledgerHash, address, eventName);
+	}
+
+	@Override
+	public Event[] getUserEventNames(HashDigest ledgerHash, String address, int fromIndex, int count) {
+		return getQueryService(ledgerHash).getUserEventNames(ledgerHash, address, fromIndex, count);
 	}
 }
