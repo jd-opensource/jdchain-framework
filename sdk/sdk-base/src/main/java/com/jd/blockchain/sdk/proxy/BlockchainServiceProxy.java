@@ -252,7 +252,7 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	}
 
 	@Override
-	public Event[] getSystemEventNames(HashDigest ledgerHash, int fromIndex, int maxCount) {
+	public String[] getSystemEventNames(HashDigest ledgerHash, int fromIndex, int maxCount) {
 		return getQueryService(ledgerHash).getSystemEventNames(ledgerHash, fromIndex, maxCount);
 	}
 
@@ -282,7 +282,17 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	}
 
 	@Override
-	public Event[] getUserEventNames(HashDigest ledgerHash, String address, int fromIndex, int count) {
+	public String[] getUserEventNames(HashDigest ledgerHash, String address, int fromIndex, int count) {
 		return getQueryService(ledgerHash).getUserEventNames(ledgerHash, address, fromIndex, count);
+	}
+
+	@Override
+	public Event getLatestEvent(HashDigest ledgerHash, String eventName) {
+		return getQueryService(ledgerHash).getLatestEvent(ledgerHash, eventName);
+	}
+
+	@Override
+	public Event getLatestEvent(HashDigest ledgerHash, String address, String eventName) {
+		return getQueryService(ledgerHash).getLatestEvent(ledgerHash, address, eventName);
 	}
 }

@@ -669,7 +669,7 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 
 	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names")
 	@Override
-	Event[] getSystemEventNames(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+	String[] getSystemEventNames(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 								@RequestParam(name = "fromIndex", required = false) int fromIndex,
 								@RequestParam(name = "count", required = false) int count);
 
@@ -694,7 +694,7 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 
 	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/{address}/names")
 	@Override
-	Event[] getUserEventNames(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+	String[] getUserEventNames(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 							  @PathParam(name="address") String address,
 							  @RequestParam(name = "fromIndex", required = false) int fromIndex,
 							  @RequestParam(name = "count", required = false) int count);
@@ -704,4 +704,15 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	long getUserEventsTotalCount(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 								 @PathParam(name="address") String address,
 								 @PathParam(name="eventName") String eventName);
+
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names/{eventName}/latest")
+	@Override
+	Event getLatestEvent(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+						 @PathParam(name="eventName") String eventName);
+
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}/latest")
+	@Override
+	Event getLatestEvent(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+						 @PathParam(name="address") String address,
+						 @PathParam(name="eventName") String eventName);
 }

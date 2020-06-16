@@ -326,7 +326,16 @@ public interface BlockchainQueryService {
 	 * @param count
 	 * @return
 	 */
-	Event[] getSystemEventNames(HashDigest ledgerHash, int fromIndex, int count);
+	String[] getSystemEventNames(HashDigest ledgerHash, int fromIndex, int count);
+
+	/**
+	 * 返回最新系统事件； <br>
+	 *
+	 * @param ledgerHash
+	 * @param eventName
+	 * @return
+	 */
+	Event getLatestEvent(HashDigest ledgerHash, String eventName);
 
 	/**
 	 * 返回指定系统事件名称下事件总数； <br>
@@ -379,7 +388,17 @@ public interface BlockchainQueryService {
 	 * @param address
 	 * @return
 	 */
-	Event[] getUserEventNames(HashDigest ledgerHash, String address, int fromIndex, int count);
+	String[] getUserEventNames(HashDigest ledgerHash, String address, int fromIndex, int count);
+
+	/**
+	 * 返回最新用户自定义事件； <br>
+	 *
+	 * @param ledgerHash
+	 * @param address
+	 * @param eventName
+	 * @return
+	 */
+	Event getLatestEvent(HashDigest ledgerHash, String address, String eventName);
 
 	/**
 	 * 返回指定事件账户，指定事件名称下事件总数； <br>
