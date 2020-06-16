@@ -1,7 +1,7 @@
 package com.jd.blockchain.consensus;
 
-import com.jd.blockchain.ledger.ParticipantInfo;
 import com.jd.blockchain.ledger.ParticipantNode;
+import com.jd.blockchain.ledger.ParticipantRegisterOperation;
 import com.jd.blockchain.utils.Bytes;
 
 import java.util.Properties;
@@ -19,7 +19,9 @@ public interface ConsensusSettingsBuilder {
 	 */
 	ConsensusSettings createSettings(Properties props, ParticipantNode[] participantNodes);
 
-	Bytes updateSettings(Bytes oldConsensusSettings, ParticipantInfo participantInfo);
+	Bytes updateConsensusNodes(Bytes oldConsensusSettings, ParticipantRegisterOperation registerOperation);
+
+	Bytes updateSystemConfig(Bytes oldConsensusSettings);
 	
 	Properties createPropertiesTemplate();
 

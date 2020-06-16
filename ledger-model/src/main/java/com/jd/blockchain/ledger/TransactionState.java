@@ -50,6 +50,21 @@ public enum TransactionState {
 	PARTICIPANT_DOES_NOT_EXIST((byte) 0x06),
 
 	/**
+	 * 激活新参与方时的视图更新错误
+	 */
+	VIEW_UPDATE_ERROR((byte) 0x07),
+
+	/**
+	 * 激活新的参与方时的节点启动失败
+	 */
+	START_SERVER_ERROR((byte) 0x08),
+
+	/**
+	 * 参与方重复激活错误
+	 */
+	PARTICIPANT_REPEATLY_ACTIVATE_ERROR((byte) 0x09),
+
+	/**
 	 * 被安全策略拒绝；
 	 */
 	REJECTED_BY_SECURITY_POLICY((byte) 0x10),
@@ -108,7 +123,18 @@ public enum TransactionState {
 	/**
 	 * 共识错误；
 	 */
-	CONSENSUS_ERROR((byte) 0x82);
+	CONSENSUS_ERROR((byte) 0x82),
+
+	/**
+	 * 未收到共识网络响应的错误
+	 */
+	CONSENSUS_NO_REPLY_ERROR((byte) 0x83),
+
+	/**
+	 * 创建共识的代理客户端错误
+	 */
+	CONSENSUS_PROXY_CLIENT_ERROR((byte) 0x84);
+
 
 	@EnumField(type = PrimitiveType.INT8)
 	public final byte CODE;

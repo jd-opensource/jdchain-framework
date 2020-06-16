@@ -9,7 +9,11 @@
 package com.jd.blockchain.sdk.converters;
 
 import com.jd.blockchain.crypto.HashDigest;
+import com.jd.blockchain.utils.http.RequestBodyConverter;
 import com.jd.blockchain.utils.http.StringConverter;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * HashDigest转为字符串
@@ -18,7 +22,7 @@ import com.jd.blockchain.utils.http.StringConverter;
  * @since 1.0.0
  */
 
-public class HashDigestToStringConverter implements StringConverter {
+public class HashDigestToStringConverter implements StringConverter, RequestBodyConverter {
 
     @Override
     public String toString(Object param) {
@@ -26,5 +30,12 @@ public class HashDigestToStringConverter implements StringConverter {
             return ((HashDigest) param).toBase58();
         }
         return null;
+    }
+
+    @Override
+    public void write(Object param, OutputStream out) throws IOException {
+        if (param instanceof HashDigest) {
+            out.write(((HashDigest) param).toBase58().getBytes());
+        }
     }
 }
