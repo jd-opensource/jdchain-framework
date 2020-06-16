@@ -51,4 +51,44 @@ public interface EventPublishOperationBuilder {
      * @return
      */
     EventPublishOperationBuilder publish(String name, long content, long sequence);
+
+    /**
+     * 发布时间戳内容事件
+     *
+     * @param name
+     * @param content
+     * @param sequence
+     * @return
+     */
+    EventPublishOperationBuilder publishTimestamp(String name, long content, long sequence);
+
+    /**
+     * 发布Image内容事件
+     *
+     * @param name
+     * @param content
+     * @param sequence
+     * @return
+     */
+    EventPublishOperationBuilder publishImage(String name, byte[] content, long sequence);
+
+    /**
+     * 发布JSON内容事件
+     *
+     * @param name
+     * @param content
+     * @param sequence
+     * @return
+     */
+    EventPublishOperationBuilder publishJSON(String name, String content, long sequence);
+
+    /**
+     * 发布CML内容事件
+     *
+     * @param name
+     * @param content
+     * @param sequence
+     * @return
+     */
+    EventPublishOperationBuilder publishXML(String name, String content, long sequence);
 }

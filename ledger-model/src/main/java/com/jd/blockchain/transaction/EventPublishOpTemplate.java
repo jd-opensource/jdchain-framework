@@ -45,14 +45,18 @@ public class EventPublishOpTemplate implements EventPublishOperation {
     }
 
     public void publish(EventEntry event) {
-        events.put(event.getName(), event);
+        events.put(encodeKey(event.getName(), event.getSequence()), event);
     }
 
     public void set(String name, BytesValue content, long expVersion) {
-        if (events.containsKey(name)) {
+        if (events.containsKey(encodeKey(name, expVersion))) {
             throw new IllegalArgumentException("Can't set the same name repeatedly!");
         }
         EventData eventData = new EventData(name, content, expVersion);
-        events.put(name, eventData);
+        events.put(encodeKey(name, expVersion), eventData);
+    }
+
+    private String encodeKey(String name, long expVersion) {
+        return name + expVersion;
     }
 }
