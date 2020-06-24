@@ -21,14 +21,6 @@ public interface StateMachineReplicate {
 	long getLatestStateID(String realmName);
 
 	/**
-	 * 获取最新的视图编号；<br>
-	 *
-	 *
-	 * @return
-	 */
-	int getLatestViewID(String realmName);
-
-	/**
 	 * 返回指定状态编号的快照；
 	 * 
 	 * @param stateId
