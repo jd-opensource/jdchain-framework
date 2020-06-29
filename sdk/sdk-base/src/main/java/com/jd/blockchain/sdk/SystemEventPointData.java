@@ -6,7 +6,9 @@ package com.jd.blockchain.sdk;
  * @author shaozhuguang
  *
  */
-public class SystemEventPointData implements EventPoint {
+public class SystemEventPointData implements SystemEventPoint {
+
+    private static final int DEFAULT_BATCH_SIZE = 10;
 
     /**
      * 监听的事件名称
@@ -18,13 +20,23 @@ public class SystemEventPointData implements EventPoint {
      */
     private long sequence;
 
+    /**
+     * 一次监听处理接受最大事件数量
+     */
+    private int maxBatchSize;
+
     public SystemEventPointData(String eventName) {
-        this.eventName = eventName;
+        this(eventName, 0, DEFAULT_BATCH_SIZE);
     }
 
     public SystemEventPointData(String eventName, long sequence) {
+        this(eventName, sequence, DEFAULT_BATCH_SIZE);
+    }
+
+    public SystemEventPointData(String eventName, long sequence, int maxBatchSize) {
         this.eventName = eventName;
         this.sequence = sequence;
+        this.maxBatchSize = maxBatchSize;
     }
 
     @Override
@@ -37,7 +49,8 @@ public class SystemEventPointData implements EventPoint {
         return this.sequence;
     }
 
-    public static SystemEventPointData createEventPoint(String eventName, long sequence) {
-        return new SystemEventPointData(eventName, sequence);
+    @Override
+    public int getMaxBatchSize() {
+        return maxBatchSize;
     }
 }

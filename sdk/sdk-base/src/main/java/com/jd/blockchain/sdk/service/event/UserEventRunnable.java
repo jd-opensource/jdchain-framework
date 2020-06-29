@@ -2,7 +2,10 @@ package com.jd.blockchain.sdk.service.event;
 
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.Event;
-import com.jd.blockchain.sdk.*;
+import com.jd.blockchain.sdk.UserEventListener;
+import com.jd.blockchain.sdk.EventContext;
+import com.jd.blockchain.sdk.EventListenerHandle;
+import com.jd.blockchain.sdk.UserEventPoint;
 import com.jd.blockchain.transaction.BlockchainQueryService;
 
 import java.util.Set;
@@ -15,23 +18,35 @@ import java.util.Set;
  */
 public class UserEventRunnable extends AbstractEventRunnable<UserEventPoint> {
 
+    private static final int MAX_COUNT = 10;
+
     private BlockchainQueryService queryService;
 
+    private UserEventListener<UserEventPoint> listener;
+
     public UserEventRunnable(HashDigest ledgerHash, BlockchainQueryService queryService, Set<UserEventPoint> eventPointSet,
-                             BlockchainEventListener<UserEventPoint> listener, EventListenerHandle<UserEventPoint> handle) {
-        super(ledgerHash, eventPointSet, listener, handle);
+                             UserEventListener<UserEventPoint> listener, EventListenerHandle<UserEventPoint> handle) {
+        super(ledgerHash, eventPointSet, handle);
+        this.listener = listener;
         this.queryService = queryService;
     }
 
     @Override
-    Event[] loadEvent(UserEventPoint eventPoint, long fromSequence, int maxCount) {
+    Event[] loadEvent(UserEventPoint eventPoint, long fromSequence) {
         return queryService.getUserEvents(getLedgerHash(), eventPoint.getEventAccount(), eventPoint.getEventName(),
-        fromSequence, maxCount);
+        fromSequence, MAX_COUNT);
+    }
+
+    @Override
+    void onEvent(Event[] events) {
+        for(Event event:events) {
+            listener.onEvent(event, eventContext(event));
+        }
     }
 
     @Override
     EventContext<UserEventPoint> eventContext(Event event) {
-        EventContextData<UserEventPoint> context = new EventContextData<>(getLedgerHash(), event.getBlockHeight(), getHandle());
+        EventContextData<UserEventPoint> context = new EventContextData<>(getLedgerHash(), getHandle());
         return context;
     }
 }

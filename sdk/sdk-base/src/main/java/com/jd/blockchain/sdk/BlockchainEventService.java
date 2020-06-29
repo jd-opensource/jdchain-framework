@@ -1,6 +1,7 @@
 package com.jd.blockchain.sdk;
 
 import com.jd.blockchain.crypto.HashDigest;
+import com.jd.blockchain.ledger.SystemEvent;
 
 public interface BlockchainEventService {
 
@@ -8,21 +9,21 @@ public interface BlockchainEventService {
 	 * 监听系统事件；
 	 *
 	 * @param ledgerHash
-	 * @param eventName
-	 * @param startSequence
+	 * @param systemEvent 系统事件类型
 	 * @param listener
 	 * @return
 	 */
-	EventListenerHandle<EventPoint> monitorSystemEvent(HashDigest ledgerHash, String eventName, long startSequence, BlockchainEventListener<EventPoint> listener);
+	EventListenerHandle<SystemEventPoint> monitorSystemEvent(HashDigest ledgerHash, SystemEvent systemEvent, long startSequence, SystemEventListener<SystemEventPoint> listener);
 
 	/**
+	 * 监听系统事件；
 	 *
 	 * @param ledgerHash
-	 * @param startingEventPoints
+	 * @param eventPoint
 	 * @param listener
 	 * @return
 	 */
-	EventListenerHandle<EventPoint> monitorSystemEvents(HashDigest ledgerHash, EventPoint[] startingEventPoints, BlockchainEventListener<EventPoint> listener);
+	EventListenerHandle<SystemEventPoint> monitorSystemEvent(HashDigest ledgerHash, SystemEventPoint eventPoint, SystemEventListener<SystemEventPoint> listener);
 
 	/**
 	 * 监听用户事件；
@@ -35,7 +36,7 @@ public interface BlockchainEventService {
 	 * @return
 	 */
 	EventListenerHandle<UserEventPoint> monitorUserEvent(HashDigest ledgerHash, String eventAccount, String eventName, long startSequence,
-			BlockchainEventListener<UserEventPoint> listener);
+			UserEventListener<UserEventPoint> listener);
 
 	/**
 	 *
@@ -44,6 +45,6 @@ public interface BlockchainEventService {
 	 * @param listener
 	 * @return
 	 */
-	EventListenerHandle<UserEventPoint> monitorUserEvent(HashDigest ledgerHash, UserEventPoint[] startingEventPoints, BlockchainEventListener<UserEventPoint> listener);
+	EventListenerHandle<UserEventPoint> monitorUserEvent(HashDigest ledgerHash, UserEventPoint[] startingEventPoints, UserEventListener<UserEventPoint> listener);
 
 }

@@ -2,7 +2,6 @@ package com.jd.blockchain.sdk.service.event;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.jd.blockchain.crypto.HashDigest;
-import com.jd.blockchain.sdk.BlockchainEventListener;
 import com.jd.blockchain.sdk.EventListenerHandle;
 import com.jd.blockchain.sdk.EventPoint;
 import com.jd.blockchain.transaction.BlockchainQueryService;
@@ -11,7 +10,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 抽象事件监听处理器
@@ -40,11 +42,6 @@ public abstract class AbstractEventListenerHandle<E extends EventPoint> implemen
     private Set<E> eventPointSet = new HashSet<>();
 
     /**
-     * 事件监听器
-     */
-    private BlockchainEventListener<E> listener;
-
-    /**
      * 事件监听对应的账本
      */
     private HashDigest ledgerHash;
@@ -65,13 +62,10 @@ public abstract class AbstractEventListenerHandle<E extends EventPoint> implemen
      *             账本Hash
      * @param eventPoints
      *             事件集合
-     * @param listener
-     *             事件监听器
      */
-    public void register(HashDigest ledgerHash, E[] eventPoints, BlockchainEventListener<E> listener) {
-        checkArgs(ledgerHash, listener, eventPoints);
+    protected void register(HashDigest ledgerHash, E[] eventPoints) {
+        checkArgs(ledgerHash, eventPoints);
         this.ledgerHash = ledgerHash;
-        this.listener = listener;
         eventPointSet.addAll(Arrays.asList(eventPoints));
         registered();
         startListener();
@@ -84,13 +78,10 @@ public abstract class AbstractEventListenerHandle<E extends EventPoint> implemen
      *             账本Hash
      * @param eventPoint
      *             事件
-     * @param listener
-     *             事件监听器
      */
-    public void register(HashDigest ledgerHash, E eventPoint, BlockchainEventListener<E> listener) {
-        checkArgs(ledgerHash, listener, eventPoint);
+    protected void register(HashDigest ledgerHash, E eventPoint) {
+        checkArgs(ledgerHash, eventPoint);
         this.ledgerHash = ledgerHash;
-        this.listener = listener;
         eventPointSet.add(eventPoint);
         registered();
         startListener();
@@ -100,18 +91,17 @@ public abstract class AbstractEventListenerHandle<E extends EventPoint> implemen
      * 注册参数校验
      *
      * @param ledgerHash
-     * @param listener
      * @param eventPoint
      */
-    private void checkArgs(HashDigest ledgerHash, BlockchainEventListener listener, EventPoint... eventPoint) {
+    private void checkArgs(HashDigest ledgerHash, EventPoint... eventPoint) {
         if (isRegistered) {
             throw new IllegalStateException("Can not register eventPoints repeatedly !!!");
         }
         if (ledgerHash == null) {
             throw new IllegalArgumentException("LedgerHash can not be null !!!");
         }
-        if (eventPoint == null || eventPoint.length == 0 || listener == null) {
-            throw new IllegalArgumentException("EventPoints and listener can not be null both !!!");
+        if (eventPoint == null || eventPoint.length == 0) {
+            throw new IllegalArgumentException("EventPoints can not be null !!!");
         }
     }
 
@@ -179,10 +169,6 @@ public abstract class AbstractEventListenerHandle<E extends EventPoint> implemen
 
     public BlockchainQueryService getQueryService() {
         return queryService;
-    }
-
-    public BlockchainEventListener<E> getListener() {
-        return listener;
     }
 
     public HashDigest getLedgerHash() {
