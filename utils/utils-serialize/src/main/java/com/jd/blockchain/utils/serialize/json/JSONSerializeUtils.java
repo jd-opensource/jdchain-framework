@@ -334,6 +334,9 @@ public abstract class JSONSerializeUtils {
 			if (isJSON((String) data)) {
 				return deserializeFromJSON((String) data, clazz);
 			}
+			if (clazz.isEnum()) {
+				return deserializeFromJSON("\""+data + "\"", clazz);
+			}
 		}
 		if (data instanceof JSONString) {
 			String jsonStr = ((JSONString) data).toString();
