@@ -65,6 +65,7 @@ public class ClientResolveUtil {
 				innerKvData.setValue(Integer.parseInt(valueObj.toString()));
 				break;
 			case INT64:
+			case TIMESTAMP:
 				innerKvData.setValue(Long.parseLong(valueObj.toString()));
 				break;
 			default:

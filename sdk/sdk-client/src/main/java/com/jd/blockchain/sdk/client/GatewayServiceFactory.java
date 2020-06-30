@@ -2,16 +2,11 @@ package com.jd.blockchain.sdk.client;
 
 import java.io.Closeable;
 
-import com.jd.blockchain.binaryproto.BinaryProtocol;
 import com.jd.blockchain.binaryproto.DataContractRegistry;
 import com.jd.blockchain.consensus.ClientIdentification;
 import com.jd.blockchain.consensus.ClientIdentifications;
 import com.jd.blockchain.consensus.action.ActionRequest;
 import com.jd.blockchain.consensus.action.ActionResponse;
-import com.jd.blockchain.crypto.Crypto;
-import com.jd.blockchain.crypto.PrivKey;
-import com.jd.blockchain.crypto.SignatureDigest;
-import com.jd.blockchain.crypto.SignatureFunction;
 import com.jd.blockchain.ledger.*;
 import com.jd.blockchain.sdk.BlockchainService;
 import com.jd.blockchain.sdk.BlockchainServiceFactory;
@@ -49,6 +44,8 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
 		DataContractRegistry.register(UserRegisterOperation.class);
 		DataContractRegistry.register(ParticipantRegisterOperation.class);
 		DataContractRegistry.register(ParticipantStateUpdateOperation.class);
+		DataContractRegistry.register(EventAccountRegisterOperation.class);
+		DataContractRegistry.register(EventPublishOperation.class);
 
 		DataContractRegistry.register(ActionRequest.class);
 		DataContractRegistry.register(ActionResponse.class);
