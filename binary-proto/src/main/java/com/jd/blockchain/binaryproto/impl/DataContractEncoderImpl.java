@@ -2,15 +2,18 @@ package com.jd.blockchain.binaryproto.impl;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.jd.blockchain.binaryproto.DataContractEncoder;
 import com.jd.blockchain.binaryproto.DataSpecification;
+import com.jd.blockchain.binaryproto.DataTypeMapping;
+import com.jd.blockchain.binaryproto.FieldAttributeMapping;
 import com.jd.blockchain.utils.io.BytesInputStream;
 import com.jd.blockchain.utils.io.BytesOutputBuffer;
 import com.jd.blockchain.utils.io.BytesSlice;
 
-public class DataContractEncoderImpl implements DataContractEncoder {
+public class DataContractEncoderImpl implements DataContractEncoder, DataTypeMapping {
 
 	private Class<?>[] contractProxyTypes;
 
@@ -93,7 +96,7 @@ public class DataContractEncoderImpl implements DataContractEncoder {
 	}
 
 	@Override
-	public DataSpecification getSepcification() {
+	public DataSpecification getSpecification() {
 		return specification;
 	}
 
@@ -105,16 +108,16 @@ public class DataContractEncoderImpl implements DataContractEncoder {
 	@Override
 	public int encode(Object dataContract, BytesOutputBuffer buffer) {
 		if (dataContract instanceof DataContractProxy) {
-			//优化对数据动态代理对象的序列化，直接复制输出基础数组；
+			// 优化对数据动态代理对象的序列化，直接复制输出基础数组；
 			DataContractProxy proxy = (DataContractProxy) dataContract;
 			if (contractType == proxy.getContractType()) {
 				byte[] dataBytes = new byte[proxy.getTotalSize()];
 				proxy.writeBytes(dataBytes, 0);
 				buffer.write(dataBytes);
 				return dataBytes.length;
-			} 
+			}
 		}
-		
+
 		int size = 0;
 		size += headEncoder.encode(dataContract, buffer);
 		if (dataContract != null) {
@@ -140,6 +143,12 @@ public class DataContractEncoderImpl implements DataContractEncoder {
 			return null;
 		}
 		return (T) DynamicDataContract.createContract(bytesStream, this);
+	}
+
+	@Override
+	public List<FieldAttributeMapping> getFieldMappings() {
+		// TODO: Not implemented!;
+		throw new IllegalStateException("Not implemented!");
 	}
 
 }

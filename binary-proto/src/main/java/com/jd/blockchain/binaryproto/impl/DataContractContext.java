@@ -638,7 +638,7 @@ public class DataContractContext {
 
 			ContractTypeVersionContext contractContext = resolveContract(dataType);
 			DataContractEncoder encoder = contractContext.contractEncoder;
-			contractSpecification = encoder.getSepcification();
+			contractSpecification = encoder.getSpecification();
 			// contractTypeResolverClazz = annoField.contractTypeResolver();
 			// if (contractTypeResolverClazz != null
 			// && (!ContractTypeResolver.class.isAssignableFrom(contractTypeResolverClazz)))
