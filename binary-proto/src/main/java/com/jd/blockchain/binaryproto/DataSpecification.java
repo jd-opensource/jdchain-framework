@@ -22,14 +22,14 @@ import java.util.List;
  *
  */
 public interface DataSpecification {
-
+	
 	/**
 	 * 数据契约的类型编码；
 	 * 
 	 * @return
 	 */
 	int getCode();
-
+	
 	/**
 	 * 数据契约的版本；
 	 * <p>
@@ -40,8 +40,16 @@ public interface DataSpecification {
 	 */
 	long getVersion();
 
+	/**
+	 * 名称；
+	 * @return
+	 */
 	String getName();
 
+	/**
+	 * 描述；
+	 * @return
+	 */
 	String getDescription();
 
 	/**
@@ -59,7 +67,5 @@ public interface DataSpecification {
 	 * @return
 	 */
 	List<BinarySliceSpec> getSlices();
-
-	String toHtml();
 
 }
