@@ -14,7 +14,7 @@ public interface StateMachineReplicate {
 	/**
 	 * 获取最新的状态编号；<br>
 	 * 
-	 * 注：
+	 * 注：新的状态编号总数比旧的状态编号大；
 	 * 
 	 * @return
 	 */
