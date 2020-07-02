@@ -7,7 +7,7 @@ import com.jd.blockchain.consts.DataCodes;
 
 /**
  * 交易（事务）执行状态；
- * 
+ *
  * @author huanghaiquan
  *
  */
@@ -38,7 +38,7 @@ public enum TransactionState {
 	 * 合约不存在；
 	 */
 	CONTRACT_DOES_NOT_EXIST((byte) 0x04),
-	
+
 	/**
 	 * 数据写入时版本冲突；
 	 */
@@ -55,6 +55,11 @@ public enum TransactionState {
 	CONTRACT_EXECUTE_ERROR((byte) 0x07),
 
 	/**
+	 * 合约写入时版本冲突；
+	 */
+	CONTRACT_VERSION_CONFLICT((byte) 0x08),
+
+	/**
 	 * 被安全策略拒绝；
 	 */
 	REJECTED_BY_SECURITY_POLICY((byte) 0x10),
@@ -63,11 +68,6 @@ public enum TransactionState {
 	 * 账户注册冲突；
 	 */
 	ACCOUNT_REGISTER_CONFLICT((byte) 0x12),
-
-	/**
-	 * 合约写入时版本冲突；
-	 */
-	CONTRACT_VERSION_CONFLICT((byte) 0x05),
 
 	/**
 	 * 由于在错误的账本上执行交易而被丢弃；
@@ -87,7 +87,7 @@ public enum TransactionState {
 	/**
 	 * 由于交易的整体回滚而丢弃；
 	 * <p>
-	 * 
+	 *
 	 * 注： “整体回滚”是指把交易引入的数据更改以及交易记录本身全部都回滚；<br>
 	 * “部分回滚”是指把交易引入的数据更改回滚了，但是交易记录本身以及相应的“交易结果({@link TransactionState})”都会提交；<br>
 	 */
@@ -96,9 +96,9 @@ public enum TransactionState {
 	/**
 	 * 由于区块的整体回滚而丢弃；
 	 * <p>
-	 * 
+	 *
 	 * 注： “整体回滚”是指把交易引入的数据更改以及交易记录本身全部都回滚；<br>
-	 * 
+	 *
 	 * “部分回滚”是指把交易引入的数据更改回滚了，但是交易记录本身以及相应的“交易结果({@link TransactionState})”都会提交；<br>
 	 */
 	IGNORED_BY_BLOCK_FULL_ROLLBACK((byte) 0x44),
