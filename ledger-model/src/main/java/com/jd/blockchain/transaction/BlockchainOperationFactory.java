@@ -4,20 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.jd.blockchain.ledger.BlockchainIdentity;
-import com.jd.blockchain.ledger.BytesValue;
-import com.jd.blockchain.ledger.BytesValueList;
-import com.jd.blockchain.ledger.ContractCodeDeployOperation;
-import com.jd.blockchain.ledger.ContractEventSendOperation;
-import com.jd.blockchain.ledger.DataAccountKVSetOperation;
-import com.jd.blockchain.ledger.DataAccountRegisterOperation;
-import com.jd.blockchain.ledger.LedgerInitOperation;
-import com.jd.blockchain.ledger.LedgerInitSetting;
-import com.jd.blockchain.ledger.Operation;
-import com.jd.blockchain.ledger.ParticipantNodeState;
-import com.jd.blockchain.ledger.ParticipantRegisterOperation;
-import com.jd.blockchain.ledger.ParticipantStateUpdateOperation;
-import com.jd.blockchain.ledger.UserRegisterOperation;
+import com.jd.blockchain.ledger.*;
 import com.jd.blockchain.utils.Bytes;
 import com.jd.blockchain.utils.net.NetworkAddress;
 
@@ -26,7 +13,7 @@ import com.jd.blockchain.utils.net.NetworkAddress;
  *
  */
 public class BlockchainOperationFactory implements ClientOperator, LedgerInitOperator {
-	
+
 	private static final SecurityOperationBuilderImpl SECURITY_OP_BUILDER = new SecurityOperationBuilderImpl();
 
 	private static final LedgerInitOperationBuilderImpl LEDGER_INIT_OP_BUILDER = new LedgerInitOperationBuilderImpl();
@@ -38,12 +25,14 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 	private static final ContractCodeDeployOperationBuilderImpl CONTRACT_CODE_DEPLOY_OP_BUILDER = new ContractCodeDeployOperationBuilderImpl();
 
 //	private static final ContractEventSendOperationBuilderImpl CONTRACT_EVENT_SEND_OP_BUILDER = new ContractEventSendOperationBuilderImpl();
-	
+
 	private SecurityOperationBuilderFilter securityOpBuilder = new SecurityOperationBuilderFilter();
 
 	private static final ParticipantRegisterOperationBuilderImpl PARTICIPANT_REG_OP_BUILDER = new ParticipantRegisterOperationBuilderImpl();
 
 	private static final ParticipantStateUpdateOperationBuilderImpl PARTICIPANT_STATE_UPDATE_OP_BUILDER = new ParticipantStateUpdateOperationBuilderImpl();
+
+	private static final EventAccountRegisterOperationBuilderImpl EVENT_ACC_REG_OP_BUILDER = new EventAccountRegisterOperationBuilderImpl();
 
 	private LedgerInitOperationBuilder ledgerInitOpBuilder = new LedgerInitOperationBuilderFilter();
 
@@ -61,6 +50,8 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	private ParticipantStateUpdateOperationBuilder participantStateModifyOpBuilder = new ParticipantStateUpdateOperationBuilderFilter();
 
+	private EventAccountRegisterOperationBuilder eventAccRegOpBuilder = new EventAccountRegisterOperationBuilderFilter();
+
 	// TODO: 暂时只支持单线程情形，未考虑多线程；
 	private List<Operation> operationList = new ArrayList<>();
 
@@ -68,7 +59,7 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 	public LedgerInitOperationBuilder ledgers() {
 		return ledgerInitOpBuilder;
 	}
-	
+
 	@Override
 	public SecurityOperationBuilder security() {
 		return securityOpBuilder;
@@ -110,6 +101,21 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 	public ParticipantStateUpdateOperationBuilder states() {return participantStateModifyOpBuilder;}
 
 	@Override
+	public EventAccountRegisterOperationBuilder eventAccounts() {
+		return eventAccRegOpBuilder;
+	}
+
+	@Override
+	public EventPublishOperationBuilder eventAccount(String accountAddress) {
+		return new EventPublishOperationBuilderFilter(Bytes.fromBase58(accountAddress));
+	}
+
+	@Override
+	public EventPublishOperationBuilder eventAccount(Bytes accountAddress) {
+		return new EventPublishOperationBuilderFilter(accountAddress);
+	}
+
+	@Override
 	public <T> T contract(String address, Class<T> contractIntf) {
 		return contractInvoProxyBuilder.create(address, -1L, contractIntf, contractEventSendOpBuilder);
 	}
@@ -121,7 +127,7 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	/**
 	 * 返回已经定义的操作列表；
-	 * 
+	 *
 	 * @return
 	 */
 	public Collection<Operation> getOperations() {
@@ -130,7 +136,7 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	/**
 	 * 返回与操作列表对应的返回值处理器；
-	 * 
+	 *
 	 * @return
 	 */
 	public Collection<OperationResultHandle> getReturnValuetHandlers() {
@@ -183,7 +189,7 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		}
 
 	}
-	
+
 	private class SecurityOperationBuilderFilter implements SecurityOperationBuilder {
 
 		@Override
@@ -192,7 +198,7 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 			operationList.add(rolesConfigurer.getOperation());
 			return rolesConfigurer;
 		}
-		
+
 		@Override
 		public UserAuthorizer authorziations() {
 			UserAuthorizer userAuthorizer = SECURITY_OP_BUILDER.authorziations();
@@ -341,9 +347,98 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	}
 
+	private class EventAccountRegisterOperationBuilderFilter implements EventAccountRegisterOperationBuilder{
+
+		@Override
+		public EventAccountRegisterOperation register(BlockchainIdentity accountID) {
+			EventAccountRegisterOperation op = EVENT_ACC_REG_OP_BUILDER.register(accountID);
+			operationList.add(op);
+			return op;
+		}
+	}
+
+	private class EventPublishOperationBuilderFilter implements EventPublishOperationBuilder{
+
+		private EventPublishOperationBuilder innerBuilder;
+
+		private EventPublishOperation op;
+
+		public EventPublishOperationBuilderFilter(Bytes accountAddress) {
+			innerBuilder = new EventPublishOperationBuilderImpl(accountAddress);
+		}
+
+        private void addOperation() {
+            if (op == null) {
+                op = innerBuilder.getOperation();
+                operationList.add(op);
+            }
+        }
+
+		@Override
+		public EventPublishOperation getOperation() {
+			return innerBuilder.getOperation();
+		}
+
+		@Override
+		public EventPublishOperationBuilder publish(String name, byte[] content, long sequence) {
+            innerBuilder.publish(name, content, sequence);
+            addOperation();
+            return this;
+		}
+
+		@Override
+		public EventPublishOperationBuilder publish(String name, Bytes content, long sequence) {
+            innerBuilder.publish(name, content, sequence);
+            addOperation();
+            return this;
+		}
+
+		@Override
+		public EventPublishOperationBuilder publish(String name, String content, long sequence) {
+            innerBuilder.publish(name, content, sequence);
+            addOperation();
+            return this;
+		}
+
+		@Override
+		public EventPublishOperationBuilder publish(String name, long content, long sequence) {
+            innerBuilder.publish(name, content, sequence);
+            addOperation();
+            return this;
+		}
+
+		@Override
+		public EventPublishOperationBuilder publishTimestamp(String name, long content, long sequence) {
+			innerBuilder.publishTimestamp(name, content, sequence);
+			addOperation();
+			return this;
+		}
+
+		@Override
+		public EventPublishOperationBuilder publishImage(String name, byte[] content, long sequence) {
+			innerBuilder.publishImage(name, content, sequence);
+			addOperation();
+			return this;
+		}
+
+		@Override
+		public EventPublishOperationBuilder publishJSON(String name, String content, long sequence) {
+			innerBuilder.publishJSON(name, content, sequence);
+			addOperation();
+			return this;
+		}
+
+		@Override
+		public EventPublishOperationBuilder publishXML(String name, String content, long sequence) {
+			innerBuilder.publishXML(name, content, sequence);
+			addOperation();
+			return this;
+		}
+	}
+
 	/**
 	 * 不做任何操作的返回值处理器；
-	 * 
+	 *
 	 * @author huanghaiquan
 	 *
 	 */

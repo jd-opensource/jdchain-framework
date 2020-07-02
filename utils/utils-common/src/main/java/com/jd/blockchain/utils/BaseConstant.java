@@ -26,7 +26,7 @@ public class BaseConstant {
     public static final String PACKAGE_BLACKLIST = "BLACKLIST";
 
     //根据列表读取时，每次允许的最大获取数量;
-    public static final int QUERY_LIST_MAX=100;
+    public static final int QUERY_LIST_MAX = 100;
 
     public static final String CONTRACT_SERVICE_PROVIDER = "com.jd.blockchain.contract.jvm.JVMContractServiceProvider";
     public static final String SPRING_CF_LOCATION = "-sp";

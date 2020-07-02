@@ -14,6 +14,4 @@ public interface LedgerAccessContext {
 	TransactionService getTransactionService();
 	
 	BlockchainQueryService getQueryService();
-	
-	
 }

@@ -5,6 +5,7 @@ import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.BytesValueList;
 import com.jd.blockchain.ledger.ContractEventSendOperation;
 import com.jd.blockchain.ledger.ContractInfo;
+import com.jd.blockchain.ledger.Event;
 import com.jd.blockchain.ledger.KVInfoVO;
 import com.jd.blockchain.ledger.LedgerAdminInfo;
 import com.jd.blockchain.ledger.LedgerBlock;
@@ -22,7 +23,7 @@ import org.springframework.cglib.core.Block;
 
 /**
  * 区块链查询器；
- * 
+ *
  * @author huanghaiquan
  *
  */
@@ -30,9 +31,9 @@ public interface BlockchainQueryService {
 
 	/**
 	 * 返回所有的账本的 hash 列表；<br>
-	 * 
+	 *
 	 * 注：账本的 hash 既是该账本的创世区块的 hash；
-	 * 
+	 *
 	 * @return 账本 hash 的集合；
 	 */
 	HashDigest[] getLedgerHashs();
@@ -89,7 +90,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * 返回指定高度的区块中记录的交易总数；
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param height
 	 * @return
@@ -98,7 +99,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * 返回指定高度的区块中记录的交易总数；
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param blockHash
 	 * @return
@@ -239,7 +240,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * 返回用户信息；
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param address
 	 * @return
@@ -248,7 +249,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * 返回数据账户信息；
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param address
 	 * @return
@@ -257,11 +258,11 @@ public interface BlockchainQueryService {
 
 	/**
 	 * 返回数据账户中指定的键的最新值； <br>
-	 * 
+	 *
 	 * 返回结果的顺序与指定的键的顺序是一致的；<br>
-	 * 
+	 *
 	 * 如果某个键不存在，则返回版本为 -1 的数据项；
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param address
 	 * @param keys
@@ -294,12 +295,135 @@ public interface BlockchainQueryService {
 
 	/**
 	 * 返回合约账户信息；
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param address
 	 * @return
 	 */
 	ContractInfo getContract(HashDigest ledgerHash, String address);
+
+	/**
+	 * 返回系统事件；
+	 *
+	 * @param ledgerHash   账本哈希；
+	 * @param eventName    事件名；
+	 * @param fromSequence 开始的事件序列号；
+	 * @param count        最大数量；
+	 * @return
+	 */
+	Event[] getSystemEvents(HashDigest ledgerHash, String eventName, long fromSequence, int count);
+
+	/**
+	 * 返回系统事件名称总数； <br>
+	 *
+	 * @param ledgerHash
+	 * @return
+	 */
+	long getSystemEventNameTotalCount(HashDigest ledgerHash);
+
+	/**
+	 * 返回系统事件名称列表； <br>
+	 *
+	 * @param ledgerHash
+	 * @param fromIndex
+	 * @param count
+	 * @return
+	 */
+	String[] getSystemEventNames(HashDigest ledgerHash, int fromIndex, int count);
+
+	/**
+	 * 返回最新系统事件； <br>
+	 *
+	 * @param ledgerHash
+	 * @param eventName
+	 * @return
+	 */
+	Event getLatestEvent(HashDigest ledgerHash, String eventName);
+
+	/**
+	 * 返回指定系统事件名称下事件总数； <br>
+	 *
+	 * @param ledgerHash
+	 * @param eventName
+	 * @return
+	 */
+	long getSystemEventsTotalCount(HashDigest ledgerHash, String eventName);
+
+	/**
+	 * 返回自定义事件账户；
+	 * @param ledgerHash
+	 * @param fromIndex
+	 * @param count
+	 * @return
+	 */
+	BlockchainIdentity[] getUserEventAccounts(HashDigest ledgerHash, int fromIndex, int count);
+
+	/**
+	 * 返回事件账户信息；
+	 *
+	 * @param ledgerHash
+	 * @param address
+	 * @return
+	 */
+	BlockchainIdentity getUserEventAccount(HashDigest ledgerHash, String address);
+
+	/**
+	 * 返回事件账户总数； <br>
+	 *
+	 * @param ledgerHash
+	 * @return
+	 */
+	long getUserEventAccountTotalCount(HashDigest ledgerHash);
+
+	/**
+	 * 返回指定事件账户事件名称总数； <br>
+	 *
+	 * @param ledgerHash
+	 * @param address
+	 * @return
+	 */
+	long getUserEventNameTotalCount(HashDigest ledgerHash, String address);
+
+	/**
+	 * 返回指定事件账户事件名称列表； <br>
+	 *
+	 * @param ledgerHash
+	 * @param address
+	 * @return
+	 */
+	String[] getUserEventNames(HashDigest ledgerHash, String address, int fromIndex, int count);
+
+	/**
+	 * 返回最新用户自定义事件； <br>
+	 *
+	 * @param ledgerHash
+	 * @param address
+	 * @param eventName
+	 * @return
+	 */
+	Event getLatestEvent(HashDigest ledgerHash, String address, String eventName);
+
+	/**
+	 * 返回指定事件账户，指定事件名称下事件总数； <br>
+	 *
+	 * @param ledgerHash
+	 * @param address
+	 * @param eventName
+	 * @return
+	 */
+	long getUserEventsTotalCount(HashDigest ledgerHash, String address, String eventName);
+
+	/**
+	 * 返回自定义事件；
+	 *
+	 * @param ledgerHash   账本哈希；
+	 * @param address      事件账户地址；
+	 * @param eventName    事件名；
+	 * @param fromSequence 开始的事件序列号；
+	 * @param count        最大数量；
+	 * @return
+	 */
+	Event[] getUserEvents(HashDigest ledgerHash, String address, String eventName, long fromSequence, int count);
 
 	/**
 	 * 返回合约账户信息；
@@ -313,7 +437,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * get users by ledgerHash and its range;
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param fromIndex
 	 * @param count
@@ -323,7 +447,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * get data accounts by ledgerHash and its range;
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param fromIndex
 	 * @param count
@@ -333,7 +457,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * get contract accounts by ledgerHash and its range;
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param fromIndex
 	 * @param count
@@ -343,10 +467,10 @@ public interface BlockchainQueryService {
 
 	/**
 	 * return user's roles;
+	 *
 	 * @param ledgerHash
 	 * @param userAddress
 	 * @return
 	 */
 	RoleSet getUserRoles(HashDigest ledgerHash, String userAddress);
-
 }
