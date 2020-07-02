@@ -1,8 +1,10 @@
 package com.jd.blockchain.consensus;
 
+import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.ledger.ParticipantNode;
 import com.jd.blockchain.ledger.ParticipantRegisterOperation;
 import com.jd.blockchain.utils.Bytes;
+import com.jd.blockchain.utils.net.NetworkAddress;
 
 import java.util.Properties;
 
@@ -19,10 +21,26 @@ public interface ConsensusSettingsBuilder {
 	 */
 	ConsensusSettings createSettings(Properties props, ParticipantNode[] participantNodes);
 
-	Bytes updateConsensusNodes(Bytes oldConsensusSettings, ParticipantRegisterOperation registerOperation);
 
-	Bytes updateSystemConfig(Bytes oldConsensusSettings);
-	
+	/**
+	 * 注册/激活新参与方时，进行账本中共识环境的节点/系统属性的信息更新
+	 *
+	 * @param oldConsensusSettings
+	 *            旧参与方的共识环境信息；
+	 * @param newParticipantPk
+	 *            新参与方公钥信息；
+	 * @param networkAddress
+	 * 	          新参与方网络信息；
+	 * @param stateFlag
+	 * 	          标识是注册还是激活操作；
+	 * 	          0:注册;
+	 * 	          1:激活;
+	 *
+	 * 	 <br>
+	 * @return 序列化的新共识环境
+	 */
+	Bytes updateConsensusSettings(Bytes oldConsensusSettings, PubKey newParticipantPk, NetworkAddress networkAddress, byte opFlag);
+
 	Properties createPropertiesTemplate();
 
 	void writeSettings(ConsensusSettings settings, Properties props);
