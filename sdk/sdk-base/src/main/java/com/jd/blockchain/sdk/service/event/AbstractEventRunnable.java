@@ -2,7 +2,9 @@ package com.jd.blockchain.sdk.service.event;
 
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.Event;
-import com.jd.blockchain.sdk.*;
+import com.jd.blockchain.sdk.EventContext;
+import com.jd.blockchain.sdk.EventListenerHandle;
+import com.jd.blockchain.sdk.EventPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,9 +24,7 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
 
     private static Logger LOGGER = LoggerFactory.getLogger(AbstractEventRunnable.class);
 
-    private static final int MAX_COUNT = 10;
-
-    private final Map<String, Long> eventSequences = new ConcurrentHashMap<>();
+    protected final Map<String, Long> eventSequences = new ConcurrentHashMap<>();
 
     /**
      * 账本Hash
@@ -34,23 +34,16 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
     /**
      * 事件集合
      */
-    private Set<E> eventPointSet;
-
-    /**
-     * 事件监听器
-     */
-    private BlockchainEventListener<E> listener;
+    protected Set<E> eventPointSet;
 
     /**
      * 事件监听处理器
      */
     private EventListenerHandle<E> handle;
 
-    public AbstractEventRunnable(HashDigest ledgerHash, Set<E> eventPointSet, BlockchainEventListener<E> listener,
-                                 EventListenerHandle<E> handle) {
+    public AbstractEventRunnable(HashDigest ledgerHash, Set<E> eventPointSet, EventListenerHandle<E> handle) {
         this.ledgerHash = ledgerHash;
         this.eventPointSet = eventPointSet;
-        this.listener = listener;
         this.handle = handle;
         initEventSequences();
     }
@@ -79,7 +72,7 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
     private void loadEventsByHttpProtocol() {
         // 发送一个请求至网关
         for(E eventPoint : eventPointSet) {
-            Event[] events = loadEvent(eventPoint, eventSequence(eventPoint), MAX_COUNT);
+            Event[] events = loadEvent(eventPoint, eventSequence(eventPoint));
             onEvent(eventPoint, events);
         }
     }
@@ -95,10 +88,9 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
             long fromSequence = -1L;
             sortEventsBySequence(events);
             for (Event event : events) {
-                EventContext<E> context = eventContext(event);
-                listener.onEvent(event, context);
                 fromSequence = Math.max(fromSequence, event.getSequence());
             }
+            onEvent(events);
             updateEventSequence(eventPoint.getEventName(), fromSequence + 1);
         }
     }
@@ -143,24 +135,20 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
     }
 
     /**
-     * 初始化事件对应的Sequence
-     *
-     */
-    private void initEventSequences() {
-        for (E eventPoint : eventPointSet) {
-            eventSequences.put(eventPoint.getEventName(), eventPoint.getSequence());
-        }
-    }
-
-    /**
      * 从远端加载对应的事件
      *
      * @param eventPoint
      * @param fromSequence
-     * @param maxCount
      * @return
      */
-    abstract Event[] loadEvent(E eventPoint, long fromSequence, int maxCount);
+    abstract Event[] loadEvent(E eventPoint, long fromSequence);
+
+    /**
+     * 事件处理
+     *
+     * @param events
+     */
+    abstract void onEvent(Event[] events);
 
     /**
      * 将事件转换为事件上下文
@@ -169,4 +157,10 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
      * @return
      */
     abstract EventContext<E> eventContext(Event event);
+
+    /**
+     * 初始化事件对应的Sequence
+     *
+     */
+    abstract void initEventSequences();
 }

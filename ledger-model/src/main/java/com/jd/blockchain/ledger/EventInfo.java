@@ -18,6 +18,8 @@ public class EventInfo implements Event {
     private long blockHeight;
     private Bytes eventAccount;
 
+    public EventInfo() { }
+
     public EventInfo(Event event) {
         this.name = event.getName();
         this.sequence = event.getSequence();
