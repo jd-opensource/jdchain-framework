@@ -49,4 +49,11 @@ public class UserEventRunnable extends AbstractEventRunnable<UserEventPoint> {
         EventContextData<UserEventPoint> context = new EventContextData<>(getLedgerHash(), getHandle());
         return context;
     }
+
+    @Override
+    void initEventSequences() {
+        for (UserEventPoint eventPoint : eventPointSet) {
+            eventSequences.put(eventPoint.getEventAccount() + eventPoint.getEventName(), eventPoint.getSequence());
+        }
+    }
 }

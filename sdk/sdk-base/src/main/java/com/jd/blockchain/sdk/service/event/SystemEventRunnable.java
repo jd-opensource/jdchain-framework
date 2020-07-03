@@ -66,4 +66,11 @@ public class SystemEventRunnable extends AbstractEventRunnable<SystemEventPoint>
         EventContextData<SystemEventPoint> context = new EventContextData<>(getLedgerHash(), getHandle());
         return context;
     }
+
+    @Override
+    void initEventSequences() {
+        for (SystemEventPoint eventPoint : eventPointSet) {
+            eventSequences.put(eventPoint.getEventName(), eventPoint.getSequence());
+        }
+    }
 }

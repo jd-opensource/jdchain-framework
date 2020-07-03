@@ -24,7 +24,7 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
 
     private static Logger LOGGER = LoggerFactory.getLogger(AbstractEventRunnable.class);
 
-    private final Map<String, Long> eventSequences = new ConcurrentHashMap<>();
+    protected final Map<String, Long> eventSequences = new ConcurrentHashMap<>();
 
     /**
      * 账本Hash
@@ -34,7 +34,7 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
     /**
      * 事件集合
      */
-    private Set<E> eventPointSet;
+    protected Set<E> eventPointSet;
 
     /**
      * 事件监听处理器
@@ -135,16 +135,6 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
     }
 
     /**
-     * 初始化事件对应的Sequence
-     *
-     */
-    private void initEventSequences() {
-        for (E eventPoint : eventPointSet) {
-            eventSequences.put(eventPoint.getEventName(), eventPoint.getSequence());
-        }
-    }
-
-    /**
      * 从远端加载对应的事件
      *
      * @param eventPoint
@@ -167,4 +157,10 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
      * @return
      */
     abstract EventContext<E> eventContext(Event event);
+
+    /**
+     * 初始化事件对应的Sequence
+     *
+     */
+    abstract void initEventSequences();
 }
