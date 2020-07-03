@@ -7,7 +7,7 @@ import com.jd.blockchain.consts.DataCodes;
 
 /**
  * 交易（事务）执行状态；
- * 
+ *
  * @author huanghaiquan
  *
  */
@@ -38,7 +38,7 @@ public enum TransactionState {
 	 * 合约不存在；
 	 */
 	CONTRACT_DOES_NOT_EXIST((byte) 0x04),
-	
+
 	/**
 	 * 数据写入时版本冲突；
 	 */
@@ -68,6 +68,11 @@ public enum TransactionState {
 	 * 合约执行错误；
 	 */
 	CONTRACT_EXECUTE_ERROR((byte) 0x10),
+
+	/**
+	 * 合约写入时版本冲突；
+	 */
+	CONTRACT_VERSION_CONFLICT((byte) 0x08),
 
 	/**
 	 * 被安全策略拒绝；
@@ -102,7 +107,7 @@ public enum TransactionState {
 	/**
 	 * 由于交易的整体回滚而丢弃；
 	 * <p>
-	 * 
+	 *
 	 * 注： “整体回滚”是指把交易引入的数据更改以及交易记录本身全部都回滚；<br>
 	 * “部分回滚”是指把交易引入的数据更改回滚了，但是交易记录本身以及相应的“交易结果({@link TransactionState})”都会提交；<br>
 	 */
@@ -111,9 +116,9 @@ public enum TransactionState {
 	/**
 	 * 由于区块的整体回滚而丢弃；
 	 * <p>
-	 * 
+	 *
 	 * 注： “整体回滚”是指把交易引入的数据更改以及交易记录本身全部都回滚；<br>
-	 * 
+	 *
 	 * “部分回滚”是指把交易引入的数据更改回滚了，但是交易记录本身以及相应的“交易结果({@link TransactionState})”都会提交；<br>
 	 */
 	IGNORED_BY_BLOCK_FULL_ROLLBACK((byte) 0x44),

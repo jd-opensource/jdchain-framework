@@ -34,6 +34,7 @@ import com.jd.blockchain.utils.Bytes;
 public class ContractEventSendOpTemplateTest {
 
 	private ContractEventSendOpTemplate data;
+	private ContractEventSendOpTemplate data4Version;
 
 	@Before
 	public void initContractEventSendOpTemplate() {
@@ -46,7 +47,7 @@ public class ContractEventSendOpTemplateTest {
 	}
 
 	@Test
-	public void testSerialize_ContractEventSendOperation() throws Exception {
+	public void testSerialize_ContractEventSendOperation() {
 		byte[] serialBytes = BinaryProtocol.encode(data, ContractEventSendOperation.class);
 		ContractEventSendOperation resolvedData = BinaryProtocol.decode(serialBytes);
 		System.out.println("------Assert start ------");
@@ -59,7 +60,7 @@ public class ContractEventSendOpTemplateTest {
 	}
 
 	@Test
-	public void testSerialize_Operation() throws Exception {
+	public void testSerialize_Operation() {
 		byte[] serialBytes = BinaryProtocol.encode(data, Operation.class);
 		Operation resolvedData = BinaryProtocol.decode(serialBytes);
 		System.out.println("------Assert start ------");

@@ -2,6 +2,8 @@ package com.jd.blockchain.transaction;
 
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.BlockchainIdentity;
+import com.jd.blockchain.ledger.BytesValueList;
+import com.jd.blockchain.ledger.ContractEventSendOperation;
 import com.jd.blockchain.ledger.ContractInfo;
 import com.jd.blockchain.ledger.Event;
 import com.jd.blockchain.ledger.KVInfoVO;
@@ -16,11 +18,12 @@ import com.jd.blockchain.ledger.Transaction;
 import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.ledger.TypedKVEntry;
 import com.jd.blockchain.ledger.UserInfo;
+import com.jd.blockchain.utils.Bytes;
 import org.springframework.cglib.core.Block;
 
 /**
  * 区块链查询器；
- * 
+ *
  * @author huanghaiquan
  *
  */
@@ -28,9 +31,9 @@ public interface BlockchainQueryService {
 
 	/**
 	 * 返回所有的账本的 hash 列表；<br>
-	 * 
+	 *
 	 * 注：账本的 hash 既是该账本的创世区块的 hash；
-	 * 
+	 *
 	 * @return 账本 hash 的集合；
 	 */
 	HashDigest[] getLedgerHashs();
@@ -87,7 +90,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * 返回指定高度的区块中记录的交易总数；
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param height
 	 * @return
@@ -96,7 +99,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * 返回指定高度的区块中记录的交易总数；
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param blockHash
 	 * @return
@@ -237,7 +240,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * 返回用户信息；
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param address
 	 * @return
@@ -246,7 +249,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * 返回数据账户信息；
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param address
 	 * @return
@@ -255,11 +258,11 @@ public interface BlockchainQueryService {
 
 	/**
 	 * 返回数据账户中指定的键的最新值； <br>
-	 * 
+	 *
 	 * 返回结果的顺序与指定的键的顺序是一致的；<br>
-	 * 
+	 *
 	 * 如果某个键不存在，则返回版本为 -1 的数据项；
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param address
 	 * @param keys
@@ -292,7 +295,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * 返回合约账户信息；
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param address
 	 * @return
@@ -301,7 +304,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * 返回系统事件；
-	 * 
+	 *
 	 * @param ledgerHash   账本哈希；
 	 * @param eventName    事件名；
 	 * @param fromSequence 开始的事件序列号；
@@ -412,7 +415,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * 返回自定义事件；
-	 * 
+	 *
 	 * @param ledgerHash   账本哈希；
 	 * @param address      事件账户地址；
 	 * @param eventName    事件名；
@@ -423,8 +426,18 @@ public interface BlockchainQueryService {
 	Event[] getUserEvents(HashDigest ledgerHash, String address, String eventName, long fromSequence, int count);
 
 	/**
+	 * 返回合约账户信息；
+	 *
+	 * @param ledgerHash
+	 * @param address
+	 * @param version
+	 * @return
+	 */
+	ContractInfo getContract(HashDigest ledgerHash, String address, long version);
+
+	/**
 	 * get users by ledgerHash and its range;
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param fromIndex
 	 * @param count
@@ -434,7 +447,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * get data accounts by ledgerHash and its range;
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param fromIndex
 	 * @param count
@@ -444,7 +457,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * get contract accounts by ledgerHash and its range;
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param fromIndex
 	 * @param count
@@ -454,7 +467,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * return user's roles;
-	 * 
+	 *
 	 * @param ledgerHash
 	 * @param userAddress
 	 * @return

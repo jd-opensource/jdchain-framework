@@ -145,5 +145,4 @@ public class TxBuilder implements TransactionBuilder {
 	public <T> T contract(String address, Class<T> contractIntf) {
 		return opFactory.contract(address, contractIntf);
 	}
-
 }

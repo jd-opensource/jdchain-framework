@@ -117,12 +117,12 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	@Override
 	public <T> T contract(String address, Class<T> contractIntf) {
-		return contractInvoProxyBuilder.create(address, contractIntf, contractEventSendOpBuilder);
+		return contractInvoProxyBuilder.create(address, -1L, contractIntf, contractEventSendOpBuilder);
 	}
 
 	@Override
 	public <T> T contract(Bytes address, Class<T> contractIntf) {
-		return contractInvoProxyBuilder.create(address, contractIntf, contractEventSendOpBuilder);
+		return contractInvoProxyBuilder.create(address, -1L, contractIntf, contractEventSendOpBuilder);
 	}
 
 	/**
@@ -301,6 +301,13 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		@Override
 		public ContractCodeDeployOperation deploy(BlockchainIdentity id, byte[] chainCode) {
 			ContractCodeDeployOperation op = CONTRACT_CODE_DEPLOY_OP_BUILDER.deploy(id, chainCode);
+			operationList.add(op);
+			return op;
+		}
+
+		@Override
+		public ContractCodeDeployOperation deploy(BlockchainIdentity id, byte[] chainCode, long version) {
+			ContractCodeDeployOperation op = CONTRACT_CODE_DEPLOY_OP_BUILDER.deploy(id, chainCode, version);
 			operationList.add(op);
 			return op;
 		}
