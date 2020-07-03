@@ -39,6 +39,11 @@ public interface LedgerInitSetting {
 	@DataField(order = 3, refContract = true)
 	CryptoSetting getCryptoSetting();
 
+	/**
+	 * 共识算法实现Provider；
+	 *
+	 * @return
+	 */
 	@DataField(order = 4, primitiveType = PrimitiveType.TEXT)
 	String getConsensusProvider();
 
@@ -58,4 +63,11 @@ public interface LedgerInitSetting {
 	@DataField(order = 6, primitiveType = PrimitiveType.INT64)
 	long getCreatedTime();
 
+	/**
+	 * 账本结构版本号；
+	 *
+	 * @return
+	 */
+	@DataField(order = 7, primitiveType = PrimitiveType.INT64)
+	long getLedgerStructureVersion();
 }

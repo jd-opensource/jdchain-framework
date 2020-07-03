@@ -25,6 +25,8 @@ public class LedgerInitData implements LedgerInitSetting {
 
 	private long createdTime;
 
+	private long ledgerStructureVersion = -1L;
+
 	@Override
 	public byte[] getLedgerSeed() {
 		return ledgerSeed;
@@ -77,6 +79,15 @@ public class LedgerInitData implements LedgerInitSetting {
 	@Override
 	public long getCreatedTime() {
 		return createdTime;
+	}
+
+	@Override
+	public long getLedgerStructureVersion() {
+		return this.ledgerStructureVersion;
+	}
+
+	public void setLedgerStructureVersion(long ledgerStructureVersion) {
+		this.ledgerStructureVersion = ledgerStructureVersion;
 	}
 
 	public void setCreatedTime(long createdTime) {
