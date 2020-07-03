@@ -2,6 +2,7 @@ package com.jd.blockchain.utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 
 import com.jd.blockchain.utils.codec.Base58Utils;
 import com.jd.blockchain.utils.io.BytesSerializable;
@@ -14,7 +15,7 @@ import com.jd.blockchain.utils.io.RuntimeIOException;
  * @author huanghaiquan
  *
  */
-public class Bytes implements BytesSerializable {
+public class Bytes implements BytesSerializable, Serializable {
 
 	public static final Bytes EMPTY = new Bytes(BytesUtils.EMPTY_BYTES);
 

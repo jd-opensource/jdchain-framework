@@ -1,7 +1,9 @@
 package com.jd.blockchain.sdk;
 
-public interface BlockchainEventListener {
+import com.jd.blockchain.ledger.Event;
+
+public interface BlockchainEventListener<E extends EventPoint> {
 	
-	public void onEvent(BlockchainEventMessage eventMessage, BlockchainEventHandle eventHandle);
+	public void onEvent(Event eventMessage, EventContext<E> eventContext);
 	
 }

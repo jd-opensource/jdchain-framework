@@ -3,9 +3,11 @@ package com.jd.blockchain.ledger;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -24,7 +26,9 @@ import com.jd.blockchain.utils.codec.HexUtils;
 import com.jd.blockchain.utils.io.FileUtils;
 import com.jd.blockchain.utils.net.NetworkAddress;
 
-public class LedgerInitProperties {
+public class LedgerInitProperties implements Serializable {
+
+	private static final long serialVersionUID = 6261483113521649870L;
 
 	// 账本种子；
 	public static final String LEDGER_SEED = "ledger.seed";
@@ -179,6 +183,21 @@ public class LedgerInitProperties {
 		return String.format("%s.%s", partAddrStr, partPropKey);
 	}
 
+	public static LedgerInitProperties createDefault(byte[] ledgerSeed, String ledgerName, Date createdTime,
+			Properties consensusConfig) {
+		LedgerInitProperties initProps = new LedgerInitProperties(ledgerSeed);
+		initProps.ledgerName = ledgerName;
+		initProps.createdTime = createdTime.getTime();
+		initProps.consensusProvider = "com.jd.blockchain.consensus.bftsmart.BftsmartConsensusProvider";
+		initProps.consensusConfig = consensusConfig;
+		initProps.cryptoProperties.providers = new String[] {
+				"com.jd.blockchain.crypto.service.classic.ClassicCryptoService",
+				"com.jd.blockchain.crypto.service.sm.SMCryptoService" };
+		initProps.cryptoProperties.verifyHash = true;
+		initProps.cryptoProperties.hashAlgorithm = "SHA256";
+		return initProps;
+	}
+
 	public static LedgerInitProperties resolve(String initSettingFile) {
 		Properties props = FileUtils.readProperties(initSettingFile, "UTF-8");
 		File realFile = new File(initSettingFile);
@@ -325,7 +344,7 @@ public class LedgerInitProperties {
 					.parseBoolean(PropertiesUtils.getRequiredProperty(props, initializerSecureKey));
 			NetworkAddress initializerAddress = new NetworkAddress(initializerHost, initializerPort, initializerSecure);
 			parti.setInitializerAddress(initializerAddress);
-			parti.setParticipantNodeState(ParticipantNodeState.ACTIVED);
+			parti.setParticipantNodeState(ParticipantNodeState.CONSENSUS);
 			initProps.addConsensusParticipant(parti);
 		}
 
@@ -380,7 +399,9 @@ public class LedgerInitProperties {
 		this.roles = roles;
 	}
 
-	public static class CryptoProperties {
+	public static class CryptoProperties implements Serializable {
+
+		private static final long serialVersionUID = -2464539697473908124L;
 
 		private String[] providers;
 
@@ -420,7 +441,9 @@ public class LedgerInitProperties {
 	 * @author huanghaiquan
 	 *
 	 */
-	public static class ParticipantProperties implements ParticipantNode {
+	public static class ParticipantProperties implements ParticipantNode, Serializable {
+
+		private static final long serialVersionUID = 7038013516766733725L;
 
 		private int id;
 

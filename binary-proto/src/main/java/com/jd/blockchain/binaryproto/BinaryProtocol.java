@@ -3,6 +3,7 @@ package com.jd.blockchain.binaryproto;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import com.jd.blockchain.binaryproto.impl.DataContractContext;
 import com.jd.blockchain.binaryproto.impl.HeaderEncoder;
@@ -11,6 +12,38 @@ import com.jd.blockchain.utils.io.BytesSlice;
 import com.jd.blockchain.utils.io.BytesUtils;
 
 public class BinaryProtocol {
+
+	/**
+	 * 返回指定的数据契约类型的映射；
+	 * 
+	 * @param contractType
+	 * @return
+	 */
+	public static DataTypeMapping getDataType(Class<?> contractType) {
+		// TODO: Not implemented!;
+		throw new IllegalStateException("Not implemented!");
+	}
+	
+	/**
+	 * 返回指定的数据契约类型的映射；
+	 * 
+	 * @param contractType
+	 * @return
+	 */
+	public static DataTypeMapping getDataType(int code, long version) {
+		// TODO: Not implemented!;
+		throw new IllegalStateException("Not implemented!");
+	}
+
+	/**
+	 * 返回全部的数据契约类型的映射；
+	 * 
+	 * @return
+	 */
+	public static List<DataTypeMapping> getDataTypes() {
+		// TODO: Not implemented!;
+		throw new IllegalStateException("Not implemented!");
+	}
 
 	public static void encode(Object data, Class<?> contractType, OutputStream out) {
 		DataContractEncoder encoder = DataContractContext.resolve(contractType);
@@ -62,7 +95,6 @@ public class BinaryProtocol {
 		BytesSlice bytes = new BytesSlice(dataSegment, 0, dataSegment.length);
 		return encoder.decode(bytes.getInputStream());
 	}
-
 
 	@Deprecated
 	public static <T> T decodeAs(byte[] dataSegment, Class<T> contractType) {
