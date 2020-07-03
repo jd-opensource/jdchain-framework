@@ -59,11 +59,6 @@ public class DataContractSpecification implements DataSpecification {
 	}
 
 	@Override
-	public String toHtml() {
-		throw new IllegalStateException("Not implemented!");
-	}
-
-	@Override
 	public String toString() {
 		StringBuilder info = new StringBuilder();
 		info.append(String.format("---------- DataContract[%s-%s] ----------\r\n", code, version));

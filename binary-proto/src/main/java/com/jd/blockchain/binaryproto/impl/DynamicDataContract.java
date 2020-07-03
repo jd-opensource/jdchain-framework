@@ -141,7 +141,7 @@ class DynamicDataContract implements InvocationHandler, DataContractProxy {
 
 	@Override
 	public DataSpecification getSepcification() {
-		return contractEncoder.getSepcification();
+		return contractEncoder.getSpecification();
 	}
 
 	@Override
