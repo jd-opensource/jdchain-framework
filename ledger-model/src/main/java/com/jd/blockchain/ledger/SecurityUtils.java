@@ -2,11 +2,11 @@ package com.jd.blockchain.ledger;
 
 public class SecurityUtils {
 
-	public static final int MAX_ROLE_NAMES = 20;
+	public static final int MAX_ROLE_NAMES = 100;
 
 	/**
 	 * 校验角色名称的有效性，并格式化角色名称：去掉两端空白字符，统一为大写字符；
-	 * 
+	 *
 	 * @param roleName
 	 * @return
 	 */
