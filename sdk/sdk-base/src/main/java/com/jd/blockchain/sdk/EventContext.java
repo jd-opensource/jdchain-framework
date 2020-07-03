@@ -6,7 +6,5 @@ public interface EventContext<E extends EventPoint> {
 	
 	HashDigest getLedgerHash();
 
-	long getBlockHeight();
-
 	EventListenerHandle<E> getHandle();
 }
