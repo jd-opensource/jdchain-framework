@@ -13,13 +13,11 @@ public class ParticipantStateUpdateOpTemplate implements ParticipantStateUpdateO
     }
 
     private BlockchainIdentity stateUpdateIdentity;
-    private NetworkAddress networkAddress;
     private ParticipantNodeState participantNodeState;
 
-    public ParticipantStateUpdateOpTemplate(BlockchainIdentity stateUpdateIdentity, NetworkAddress networkAddress, ParticipantNodeState participantNodeState) {
+    public ParticipantStateUpdateOpTemplate(BlockchainIdentity stateUpdateIdentity, ParticipantNodeState participantNodeState) {
 
         this.stateUpdateIdentity = stateUpdateIdentity;
-        this.networkAddress = networkAddress;
         this.participantNodeState = participantNodeState;
     }
 
@@ -27,11 +25,6 @@ public class ParticipantStateUpdateOpTemplate implements ParticipantStateUpdateO
     @Override
     public BlockchainIdentity getStateUpdateIdentity() {
         return stateUpdateIdentity;
-    }
-
-    @Override
-    public NetworkAddress getNetworkAddress() {
-        return networkAddress;
     }
 
     @Override

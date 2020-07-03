@@ -344,7 +344,7 @@ public class LedgerInitProperties implements Serializable {
 					.parseBoolean(PropertiesUtils.getRequiredProperty(props, initializerSecureKey));
 			NetworkAddress initializerAddress = new NetworkAddress(initializerHost, initializerPort, initializerSecure);
 			parti.setInitializerAddress(initializerAddress);
-			parti.setParticipantNodeState(ParticipantNodeState.ACTIVED);
+			parti.setParticipantNodeState(ParticipantNodeState.CONSENSUS);
 			initProps.addConsensusParticipant(parti);
 		}
 
