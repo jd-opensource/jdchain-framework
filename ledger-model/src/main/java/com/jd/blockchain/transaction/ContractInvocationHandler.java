@@ -14,6 +14,7 @@ import com.jd.blockchain.utils.IllegalDataException;
 public class ContractInvocationHandler implements InvocationHandler {
 
 	private Bytes contractAddress;
+	private long version;
 
 	private ContractType contractType;
 
@@ -21,15 +22,16 @@ public class ContractInvocationHandler implements InvocationHandler {
 
 	private int proxyHashCode;
 
-	public ContractInvocationHandler(Bytes contractAddress, ContractType contractType,
+	public ContractInvocationHandler(Bytes contractAddress, long version, ContractType contractType,
 			ContractEventSendOperationBuilder sendOpBuilder) {
 		this.contractAddress = contractAddress;
+		this.version = version;
 		if (contractType == null) {
 			throw new IllegalDataException("contractType == null, no invoke really.");
 		}
 		this.contractType = contractType;
 		this.sendOpBuilder = sendOpBuilder;
-		this.proxyHashCode = Arrays.deepHashCode(new Object[] { this, contractAddress, contractType, sendOpBuilder });
+		this.proxyHashCode = Arrays.deepHashCode(new Object[] { this, contractAddress, version, contractType, sendOpBuilder });
 	}
 
 	@Override

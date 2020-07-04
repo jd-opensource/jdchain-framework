@@ -13,6 +13,7 @@ public class ContractSettings {
     private HashDigest rootHash;
 
     private String chainCode;
+    private long chainCodeVersion;
 
     public ContractSettings() {
     }
@@ -60,5 +61,13 @@ public class ContractSettings {
 
     public void setChainCode(String chainCode) {
         this.chainCode = chainCode;
+    }
+
+    public long getChainCodeVersion() {
+        return chainCodeVersion;
+    }
+
+    public void setChainCodeVersion(long chainCodeVersion) {
+        this.chainCodeVersion = chainCodeVersion;
     }
 }

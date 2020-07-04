@@ -3,6 +3,7 @@ package com.jd.blockchain.sdk.proxy;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.ContractInfo;
+import com.jd.blockchain.ledger.Event;
 import com.jd.blockchain.ledger.KVInfoVO;
 import com.jd.blockchain.ledger.LedgerAdminInfo;
 import com.jd.blockchain.ledger.LedgerBlock;
@@ -577,6 +578,66 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	ContractInfo getContract(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
                               @PathParam(name="address") String address);
 
+	/**
+	 * 返回系统事件列表；
+	 *
+	 *
+	 * @param ledgerHash   账本哈希；
+	 * @param eventName    事件名；
+	 * @param fromSequence 开始的事件序列号；
+	 * @param count     最大数量；
+	 * @return
+	 */
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names/{eventName}")
+	@Override
+	Event[] getSystemEvents(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+							@PathParam(name="eventName") String eventName,
+							@RequestParam(name = "fromSequence", required = false) long fromSequence,
+							@RequestParam(name = "count", required = false) int count);
+
+	/**
+	 * 返回用户事件账户列表;
+	 *
+	 * @param ledgerHash
+	 * @param fromIndex
+	 * @param count
+	 * @return
+	 */
+	@HttpAction(method=HttpMethod.GET, path = "ledgers/{ledgerHash}/events/user/accounts")
+	@Override
+	BlockchainIdentity[] getUserEventAccounts(@PathParam(name="ledgerHash")  HashDigest ledgerHash,
+													 @RequestParam(name = "fromIndex", required = false) int fromIndex,
+													 @RequestParam(name = "count", required = false) int count);
+
+	/**
+	 * 返回用户事件列表；
+	 *
+	 * @param ledgerHash   账本哈希；
+	 * @param address      事件账户地址；
+	 * @param eventName    事件名；
+	 * @param fromSequence 开始的事件序列号；
+	 * @param count        最大数量；
+	 * @return
+	 */
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}")
+	@Override
+	Event[] getUserEvents(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+						  @PathParam(name="address") String address,
+						  @PathParam(name="eventName") String eventName,
+						  @RequestParam(name = "fromSequence", required = false) long fromSequence,
+						  @RequestParam(name = "count", required = false) int count);
+	/**
+	 * 返回合约账户信息；
+	 *
+	 * @param ledgerHash
+	 * @param address
+	 * @return
+	 */
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/contracts/address/{address}/version/{version}")
+	@Override
+	ContractInfo getContract(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+							 @PathParam(name="address") String address, @PathParam(name="version") long version);
+
 
 	/**
 	 * get more users by fromIndex and count;
@@ -628,6 +689,58 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	RoleSet getUserRoles(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 											 @PathParam(name="userAddress") String userAddress);
 
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names/count")
+	@Override
+	long getSystemEventNameTotalCount(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash);
+
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names")
+	@Override
+	String[] getSystemEventNames(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+								@RequestParam(name = "fromIndex", required = false) int fromIndex,
+								@RequestParam(name = "count", required = false) int count);
+
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names/{eventName}/count")
+	@Override
+	long getSystemEventsTotalCount(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+								   @PathParam(name="eventName") String eventName);
+
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/{address}")
+	@Override
+	BlockchainIdentity getUserEventAccount(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+										   @PathParam(name="address") String address);
+
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/count")
+	@Override
+	long getUserEventAccountTotalCount(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash);
+
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/{address}/names/count")
+	@Override
+	long getUserEventNameTotalCount(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+									@PathParam(name="address") String address);
+
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/{address}/names")
+	@Override
+	String[] getUserEventNames(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+							  @PathParam(name="address") String address,
+							  @RequestParam(name = "fromIndex", required = false) int fromIndex,
+							  @RequestParam(name = "count", required = false) int count);
+
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}/count")
+	@Override
+	long getUserEventsTotalCount(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+								 @PathParam(name="address") String address,
+								 @PathParam(name="eventName") String eventName);
+
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names/{eventName}/latest")
+	@Override
+	Event getLatestEvent(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+						 @PathParam(name="eventName") String eventName);
+
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}/latest")
+	@Override
+	Event getLatestEvent(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+						 @PathParam(name="address") String address,
+						 @PathParam(name="eventName") String eventName);
 	/**
 	 * get role's privilege;
 	 * @param ledgerHash

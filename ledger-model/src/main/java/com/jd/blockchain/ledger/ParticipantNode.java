@@ -51,7 +51,7 @@ public interface ParticipantNode {
 	PubKey getPubKey();
 
 	/**
-	 * 节点的状态：已注册/已参与共识
+	 * 节点的状态：就绪/共识
 	 *
 	 * @return
 	 */

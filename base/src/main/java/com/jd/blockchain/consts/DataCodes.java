@@ -34,6 +34,8 @@ public interface DataCodes {
 
 	public static final int LEDGER_ADMIN_INFO = 0x131;
 
+	public static final int EVENT_SNAPSHOT = 0x132;
+
 	public static final int TX = 0x200;
 
 	public static final int TX_LEDGER = 0x201;
@@ -78,6 +80,10 @@ public interface DataCodes {
 
 	public static final int TX_OP_USER_ROLE_AUTHORIZE_ENTRY = 0x374;
 
+	public static final int TX_OP_EVENT_ACC_REG = 0x380;
+	public static final int TX_OP_EVENT_PUBLISH = 0x381;
+	public static final int TX_OP_EVENT_PUBLISH_ENTITY = 0x382;
+
 	// enum types of permissions;
 	public static final int ENUM_TX_PERMISSION = 0x401;
 	public static final int ENUM_LEDGER_PERMISSION = 0x402;
@@ -92,7 +98,10 @@ public interface DataCodes {
 	public static final int SECURITY_ROLE_INIT_SETTING = 0x421;
 
 	public static final int SECURITY_USER_AUTH_INIT_SETTING = 0x422;
+
 	public static final int USER_PRIVILEGE = 0x423;
+	// event types;
+	public static final int EVENT_MESSAGE = 0x501;
 
 	// contract types of metadata;
 	public static final int METADATA = 0x600;

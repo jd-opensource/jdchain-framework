@@ -39,4 +39,11 @@ public interface ContractEventSendOperation extends Operation {
 	@DataField(order = 4, refContract = true)
 	BytesValueList getArgs();
 
+	/**
+	 * contract's version；
+	 *
+	 * @return
+	 */
+	@DataField(order = 5, primitiveType = PrimitiveType.INT64)
+	long getVersion();
 }

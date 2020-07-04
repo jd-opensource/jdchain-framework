@@ -1,8 +1,12 @@
 package com.jd.blockchain.ledger;
 
+import java.io.Serializable;
+
 import com.jd.blockchain.binaryproto.DataContractRegistry;
 
-public class RoleInitData implements RoleInitSettings {
+public class RoleInitData implements RoleInitSettings, Serializable {
+
+	private static final long serialVersionUID = -8363700065443018100L;
 
 	static {
 		DataContractRegistry.register(RoleInitSettings.class);

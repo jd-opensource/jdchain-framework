@@ -1,6 +1,8 @@
 package com.jd.blockchain.transaction;
 
 
+import java.io.Serializable;
+
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.ledger.DigitalSignature;
@@ -23,7 +25,9 @@ import com.jd.blockchain.ledger.MagicNumber;
  * @author huanghaiquan
  *
  */
-public class DigitalSignatureBlob implements DigitalSignature { 
+public class DigitalSignatureBlob implements DigitalSignature, Serializable { 
+
+	private static final long serialVersionUID = -1042418819105277446L;
 
 	private PubKey pubKey;
 

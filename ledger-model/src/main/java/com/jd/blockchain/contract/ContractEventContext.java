@@ -67,4 +67,10 @@ public interface ContractEventContext {
 	 */
 	Set<BlockchainIdentity> getContracOwners();
 
+	/**
+	 * get contract's version;
+	 * @return
+	 */
+	long getVersion();
+
 }
