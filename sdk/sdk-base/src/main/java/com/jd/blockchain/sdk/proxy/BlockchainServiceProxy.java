@@ -1,8 +1,33 @@
 package com.jd.blockchain.sdk.proxy;
 
 import com.jd.blockchain.crypto.HashDigest;
-import com.jd.blockchain.ledger.*;
-import com.jd.blockchain.sdk.*;
+import com.jd.blockchain.ledger.BlockchainIdentity;
+import com.jd.blockchain.ledger.ContractInfo;
+import com.jd.blockchain.ledger.DataAccountInfo;
+import com.jd.blockchain.ledger.Event;
+import com.jd.blockchain.ledger.KVInfoVO;
+import com.jd.blockchain.ledger.LedgerAdminInfo;
+import com.jd.blockchain.ledger.LedgerBlock;
+import com.jd.blockchain.ledger.LedgerInfo;
+import com.jd.blockchain.ledger.LedgerMetadata;
+import com.jd.blockchain.ledger.LedgerTransaction;
+import com.jd.blockchain.ledger.ParticipantNode;
+import com.jd.blockchain.ledger.PreparedTransaction;
+import com.jd.blockchain.ledger.RoleSet;
+import com.jd.blockchain.ledger.SystemEvent;
+import com.jd.blockchain.ledger.TransactionContent;
+import com.jd.blockchain.ledger.TransactionState;
+import com.jd.blockchain.ledger.TransactionTemplate;
+import com.jd.blockchain.ledger.TypedKVEntry;
+import com.jd.blockchain.ledger.UserInfo;
+import com.jd.blockchain.sdk.BlockchainService;
+import com.jd.blockchain.sdk.EventListenerHandle;
+import com.jd.blockchain.sdk.SystemEventListener;
+import com.jd.blockchain.sdk.SystemEventPoint;
+import com.jd.blockchain.sdk.SystemEventPointData;
+import com.jd.blockchain.sdk.UserEventListener;
+import com.jd.blockchain.sdk.UserEventPoint;
+import com.jd.blockchain.sdk.UserEventPointData;
 import com.jd.blockchain.sdk.converters.ClientResolveUtil;
 import com.jd.blockchain.sdk.service.event.SystemEventListenerHandle;
 import com.jd.blockchain.sdk.service.event.UserEventListenerHandle;
@@ -13,6 +38,7 @@ import com.jd.blockchain.transaction.TxRequestBuilder;
 import com.jd.blockchain.transaction.TxTemplate;
 
 public abstract class BlockchainServiceProxy implements BlockchainService {
+
 
 	protected abstract TransactionService getTransactionService(HashDigest ledgerHash);
 
@@ -179,7 +205,7 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	}
 
 	@Override
-	public BlockchainIdentity getDataAccount(HashDigest ledgerHash, String address) {
+	public DataAccountInfo getDataAccount(HashDigest ledgerHash, String address) {
 		return getQueryService(ledgerHash).getDataAccount(ledgerHash, address);
 	}
 
