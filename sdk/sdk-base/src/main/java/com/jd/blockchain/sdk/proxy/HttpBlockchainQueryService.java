@@ -4,6 +4,7 @@ import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.ContractInfo;
 import com.jd.blockchain.ledger.Event;
+import com.jd.blockchain.ledger.DataAccountInfo;
 import com.jd.blockchain.ledger.KVInfoVO;
 import com.jd.blockchain.ledger.LedgerAdminInfo;
 import com.jd.blockchain.ledger.LedgerBlock;
@@ -503,8 +504,8 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	 */
 	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/accounts/address/{address}")
 	@Override
-	BlockchainIdentity getDataAccount(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
-                                 @PathParam(name="address") String address);
+	DataAccountInfo getDataAccount(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+								   @PathParam(name="address") String address);
 
 	/**
 	 * 返回数据账户中指定的键的最新值； <br>
