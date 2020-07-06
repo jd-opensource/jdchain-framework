@@ -23,6 +23,6 @@ public interface MerkleProof extends Iterable<HashDigest> {
 	 * 
 	 * @return
 	 */
-	HashDigest[] getHashPaths();
+	HashDigest[] getHashPath();
 
 }
