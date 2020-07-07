@@ -62,7 +62,7 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 	}
 
 	@Override
-	public BlockchainService getBlockchainService() {
+	public PeerBlockchainService getBlockchainService() {
 		return peerServiceProxy;
 	}
 
