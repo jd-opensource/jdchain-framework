@@ -30,4 +30,9 @@ public class GatewayBlockchainServiceProxy extends BlockchainServiceProxy {
 	protected BlockchainQueryService getQueryService(HashDigest ledgerHash) {
 		return queryService;
 	}
+
+	@Override
+	public HashDigest[] getLedgerHashsDirect() {
+		return getLedgerHashs();
+	}
 }
