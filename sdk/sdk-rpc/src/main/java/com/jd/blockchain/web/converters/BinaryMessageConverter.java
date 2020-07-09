@@ -40,6 +40,8 @@ public class BinaryMessageConverter extends AbstractHttpMessageConverter<Object>
         DataContractRegistry.register(TransactionResponse.class);
         DataContractRegistry.register(DataAccountKVSetOperation.class);
         DataContractRegistry.register(DataAccountKVSetOperation.KVWriteEntry.class);
+        DataContractRegistry.register(EventPublishOperation.class);
+        DataContractRegistry.register(EventPublishOperation.EventEntry.class);
 
         DataContractRegistry.register(Operation.class);
         DataContractRegistry.register(ContractCodeDeployOperation.class);
@@ -48,6 +50,7 @@ public class BinaryMessageConverter extends AbstractHttpMessageConverter<Object>
         DataContractRegistry.register(UserRegisterOperation.class);
         DataContractRegistry.register(ParticipantRegisterOperation.class);
         DataContractRegistry.register(ParticipantStateUpdateOperation.class);
+        DataContractRegistry.register(EventAccountRegisterOperation.class);
 
         DataContractRegistry.register(ActionRequest.class);
         DataContractRegistry.register(ActionResponse.class);

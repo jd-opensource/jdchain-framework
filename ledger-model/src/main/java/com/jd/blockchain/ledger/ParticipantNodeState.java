@@ -16,14 +16,14 @@ import com.jd.blockchain.consts.DataCodes;
 public enum ParticipantNodeState {
 
     /**
-     * 已注册；
+     * 就绪；
      */
-    REGISTERED((byte) 0),
+    READY((byte) 0),
 
     /**
-     * 已激活；
+     * 共识；
      */
-    ACTIVED((byte) 1);
+	CONSENSUS((byte) 1);
 
     @EnumField(type= PrimitiveType.INT8)
     public final byte CODE;

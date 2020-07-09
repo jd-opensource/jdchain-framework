@@ -32,4 +32,13 @@ public interface LedgerMetadata_V2 extends LedgerMetadata {
 	@DataField(order = 5, primitiveType = PrimitiveType.BYTES)
 	HashDigest getUserRolesHash();
 
+	/**
+	 * 账本结构版本号
+	 *         若未配置，则返回-1
+	 *
+	 * @return
+	 */
+	@DataField(order = 6, primitiveType = PrimitiveType.INT64)
+	long getLedgerStructureVersion();
+
 }

@@ -8,7 +8,7 @@ import com.jd.blockchain.ledger.DigitalSignature;
 
 public class DataAccountRegisterOpTemplate implements DataAccountRegisterOperation {
 	static {
-		DataContractRegistry.register(DataAccountKVSetOperation.class);
+		DataContractRegistry.register(DataAccountRegisterOperation.class);
 	}
 
 	private BlockchainIdentity accountID;

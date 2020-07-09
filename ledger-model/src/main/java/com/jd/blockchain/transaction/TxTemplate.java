@@ -90,6 +90,24 @@ public class TxTemplate implements TransactionTemplate {
 	}
 
 	@Override
+	public EventAccountRegisterOperationBuilder eventAccounts() {
+		stateManager.operate();
+		return txBuilder.eventAccounts();
+	}
+
+	@Override
+	public EventPublishOperationBuilder eventAccount(String accountAddress) {
+		stateManager.operate();
+		return txBuilder.eventAccount(accountAddress);
+	}
+
+	@Override
+	public EventPublishOperationBuilder eventAccount(Bytes accountAddress) {
+		stateManager.operate();
+		return txBuilder.eventAccount(accountAddress);
+	}
+
+	@Override
 	public <T> T contract(String address, Class<T> contractIntf) {
 		stateManager.operate();
 		return txBuilder.contract(address, contractIntf);

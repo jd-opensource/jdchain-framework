@@ -12,10 +12,7 @@ public interface ParticipantStateUpdateOperation extends Operation {
     @DataField(order = 0, refContract = true)
     BlockchainIdentity getStateUpdateIdentity();
 
-    @DataField(order = 1, primitiveType = PrimitiveType.BYTES)
-    NetworkAddress getNetworkAddress();
-
-    @DataField(order = 2, refEnum = true)
+    @DataField(order = 1, refEnum = true)
     ParticipantNodeState getState();
 
 }

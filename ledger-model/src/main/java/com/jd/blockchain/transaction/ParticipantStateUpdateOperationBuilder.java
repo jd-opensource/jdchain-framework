@@ -17,5 +17,5 @@ public interface ParticipantStateUpdateOperationBuilder {
      *
      * @return
      */
-     ParticipantStateUpdateOperation update(BlockchainIdentity blockchainIdentity, NetworkAddress networkAddress, ParticipantNodeState participantNodeState);
+     ParticipantStateUpdateOperation update(BlockchainIdentity blockchainIdentity, ParticipantNodeState participantNodeState);
 }
