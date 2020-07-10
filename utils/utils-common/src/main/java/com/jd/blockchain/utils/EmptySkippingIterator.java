@@ -1,6 +1,6 @@
 package com.jd.blockchain.utils;
 
-public class EmptyLongSkippingIterator<E> implements LongSkippingIterator<E> {
+public class EmptySkippingIterator<E> implements SkippingIterator<E> {
 
 	@Override
 	public boolean hasNext() {
