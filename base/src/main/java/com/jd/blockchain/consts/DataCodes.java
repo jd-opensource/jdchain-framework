@@ -167,6 +167,8 @@ public interface DataCodes {
 
 	public static final int ENUM_TYPE_PARTICIPANT_NODE_STATE = 0xB24;
 
+	public static final int ENUM_TYPE_PARTICIPANT_NODE_OP = 0xB25;
+
 	public static final int DIGITALSIGNATURE = 0xB30;
 
 	public static final int DIGITALSIGNATURE_BODY = 0xB31;

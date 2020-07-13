@@ -2,6 +2,7 @@ package com.jd.blockchain.consensus;
 
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.ledger.ParticipantNode;
+import com.jd.blockchain.ledger.ParticipantNodeOp;
 import com.jd.blockchain.ledger.ParticipantRegisterOperation;
 import com.jd.blockchain.utils.Bytes;
 import com.jd.blockchain.utils.net.NetworkAddress;
@@ -31,15 +32,15 @@ public interface ConsensusSettingsBuilder {
 	 *            新参与方公钥信息；
 	 * @param networkAddress
 	 * 	          新参与方网络信息；
-	 * @param stateFlag
+	 * @param participantNodeOp
 	 * 	          标识是注册还是激活操作；
-	 * 	          0:注册;
-	 * 	          1:激活;
+	 * 	          0:注册/regist;
+	 * 	          1:激活/activate;
 	 *
 	 * 	 <br>
 	 * @return 序列化的新共识环境
 	 */
-	Bytes updateConsensusSettings(Bytes oldConsensusSettings, PubKey newParticipantPk, NetworkAddress networkAddress, byte opFlag);
+	Bytes updateConsensusSettings(Bytes oldConsensusSettings, PubKey newParticipantPk, NetworkAddress networkAddress, ParticipantNodeOp participantNodeOp);
 
 	Properties createPropertiesTemplate();
 
