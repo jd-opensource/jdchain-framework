@@ -12,7 +12,6 @@ import com.jd.blockchain.consts.DataCodes;
  * @create 2019/7/8
  * @since 1.0.0
  */
-@EnumContract(code= DataCodes.ENUM_TYPE_PARTICIPANT_NODE_OP)
 public enum ParticipantNodeOp {
 
     /**
@@ -25,7 +24,6 @@ public enum ParticipantNodeOp {
      */
 	ACTIVATE((byte) 1);
 
-    @EnumField(type= PrimitiveType.INT8)
     public final byte CODE;
 
     private ParticipantNodeOp(byte code) {
