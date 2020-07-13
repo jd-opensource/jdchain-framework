@@ -68,9 +68,14 @@ public class SystemEventRunnable extends AbstractEventRunnable<SystemEventPoint>
     }
 
     @Override
+    String eventPointKey(SystemEventPoint eventPoint) {
+        return eventPoint.getEventName();
+    }
+
+    @Override
     void initEventSequences() {
         for (SystemEventPoint eventPoint : eventPointSet) {
-            eventSequences.put(eventPoint.getEventName(), eventPoint.getSequence());
+            eventSequences.put(eventPointKey(eventPoint), eventPoint.getSequence());
         }
     }
 }

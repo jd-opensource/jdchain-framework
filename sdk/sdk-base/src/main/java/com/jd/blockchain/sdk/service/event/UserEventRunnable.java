@@ -51,9 +51,14 @@ public class UserEventRunnable extends AbstractEventRunnable<UserEventPoint> {
     }
 
     @Override
+    String eventPointKey(UserEventPoint eventPoint) {
+        return eventPoint.getEventAccount() + eventPoint.getEventName();
+    }
+
+    @Override
     void initEventSequences() {
         for (UserEventPoint eventPoint : eventPointSet) {
-            eventSequences.put(eventPoint.getEventAccount() + eventPoint.getEventName(), eventPoint.getSequence());
+            eventSequences.put(eventPointKey(eventPoint), eventPoint.getSequence());
         }
     }
 }
