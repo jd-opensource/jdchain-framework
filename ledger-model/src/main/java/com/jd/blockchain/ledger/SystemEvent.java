@@ -5,7 +5,7 @@ package com.jd.blockchain.ledger;
  */
 public enum SystemEvent {
     // 新区块
-    NEW_BLOCK("new_block");
+    NEW_BLOCK_CREATED("new_block_created");
 
     private String name;
 
