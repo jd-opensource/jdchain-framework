@@ -12,11 +12,14 @@ import com.jd.blockchain.ledger.LedgerInfo;
 import com.jd.blockchain.ledger.LedgerMetadata;
 import com.jd.blockchain.ledger.LedgerTransaction;
 import com.jd.blockchain.ledger.ParticipantNode;
+import com.jd.blockchain.ledger.PrivilegeSet;
+import com.jd.blockchain.ledger.PrivilegeSetVO;
 import com.jd.blockchain.ledger.RoleSet;
 import com.jd.blockchain.ledger.Transaction;
 import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.ledger.TypedKVEntry;
 import com.jd.blockchain.ledger.UserInfo;
+import com.jd.blockchain.ledger.UserPrivilege;
 import com.jd.blockchain.sdk.BlockchainExtendQueryService;
 import com.jd.blockchain.sdk.converters.HashDigestToStringConverter;
 import com.jd.blockchain.sdk.converters.HashDigestsResponseConverter;
@@ -30,7 +33,7 @@ import com.jd.blockchain.utils.web.client.WebResponseConverterFactory;
 
 /**
  * 作为内部使用的适配接口，用于声明 HTTP 协议的服务请求；
- *
+ * 
  * @author huanghaiquan
  *
  */
@@ -39,9 +42,9 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 
 	/**
 	 * 返回所有的账本的 hash 列表；<br>
-	 *
+	 * 
 	 * 注：账本的 hash 既是该账本的创世区块的 hash；
-	 *
+	 * 
 	 * @return Base64编码的账本 hash 的集合；
 	 */
     @HttpAction(method=HttpMethod.GET, path="ledgers", responseConverter = HashDigestsResponseConverter.class)
@@ -274,7 +277,7 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 
 	/**
 	 * 返回指定高度的区块中记录的交易总数；
-	 *
+	 * 
 	 * @param ledgerHash
 	 * @param height
 	 * @return
@@ -286,7 +289,7 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 
 	/**
 	 * 返回指定hash的区块中记录的交易总数；
-	 *
+	 * 
 	 * @param ledgerHash
 	 * @param blockHash
 	 * @return
@@ -485,7 +488,7 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 
 	/**
 	 * 返回用户信息；
-	 *
+	 * 
 	 * @param ledgerHash
 	 * @param address
 	 * @return
@@ -497,7 +500,7 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 
 	/**
 	 * 返回数据账户信息；
-	 *
+	 * 
 	 * @param ledgerHash
 	 * @param address
 	 * @return
@@ -509,11 +512,11 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 
 	/**
 	 * 返回数据账户中指定的键的最新值； <br>
-	 *
+	 * 
 	 * 返回结果的顺序与指定的键的顺序是一致的；<br>
-	 *
+	 * 
 	 * 如果某个键不存在，则返回版本为 -1 的数据项；
-	 *
+	 * 
 	 * @param ledgerHash
 	 * @param address
 	 * @param keys
@@ -566,7 +569,7 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 
 	/**
 	 * 返回合约账户信息；
-	 *
+	 * 
 	 * @param ledgerHash
 	 * @param address
 	 * @return
@@ -682,7 +685,7 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	 * @param userAddress
 	 * @return
 	 */
-	@HttpAction(method = HttpMethod.GET, path = "ledgers/{ledgerHash}/userrole/{userAddress}")
+	@HttpAction(method = HttpMethod.GET, path = "ledgers/{ledgerHash}/user-role/{userAddress}")
 	@Override
 	RoleSet getUserRoles(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 											 @PathParam(name="userAddress") String userAddress);
@@ -739,4 +742,26 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	Event getLatestEvent(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 						 @PathParam(name="address") String address,
 						 @PathParam(name="eventName") String eventName);
+	/**
+	 * get role's privilege;
+	 * @param ledgerHash
+	 * @param roleName
+	 * @return
+	 */
+	@HttpAction(method = HttpMethod.GET, path = "ledgers/{ledgerHash}/role-privilege/{roleName}")
+	@Override
+	PrivilegeSetVO getRolePrivileges(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+									 @PathParam(name="roleName") String roleName);
+
+	/**
+	 * get user's privilege;
+	 *
+	 * @param ledgerHash
+	 * @param userAddress
+	 * @return
+	 */
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/user-privilege/{userAddress}")
+	@Override
+	UserPrivilege getUserPrivileges(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+									 @PathParam(name="userAddress") String userAddress);
 }

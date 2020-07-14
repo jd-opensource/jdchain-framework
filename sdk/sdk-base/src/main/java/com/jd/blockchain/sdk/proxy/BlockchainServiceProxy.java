@@ -313,4 +313,13 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	public Event getLatestEvent(HashDigest ledgerHash, String address, String eventName) {
 		return getQueryService(ledgerHash).getLatestEvent(ledgerHash, address, eventName);
 	}
+	@Override
+	public PrivilegeSetVO getRolePrivileges(HashDigest ledgerHash, String roleName) {
+		return getQueryService(ledgerHash).getRolePrivileges(ledgerHash, roleName);
+	}
+
+	@Override
+	public UserPrivilege getUserPrivileges(HashDigest ledgerHash, String userAddress) {
+		return getQueryService(ledgerHash).getUserPrivileges(ledgerHash, userAddress);
+	}
 }
