@@ -12,12 +12,13 @@ import com.jd.blockchain.ledger.LedgerInfo;
 import com.jd.blockchain.ledger.LedgerMetadata;
 import com.jd.blockchain.ledger.LedgerTransaction;
 import com.jd.blockchain.ledger.ParticipantNode;
+import com.jd.blockchain.ledger.PrivilegeSetVO;
 import com.jd.blockchain.ledger.RoleSet;
 import com.jd.blockchain.ledger.Transaction;
 import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.ledger.TypedKVEntry;
 import com.jd.blockchain.ledger.UserInfo;
-import com.jd.blockchain.utils.Bytes;
+import com.jd.blockchain.ledger.UserPrivilege;
 import org.springframework.cglib.core.Block;
 
 /**
