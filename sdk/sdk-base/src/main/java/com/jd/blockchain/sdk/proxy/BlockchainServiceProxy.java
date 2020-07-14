@@ -13,7 +13,7 @@ import com.jd.blockchain.ledger.LedgerMetadata;
 import com.jd.blockchain.ledger.LedgerTransaction;
 import com.jd.blockchain.ledger.ParticipantNode;
 import com.jd.blockchain.ledger.PreparedTransaction;
-import com.jd.blockchain.ledger.PrivilegeSetVO;
+import com.jd.blockchain.ledger.RolePrivilegeSet;
 import com.jd.blockchain.ledger.RoleSet;
 import com.jd.blockchain.ledger.SystemEvent;
 import com.jd.blockchain.ledger.TransactionContent;
@@ -316,7 +316,7 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 		return getQueryService(ledgerHash).getLatestEvent(ledgerHash, address, eventName);
 	}
 	@Override
-	public PrivilegeSetVO getRolePrivileges(HashDigest ledgerHash, String roleName) {
+	public RolePrivilegeSet getRolePrivileges(HashDigest ledgerHash, String roleName) {
 		return getQueryService(ledgerHash).getRolePrivileges(ledgerHash, roleName);
 	}
 
