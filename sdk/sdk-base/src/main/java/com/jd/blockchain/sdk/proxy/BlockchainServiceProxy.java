@@ -15,6 +15,7 @@ import com.jd.blockchain.ledger.ParticipantNode;
 import com.jd.blockchain.ledger.PreparedTransaction;
 import com.jd.blockchain.ledger.RolePrivilegeSet;
 import com.jd.blockchain.ledger.RoleSet;
+import com.jd.blockchain.ledger.RolesPolicy;
 import com.jd.blockchain.ledger.SystemEvent;
 import com.jd.blockchain.ledger.TransactionContent;
 import com.jd.blockchain.ledger.TransactionState;
@@ -36,6 +37,8 @@ import com.jd.blockchain.transaction.PreparedTx;
 import com.jd.blockchain.transaction.TransactionService;
 import com.jd.blockchain.transaction.TxRequestBuilder;
 import com.jd.blockchain.transaction.TxTemplate;
+
+import java.util.List;
 
 public abstract class BlockchainServiceProxy implements BlockchainService {
 
@@ -253,7 +256,22 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 
 	@Override
 	public RoleSet getUserRoles(HashDigest ledgerHash, String userAddress){
-		return getQueryService(ledgerHash).getUserRoles(ledgerHash, userAddress);
+		//if default, then return null;we create a new empty object to front;
+		RoleSet roleSet =  getQueryService(ledgerHash).getUserRoles(ledgerHash, userAddress);
+		if(roleSet == null){
+			roleSet = new RoleSet() {
+				@Override
+				public RolesPolicy getPolicy() {
+					return null;
+				}
+
+				@Override
+				public String[] getRoles() {
+					return new String[0];
+				}
+			};
+		}
+		return roleSet;
 	}
 
 	@Override
@@ -322,6 +340,21 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 
 	@Override
 	public UserPrivilege getUserPrivileges(HashDigest ledgerHash, String userAddress) {
-		return getQueryService(ledgerHash).getUserPrivileges(ledgerHash, userAddress);
+		UserPrivilege userPrivilege = getQueryService(ledgerHash).getUserPrivileges(ledgerHash, userAddress);
+		if(userPrivilege == null){
+			//it's a intruder;
+			userPrivilege = new UserPrivilege() {
+				@Override
+				public RoleSet getRoleSet() {
+					return null;
+				}
+
+				@Override
+				public List<RolePrivilegeSet> getRolePrivilege() {
+					return null;
+				}
+			};
+		}
+		return userPrivilege;
 	}
 }
