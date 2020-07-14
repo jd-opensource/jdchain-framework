@@ -8,13 +8,8 @@ import java.util.List;
  * @author zhaoguangwei
  *
  */
-//@DataContract(code = DataCodes.USER_PRIVILEGE, name = "USER_PRIVILEGE")
 public interface UserPrivilege {
-
-//	@DataField(order = 1, refContract = true)
     RoleSet getRoleSet();
 
-//	@DataField(order = 2, primitiveType = PrimitiveType.BYTES)
 	List<RolePrivilegeSet> getRolePrivilege();
-
 }
