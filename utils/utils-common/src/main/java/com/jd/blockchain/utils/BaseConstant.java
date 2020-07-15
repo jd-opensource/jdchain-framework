@@ -30,6 +30,4 @@ public class BaseConstant {
 
     public static final String CONTRACT_SERVICE_PROVIDER = "com.jd.blockchain.contract.jvm.JVMContractServiceProvider";
     public static final String SPRING_CF_LOCATION = "-sp";
-
-    public static final String DEFAULT_ROLE_NAME="DEFAULT";
 }

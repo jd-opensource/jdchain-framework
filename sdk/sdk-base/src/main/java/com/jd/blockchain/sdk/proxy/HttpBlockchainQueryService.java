@@ -3,8 +3,8 @@ package com.jd.blockchain.sdk.proxy;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.ContractInfo;
-import com.jd.blockchain.ledger.Event;
 import com.jd.blockchain.ledger.DataAccountInfo;
+import com.jd.blockchain.ledger.Event;
 import com.jd.blockchain.ledger.KVInfoVO;
 import com.jd.blockchain.ledger.LedgerAdminInfo;
 import com.jd.blockchain.ledger.LedgerBlock;
@@ -12,13 +12,13 @@ import com.jd.blockchain.ledger.LedgerInfo;
 import com.jd.blockchain.ledger.LedgerMetadata;
 import com.jd.blockchain.ledger.LedgerTransaction;
 import com.jd.blockchain.ledger.ParticipantNode;
-import com.jd.blockchain.ledger.RolePrivilegeSet;
+import com.jd.blockchain.ledger.PrivilegeSet;
 import com.jd.blockchain.ledger.RoleSet;
 import com.jd.blockchain.ledger.Transaction;
 import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.ledger.TypedKVEntry;
 import com.jd.blockchain.ledger.UserInfo;
-import com.jd.blockchain.ledger.UserPrivilege;
+import com.jd.blockchain.ledger.UserPrivilegeSet;
 import com.jd.blockchain.sdk.BlockchainExtendQueryService;
 import com.jd.blockchain.sdk.converters.HashDigestToStringConverter;
 import com.jd.blockchain.sdk.converters.HashDigestsResponseConverter;
@@ -749,8 +749,8 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	 */
 	@HttpAction(method = HttpMethod.GET, path = "ledgers/{ledgerHash}/role-privilege/{roleName}")
 	@Override
-    RolePrivilegeSet getRolePrivileges(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
-                                       @PathParam(name="roleName") String roleName);
+	PrivilegeSet getRolePrivileges(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+								   @PathParam(name="roleName") String roleName);
 
 	/**
 	 * get user's privilege;
@@ -761,6 +761,6 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	 */
 	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/user-privilege/{userAddress}")
 	@Override
-	UserPrivilege getUserPrivileges(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
-									 @PathParam(name="userAddress") String userAddress);
+	UserPrivilegeSet getUserPrivileges(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+									   @PathParam(name="userAddress") String userAddress);
 }

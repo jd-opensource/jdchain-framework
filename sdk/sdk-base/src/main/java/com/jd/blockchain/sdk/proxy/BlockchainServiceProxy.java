@@ -10,19 +10,22 @@ import com.jd.blockchain.ledger.LedgerAdminInfo;
 import com.jd.blockchain.ledger.LedgerBlock;
 import com.jd.blockchain.ledger.LedgerInfo;
 import com.jd.blockchain.ledger.LedgerMetadata;
+import com.jd.blockchain.ledger.LedgerPermission;
 import com.jd.blockchain.ledger.LedgerTransaction;
 import com.jd.blockchain.ledger.ParticipantNode;
 import com.jd.blockchain.ledger.PreparedTransaction;
-import com.jd.blockchain.ledger.RolePrivilegeSet;
+import com.jd.blockchain.ledger.PrivilegeBitset;
+import com.jd.blockchain.ledger.PrivilegeSet;
 import com.jd.blockchain.ledger.RoleSet;
 import com.jd.blockchain.ledger.RolesPolicy;
 import com.jd.blockchain.ledger.SystemEvent;
 import com.jd.blockchain.ledger.TransactionContent;
+import com.jd.blockchain.ledger.TransactionPermission;
 import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.ledger.TransactionTemplate;
 import com.jd.blockchain.ledger.TypedKVEntry;
 import com.jd.blockchain.ledger.UserInfo;
-import com.jd.blockchain.ledger.UserPrivilege;
+import com.jd.blockchain.ledger.UserPrivilegeSet;
 import com.jd.blockchain.sdk.BlockchainService;
 import com.jd.blockchain.sdk.EventListenerHandle;
 import com.jd.blockchain.sdk.SystemEventListener;
@@ -37,8 +40,7 @@ import com.jd.blockchain.transaction.PreparedTx;
 import com.jd.blockchain.transaction.TransactionService;
 import com.jd.blockchain.transaction.TxRequestBuilder;
 import com.jd.blockchain.transaction.TxTemplate;
-
-import java.util.List;
+import com.jd.blockchain.utils.Bytes;
 
 public abstract class BlockchainServiceProxy implements BlockchainService {
 
@@ -334,23 +336,28 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 		return getQueryService(ledgerHash).getLatestEvent(ledgerHash, address, eventName);
 	}
 	@Override
-	public RolePrivilegeSet getRolePrivileges(HashDigest ledgerHash, String roleName) {
+	public PrivilegeSet getRolePrivileges(HashDigest ledgerHash, String roleName) {
 		return getQueryService(ledgerHash).getRolePrivileges(ledgerHash, roleName);
 	}
 
 	@Override
-	public UserPrivilege getUserPrivileges(HashDigest ledgerHash, String userAddress) {
-		UserPrivilege userPrivilege = getQueryService(ledgerHash).getUserPrivileges(ledgerHash, userAddress);
+	public UserPrivilegeSet getUserPrivileges(HashDigest ledgerHash, String userAddress) {
+		UserPrivilegeSet userPrivilege = getQueryService(ledgerHash).getUserPrivileges(ledgerHash, userAddress);
 		if(userPrivilege == null){
 			//it's a intruder;
-			userPrivilege = new UserPrivilege() {
+			userPrivilege = new UserPrivilegeSet() {
 				@Override
-				public RoleSet getRoleSet() {
+				public Bytes getUserAddress() {
+					return Bytes.fromBase58(userAddress);
+				}
+
+				@Override
+				public PrivilegeBitset<LedgerPermission> getLedgerPrivileges() {
 					return null;
 				}
 
 				@Override
-				public List<RolePrivilegeSet> getRolePrivilege() {
+				public PrivilegeBitset<TransactionPermission> getTransactionPrivileges() {
 					return null;
 				}
 			};
