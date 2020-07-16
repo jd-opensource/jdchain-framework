@@ -61,20 +61,20 @@ public interface RolePrivilegeSettings {
 
 	/**
 	 * 加入新的角色权限； <br>
-	 * 
+	 *
 	 * 如果指定的角色已经存在，则引发 {@link LedgerException} 异常；
-	 * 
+	 *
 	 * @param roleName        角色名称；不能超过 {@link #MAX_ROLE_NAME_LENGTH} 个 Unicode 字符；
 	 * @param ledgerPrivilege
 	 * @param txPrivilege
 	 */
-	long addRolePrivilege(String roleName, LedgerPrivilegeBitset ledgerPrivilege, TransactionPrivilege txPrivilege);
+	long addRolePrivilege(String roleName, LedgerPrivilegeBitset ledgerPrivilege, TransactionPrivilegeBitset txPrivilege);
 
 	/**
 	 * 加入新的角色权限； <br>
-	 * 
+	 *
 	 * 如果指定的角色已经存在，则引发 {@link LedgerException} 异常；
-	 * 
+	 *
 	 * @param roleName          角色名称；不能超过 {@link #MAX_ROLE_NAME_LENGTH} 个 Unicode
 	 *                          字符；
 	 * @param ledgerPermissions 给角色授予的账本权限列表；

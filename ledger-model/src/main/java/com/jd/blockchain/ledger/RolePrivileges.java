@@ -2,7 +2,7 @@ package com.jd.blockchain.ledger;
 
 /**
  * 对角色的授权；
- * 
+ *
  * @author huanghaiquan
  *
  */
@@ -24,7 +24,7 @@ public class RolePrivileges extends Privileges {
 	}
 
 	public RolePrivileges(String roleName, long version, LedgerPrivilegeBitset ledgerPrivilege,
-			TransactionPrivilege txPrivilege) {
+			TransactionPrivilegeBitset txPrivilege) {
 		super(ledgerPrivilege, txPrivilege);
 		this.roleName = roleName;
 		this.version = version;

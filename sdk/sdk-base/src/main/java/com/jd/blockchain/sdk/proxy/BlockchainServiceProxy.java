@@ -342,26 +342,6 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 
 	@Override
 	public UserPrivilegeSet getUserPrivileges(HashDigest ledgerHash, String userAddress) {
-		UserPrivilegeSet userPrivilege = getQueryService(ledgerHash).getUserPrivileges(ledgerHash, userAddress);
-		if(userPrivilege == null){
-			//it's a intruder;
-			userPrivilege = new UserPrivilegeSet() {
-				@Override
-				public Bytes getUserAddress() {
-					return Bytes.fromBase58(userAddress);
-				}
-
-				@Override
-				public PrivilegeBitset<LedgerPermission> getLedgerPrivileges() {
-					return null;
-				}
-
-				@Override
-				public PrivilegeBitset<TransactionPermission> getTransactionPrivileges() {
-					return null;
-				}
-			};
-		}
-		return userPrivilege;
+		return getQueryService(ledgerHash).getUserPrivileges(ledgerHash, userAddress);
 	}
 }

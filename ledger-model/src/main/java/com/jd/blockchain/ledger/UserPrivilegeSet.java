@@ -10,6 +10,6 @@ import com.jd.blockchain.utils.Bytes;
  */
 public interface UserPrivilegeSet {
 	Bytes getUserAddress();
-	LedgerPrivilege getLedgerPrivileges();
-	PrivilegeBitset<TransactionPermission> getTransactionPrivileges();
+	LedgerPrivilege getLedgerPrivilegesBitset();
+	PrivilegeBitset<TransactionPermission> getTransactionPrivilegesBitset();
 }
