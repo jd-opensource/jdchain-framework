@@ -23,7 +23,7 @@ public class RolePrivileges extends Privileges {
 		this.version = version;
 	}
 
-	public RolePrivileges(String roleName, long version, LedgerPrivilege ledgerPrivilege,
+	public RolePrivileges(String roleName, long version, LedgerPrivilegeBitset ledgerPrivilege,
 			TransactionPrivilege txPrivilege) {
 		super(ledgerPrivilege, txPrivilege);
 		this.roleName = roleName;

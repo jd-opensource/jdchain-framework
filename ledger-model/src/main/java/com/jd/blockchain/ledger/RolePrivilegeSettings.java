@@ -68,7 +68,7 @@ public interface RolePrivilegeSettings {
 	 * @param ledgerPrivilege
 	 * @param txPrivilege
 	 */
-	long addRolePrivilege(String roleName, LedgerPrivilege ledgerPrivilege, TransactionPrivilege txPrivilege);
+	long addRolePrivilege(String roleName, LedgerPrivilegeBitset ledgerPrivilege, TransactionPrivilege txPrivilege);
 
 	/**
 	 * 加入新的角色权限； <br>

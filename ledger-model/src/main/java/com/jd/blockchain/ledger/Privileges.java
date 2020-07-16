@@ -2,12 +2,12 @@ package com.jd.blockchain.ledger;
 
 public class Privileges implements PrivilegeSet {
 
-	private LedgerPrivilege ledgerPrivilege;
+	private LedgerPrivilegeBitset ledgerPrivilege;
 
 	private TransactionPrivilege txPrivilege;
 
 	protected Privileges() {
-		this.ledgerPrivilege = new LedgerPrivilege();
+		this.ledgerPrivilege = new LedgerPrivilegeBitset();
 		this.txPrivilege = new TransactionPrivilege();
 	}
 
@@ -16,17 +16,17 @@ public class Privileges implements PrivilegeSet {
 		this.txPrivilege = privilege.getTransactionPrivilege();
 	}
 
-	protected Privileges(LedgerPrivilege ledgerPrivilege, TransactionPrivilege txPrivilege) {
+	protected Privileges(LedgerPrivilegeBitset ledgerPrivilege, TransactionPrivilege txPrivilege) {
 		this.ledgerPrivilege = ledgerPrivilege;
 		this.txPrivilege = txPrivilege;
 	}
 
 	@Override
-	public LedgerPrivilege getLedgerPrivilege() {
+	public LedgerPrivilegeBitset getLedgerPrivilege() {
 		return ledgerPrivilege;
 	}
 
-	public void setLedgerPrivilege(LedgerPrivilege ledgerPrivilege) {
+	public void setLedgerPrivilege(LedgerPrivilegeBitset ledgerPrivilege) {
 		this.ledgerPrivilege = ledgerPrivilege;
 	}
 

@@ -15,7 +15,7 @@ import com.jd.blockchain.consts.DataCodes;
 public interface PrivilegeSet {
 
 	@DataField(order = 1, primitiveType = PrimitiveType.BYTES)
-	LedgerPrivilege getLedgerPrivilege();
+	LedgerPrivilegeBitset getLedgerPrivilege();
 
 	@DataField(order = 2, primitiveType = PrimitiveType.BYTES)
 	TransactionPrivilege getTransactionPrivilege();
