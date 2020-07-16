@@ -315,8 +315,8 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	private class ParticipantRegisterOperationBuilderFilter implements ParticipantRegisterOperationBuilder {
 		@Override
-		public ParticipantRegisterOperation register(String  participantName, BlockchainIdentity participantIdentity, NetworkAddress networkAddress) {
-			ParticipantRegisterOperation op = PARTICIPANT_REG_OP_BUILDER.register(participantName, participantIdentity, networkAddress);
+		public ParticipantRegisterOperation register(String  participantName, BlockchainIdentity participantIdentity, Bytes consensusSettings) {
+			ParticipantRegisterOperation op = PARTICIPANT_REG_OP_BUILDER.register(participantName, participantIdentity, consensusSettings);
 			operationList.add(op);
 			return op;
 		}
