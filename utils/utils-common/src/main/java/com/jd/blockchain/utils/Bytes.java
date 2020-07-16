@@ -120,12 +120,24 @@ public class Bytes implements BytesSerializable, Serializable {
 		return bytes;
 	}
 
+	/**
+	 * 以默认字符集( {@link BytesUtils#DEFAULT_CHARSET} 把字符串转为字节形式；
+	 * 
+	 * @param str
+	 * @return
+	 */
 	public static Bytes fromString(String str) {
 		return new Bytes(BytesUtils.toBytes(str));
 	}
 
-	public static Bytes fromBase58(String str) {
-		return new Bytes(Base58Utils.decode(str));
+	/**
+	 * 把Base58编码字符串转为字节形式；
+	 * 
+	 * @param base58Str
+	 * @return
+	 */
+	public static Bytes fromBase58(String base58Str) {
+		return new Bytes(Base58Utils.decode(base58Str));
 	}
 
 	public Bytes concat(Bytes key) {
@@ -179,9 +191,9 @@ public class Bytes implements BytesSerializable, Serializable {
 			return true;
 		}
 		if (obj instanceof byte[]) {
-			return equals((byte[])obj);
+			return equals((byte[]) obj);
 		} else if (obj instanceof Bytes) {
-			return equals((Bytes)obj);
+			return equals((Bytes) obj);
 		}
 
 		return false;
@@ -347,7 +359,7 @@ public class Bytes implements BytesSerializable, Serializable {
 	public String toUTF8String() {
 		return BytesUtils.toString(toBytes());
 	}
-	
+
 	public String toString(String charset) {
 		return BytesUtils.toString(toBytes(), charset);
 	}
