@@ -16,6 +16,6 @@ public interface ParticipantRegisterOperation extends Operation {
     @DataField(order = 1, refContract = true)
     BlockchainIdentity getParticipantRegisterIdentity();
 
-    @DataField(order = 2, primitiveType = PrimitiveType.BYTES)
-    Bytes getConsensusSettings();
+    @DataField(order = 2, refEnum = true)
+    ParticipantNodeState getState();
 }
