@@ -305,6 +305,8 @@ public class BytesUtils {
 	}
 
 	/**
+	 * 以默认字符集({@value #DEFAULT_CHARSET})生成字符串；
+	 * 
 	 * @param bytes
 	 * @return
 	 */
@@ -312,18 +314,49 @@ public class BytesUtils {
 		return toString(bytes, DEFAULT_CHARSET);
 	}
 
+	/**
+	 * 以默认字符集({@value #DEFAULT_CHARSET})生成字符串；
+	 * 
+	 * @param bytes
+	 * @param offset
+	 * @return
+	 */
 	public static String toString(byte[] bytes, int offset) {
 		return toString(bytes, offset, bytes.length - offset, DEFAULT_CHARSET);
 	}
 
+	/**
+	 * 以默认字符集({@value #DEFAULT_CHARSET})生成字符串；
+	 * 
+	 * @param bytes
+	 * @param offset
+	 * @param len
+	 * @return
+	 */
 	public static String toString(byte[] bytes, int offset, int len) {
 		return toString(bytes, offset, len, DEFAULT_CHARSET);
 	}
 
+	/**
+	 * 以指定字符集生成字符串；
+	 * 
+	 * @param bytes
+	 * @param charset
+	 * @return
+	 */
 	public static String toString(byte[] bytes, String charset) {
 		return toString(bytes, 0, bytes.length, charset);
 	}
 
+	/**
+	 * 以指定字符集生成字符串；
+	 * 
+	 * @param bytes
+	 * @param offset
+	 * @param len
+	 * @param charset
+	 * @return
+	 */
 	public static String toString(byte[] bytes, int offset, int len, String charset) {
 		try {
 			if (bytes == null) {
