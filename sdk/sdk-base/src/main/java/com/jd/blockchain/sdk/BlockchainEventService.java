@@ -16,16 +16,6 @@ public interface BlockchainEventService {
 	EventListenerHandle<SystemEventPoint> monitorSystemEvent(HashDigest ledgerHash, SystemEvent systemEvent, long startSequence, SystemEventListener<SystemEventPoint> listener);
 
 	/**
-	 * 监听系统事件；
-	 *
-	 * @param ledgerHash
-	 * @param eventPoint
-	 * @param listener
-	 * @return
-	 */
-	EventListenerHandle<SystemEventPoint> monitorSystemEvent(HashDigest ledgerHash, SystemEventPoint eventPoint, SystemEventListener<SystemEventPoint> listener);
-
-	/**
 	 * 监听用户事件；
 	 *
 	 * @param ledgerHash

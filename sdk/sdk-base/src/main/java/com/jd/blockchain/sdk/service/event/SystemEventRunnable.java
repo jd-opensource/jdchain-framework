@@ -35,16 +35,16 @@ public class SystemEventRunnable extends AbstractEventRunnable<SystemEventPoint>
     }
 
     @Override
-    Event[] loadEvent(SystemEventPoint eventPoint, long fromSequence) {
+    Event[] loadEvent(SystemEventPoint eventPoint, long fromSequence, int maxCount) {
         List<Event> events = new ArrayList<>();
 
-        if (eventPoint.getEventName().equals(SystemEvent.NEW_BLOCK.getName())) {
+        if (eventPoint.getEventName().equals(SystemEvent.NEW_BLOCK_CREATED.getName())) {
             LedgerInfo ledgerInfo = queryService.getLedger(getLedgerHash());
-            for (long i = fromSequence; i < fromSequence + eventPoint.getMaxBatchSize() && i <= ledgerInfo.getLatestBlockHeight(); i++) {
+            for (long i = fromSequence; i < fromSequence + maxCount && i <= ledgerInfo.getLatestBlockHeight(); i++) {
                 EventInfo info = new EventInfo();
                 info.setName(eventPoint.getEventName());
                 info.setSequence(i);
-                info.setContent(TypedValue.fromText(ledgerInfo.getLatestBlockHash().toBase58()));
+                info.setContent(TypedValue.fromInt64(ledgerInfo.getLatestBlockHeight()));
                 info.setBlockHeight(i);
                 events.add(info);
             }
@@ -68,9 +68,7 @@ public class SystemEventRunnable extends AbstractEventRunnable<SystemEventPoint>
     }
 
     @Override
-    void initEventSequences() {
-        for (SystemEventPoint eventPoint : eventPointSet) {
-            eventSequences.put(eventPoint.getEventName(), eventPoint.getSequence());
-        }
+    String eventPointKey(SystemEventPoint eventPoint) {
+        return eventPoint.getEventName();
     }
 }

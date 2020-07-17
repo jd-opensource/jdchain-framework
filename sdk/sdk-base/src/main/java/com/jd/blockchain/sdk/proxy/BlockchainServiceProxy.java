@@ -24,10 +24,8 @@ import com.jd.blockchain.sdk.BlockchainService;
 import com.jd.blockchain.sdk.EventListenerHandle;
 import com.jd.blockchain.sdk.SystemEventListener;
 import com.jd.blockchain.sdk.SystemEventPoint;
-import com.jd.blockchain.sdk.SystemEventPointData;
 import com.jd.blockchain.sdk.UserEventListener;
 import com.jd.blockchain.sdk.UserEventPoint;
-import com.jd.blockchain.sdk.UserEventPointData;
 import com.jd.blockchain.sdk.converters.ClientResolveUtil;
 import com.jd.blockchain.sdk.service.event.SystemEventListenerHandle;
 import com.jd.blockchain.sdk.service.event.UserEventListenerHandle;
@@ -57,13 +55,8 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 
 	@Override
 	public EventListenerHandle<SystemEventPoint> monitorSystemEvent(HashDigest ledgerHash, SystemEvent systemEvent, long startSequence, SystemEventListener<SystemEventPoint> listener) {
-		return monitorSystemEvent(ledgerHash, new SystemEventPointData(systemEvent.getName(), startSequence), listener);
-	}
-
-	@Override
-	public EventListenerHandle<SystemEventPoint> monitorSystemEvent(HashDigest ledgerHash, SystemEventPoint eventPoint, SystemEventListener<SystemEventPoint> listener) {
 		SystemEventListenerHandle eventListenerHandle = new SystemEventListenerHandle(getQueryService(ledgerHash));
-		eventListenerHandle.register(ledgerHash, eventPoint, listener);
+		eventListenerHandle.register(ledgerHash, new SystemEventPoint(systemEvent, startSequence), listener);
 		return eventListenerHandle;
 	}
 
@@ -71,8 +64,7 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	public EventListenerHandle<UserEventPoint> monitorUserEvent(HashDigest ledgerHash, String eventAccount, String eventName,
 																long startSequence, UserEventListener<UserEventPoint> listener) {
 		UserEventListenerHandle eventListenerHandle = new UserEventListenerHandle(getQueryService(ledgerHash));
-		eventListenerHandle.register(ledgerHash,
-				UserEventPointData.createEventPoint(eventAccount, eventName, startSequence), listener);
+		eventListenerHandle.register(ledgerHash, new UserEventPoint(eventAccount, eventName, startSequence), listener);
 		return eventListenerHandle;
 	}
 
