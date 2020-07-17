@@ -17,7 +17,7 @@ public interface ParticipantRegisterOperationBuilder {
      *
      * @return
      */
-    ParticipantRegisterOperation register(String  participantName, BlockchainIdentity participantPubKey, Bytes consensusSettings);
+    ParticipantRegisterOperation register(String  participantName, BlockchainIdentity participantPubKey);
 
 
 }

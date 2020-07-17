@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.jd.blockchain.ledger.*;
 import com.jd.blockchain.utils.Bytes;
+import com.jd.blockchain.utils.Property;
 import com.jd.blockchain.utils.net.NetworkAddress;
 
 /**
@@ -32,6 +33,8 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	private static final ParticipantStateUpdateOperationBuilderImpl PARTICIPANT_STATE_UPDATE_OP_BUILDER = new ParticipantStateUpdateOperationBuilderImpl();
 
+	private static final ConsensusSettingsUpdateOperationBuilderImpl CONSENSUS_SETTINGS_UPDATE_OPERATION_BUILDER = new ConsensusSettingsUpdateOperationBuilderImpl();
+
 	private static final EventAccountRegisterOperationBuilderImpl EVENT_ACC_REG_OP_BUILDER = new EventAccountRegisterOperationBuilderImpl();
 
 	private LedgerInitOperationBuilder ledgerInitOpBuilder = new LedgerInitOperationBuilderFilter();
@@ -49,6 +52,8 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 	private ParticipantRegisterOperationBuilder participantRegOpBuilder = new ParticipantRegisterOperationBuilderFilter();
 
 	private ParticipantStateUpdateOperationBuilder participantStateModifyOpBuilder = new ParticipantStateUpdateOperationBuilderFilter();
+
+	private ConsensusSettingsUpdateOperationBuilder consensusSettingsUpdateOperationBuilder = new ConsensusSettingsUpdateOperationBuilderFilter();
 
 	private EventAccountRegisterOperationBuilder eventAccRegOpBuilder = new EventAccountRegisterOperationBuilderFilter();
 
@@ -99,6 +104,9 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	@Override
 	public ParticipantStateUpdateOperationBuilder states() {return participantStateModifyOpBuilder;}
+
+	@Override
+	public ConsensusSettingsUpdateOperationBuilder settings() {return consensusSettingsUpdateOperationBuilder;}
 
 	@Override
 	public EventAccountRegisterOperationBuilder eventAccounts() {
@@ -315,8 +323,8 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	private class ParticipantRegisterOperationBuilderFilter implements ParticipantRegisterOperationBuilder {
 		@Override
-		public ParticipantRegisterOperation register(String  participantName, BlockchainIdentity participantIdentity, Bytes consensusSettings) {
-			ParticipantRegisterOperation op = PARTICIPANT_REG_OP_BUILDER.register(participantName, participantIdentity, consensusSettings);
+		public ParticipantRegisterOperation register(String  participantName, BlockchainIdentity participantIdentity) {
+			ParticipantRegisterOperation op = PARTICIPANT_REG_OP_BUILDER.register(participantName, participantIdentity);
 			operationList.add(op);
 			return op;
 		}
@@ -326,6 +334,15 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		@Override
 		public ParticipantStateUpdateOperation update(BlockchainIdentity blockchainIdentity, ParticipantNodeState participantNodeState) {
 			ParticipantStateUpdateOperation op = PARTICIPANT_STATE_UPDATE_OP_BUILDER.update(blockchainIdentity, participantNodeState);
+			operationList.add(op);
+			return op;
+		}
+	}
+
+	private class ConsensusSettingsUpdateOperationBuilderFilter implements ConsensusSettingsUpdateOperationBuilder {
+		@Override
+		public ConsensusSettingsUpdateOperation update(Property[] properties) {
+			ConsensusSettingsUpdateOperation op = CONSENSUS_SETTINGS_UPDATE_OPERATION_BUILDER.update(properties);
 			operationList.add(op);
 			return op;
 		}

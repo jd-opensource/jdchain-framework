@@ -8,7 +8,7 @@ import com.jd.blockchain.utils.net.NetworkAddress;
 
 public class ParticipantRegisterOperationBuilderImpl implements ParticipantRegisterOperationBuilder {
     @Override
-    public ParticipantRegisterOperation register(String  participantName, BlockchainIdentity participantPubKey, Bytes consensusSettings) {
-        return new ParticipantRegisterOpTemplate(participantName, participantPubKey, consensusSettings);
+    public ParticipantRegisterOperation register(String  participantName, BlockchainIdentity participantPubKey) {
+        return new ParticipantRegisterOpTemplate(participantName, participantPubKey);
     }
 }

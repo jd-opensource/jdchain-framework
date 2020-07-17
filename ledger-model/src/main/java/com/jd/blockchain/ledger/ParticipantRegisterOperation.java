@@ -14,8 +14,5 @@ public interface ParticipantRegisterOperation extends Operation {
     String getParticipantName();
 
     @DataField(order = 1, refContract = true)
-    BlockchainIdentity getParticipantRegisterIdentity();
-
-    @DataField(order = 2, refEnum = true)
-    ParticipantNodeState getState();
+    BlockchainIdentity getParticipantID();
 }

@@ -1,6 +1,7 @@
 package com.jd.blockchain.transaction;
 
 import com.jd.blockchain.ledger.BlockchainIdentity;
+import com.jd.blockchain.ledger.ConsensusSettingsUpdateOperation;
 import com.jd.blockchain.ledger.ParticipantNodeState;
 import com.jd.blockchain.ledger.ParticipantStateUpdateOperation;
 import com.jd.blockchain.utils.Property;
@@ -10,7 +11,7 @@ import com.jd.blockchain.utils.Property;
  * @Date: 2020/7/16 2:11 PM
  * Version 1.0
  */
-public interface ConsensusConfigUpdateOperationBuilder {
+public interface ConsensusSettingsUpdateOperationBuilder {
 
     /**
      * 更新共识的属性配置信息
@@ -19,5 +20,5 @@ public interface ConsensusConfigUpdateOperationBuilder {
      *
      * @return
      */
-    ConsensusConfigUpdateOperation update(Property[] properties);
+    ConsensusSettingsUpdateOperation update(Property[] properties);
 }

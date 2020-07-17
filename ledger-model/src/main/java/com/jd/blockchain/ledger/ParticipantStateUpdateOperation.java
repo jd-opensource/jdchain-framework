@@ -13,12 +13,8 @@ import java.util.Properties;
 public interface ParticipantStateUpdateOperation extends Operation {
 
     @DataField(order = 0, refContract = true)
-    BlockchainIdentity getStateUpdateIdentity();
+    BlockchainIdentity getParticipantID();
 
     @DataField(order = 1, refEnum = true)
     ParticipantNodeState getState();
-
-    @DataField(order = 2, primitiveType = PrimitiveType.BYTES, list = true)
-    Property[] getProperties();
-
 }

@@ -12,5 +12,5 @@ public interface ConsensusOperator {
      *
      * @return
      */
-    ConsensusConfigUpdateOperationBuilder configs();
+    ConsensusSettingsUpdateOperationBuilder settings();
 }

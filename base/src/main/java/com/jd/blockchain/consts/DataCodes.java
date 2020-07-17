@@ -84,6 +84,8 @@ public interface DataCodes {
 	public static final int TX_OP_EVENT_PUBLISH = 0x381;
 	public static final int TX_OP_EVENT_PUBLISH_ENTITY = 0x382;
 
+	public static final int TX_OP_CONSENSUS_SETTINGS_UPDATE = 0x390;
+
 	// enum types of permissions;
 	public static final int ENUM_TX_PERMISSION = 0x401;
 	public static final int ENUM_LEDGER_PERMISSION = 0x402;
@@ -204,7 +206,6 @@ public interface DataCodes {
 
 	public static final int CONSENSUS_BFTSMART_CLI_INCOMING_SETTINGS = CONSENSUS_BFTSMART | 0x03;
 
-	public static final int CONSENSUS_BFTSMART_BLOCK_SETTINGS = CONSENSUS_BFTSMART | 0x04;
 
 	// ------------------ 共识相关（MSGQUEUE） ----------------
 	public static final int CONSENSUS_MSGQUEUE = 0x1200;
