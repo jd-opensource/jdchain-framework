@@ -736,7 +736,7 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	 * @param roleName
 	 * @return
 	 */
-	@HttpAction(method = HttpMethod.GET, path = "ledgers/{ledgerHash}/role-privilege/{roleName}")
+	@HttpAction(method = HttpMethod.GET, path = "ledgers/{ledgerHash}/authorization/role/{roleName}")
 	@Override
 	PrivilegeSet getRolePrivileges(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 								   @PathParam(name="roleName") String roleName);
@@ -748,7 +748,7 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	 * @param userAddress
 	 * @return
 	 */
-	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/user-privilege/{userAddress}")
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/authorization/user/{userAddress}")
 	@Override
 	UserPrivilegeSet getUserPrivileges(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 									   @PathParam(name="userAddress") String userAddress);
