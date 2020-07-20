@@ -257,26 +257,6 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	}
 
 	@Override
-	public RoleSet getUserRoles(HashDigest ledgerHash, String userAddress){
-		//if default, then return null;we create a new empty object to front;
-		RoleSet roleSet =  getQueryService(ledgerHash).getUserRoles(ledgerHash, userAddress);
-//		if(roleSet == null){
-//			roleSet = new RoleSet() {
-//				@Override
-//				public RolesPolicy getPolicy() {
-//					return null;
-//				}
-//
-//				@Override
-//				public String[] getRoles() {
-//					return new String[0];
-//				}
-//			};
-//		}
-		return roleSet;
-	}
-
-	@Override
 	public Event[] getSystemEvents(HashDigest ledgerHash, String eventName, long fromSequence, int count) {
 		return getQueryService(ledgerHash).getSystemEvents(ledgerHash, eventName, fromSequence, count);
 	}

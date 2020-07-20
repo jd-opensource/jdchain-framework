@@ -678,17 +678,6 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 									@RequestParam(name="fromIndex", required = false) int fromIndex,
 									@RequestParam(name="count", required = false) int count);
 
-	/**
-	 * get user's roles;
-	 * @param ledgerHash
-	 * @param userAddress
-	 * @return
-	 */
-	@HttpAction(method = HttpMethod.GET, path = "ledgers/{ledgerHash}/user-role/{userAddress}")
-	@Override
-	RoleSet getUserRoles(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
-											 @PathParam(name="userAddress") String userAddress);
-
 	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names/count")
 	@Override
 	long getSystemEventNameTotalCount(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash);

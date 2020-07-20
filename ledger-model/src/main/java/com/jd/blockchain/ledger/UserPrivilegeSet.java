@@ -2,6 +2,8 @@ package com.jd.blockchain.ledger;
 
 import com.jd.blockchain.utils.Bytes;
 
+import java.util.Set;
+
 /**
  * 表示赋予角色的特权码；
  *
@@ -10,6 +12,7 @@ import com.jd.blockchain.utils.Bytes;
  */
 public interface UserPrivilegeSet {
 	Bytes getUserAddress();
+	Set<String> getUserRole();
 	LedgerPrivilege getLedgerPrivilegesBitset();
 	PrivilegeBitset<TransactionPermission> getTransactionPrivilegesBitset();
 }

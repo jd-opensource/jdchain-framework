@@ -466,14 +466,6 @@ public interface BlockchainQueryService {
 	BlockchainIdentity[] getContractAccounts(HashDigest ledgerHash, int fromIndex, int count);
 
 	/**
-	 * return user's roles;
-	 * @param ledgerHash
-	 * @param userAddress
-	 * @return
-	 */
-	RoleSet getUserRoles(HashDigest ledgerHash, String userAddress);
-
-	/**
 	 * return role's privileges;
 	 * @param ledgerHash
 	 * @param roleName
