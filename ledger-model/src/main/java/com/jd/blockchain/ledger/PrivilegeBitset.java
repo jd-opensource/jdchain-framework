@@ -162,5 +162,4 @@ public abstract class PrivilegeBitset<E extends Enum<?> & Int8Code> implements P
 	public int getPermissionCount() {
 		return permissionBits.cardinality() - PREFIX_CARDINALITY;
 	}
-
 }

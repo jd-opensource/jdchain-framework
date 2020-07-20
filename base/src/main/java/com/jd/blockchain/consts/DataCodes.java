@@ -2,22 +2,22 @@ package com.jd.blockchain.consts;
 
 /**
  * A const registeration of codes of all data contracts in ledger model;
- * 
+ *
  * @author huanghaiquan
  *
  */
 public interface DataCodes {
 
 	public static final int MERKLE_SNAPSHOT = 0x070;
-	
+
 	public static final int MERKLE_DATA = 0x071;
-	
+
 	public static final int MERKLE_LEAF = 0x072;
-	
+
 	public static final int MERKLE_PATH = 0x073;
 
-	
-	
+
+
 	public static final int BYTES_VALUE = 0x080;
 
 	public static final int BYTES_VALUE_LIST = 0x081;
@@ -98,10 +98,10 @@ public interface DataCodes {
 	public static final int SECURITY_ROLE_INIT_SETTING = 0x421;
 
 	public static final int SECURITY_USER_AUTH_INIT_SETTING = 0x422;
-	
+
 	// event types;
 	public static final int EVENT_MESSAGE = 0x501;
-	
+
 
 	// contract types of metadata;
 	public static final int METADATA = 0x600;
