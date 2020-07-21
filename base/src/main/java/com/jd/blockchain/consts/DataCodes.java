@@ -17,6 +17,8 @@ public interface DataCodes {
 	public static final int MERKLE_PATH = 0x073;
 	
 	public static final int MERKLE_KEY = 0x074;
+	
+	public static final int MERKLE_INDEX = 0x075;
 
 	
 	
