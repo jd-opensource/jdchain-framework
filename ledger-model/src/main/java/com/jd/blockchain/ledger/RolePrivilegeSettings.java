@@ -5,21 +5,21 @@ public interface RolePrivilegeSettings {
 	/**
 	 * 角色名称的最大 Unicode 字符数；
 	 */
-	public static final int MAX_ROLE_NAME_LENGTH = 20;
+	public static final int MAX_ROLE_NAME_LENGTH = 100;
 
 	/**
 	 * 角色的数量；
-	 * 
+	 *
 	 * @return
 	 */
 	long getRoleCount();
 
 	/**
 	 * 查询角色权限；
-	 * 
+	 *
 	 * <br>
 	 * 如果不存在，则返回 null；
-	 * 
+	 *
 	 * @param address
 	 * @return
 	 */
