@@ -13,13 +13,13 @@ import com.jd.blockchain.ledger.LedgerMetadata;
 import com.jd.blockchain.ledger.LedgerTransaction;
 import com.jd.blockchain.ledger.ParticipantNode;
 import com.jd.blockchain.ledger.PrivilegeSet;
-import com.jd.blockchain.ledger.RoleSet;
 import com.jd.blockchain.ledger.Transaction;
 import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.ledger.TypedKVEntry;
 import com.jd.blockchain.ledger.UserInfo;
 import com.jd.blockchain.ledger.UserPrivilegeSet;
 import com.jd.blockchain.sdk.BlockchainExtendQueryService;
+import com.jd.blockchain.sdk.converters.EventResponseConverter;
 import com.jd.blockchain.sdk.converters.HashDigestToStringConverter;
 import com.jd.blockchain.sdk.converters.HashDigestsResponseConverter;
 import com.jd.blockchain.utils.http.HttpAction;
@@ -588,7 +588,7 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	 * @param count     最大数量；
 	 * @return
 	 */
-	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names/{eventName}")
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names/{eventName}", responseConverter = EventResponseConverter.class)
 	@Override
 	Event[] getSystemEvents(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 							@PathParam(name="eventName") String eventName,
@@ -619,7 +619,7 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	 * @param count        最大数量；
 	 * @return
 	 */
-	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}")
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}", responseConverter = EventResponseConverter.class)
 	@Override
 	Event[] getUserEvents(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 						  @PathParam(name="address") String address,
@@ -720,12 +720,12 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 								 @PathParam(name="address") String address,
 								 @PathParam(name="eventName") String eventName);
 
-	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names/{eventName}/latest")
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names/{eventName}/latest", responseConverter = EventResponseConverter.class)
 	@Override
 	Event getLatestEvent(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 						 @PathParam(name="eventName") String eventName);
 
-	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}/latest")
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}/latest", responseConverter = EventResponseConverter.class)
 	@Override
 	Event getLatestEvent(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 						 @PathParam(name="address") String address,

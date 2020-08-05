@@ -1,13 +1,28 @@
 package com.jd.blockchain.transaction;
 
+import com.jd.blockchain.ledger.BlockchainIdentity;
+import com.jd.blockchain.ledger.BytesValue;
+import com.jd.blockchain.ledger.BytesValueList;
+import com.jd.blockchain.ledger.ConsensusSettingsUpdateOperation;
+import com.jd.blockchain.ledger.ContractCodeDeployOperation;
+import com.jd.blockchain.ledger.ContractEventSendOperation;
+import com.jd.blockchain.ledger.DataAccountKVSetOperation;
+import com.jd.blockchain.ledger.DataAccountRegisterOperation;
+import com.jd.blockchain.ledger.EventAccountRegisterOperation;
+import com.jd.blockchain.ledger.EventPublishOperation;
+import com.jd.blockchain.ledger.LedgerInitOperation;
+import com.jd.blockchain.ledger.LedgerInitSetting;
+import com.jd.blockchain.ledger.Operation;
+import com.jd.blockchain.ledger.ParticipantNodeState;
+import com.jd.blockchain.ledger.ParticipantRegisterOperation;
+import com.jd.blockchain.ledger.ParticipantStateUpdateOperation;
+import com.jd.blockchain.ledger.UserRegisterOperation;
+import com.jd.blockchain.utils.Bytes;
+import com.jd.blockchain.utils.Property;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import com.jd.blockchain.ledger.*;
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.Property;
-import com.jd.blockchain.utils.net.NetworkAddress;
 
 /**
  * @author huanghaiquan
@@ -397,20 +412,6 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		}
 
 		@Override
-		public EventPublishOperationBuilder publish(String name, byte[] content, long sequence) {
-            innerBuilder.publish(name, content, sequence);
-            addOperation();
-            return this;
-		}
-
-		@Override
-		public EventPublishOperationBuilder publish(String name, Bytes content, long sequence) {
-            innerBuilder.publish(name, content, sequence);
-            addOperation();
-            return this;
-		}
-
-		@Override
 		public EventPublishOperationBuilder publish(String name, String content, long sequence) {
             innerBuilder.publish(name, content, sequence);
             addOperation();
@@ -424,33 +425,6 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
             return this;
 		}
 
-		@Override
-		public EventPublishOperationBuilder publishTimestamp(String name, long content, long sequence) {
-			innerBuilder.publishTimestamp(name, content, sequence);
-			addOperation();
-			return this;
-		}
-
-		@Override
-		public EventPublishOperationBuilder publishImage(String name, byte[] content, long sequence) {
-			innerBuilder.publishImage(name, content, sequence);
-			addOperation();
-			return this;
-		}
-
-		@Override
-		public EventPublishOperationBuilder publishJSON(String name, String content, long sequence) {
-			innerBuilder.publishJSON(name, content, sequence);
-			addOperation();
-			return this;
-		}
-
-		@Override
-		public EventPublishOperationBuilder publishXML(String name, String content, long sequence) {
-			innerBuilder.publishXML(name, content, sequence);
-			addOperation();
-			return this;
-		}
 	}
 
 	/**
