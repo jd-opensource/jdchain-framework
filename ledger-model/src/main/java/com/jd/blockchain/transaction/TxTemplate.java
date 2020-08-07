@@ -84,9 +84,33 @@ public class TxTemplate implements TransactionTemplate {
 	}
 
 	@Override
+	public ConsensusSettingsUpdateOperationBuilder settings() {
+		stateManager.operate();
+		return txBuilder.settings();
+	}
+
+	@Override
 	public <T> T contract(Bytes address, Class<T> contractIntf) {
 		stateManager.operate();
 		return txBuilder.contract(address, contractIntf);
+	}
+
+	@Override
+	public EventAccountRegisterOperationBuilder eventAccounts() {
+		stateManager.operate();
+		return txBuilder.eventAccounts();
+	}
+
+	@Override
+	public EventPublishOperationBuilder eventAccount(String accountAddress) {
+		stateManager.operate();
+		return txBuilder.eventAccount(accountAddress);
+	}
+
+	@Override
+	public EventPublishOperationBuilder eventAccount(Bytes accountAddress) {
+		stateManager.operate();
+		return txBuilder.eventAccount(accountAddress);
 	}
 
 	@Override

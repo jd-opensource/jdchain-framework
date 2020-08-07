@@ -11,6 +11,7 @@ import com.jd.blockchain.utils.Bytes;
 import com.jd.blockchain.utils.io.BytesUtils;
 
 /**
+ * 类型化的值对象；
  * 
  * @author huanghaiquan
  *

@@ -7,7 +7,7 @@ import com.jd.blockchain.consts.DataCodes;
 
 /**
  * 表示赋予角色的特权码；
- * 
+ *
  * @author huanghaiquan
  *
  */
@@ -15,9 +15,9 @@ import com.jd.blockchain.consts.DataCodes;
 public interface PrivilegeSet {
 
 	@DataField(order = 1, primitiveType = PrimitiveType.BYTES)
-	LedgerPrivilege getLedgerPrivilege();
+	LedgerPrivilegeBitset getLedgerPrivilege();
 
 	@DataField(order = 2, primitiveType = PrimitiveType.BYTES)
-	TransactionPrivilege getTransactionPrivilege();
+	TransactionPrivilegeBitset getTransactionPrivilege();
 
 }

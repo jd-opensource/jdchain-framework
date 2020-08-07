@@ -2,22 +2,22 @@ package com.jd.blockchain.consts;
 
 /**
  * A const registeration of codes of all data contracts in ledger model;
- * 
+ *
  * @author huanghaiquan
  *
  */
 public interface DataCodes {
 
 	public static final int MERKLE_SNAPSHOT = 0x070;
-	
+
 	public static final int MERKLE_DATA = 0x071;
-	
+
 	public static final int MERKLE_LEAF = 0x072;
-	
+
 	public static final int MERKLE_PATH = 0x073;
 
-	
-	
+
+
 	public static final int BYTES_VALUE = 0x080;
 
 	public static final int BYTES_VALUE_LIST = 0x081;
@@ -33,6 +33,8 @@ public interface DataCodes {
 	public static final int DATA_SNAPSHOT = 0x130;
 
 	public static final int LEDGER_ADMIN_INFO = 0x131;
+
+	public static final int EVENT_SNAPSHOT = 0x132;
 
 	public static final int TX = 0x200;
 
@@ -78,6 +80,12 @@ public interface DataCodes {
 
 	public static final int TX_OP_USER_ROLE_AUTHORIZE_ENTRY = 0x374;
 
+	public static final int TX_OP_EVENT_ACC_REG = 0x380;
+	public static final int TX_OP_EVENT_PUBLISH = 0x381;
+	public static final int TX_OP_EVENT_PUBLISH_ENTITY = 0x382;
+
+	public static final int TX_OP_CONSENSUS_SETTINGS_UPDATE = 0x390;
+
 	// enum types of permissions;
 	public static final int ENUM_TX_PERMISSION = 0x401;
 	public static final int ENUM_LEDGER_PERMISSION = 0x402;
@@ -92,6 +100,10 @@ public interface DataCodes {
 	public static final int SECURITY_ROLE_INIT_SETTING = 0x421;
 
 	public static final int SECURITY_USER_AUTH_INIT_SETTING = 0x422;
+
+	// event types;
+	public static final int EVENT_MESSAGE = 0x501;
+
 
 	// contract types of metadata;
 	public static final int METADATA = 0x600;
@@ -129,7 +141,7 @@ public interface DataCodes {
 
 //	public static final int ACCOUNT = 0x700;
 
-	public static final int ACCOUNT_HEADER = 0x710;
+	public static final int DATA_ACCOUNT_INFO = 0x710;
 
 	public static final int USER_ACCOUNT_HEADER = 0x800;
 
@@ -194,7 +206,6 @@ public interface DataCodes {
 
 	public static final int CONSENSUS_BFTSMART_CLI_INCOMING_SETTINGS = CONSENSUS_BFTSMART | 0x03;
 
-	public static final int CONSENSUS_BFTSMART_BLOCK_SETTINGS = CONSENSUS_BFTSMART | 0x04;
 
 	// ------------------ 共识相关（MSGQUEUE） ----------------
 	public static final int CONSENSUS_MSGQUEUE = 0x1200;

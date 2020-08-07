@@ -122,13 +122,30 @@ public class TxBuilder implements TransactionBuilder {
 	public ParticipantStateUpdateOperationBuilder states() {return  opFactory.states(); }
 
 	@Override
+	public ConsensusSettingsUpdateOperationBuilder settings() {return  opFactory.settings(); }
+
+	@Override
 	public <T> T contract(Bytes address, Class<T> contractIntf) {
 		return opFactory.contract(address, contractIntf);
+	}
+
+	@Override
+	public EventAccountRegisterOperationBuilder eventAccounts() {
+		return opFactory.eventAccounts();
+	}
+
+	@Override
+	public EventPublishOperationBuilder eventAccount(String accountAddress) {
+		return opFactory.eventAccount(accountAddress);
+	}
+
+	@Override
+	public EventPublishOperationBuilder eventAccount(Bytes accountAddress) {
+		return opFactory.eventAccount(accountAddress);
 	}
 
 	@Override
 	public <T> T contract(String address, Class<T> contractIntf) {
 		return opFactory.contract(address, contractIntf);
 	}
-
 }
