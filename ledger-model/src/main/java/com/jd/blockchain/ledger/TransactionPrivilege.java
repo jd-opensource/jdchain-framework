@@ -1,17 +1,9 @@
 package com.jd.blockchain.ledger;
 
-public class TransactionPrivilege extends PrivilegeBitset<TransactionPermission> {
+import java.util.List;
 
-	public TransactionPrivilege() {
-	}
+public interface TransactionPrivilege extends Privilege<TransactionPermission> {
 
-	public TransactionPrivilege(byte[] codeBytes) {
-		super(codeBytes);
-	}
-
-	@Override
-	public TransactionPrivilege clone() {
-		return (TransactionPrivilege) super.clone();
-	}
+	List<TransactionPermission> getPrivilege();
 
 }

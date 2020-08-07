@@ -4,7 +4,6 @@ import com.jd.blockchain.binaryproto.DataContractRegistry;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.ParticipantNodeState;
 import com.jd.blockchain.ledger.ParticipantStateUpdateOperation;
-import com.jd.blockchain.utils.net.NetworkAddress;
 
 public class ParticipantStateUpdateOpTemplate implements ParticipantStateUpdateOperation {
 
@@ -12,23 +11,26 @@ public class ParticipantStateUpdateOpTemplate implements ParticipantStateUpdateO
         DataContractRegistry.register(ParticipantStateUpdateOperation.class);
     }
 
-    private BlockchainIdentity stateUpdateIdentity;
+    private BlockchainIdentity participantId;
     private ParticipantNodeState participantNodeState;
 
-    public ParticipantStateUpdateOpTemplate(BlockchainIdentity stateUpdateIdentity, ParticipantNodeState participantNodeState) {
+    public ParticipantStateUpdateOpTemplate(BlockchainIdentity participantId, ParticipantNodeState participantNodeState) {
 
-        this.stateUpdateIdentity = stateUpdateIdentity;
+        this.participantId = participantId;
         this.participantNodeState = participantNodeState;
     }
 
 
     @Override
-    public BlockchainIdentity getStateUpdateIdentity() {
-        return stateUpdateIdentity;
+    public BlockchainIdentity getParticipantID() {
+        return participantId;
     }
 
     @Override
     public ParticipantNodeState getState() {
         return participantNodeState;
     }
+
+
+
 }

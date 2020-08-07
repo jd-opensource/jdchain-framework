@@ -3,6 +3,7 @@ package com.jd.blockchain.transaction;
 import com.jd.blockchain.binaryproto.DataContractRegistry;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.ParticipantRegisterOperation;
+import com.jd.blockchain.utils.Bytes;
 import com.jd.blockchain.utils.net.NetworkAddress;
 
 public class ParticipantRegisterOpTemplate implements ParticipantRegisterOperation {
@@ -12,14 +13,11 @@ public class ParticipantRegisterOpTemplate implements ParticipantRegisterOperati
     }
 
     private String participantName;
-    private BlockchainIdentity participantRegisterIdentity;
-    private NetworkAddress networkAddress;
+    private BlockchainIdentity participantId;
 
-    public ParticipantRegisterOpTemplate(String participantName, BlockchainIdentity participantRegisterIdentity, NetworkAddress networkAddress) {
+    public ParticipantRegisterOpTemplate(String participantName, BlockchainIdentity participantId) {
         this.participantName = participantName;
-        this.participantRegisterIdentity = participantRegisterIdentity;
-        this.networkAddress = networkAddress;
-
+        this.participantId = participantId;
     }
 
     @Override
@@ -28,12 +26,8 @@ public class ParticipantRegisterOpTemplate implements ParticipantRegisterOperati
     }
 
     @Override
-    public BlockchainIdentity getParticipantRegisterIdentity() {
-        return participantRegisterIdentity;
+    public BlockchainIdentity getParticipantID() {
+        return participantId;
     }
 
-    @Override
-    public NetworkAddress getNetworkAddress() {
-        return networkAddress;
-    }
 }
