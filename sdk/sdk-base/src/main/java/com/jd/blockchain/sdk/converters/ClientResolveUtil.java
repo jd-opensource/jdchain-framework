@@ -11,6 +11,10 @@ package com.jd.blockchain.sdk.converters;
 import java.lang.reflect.Field;
 
 import com.jd.blockchain.ledger.*;
+import com.jd.blockchain.transaction.ConsensusSettingsUpdateOpTemplate;
+import com.jd.blockchain.transaction.ParticipantRegisterOpTemplate;
+import com.jd.blockchain.transaction.ParticipantStateUpdateOpTemplate;
+import com.jd.blockchain.utils.Property;
 import org.apache.commons.codec.binary.Base64;
 
 import com.alibaba.fastjson.JSONArray;
@@ -98,6 +102,12 @@ public class ClientResolveUtil {
 					return convertLedgerInitOperation(jsonObject);
 				} else if (jsonObject.containsKey("contractAddress")) {
 					return convertContractEventSendOperation(jsonObject);
+				} else if (jsonObject.containsKey("participantName")) {
+					return convertParticipantRegisterOperation(jsonObject);
+				} else if (jsonObject.containsKey("properties")) {
+					return convertConsensusSettingsUpdateOperation(jsonObject);
+				} else if (jsonObject.containsKey("state")) {
+					return convertParticipantStateUpdateOperation(jsonObject);
 				}
 			}
 		} catch (Exception e) {
@@ -232,6 +242,40 @@ public class ClientResolveUtil {
 		String event = jsonObject.getString("event");
 		return new ContractEventSendOpTemplate(Bytes.fromBase58(contractAddress), event,
 				BytesValueEncoding.encodeArray(new Object[] { argsStr }, null));
+	}
+
+	public static ParticipantRegisterOperation convertParticipantRegisterOperation(JSONObject jsonObject) {
+		String participantName = jsonObject.getString("participantName");
+		JSONObject participantID = jsonObject.getJSONObject("participantID");
+		BlockchainIdentityData blockchainIdentity = blockchainIdentity(participantID);
+		ParticipantRegisterOpTemplate participantRegisterOpTemplate = new ParticipantRegisterOpTemplate(participantName, blockchainIdentity);
+		return participantRegisterOpTemplate;
+	}
+
+	public static ConsensusSettingsUpdateOperation convertConsensusSettingsUpdateOperation(JSONObject jsonObject) {
+		JSONArray propertiesArray = jsonObject.getJSONArray("properties");
+		Property[] properties = new Property[propertiesArray.size()];
+		if (!propertiesArray.isEmpty()) {
+			for (int i = 0; i < propertiesArray.size(); i++) {
+				JSONObject property = propertiesArray.getJSONObject(i);
+				String name = property.getString("name");
+				String value = property.getString("value");
+				properties[i] = new Property(name, value);
+			}
+		}
+		ConsensusSettingsUpdateOpTemplate consensusSettingsUpdateOpTemplate = new ConsensusSettingsUpdateOpTemplate(properties);
+		return consensusSettingsUpdateOpTemplate;
+	}
+	public static ParticipantStateUpdateOperation convertParticipantStateUpdateOperation(JSONObject jsonObject) {
+		JSONObject participantID = jsonObject.getJSONObject("participantID");
+		BlockchainIdentityData blockchainIdentity = blockchainIdentity(participantID);
+		String state = jsonObject.getString("state");
+		byte code = 0;
+		if ("CONSENSUS".equals(state)) {
+			code = 1;
+		}
+		ParticipantStateUpdateOpTemplate participantStateUpdateOpTemplate = new ParticipantStateUpdateOpTemplate(blockchainIdentity, ParticipantNodeState.valueOf(code));
+		return participantStateUpdateOpTemplate;
 	}
 
 	private static BlockchainIdentityData blockchainIdentity(JSONObject jsonObject) {
