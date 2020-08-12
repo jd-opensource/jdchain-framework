@@ -13,7 +13,7 @@ public class EmptySkippingIterator<E> implements SkippingIterator<E> {
 	}
 
 	@Override
-	public long getCount() {
+	public long getTotalCount() {
 		return 0;
 	}
 

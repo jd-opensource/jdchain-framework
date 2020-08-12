@@ -21,7 +21,7 @@ package com.jd.blockchain.utils;
 
 		@Override
 		public boolean hasNext() {
-			return cursor + 1 < getCount();
+			return cursor + 1 < getTotalCount();
 		}
 
 		/**
@@ -34,7 +34,7 @@ package com.jd.blockchain.utils;
 			if (skippingCount == 0) {
 				return 0;
 			}
-			long count = getCount();
+			long count = getTotalCount();
 			if (cursor + skippingCount < count) {
 				cursor += skippingCount;
 				return skippingCount;
