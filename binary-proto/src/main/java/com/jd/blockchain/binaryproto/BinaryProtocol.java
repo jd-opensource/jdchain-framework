@@ -23,7 +23,7 @@ public class BinaryProtocol {
 		// TODO: Not implemented!;
 		throw new IllegalStateException("Not implemented!");
 	}
-	
+
 	/**
 	 * 返回指定的数据契约类型的映射；
 	 * 
@@ -96,11 +96,28 @@ public class BinaryProtocol {
 		return encoder.decode(bytes.getInputStream());
 	}
 
+	/**
+	 * 不推荐使用；替换为 {@link #decode(byte[], Class)};
+	 * 
+	 * @param <T>
+	 * @param dataSegment
+	 * @param contractType
+	 * @return
+	 */
 	@Deprecated
 	public static <T> T decodeAs(byte[] dataSegment, Class<T> contractType) {
 		return decode(dataSegment, contractType, true);
 	}
 
+	/**
+	 * 不推荐使用；替换为 {@link #decode(byte[], Class, boolean)};
+	 * 
+	 * @param <T>
+	 * @param dataSegment
+	 * @param contractType
+	 * @param autoRegister
+	 * @return
+	 */
 	@Deprecated
 	public static <T> T decodeAs(byte[] dataSegment, Class<T> contractType, boolean autoRegister) {
 		return decode(dataSegment, contractType, autoRegister);
