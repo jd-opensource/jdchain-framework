@@ -18,7 +18,7 @@ public interface DataCodes {
 	
 	public static final int MERKLE_TRIE_KEY = 0x074;
 	
-	public static final int MERKLE_SORTED_TREE_DATA = 0x075;
+//	public static final int MERKLE_SORTED_TREE_DATA = 0x075;
 	
 	public static final int MERKLE_SORTED_TREE_INDEX = 0x076;
 	

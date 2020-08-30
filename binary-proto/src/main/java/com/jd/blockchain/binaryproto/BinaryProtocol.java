@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import com.jd.blockchain.binaryproto.impl.DataContractContext;
+import com.jd.blockchain.binaryproto.impl.DataContractProxy;
 import com.jd.blockchain.binaryproto.impl.HeaderEncoder;
 import com.jd.blockchain.utils.io.BytesOutputBuffer;
 import com.jd.blockchain.utils.io.BytesSlice;
@@ -94,6 +95,10 @@ public class BinaryProtocol {
 		}
 		BytesSlice bytes = new BytesSlice(dataSegment, 0, dataSegment.length);
 		return encoder.decode(bytes.getInputStream());
+	}
+	
+	public static boolean isProxy(Object obj) {
+		return obj instanceof DataContractProxy;
 	}
 
 	/**
