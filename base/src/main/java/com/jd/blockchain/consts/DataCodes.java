@@ -22,11 +22,11 @@ public interface DataCodes {
 	
 	public static final int MERKLE_SORTED_TREE_INDEX = 0x076;
 	
-	public static final int  MERKLE_HASH_SORTED_TREE_HASH_KV = 0x077;
+//	public static final int  MERKLE_HASH_SORTED_TREE_KV_ENTRY = 0x077;
 	
-	public static final int  MERKLE_HASH_SORTED_TREE_HASH_KEY = 0x078;
+	public static final int  MERKLE_HASH_SORTED_TREE_KEY_INDEX = 0x078;
 	
-	public static final int  MERKLE_HASH_SORTED_TREE_HASH_KSET = 0x079;
+	public static final int  MERKLE_HASH_SORTED_TREE_KEY_HASH_BUCKET = 0x079;
 
 	
 	

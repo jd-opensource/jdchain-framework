@@ -44,6 +44,18 @@ package com.jd.blockchain.utils;
 			return skipped;
 		}
 		
-		
+		@Override
+		public T next() {
+			if (!hasNext()) {
+				return null;
+			}
+			T v = get(cursor + 1);
+			cursor++;
+			return v;
+		}
+
+		protected T get(long cursor) {
+			throw new UnsupportedOperationException();
+		}
 
 	}

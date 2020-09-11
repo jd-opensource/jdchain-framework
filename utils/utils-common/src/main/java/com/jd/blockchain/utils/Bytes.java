@@ -291,11 +291,12 @@ public class Bytes implements BytesSerializable, Serializable {
 	/**
 	 * Compare two bytes;
 	 * 
-	 * @param otherKey
+	 * @param bytes1
+	 * @param bytes2
 	 * @return Values: -1, 0, 1. <br>
-	 *         Return -1 means that the current bytes is less than the bytes2 ;<br>
-	 *         Return 0 means that the current bytes is equal to the bytes2 ;<br>
-	 *         Return 1 means that the current bytes is great than the bytes2;
+	 *         Return -1 means that the bytes1 is less than the bytes2 ;<br>
+	 *         Return 0 means that the bytes1 is equal to the bytes2 ;<br>
+	 *         Return 1 means that the bytes1 is great than the bytes2;
 	 */
 	public static int compare(byte[] bytes1, byte[] bytes2) {
 		int len1 = bytes1.length;
