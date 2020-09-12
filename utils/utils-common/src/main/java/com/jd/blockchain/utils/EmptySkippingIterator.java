@@ -1,6 +1,14 @@
 package com.jd.blockchain.utils;
 
 public class EmptySkippingIterator<E> implements SkippingIterator<E> {
+	
+	@SuppressWarnings("rawtypes")
+	private static final SkippingIterator INSTANCE = new EmptySkippingIterator();
+	
+	@SuppressWarnings("unchecked")
+	public static <E> SkippingIterator<E> instance(){
+		return (SkippingIterator<E>) INSTANCE;
+	}
 
 	@Override
 	public boolean hasNext() {
