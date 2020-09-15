@@ -77,19 +77,19 @@ public class NodeSigningAppender implements TransactionService {
 		byte[] nodeRequestBytes = BinaryProtocol.encode(txMessage, TransactionRequest.class);
 		HashFunction hashFunc = Crypto.getHashFunction(this.hashAlgorithm);
 		HashDigest txHash = hashFunc.hash(nodeRequestBytes);
-		txMessage.setHash(txHash);
+		txMessage.setTransactionHash(txHash);
 
 		try {
 			AsyncFuture<byte[]> asyncFuture =  messageService.sendOrdered(BinaryProtocol.encode(txMessage, TransactionRequest.class));
 			byte[] result = asyncFuture.get();
 			if (result == null) {
-				LOGGER.error("Gateway receive [{}]'s result is null!", txRequest.getHash());
+				LOGGER.error("Gateway receive [{}]'s result is null!", txRequest.getTransactionHash());
 				return new ErrorTransactionResponse(txRequest.getTransactionContent().getHash());
 			}
 			return BinaryProtocol.decode(result);
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
-			LOGGER.error("Gateway send tx [{}] error {} !", txRequest.getHash(), e);
+			LOGGER.error("Gateway send tx [{}] error {} !", txRequest.getTransactionHash(), e);
 			return new ErrorTransactionResponse(txRequest.getTransactionContent().getHash());
 		}
 	}

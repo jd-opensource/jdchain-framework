@@ -40,7 +40,7 @@ import com.jd.blockchain.utils.Bytes;
  * @author huanghaiquan
  *
  */
-public class TxRequestMessage implements TransactionRequest {// , Externalizable {
+public class TxRequestMessage implements TransactionRequest {  
 
 	/**
 	 * 交易参与者的个数的最大值；
@@ -74,7 +74,7 @@ public class TxRequestMessage implements TransactionRequest {// , Externalizable
 
 	public TxRequestMessage(TransactionRequest txRequest) {
 		this.transactionContent = txRequest.getTransactionContent();
-		setHash(txRequest.getHash());
+		setTransactionHash(txRequest.getTransactionHash());
 		setEndpointSignatures(txRequest.getEndpointSignatures());
 		setNodeSignatures(txRequest.getNodeSignatures());
 	}
@@ -186,11 +186,11 @@ public class TxRequestMessage implements TransactionRequest {// , Externalizable
 	}
 
 	@Override
-	public HashDigest getHash() {
+	public HashDigest getTransactionHash() {
 		return hash;
 	}
 
-	public void setHash(HashDigest hash) {
+	public void setTransactionHash(HashDigest hash) {
 		this.hash = hash;
 	}
 

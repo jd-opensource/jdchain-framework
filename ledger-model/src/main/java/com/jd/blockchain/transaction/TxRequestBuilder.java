@@ -98,7 +98,7 @@ public class TxRequestBuilder implements TransactionRequestBuilder {
 
 		byte[] reqBytes = BinaryProtocol.encode(txMessage, NodeRequest.class);
 		HashDigest reqHash = Crypto.getHashFunction(DEFAULT_HASH_ALGORITHM).hash(reqBytes);
-		txMessage.setHash(reqHash);
+		txMessage.setTransactionHash(reqHash);
 
 		return txMessage;
 	}

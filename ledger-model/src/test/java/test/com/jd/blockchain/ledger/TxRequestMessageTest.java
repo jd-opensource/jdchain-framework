@@ -79,7 +79,7 @@ public class TxRequestMessageTest {
 		data.addNodeSignatures(node2);
 
 		HashDigest hash = Crypto.getHashFunction("SHA256").hash("DATA".getBytes());
-		data.setHash(hash);
+		data.setTransactionHash(hash);
 	}
 
 	@Test
@@ -117,7 +117,7 @@ public class TxRequestMessageTest {
 		}
 		assertEqual(dataTxContent, resolvedTxContent);
 
-		assertEquals(resolvedData.getHash(), data.getHash());
+		assertEquals(resolvedData.getTransactionHash(), data.getTransactionHash());
 		System.out.println("------Assert OK ------");
 	}
 

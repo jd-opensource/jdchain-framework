@@ -6,17 +6,26 @@ import com.jd.blockchain.binaryproto.PrimitiveType;
 import com.jd.blockchain.consts.DataCodes;
 import com.jd.blockchain.crypto.HashDigest;
 
-@DataContract(code= DataCodes.REQUEST_ENDPOINT)
+@DataContract(code = DataCodes.REQUEST_ENDPOINT)
 public interface EndpointRequest {
 
-	@DataField(order=1, primitiveType = PrimitiveType.BYTES)
-	HashDigest getHash();
+	/**
+	 * 交易哈希；
+	 * 
+	 * <p>
+	 * 即交易内容 {@link #getTransactionContent()} 的哈希值；
+	 * 
+	 * @return
+	 */
+	@DataField(order = 1, primitiveType = PrimitiveType.BYTES)
+	HashDigest getTransactionHash();
+
 	/**
 	 * 交易内容；
 	 * 
 	 * @return
 	 */
-	@DataField(order=2, refContract=true)
+	@DataField(order = 2, refContract = true)
 	TransactionContent getTransactionContent();
 
 	/**
@@ -24,7 +33,7 @@ public interface EndpointRequest {
 	 * 
 	 * @return
 	 */
-	@DataField(order=3, list=true, refContract=true)
+	@DataField(order = 3, list = true, refContract = true)
 	DigitalSignature[] getEndpointSignatures();
-	
+
 }

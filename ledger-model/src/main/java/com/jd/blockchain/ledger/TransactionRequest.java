@@ -13,14 +13,14 @@ import com.jd.blockchain.crypto.HashDigest;
  *
  */
 @DataContract(code= DataCodes.REQUEST)
-public interface TransactionRequest extends NodeRequest, HashObject {
+public interface TransactionRequest extends NodeRequest {
 
-	/**
-	 * 交易请求的 hash ；<br>
-	 *
-	 * @return
-	 */
-	@Override
-	@DataField(order=1, primitiveType = PrimitiveType.BYTES)
-	HashDigest getHash();
+//	/**
+//	 * 交易请求的 hash ；<br>
+//	 *
+//	 * @return
+//	 */
+//	@Override
+//	@DataField(order=1, primitiveType = PrimitiveType.BYTES)
+//	HashDigest getHash();
 }
