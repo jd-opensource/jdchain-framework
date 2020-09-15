@@ -1,10 +1,6 @@
 package com.jd.blockchain.consensus;
 
-import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.ledger.ParticipantNode;
-import com.jd.blockchain.ledger.ParticipantRegisterOperation;
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.net.NetworkAddress;
 
 import java.util.Properties;
 
@@ -21,27 +17,28 @@ public interface ConsensusSettingsBuilder {
 	 */
 	ConsensusSettings createSettings(Properties props, ParticipantNode[] participantNodes);
 
-
-	/**
-	 * 注册/激活新参与方时，进行账本中共识环境的节点/系统属性的信息更新
-	 *
-	 * @param oldConsensusSettings
-	 *            旧参与方的共识环境信息；
-	 * @param newParticipantPk
-	 *            新参与方公钥信息；
-	 * @param networkAddress
-	 * 	          新参与方网络信息；
-	 * @param stateFlag
-	 * 	          标识是注册还是激活操作；
-	 * 	          0:注册;
-	 * 	          1:激活;
-	 *
-	 * 	 <br>
-	 * @return 序列化的新共识环境
-	 */
-	Bytes updateConsensusSettings(Bytes oldConsensusSettings, PubKey newParticipantPk, NetworkAddress networkAddress, byte opFlag);
-
 	Properties createPropertiesTemplate();
 
+	/**
+	 * 从共识网络的环境配置解析成属性列表
+	 *
+	 * @param settings
+	 *            共识环境；<br>
+	 * @param props
+	 * 	          属性表；
+	 * @return
+	 */
 	void writeSettings(ConsensusSettings settings, Properties props);
+
+	/**
+	 * 根据属性信息对旧的共识环境进行更新
+	 * 如果oldConsensusSettings是代理对象，需要在方法内部建立新的对象返回；
+	 *
+	 * @param oldConsensusSettings
+	 *            旧的共识环境；<br>
+	 * @param props
+	 * 	          新添加的属性表；
+	 * @return
+	 */
+	ConsensusSettings updateSettings(ConsensusSettings oldConsensusSettings, Properties newProps);
 }

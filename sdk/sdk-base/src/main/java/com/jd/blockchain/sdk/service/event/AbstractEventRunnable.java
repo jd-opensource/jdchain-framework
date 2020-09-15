@@ -24,7 +24,9 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
 
     private static Logger LOGGER = LoggerFactory.getLogger(AbstractEventRunnable.class);
 
-    protected final Map<String, Long> eventSequences = new ConcurrentHashMap<>();
+    private static final int MAX_COUNT = 100;
+
+    private final Map<String, Long> eventSequences = new ConcurrentHashMap<>();
 
     /**
      * 账本Hash
@@ -34,7 +36,7 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
     /**
      * 事件集合
      */
-    protected Set<E> eventPointSet;
+    private Set<E> eventPointSet;
 
     /**
      * 事件监听处理器
@@ -72,7 +74,7 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
     private void loadEventsByHttpProtocol() {
         // 发送一个请求至网关
         for(E eventPoint : eventPointSet) {
-            Event[] events = loadEvent(eventPoint, eventSequence(eventPoint));
+            Event[] events = loadEvent(eventPoint, eventSequence(eventPoint), MAX_COUNT);
             onEvent(eventPoint, events);
         }
     }
@@ -91,7 +93,7 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
                 fromSequence = Math.max(fromSequence, event.getSequence());
             }
             onEvent(events);
-            updateEventSequence(eventPoint.getEventName(), fromSequence + 1);
+            updateEventSequence(eventPoint, fromSequence + 1);
         }
     }
 
@@ -107,13 +109,13 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
     /**
      * 更新事件对应的from序号
      *
-     * @param eventName
-     *             事件名称
+     * @param eventPoint
+     *             事件
      * @param sequence
      *             事件对应的fromSequence
      */
-    private synchronized void updateEventSequence(String eventName, long sequence) {
-        eventSequences.put(eventName, sequence);
+    private synchronized void updateEventSequence(E eventPoint, long sequence) {
+        eventSequences.put(eventPointKey(eventPoint), sequence);
     }
 
     /**
@@ -125,8 +127,7 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
      * @return
      */
     private synchronized long eventSequence(E eventPoint) {
-        String key = eventPoint.getEventName();
-        Long fromSequence = eventSequences.get(key);
+        Long fromSequence = eventSequences.get(eventPointKey(eventPoint));
         if (fromSequence == null) {
             return -1L;
         } else {
@@ -139,9 +140,10 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
      *
      * @param eventPoint
      * @param fromSequence
+     * @param maxCount
      * @return
      */
-    abstract Event[] loadEvent(E eventPoint, long fromSequence);
+    abstract Event[] loadEvent(E eventPoint, long fromSequence, int maxCount);
 
     /**
      * 事件处理
@@ -159,8 +161,20 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
     abstract EventContext<E> eventContext(Event event);
 
     /**
+     * eventSequences中保存的EventPoint唯一键
+     *
+     * @param eventPoint
+     * @return
+     */
+    abstract String eventPointKey(E eventPoint);
+
+    /**
      * 初始化事件对应的Sequence
      *
      */
-    abstract void initEventSequences();
+    private void initEventSequences() {
+        for (E eventPoint : eventPointSet) {
+            eventSequences.put(eventPointKey(eventPoint), eventPoint.getSequence());
+        }
+    }
 }

@@ -18,8 +18,6 @@ import java.util.Set;
  */
 public class UserEventRunnable extends AbstractEventRunnable<UserEventPoint> {
 
-    private static final int MAX_COUNT = 10;
-
     private BlockchainQueryService queryService;
 
     private UserEventListener<UserEventPoint> listener;
@@ -32,9 +30,9 @@ public class UserEventRunnable extends AbstractEventRunnable<UserEventPoint> {
     }
 
     @Override
-    Event[] loadEvent(UserEventPoint eventPoint, long fromSequence) {
+    Event[] loadEvent(UserEventPoint eventPoint, long fromSequence, int maxCount) {
         return queryService.getUserEvents(getLedgerHash(), eventPoint.getEventAccount(), eventPoint.getEventName(),
-        fromSequence, MAX_COUNT);
+        fromSequence, maxCount);
     }
 
     @Override
@@ -51,9 +49,7 @@ public class UserEventRunnable extends AbstractEventRunnable<UserEventPoint> {
     }
 
     @Override
-    void initEventSequences() {
-        for (UserEventPoint eventPoint : eventPointSet) {
-            eventSequences.put(eventPoint.getEventAccount() + eventPoint.getEventName(), eventPoint.getSequence());
-        }
+    String eventPointKey(UserEventPoint eventPoint) {
+        return eventPoint.getEventAccount() + eventPoint.getEventName();
     }
 }

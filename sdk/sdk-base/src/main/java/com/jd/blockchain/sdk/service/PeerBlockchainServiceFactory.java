@@ -25,9 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, Closeable {
@@ -38,7 +36,9 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 
 	private static final Map<NetworkAddress, PeerManageService> peerManageServices = new ConcurrentHashMap<>();
 
-	private static final Map<HashDigest, LedgerAccessContextImpl> accessContextMap = new ConcurrentHashMap<>();
+	private static final Map<NetworkAddress, Set<HashDigest>> peerLedgers = new ConcurrentHashMap<>();
+
+	private final Map<HashDigest, LedgerAccessContextImpl> accessContextMap = new ConcurrentHashMap<>();
 
 	private ServiceConnectionManager httpConnectionManager;
 
@@ -68,11 +68,11 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 
 	/**
 	 * 返回交易服务；
-	 * 
+	 *
 	 * <br>
-	 * 
+	 *
 	 * 返回的交易服务聚合了该节点绑定的多个账本的交易服务，并根据交易请求中指定的目标账本选择相应的交易服务进行转发；
-	 * 
+	 *
 	 * @return
 	 */
 	public TransactionService getTransactionService() {
@@ -81,12 +81,12 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 
 	/**
 	 * 连接到指定的共识节点；
-	 * 
+	 *
 	 * @param peerAddr
 	 *            提供对网关接入认证的节点的认证地址列表； <br>
 	 *            按列表的先后顺序连接节点进行认证，从第一个成功通过的节点请求整个区块链网络的拓扑配置，并建立起和整个区块链网络的连接；<br>
 	 *            此参数指定的节点列表可以是整个区块链网络的全部节点的子集，而不必包含所有节点；
-	 * 
+	 *
 	 * @return 区块链服务工厂实例；
 	 */
 	public static PeerBlockchainServiceFactory connect(AsymmetricKeypair gatewayKey, NetworkAddress peerAddr, List<String> peerProviders) {
@@ -95,17 +95,13 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 			throw new AuthenticationException("No peer Provider was set!");
 		}
 		ClientIdentificationsProvider authIdProvider = authIdProvider(gatewayKey, peerProviders);
-
 		GatewayIncomingSetting incomingSetting = auth(peerAddr, authIdProvider);
-
 		if (incomingSetting == null) {
 			throw new AuthenticationException("No peer was succeed authenticating from!");
 		}
 
 		PeerBlockchainServiceFactory factory = null;
-
 		ServiceConnectionManager httpConnectionManager;
-
 		PeerManageService peerManageService;
 
 		if (peerBlockchainServiceFactories.containsKey(peerAddr)) {
@@ -128,17 +124,19 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 		LedgerIncomingSetting[] ledgerSettings = incomingSetting.getLedgers();
 		// 判断当前节点对应账本是否一致
 		List<LedgerIncomingSetting> needInitSettings = new ArrayList<>();
+		Set<HashDigest> currentPeerLedgers = peerLedgers.computeIfAbsent(peerAddr, k -> new HashSet<>());
 		for (LedgerIncomingSetting setting : ledgerSettings) {
 			HashDigest currLedgerHash = setting.getLedgerHash();
-			if (!accessContextMap.containsKey(currLedgerHash)) {
+			if (!currentPeerLedgers.contains(currLedgerHash)) {
+				LOGGER.info("Peer[{}] find new ledger [{}]", peerAddr, currLedgerHash.toBase58());
 				needInitSettings.add(setting);
 			}
 		}
-
 		if (!needInitSettings.isEmpty()) {
 			LedgerAccessContextImpl[] accessAbleLedgers = new LedgerAccessContextImpl[needInitSettings.size()];
 			BlockchainQueryService queryService = peerManageService.getQueryService();
 
+			Map<HashDigest, LedgerAccessContextImpl> tempAccessCtxs = new HashMap<>();
 			for (int i = 0; i < needInitSettings.size(); i++) {
 				LedgerIncomingSetting ledgerSetting = needInitSettings.get(i);
 				String providerName = ledgerSetting.getProviderName();
@@ -152,27 +150,37 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 
 				TransactionService autoSigningTxProcService = enableGatewayAutoSigning(gatewayKey,
 						ledgerSetting.getCryptoSetting(), consensusClient);
-
 				LedgerAccessContextImpl accCtx = new LedgerAccessContextImpl();
 				accCtx.ledgerHash = ledgerSetting.getLedgerHash();
 				accCtx.cryptoSetting = ledgerSetting.getCryptoSetting();
 				accCtx.queryService = queryService;
 				accCtx.txProcService = autoSigningTxProcService;
 				accCtx.consensusClient = consensusClient;
-
 				accessAbleLedgers[i] = accCtx;
-
-				accessContextMap.put(accCtx.ledgerHash, accCtx);
+				tempAccessCtxs.put(accCtx.ledgerHash, accCtx);
+				// 添加对应Hash到该Peer节点
+				currentPeerLedgers.add(accCtx.ledgerHash);
 			}
 			if (factory == null) {
+				// 第一次连接成功
 				factory = new PeerBlockchainServiceFactory(httpConnectionManager,
 						accessAbleLedgers);
+				factory.accessContextMap.putAll(tempAccessCtxs);
 				peerBlockchainServiceFactories.put(peerAddr, factory);
+				if (!tempAccessCtxs.isEmpty()) {
+					for (HashDigest hash : tempAccessCtxs.keySet()) {
+						LOGGER.info("First connect, peer[{}] init new ledger[{}] OK !!!", peerAddr, hash.toBase58());
+					}
+				}
 			} else {
+				factory.accessContextMap.putAll(tempAccessCtxs);
 				factory.addLedgerAccessContexts(accessAbleLedgers);
+				if (!tempAccessCtxs.isEmpty()) {
+					for (HashDigest hash : tempAccessCtxs.keySet()) {
+						LOGGER.info("Reconnect, peer[{}] init new ledger[{}] OK !!!", peerAddr, hash.toBase58());
+					}
+				}
 			}
-//			PeerBlockchainServiceFactory factory = new PeerBlockchainServiceFactory(httpConnectionManager,
-//					accessAbleLedgers);
 		}
 
 
@@ -241,7 +249,7 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 
 	/**
 	 * 启用网关自动签名；
-	 * 
+	 *
 	 * @param nodeKeyPair
 	 * @param cryptoSetting
 	 * @return

@@ -10,24 +10,28 @@ import com.jd.blockchain.ledger.LedgerAdminInfo;
 import com.jd.blockchain.ledger.LedgerBlock;
 import com.jd.blockchain.ledger.LedgerInfo;
 import com.jd.blockchain.ledger.LedgerMetadata;
+import com.jd.blockchain.ledger.LedgerPermission;
 import com.jd.blockchain.ledger.LedgerTransaction;
 import com.jd.blockchain.ledger.ParticipantNode;
 import com.jd.blockchain.ledger.PreparedTransaction;
+import com.jd.blockchain.ledger.PrivilegeBitset;
+import com.jd.blockchain.ledger.PrivilegeSet;
 import com.jd.blockchain.ledger.RoleSet;
+import com.jd.blockchain.ledger.RolesPolicy;
 import com.jd.blockchain.ledger.SystemEvent;
 import com.jd.blockchain.ledger.TransactionContent;
+import com.jd.blockchain.ledger.TransactionPermission;
 import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.ledger.TransactionTemplate;
 import com.jd.blockchain.ledger.TypedKVEntry;
 import com.jd.blockchain.ledger.UserInfo;
+import com.jd.blockchain.ledger.UserPrivilegeSet;
 import com.jd.blockchain.sdk.BlockchainService;
 import com.jd.blockchain.sdk.EventListenerHandle;
 import com.jd.blockchain.sdk.SystemEventListener;
 import com.jd.blockchain.sdk.SystemEventPoint;
-import com.jd.blockchain.sdk.SystemEventPointData;
 import com.jd.blockchain.sdk.UserEventListener;
 import com.jd.blockchain.sdk.UserEventPoint;
-import com.jd.blockchain.sdk.UserEventPointData;
 import com.jd.blockchain.sdk.converters.ClientResolveUtil;
 import com.jd.blockchain.sdk.service.event.SystemEventListenerHandle;
 import com.jd.blockchain.sdk.service.event.UserEventListenerHandle;
@@ -36,6 +40,7 @@ import com.jd.blockchain.transaction.PreparedTx;
 import com.jd.blockchain.transaction.TransactionService;
 import com.jd.blockchain.transaction.TxRequestBuilder;
 import com.jd.blockchain.transaction.TxTemplate;
+import com.jd.blockchain.utils.Bytes;
 
 public abstract class BlockchainServiceProxy implements BlockchainService {
 
@@ -57,13 +62,8 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 
 	@Override
 	public EventListenerHandle<SystemEventPoint> monitorSystemEvent(HashDigest ledgerHash, SystemEvent systemEvent, long startSequence, SystemEventListener<SystemEventPoint> listener) {
-		return monitorSystemEvent(ledgerHash, new SystemEventPointData(systemEvent.getName(), startSequence), listener);
-	}
-
-	@Override
-	public EventListenerHandle<SystemEventPoint> monitorSystemEvent(HashDigest ledgerHash, SystemEventPoint eventPoint, SystemEventListener<SystemEventPoint> listener) {
 		SystemEventListenerHandle eventListenerHandle = new SystemEventListenerHandle(getQueryService(ledgerHash));
-		eventListenerHandle.register(ledgerHash, eventPoint, listener);
+		eventListenerHandle.register(ledgerHash, new SystemEventPoint(systemEvent, startSequence), listener);
 		return eventListenerHandle;
 	}
 
@@ -71,8 +71,7 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	public EventListenerHandle<UserEventPoint> monitorUserEvent(HashDigest ledgerHash, String eventAccount, String eventName,
 																long startSequence, UserEventListener<UserEventPoint> listener) {
 		UserEventListenerHandle eventListenerHandle = new UserEventListenerHandle(getQueryService(ledgerHash));
-		eventListenerHandle.register(ledgerHash,
-				UserEventPointData.createEventPoint(eventAccount, eventName, startSequence), listener);
+		eventListenerHandle.register(ledgerHash, new UserEventPoint(eventAccount, eventName, startSequence), listener);
 		return eventListenerHandle;
 	}
 
@@ -258,11 +257,6 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	}
 
 	@Override
-	public RoleSet getUserRoles(HashDigest ledgerHash, String userAddress){
-		return getQueryService(ledgerHash).getUserRoles(ledgerHash, userAddress);
-	}
-
-	@Override
 	public Event[] getSystemEvents(HashDigest ledgerHash, String eventName, long fromSequence, int count) {
 		return getQueryService(ledgerHash).getSystemEvents(ledgerHash, eventName, fromSequence, count);
 	}
@@ -320,5 +314,14 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	@Override
 	public Event getLatestEvent(HashDigest ledgerHash, String address, String eventName) {
 		return getQueryService(ledgerHash).getLatestEvent(ledgerHash, address, eventName);
+	}
+	@Override
+	public PrivilegeSet getRolePrivileges(HashDigest ledgerHash, String roleName) {
+		return getQueryService(ledgerHash).getRolePrivileges(ledgerHash, roleName);
+	}
+
+	@Override
+	public UserPrivilegeSet getUserPrivileges(HashDigest ledgerHash, String userAddress) {
+		return getQueryService(ledgerHash).getUserPrivileges(ledgerHash, userAddress);
 	}
 }

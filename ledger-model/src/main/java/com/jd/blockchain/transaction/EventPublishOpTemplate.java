@@ -57,6 +57,6 @@ public class EventPublishOpTemplate implements EventPublishOperation {
     }
 
     private String encodeKey(String name, long expVersion) {
-        return name + expVersion;
+        return name + "-" + expVersion;
     }
 }

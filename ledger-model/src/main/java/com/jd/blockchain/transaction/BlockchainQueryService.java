@@ -12,11 +12,13 @@ import com.jd.blockchain.ledger.LedgerInfo;
 import com.jd.blockchain.ledger.LedgerMetadata;
 import com.jd.blockchain.ledger.LedgerTransaction;
 import com.jd.blockchain.ledger.ParticipantNode;
+import com.jd.blockchain.ledger.PrivilegeSet;
 import com.jd.blockchain.ledger.RoleSet;
 import com.jd.blockchain.ledger.Transaction;
 import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.ledger.TypedKVEntry;
 import com.jd.blockchain.ledger.UserInfo;
+import com.jd.blockchain.ledger.UserPrivilegeSet;
 import org.springframework.cglib.core.Block;
 
 /**
@@ -464,10 +466,18 @@ public interface BlockchainQueryService {
 	BlockchainIdentity[] getContractAccounts(HashDigest ledgerHash, int fromIndex, int count);
 
 	/**
-	 * return user's roles;
+	 * return role's privileges;
 	 * @param ledgerHash
+	 * @param roleName
+	 * @return
+	 */
+	PrivilegeSet getRolePrivileges(HashDigest ledgerHash, String roleName);
+
+	/**
+	 * 返回user's priveleges;
+	 *
 	 * @param userAddress
 	 * @return
 	 */
-	RoleSet getUserRoles(HashDigest ledgerHash, String userAddress);
+	UserPrivilegeSet getUserPrivileges(HashDigest ledgerHash, String userAddress);
 }

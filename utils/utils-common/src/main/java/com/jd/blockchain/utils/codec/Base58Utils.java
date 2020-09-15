@@ -73,9 +73,6 @@ public class Base58Utils {
 	}
 
 	public static byte[] decode(String input) {
-		if(HexUtils.isHex(input)){
-			return HexUtils.decode(input);
-		}
 		if (input.length() == 0) {
 			// paying with the same coin
 			return new byte[0];

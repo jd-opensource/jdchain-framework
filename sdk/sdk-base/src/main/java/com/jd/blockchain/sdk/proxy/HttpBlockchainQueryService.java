@@ -3,8 +3,8 @@ package com.jd.blockchain.sdk.proxy;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.ContractInfo;
-import com.jd.blockchain.ledger.Event;
 import com.jd.blockchain.ledger.DataAccountInfo;
+import com.jd.blockchain.ledger.Event;
 import com.jd.blockchain.ledger.KVInfoVO;
 import com.jd.blockchain.ledger.LedgerAdminInfo;
 import com.jd.blockchain.ledger.LedgerBlock;
@@ -12,11 +12,12 @@ import com.jd.blockchain.ledger.LedgerInfo;
 import com.jd.blockchain.ledger.LedgerMetadata;
 import com.jd.blockchain.ledger.LedgerTransaction;
 import com.jd.blockchain.ledger.ParticipantNode;
-import com.jd.blockchain.ledger.RoleSet;
+import com.jd.blockchain.ledger.PrivilegeSet;
 import com.jd.blockchain.ledger.Transaction;
 import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.ledger.TypedKVEntry;
 import com.jd.blockchain.ledger.UserInfo;
+import com.jd.blockchain.ledger.UserPrivilegeSet;
 import com.jd.blockchain.sdk.BlockchainExtendQueryService;
 import com.jd.blockchain.sdk.converters.HashDigestToStringConverter;
 import com.jd.blockchain.sdk.converters.HashDigestsResponseConverter;
@@ -676,17 +677,6 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 									@RequestParam(name="fromIndex", required = false) int fromIndex,
 									@RequestParam(name="count", required = false) int count);
 
-	/**
-	 * get user's roles;
-	 * @param ledgerHash
-	 * @param userAddress
-	 * @return
-	 */
-	@HttpAction(method = HttpMethod.GET, path = "ledgers/{ledgerHash}/userrole/{userAddress}")
-	@Override
-	RoleSet getUserRoles(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
-											 @PathParam(name="userAddress") String userAddress);
-
 	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names/count")
 	@Override
 	long getSystemEventNameTotalCount(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash);
@@ -739,4 +729,26 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	Event getLatestEvent(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 						 @PathParam(name="address") String address,
 						 @PathParam(name="eventName") String eventName);
+	/**
+	 * get role's privilege;
+	 * @param ledgerHash
+	 * @param roleName
+	 * @return
+	 */
+	@HttpAction(method = HttpMethod.GET, path = "ledgers/{ledgerHash}/authorization/role/{roleName}")
+	@Override
+	PrivilegeSet getRolePrivileges(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+								   @PathParam(name="roleName") String roleName);
+
+	/**
+	 * get user's privilege;
+	 *
+	 * @param ledgerHash
+	 * @param userAddress
+	 * @return
+	 */
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/authorization/user/{userAddress}")
+	@Override
+	UserPrivilegeSet getUserPrivileges(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+									   @PathParam(name="userAddress") String userAddress);
 }

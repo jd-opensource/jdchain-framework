@@ -122,6 +122,9 @@ public class TxBuilder implements TransactionBuilder {
 	public ParticipantStateUpdateOperationBuilder states() {return  opFactory.states(); }
 
 	@Override
+	public ConsensusSettingsUpdateOperationBuilder settings() {return  opFactory.settings(); }
+
+	@Override
 	public <T> T contract(Bytes address, Class<T> contractIntf) {
 		return opFactory.contract(address, contractIntf);
 	}

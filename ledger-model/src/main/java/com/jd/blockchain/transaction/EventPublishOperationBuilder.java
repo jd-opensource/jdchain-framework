@@ -83,7 +83,7 @@ public interface EventPublishOperationBuilder {
     EventPublishOperationBuilder publishJSON(String name, String content, long sequence);
 
     /**
-     * 发布CML内容事件
+     * 发布XML内容事件
      *
      * @param name
      * @param content
