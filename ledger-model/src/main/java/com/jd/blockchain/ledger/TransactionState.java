@@ -158,7 +158,14 @@ public enum TransactionState {
 	/**
 	 * 空区块错误；
 	 */
-	EMPTY_BLOCK_ERROR((byte) 0x85);
+	EMPTY_BLOCK_ERROR((byte) 0x85),
+
+	/**
+	 * 共识时间戳错误
+	 *
+	 */
+	CONSENSUS_TIMESTAMP_ERROR((byte) 0x86);
+
 
 	@EnumField(type = PrimitiveType.INT8)
 	public final byte CODE;
