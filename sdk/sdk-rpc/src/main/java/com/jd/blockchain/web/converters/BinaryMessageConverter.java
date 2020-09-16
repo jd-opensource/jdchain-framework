@@ -33,7 +33,6 @@ public class BinaryMessageConverter extends AbstractHttpMessageConverter<Object>
 
     static {
         DataContractRegistry.register(TransactionContent.class);
-        DataContractRegistry.register(TransactionContentBody.class);
         DataContractRegistry.register(TransactionRequest.class);
         DataContractRegistry.register(NodeRequest.class);
         DataContractRegistry.register(EndpointRequest.class);

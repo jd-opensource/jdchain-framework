@@ -44,7 +44,7 @@ class StatefulPreparedTx extends PreparedTx {
 
     @Override
     public DigitalSignature sign(AsymmetricKeypair keyPair) {
-        DigitalSignature signature = SignatureUtils.sign(getTransactionContent(), keyPair);
+        DigitalSignature signature = SignatureUtils.sign(getTransactionHash(), keyPair);
         addSignature(signature);
         return signature;
     }

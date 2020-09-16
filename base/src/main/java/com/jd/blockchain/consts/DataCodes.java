@@ -54,7 +54,7 @@ public interface DataCodes {
 
 	public static final int TX_CONTENT = 0x210;
 
-	public static final int TX_CONTENT_BODY = 0x220;
+//	public static final int TX_CONTENT_BODY = 0x220;
 
 	public static final int TX_RETURN_MESSAGE = 0x230;
 

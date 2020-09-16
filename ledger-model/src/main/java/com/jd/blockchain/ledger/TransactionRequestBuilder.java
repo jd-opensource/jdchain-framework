@@ -9,15 +9,14 @@ import com.jd.blockchain.crypto.HashDigest;
  * @author huanghaiquan
  *
  */
-public interface TransactionRequestBuilder extends HashObject  {
+public interface TransactionRequestBuilder {
 
 	/**
 	 * 交易内容的 Hash；
 	 * 
 	 * @return
 	 */
-	@Override
-	HashDigest getHash();
+	HashDigest getTransactionHash();
 
 	/**
 	 * 交易数据内容； <br>
@@ -74,8 +73,8 @@ public interface TransactionRequestBuilder extends HashObject  {
 	void addNodeSignature(DigitalSignature... signatures);
 
 	/**
-	 * 生成交易请求；
-	 * 
+	 * @param hashAlgorithmCode
+	 * @return
 	 */
 	TransactionRequest buildRequest();
 }

@@ -29,8 +29,8 @@ public class PreparedTx implements PreparedTransaction {
 	}
 
 	@Override
-	public HashDigest getHash() {
-		return txReqBuilder.getHash();
+	public HashDigest getTransactionHash() {
+		return txReqBuilder.getTransactionHash();
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class PreparedTx implements PreparedTransaction {
 
 	@Override
 	public DigitalSignature sign(AsymmetricKeypair keyPair) {
-		DigitalSignature signature = SignatureUtils.sign(getTransactionContent(), keyPair);
+		DigitalSignature signature = SignatureUtils.sign(txReqBuilder.getTransactionHash(), keyPair);
 		addSignature(signature);
 		return signature;
 	}

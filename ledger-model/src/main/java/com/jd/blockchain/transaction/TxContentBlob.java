@@ -27,7 +27,7 @@ public class TxContentBlob implements TransactionContent {
 
 	private List<Operation> operationList = new ArrayList<Operation>();
 
-	private HashDigest hash;
+//	private HashDigest hash;
 
 	private HashDigest ledgerHash;
 
@@ -37,24 +37,24 @@ public class TxContentBlob implements TransactionContent {
 		this.ledgerHash = ledgerHash;
 	}
 
-	/**
-	 * 交易内容的哈希值；
-	 */
-	@Override
-	public HashDigest getHash() {
-		return this.hash;
-	}
-
-	/**
-	 * 更新交易内容的哈希值；
-	 * <p>
-	 * 注：当前对象只充当值对象，不校验指定哈希值的完整性，调用者应该在外部实施完整性校验；
-	 * 
-	 * @param hash
-	 */
-	public void setHash(HashDigest hash) {
-		this.hash = hash;
-	}
+//	/**
+//	 * 交易内容的哈希值；
+//	 */
+//	@Override
+//	public HashDigest getHash() {
+//		return this.hash;
+//	}
+//
+//	/**
+//	 * 更新交易内容的哈希值；
+//	 * <p>
+//	 * 注：当前对象只充当值对象，不校验指定哈希值的完整性，调用者应该在外部实施完整性校验；
+//	 * 
+//	 * @param hash
+//	 */
+//	public void setHash(HashDigest hash) {
+//		this.hash = hash;
+//	}
 
 	/**
 	 * 交易请求链的hash

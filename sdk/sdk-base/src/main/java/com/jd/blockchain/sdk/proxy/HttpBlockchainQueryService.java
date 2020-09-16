@@ -3,6 +3,7 @@ package com.jd.blockchain.sdk.proxy;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.ContractInfo;
+import com.jd.blockchain.ledger.CryptoSetting;
 import com.jd.blockchain.ledger.DataAccountInfo;
 import com.jd.blockchain.ledger.Event;
 import com.jd.blockchain.ledger.KVInfoVO;
@@ -69,6 +70,10 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
     @Override
 	LedgerBlock getLatestBlock(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash);
 
+//	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/settings/crypto")
+//	@Override
+//	CryptoSetting getCryptoSetting(HashDigest ledgerHash) ;
+	
     /**
      * 获取指定区块高度中新增的交易总数（即该区块中交易集合的数量）
      * @param ledgerHash

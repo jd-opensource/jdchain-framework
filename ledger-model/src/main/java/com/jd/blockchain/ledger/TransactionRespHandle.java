@@ -73,7 +73,7 @@ public class TransactionRespHandle implements TransactionResponse {
 
     @Override
     public HashDigest getContentHash() {
-        return this.request.getTransactionContent().getHash();
+        return this.request.getTransactionHash();
     }
 
     @Override

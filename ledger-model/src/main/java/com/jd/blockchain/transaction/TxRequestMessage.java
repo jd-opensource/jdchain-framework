@@ -47,7 +47,7 @@ public class TxRequestMessage implements TransactionRequest {
 	 */
 	public static final int MAX_TX_PARTICIPANT_COUNT = 0xFF;
 
-	private HashDigest hash;
+	private HashDigest transactionHash;
 
 	private TransactionContent transactionContent;
 
@@ -55,26 +55,18 @@ public class TxRequestMessage implements TransactionRequest {
 
 	private Map<Bytes, DigitalSignature> nodeSignatureMap = new LinkedHashMap<>();
 
-	// private CryptoAlgorithm defaultHashAlgorithm = CryptoAlgorithm.SHA_256;
-
-	// public TxRequestMessage() {
-	// }
-
 	static {
 		DataContractRegistry.register(NodeRequest.class);
 	}
 
-	public TxRequestMessage(TransactionContent txContent) {
-		// if (!(txContent instanceof BytesWriter)) {
-		// throw new IllegalArgumentException("The tx content must be instance of
-		// BytesWriter!");
-		// }
+	public TxRequestMessage(HashDigest transactionHash, TransactionContent txContent) {
+		this.transactionHash = transactionHash;
 		this.transactionContent = txContent;
 	}
 
 	public TxRequestMessage(TransactionRequest txRequest) {
+		this.transactionHash = txRequest.getTransactionHash();
 		this.transactionContent = txRequest.getTransactionContent();
-		setTransactionHash(txRequest.getTransactionHash());
 		setEndpointSignatures(txRequest.getEndpointSignatures());
 		setNodeSignatures(txRequest.getNodeSignatures());
 	}
@@ -187,11 +179,7 @@ public class TxRequestMessage implements TransactionRequest {
 
 	@Override
 	public HashDigest getTransactionHash() {
-		return hash;
-	}
-
-	public void setTransactionHash(HashDigest hash) {
-		this.hash = hash;
+		return transactionHash;
 	}
 
 	// public HashDigest updateHash() {
