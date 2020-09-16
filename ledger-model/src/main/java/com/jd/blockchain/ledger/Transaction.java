@@ -4,7 +4,6 @@ import com.jd.blockchain.binaryproto.DataContract;
 import com.jd.blockchain.binaryproto.DataField;
 import com.jd.blockchain.binaryproto.PrimitiveType;
 import com.jd.blockchain.consts.DataCodes;
-import com.jd.blockchain.crypto.HashDigest;
 
 /**
  * Transaction 区块链交易，是被原子执行的操作集合；
@@ -13,18 +12,7 @@ import com.jd.blockchain.crypto.HashDigest;
  *
  */
 @DataContract(code = DataCodes.TX)
-public interface Transaction extends NodeRequest, HashObject {
-
-	/**
-	 * 交易 Hash；
-	 * 
-	 * 这是包含交易内容、签名列表、交易结果的完整性 hash；
-	 * 
-	 * @return
-	 */
-	@DataField(order = 1, primitiveType = PrimitiveType.BYTES)
-	@Override
-	HashDigest getHash();
+public interface Transaction extends NodeRequest {
 
 	/**
 	 * 交易被包含的区块高度；

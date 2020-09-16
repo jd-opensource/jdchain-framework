@@ -21,11 +21,4 @@ public interface LedgerDataSnapshot {
 	@DataField(order=4, primitiveType = PrimitiveType.BYTES)
 	HashDigest getContractAccountSetHash();
 
-//	HashDigest getUserPrivilegeHash();
-
-//	HashDigest getDataPrivilegeHash();
-
-//	HashDigest getContractPrivilegeHash();
-	
-
 }
