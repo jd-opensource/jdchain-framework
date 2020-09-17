@@ -273,6 +273,8 @@ public class ClientResolveUtil {
 		byte code = 0;
 		if ("CONSENSUS".equals(state)) {
 			code = 1;
+		} else if ("DECONSENSUS".equals(state)) {
+			code = 2;
 		}
 		ParticipantStateUpdateOpTemplate participantStateUpdateOpTemplate = new ParticipantStateUpdateOpTemplate(blockchainIdentity, ParticipantNodeState.valueOf(code));
 		return participantStateUpdateOpTemplate;
