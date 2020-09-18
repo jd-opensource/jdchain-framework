@@ -31,8 +31,6 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
 	static {
 		DataContractRegistry.register(TransactionContent.class);
 		DataContractRegistry.register(TransactionRequest.class);
-		DataContractRegistry.register(NodeRequest.class);
-		DataContractRegistry.register(EndpointRequest.class);
 		DataContractRegistry.register(TransactionResponse.class);
 		DataContractRegistry.register(DataAccountKVSetOperation.class);
 		DataContractRegistry.register(DataAccountKVSetOperation.KVWriteEntry.class);

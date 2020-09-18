@@ -10,7 +10,6 @@ import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.DigitalSignature;
 import com.jd.blockchain.ledger.MagicNumber;
-import com.jd.blockchain.ledger.NodeRequest;
 import com.jd.blockchain.ledger.TransactionContent;
 import com.jd.blockchain.ledger.TransactionRequest;
 import com.jd.blockchain.utils.Bytes;
@@ -56,7 +55,7 @@ public class TxRequestMessage implements TransactionRequest {
 	private Map<Bytes, DigitalSignature> nodeSignatureMap = new LinkedHashMap<>();
 
 	static {
-		DataContractRegistry.register(NodeRequest.class);
+		DataContractRegistry.register(TransactionRequest.class);
 	}
 
 	public TxRequestMessage(HashDigest transactionHash, TransactionContent txContent) {

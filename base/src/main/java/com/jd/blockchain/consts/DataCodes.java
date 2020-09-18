@@ -48,11 +48,17 @@ public interface DataCodes {
 
 	public static final int EVENT_SNAPSHOT = 0x132;
 
-	public static final int TX = 0x200;
+//	public static final int TX = 0x200;
 
-	public static final int TX_LEDGER = 0x201;
 
-	public static final int TX_CONTENT = 0x210;
+	
+//	public static final int TX_LEDGER = 0x201;
+
+	public static final int TX_CONTENT = 0x200;
+	
+	public static final int TX_REQUEST = 0x202;
+	
+	public static final int TX_RESULT = 0x203;
 
 //	public static final int TX_CONTENT_BODY = 0x220;
 
@@ -189,11 +195,9 @@ public interface DataCodes {
 
 	public static final int CLIENT_IDENTIFICATIONS = 0xC10;
 
-	public static final int REQUEST = 0xD00;
-
-	public static final int REQUEST_NODE = 0xD10;
-
-	public static final int REQUEST_ENDPOINT = 0xD20;
+//	public static final int REQUEST_NODE = 0xD10;
+//
+//	public static final int REQUEST_ENDPOINT = 0xD20;
 
 	// ------------------ 共识相关 ----------------
 

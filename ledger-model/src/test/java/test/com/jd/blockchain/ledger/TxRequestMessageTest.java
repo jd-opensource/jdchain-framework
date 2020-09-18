@@ -27,9 +27,7 @@ import com.jd.blockchain.ledger.BlockchainKeyGenerator;
 import com.jd.blockchain.ledger.BlockchainKeypair;
 import com.jd.blockchain.ledger.DataAccountKVSetOperation;
 import com.jd.blockchain.ledger.DigitalSignature;
-import com.jd.blockchain.ledger.EndpointRequest;
 import com.jd.blockchain.ledger.HashObject;
-import com.jd.blockchain.ledger.NodeRequest;
 import com.jd.blockchain.ledger.Operation;
 import com.jd.blockchain.ledger.TransactionContent;
 import com.jd.blockchain.ledger.TransactionRequest;
@@ -53,8 +51,6 @@ public class TxRequestMessageTest {
 	@Before
 	public void initTxRequestMessage() throws Exception {
 		DataContractRegistry.register(TransactionRequest.class);
-		DataContractRegistry.register(NodeRequest.class);
-		DataContractRegistry.register(EndpointRequest.class);
 		DataContractRegistry.register(HashObject.class);
 
 		TransactionContent txContent = initTransactionContent();
@@ -124,8 +120,8 @@ public class TxRequestMessageTest {
 
 	@Test
 	public void testSerialize_NodeRequest() {
-		byte[] serialBytes = BinaryProtocol.encode(data, NodeRequest.class);
-		NodeRequest resolvedData = BinaryProtocol.decode(serialBytes);
+		byte[] serialBytes = BinaryProtocol.encode(data, TransactionRequest.class);
+		TransactionRequest resolvedData = BinaryProtocol.decode(serialBytes);
 		System.out.println("------Assert start ------");
 		assertEquals(resolvedData.getEndpointSignatures().length, data.getEndpointSignatures().length);
 		assertEquals(resolvedData.getNodeSignatures().length, data.getNodeSignatures().length);
@@ -161,8 +157,8 @@ public class TxRequestMessageTest {
 
 	@Test
 	public void testSerialize_EndpointRequest() {
-		byte[] serialBytes = BinaryProtocol.encode(data, EndpointRequest.class);
-		EndpointRequest resolvedData = BinaryProtocol.decode(serialBytes);
+		byte[] serialBytes = BinaryProtocol.encode(data, TransactionRequest.class);
+		TransactionRequest resolvedData = BinaryProtocol.decode(serialBytes);
 		System.out.println("------Assert start ------");
 		assertEquals(resolvedData.getEndpointSignatures().length, data.getEndpointSignatures().length);
 		DigitalSignature[] dataEndpointSignatures = data.getEndpointSignatures();
