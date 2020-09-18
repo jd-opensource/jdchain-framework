@@ -94,6 +94,13 @@ public class NodeSigningAppender implements TransactionService {
 		}
 	}
 
+	public MessageService getMessageService() {
+		return messageService;
+	}
+
+	public ConsensusClient getConsensusClient() {
+		return consensusClient;
+	}
 
 	private static class ErrorTransactionResponse implements TransactionResponse {
 

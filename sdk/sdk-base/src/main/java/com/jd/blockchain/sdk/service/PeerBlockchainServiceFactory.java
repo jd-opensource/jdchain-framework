@@ -12,6 +12,7 @@ import com.jd.blockchain.sdk.proxy.HttpBlockchainQueryService;
 import com.jd.blockchain.setting.GatewayIncomingSetting;
 import com.jd.blockchain.setting.LedgerIncomingSetting;
 import com.jd.blockchain.transaction.BlockchainQueryService;
+import com.jd.blockchain.transaction.MonitorService;
 import com.jd.blockchain.transaction.TransactionService;
 import com.jd.blockchain.utils.http.agent.HttpServiceAgent;
 import com.jd.blockchain.utils.http.agent.ServiceConnection;
@@ -39,6 +40,8 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 	private static final Map<NetworkAddress, Set<HashDigest>> peerLedgers = new ConcurrentHashMap<>();
 
 	private final Map<HashDigest, LedgerAccessContextImpl> accessContextMap = new ConcurrentHashMap<>();
+
+	private final Map<HashDigest, MonitorService> monitorServiceMap = new ConcurrentHashMap<>();
 
 	private ServiceConnectionManager httpConnectionManager;
 
@@ -346,5 +349,4 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 			this.queryService = queryService;
 		}
 	}
-
 }
