@@ -3,6 +3,9 @@ package com.jd.blockchain.ledger;
 /**
  * 开发在合约中抛出此 TransactionRollbackException 异常可以主动回滚当前交易；
  * 
+ * <p>
+ * 主动回滚的交易将被系统忽略；
+ * 
  * @author huanghaiquan
  *
  */
