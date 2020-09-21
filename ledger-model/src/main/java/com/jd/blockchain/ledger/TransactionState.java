@@ -11,7 +11,7 @@ import com.jd.blockchain.consts.DataCodes;
  * @author huanghaiquan
  *
  */
-@EnumContract(code = DataCodes.ENUM_TYPE_TRANSACTION_STATE)
+@EnumContract(code = DataCodes.TRANSACTION_EXEC_STATE)
 public enum TransactionState {
 
 	/**
@@ -29,7 +29,7 @@ public enum TransactionState {
 	 */
 	DATA_ACCOUNT_DOES_NOT_EXIST((byte) 0x02),
 
-	/**
+	/**x
 	 * 用户不存在；
 	 */
 	USER_DOES_NOT_EXIST((byte) 0x03),

@@ -2,37 +2,30 @@ package com.jd.blockchain.ledger;
 
 import com.jd.blockchain.binaryproto.DataContract;
 import com.jd.blockchain.binaryproto.DataField;
-import com.jd.blockchain.binaryproto.PrimitiveType;
 import com.jd.blockchain.consts.DataCodes;
 import com.jd.blockchain.crypto.HashDigest;
 
 /**
- * 交易结果；
+ * 交易记录；
  * 
  * @author huanghaiquan
  *
  */
-@DataContract(code = DataCodes.TX_RESULT)
+@DataContract(code = DataCodes.TX_RECORD)
 public interface LedgerTransaction {
 
-	/**
-	 * 交易哈希；
-	 * 
-	 * <p>
-	 * 即交易内容 {@link #getTransactionContent()} 的哈希值；
-	 * 
-	 * @return
-	 */
-	@DataField(order = 1, primitiveType = PrimitiveType.BYTES)
-	HashDigest getTransactionHash();
+	default HashDigest getTransactionHash() {
+		return getRequest().getTransactionHash();
+	}
 
 	/**
 	 * 交易被包含的区块高度；
 	 * 
 	 * @return
 	 */
-	@DataField(order = 2, primitiveType = PrimitiveType.INT64)
-	long getBlockHeight();
+	default long getBlockHeight() {
+		return getResult().getBlockHeight();
+	}
 
 	/**
 	 * 交易的执行结果；
@@ -41,22 +34,24 @@ public interface LedgerTransaction {
 	 * 
 	 * @return
 	 */
-	@DataField(order = 3, refEnum = true)
-	TransactionState getExecutionState();
+	default TransactionState getExecutionState() {
+		return getResult().getExecutionState();
+	}
 
 	/**
-	 * 交易中操作的返回结果；顺序与操作列表的顺序一致；
-	 *
-	 * @return
-	 */
-	@DataField(order = 4, list = true, refContract = true)
-	OperationResult[] getOperationResults();
-
-	/**
-	 * 账本数据快照；
+	 * 交易请求；
 	 * 
 	 * @return
 	 */
-	@DataField(order = 5, refContract = true)
-	LedgerDataSnapshot getDataSnapshot();
+	@DataField(order = 1, refContract = true)
+	TransactionRequest getRequest();
+
+	/**
+	 * 交易结果；
+	 * 
+	 * @return
+	 */
+	@DataField(order = 2, refContract = true)
+	TransactionResult getResult();
+
 }

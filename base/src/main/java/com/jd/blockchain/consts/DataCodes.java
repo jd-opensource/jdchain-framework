@@ -46,12 +46,10 @@ public interface DataCodes {
 
 	public static final int LEDGER_ADMIN_INFO = 0x131;
 
-	public static final int EVENT_SNAPSHOT = 0x132;
+//	public static final int EVENT_SNAPSHOT = 0x132;
 
 //	public static final int TX = 0x200;
 
-
-	
 //	public static final int TX_LEDGER = 0x201;
 
 	public static final int TX_CONTENT = 0x200;
@@ -61,6 +59,8 @@ public interface DataCodes {
 	public static final int TX_RESULT = 0x203;
 
 //	public static final int TX_CONTENT_BODY = 0x220;
+	
+	public static final int TX_RECORD = 0x206;
 
 	public static final int TX_RETURN_MESSAGE = 0x230;
 
@@ -181,7 +181,7 @@ public interface DataCodes {
 
 	public static final int CRYPTO_ALGORITHM = 0xB21;
 
-	public static final int ENUM_TYPE_TRANSACTION_STATE = 0xB22;
+	public static final int TRANSACTION_EXEC_STATE = 0xB22;
 
 	public static final int ENUM_TYPE_BYTES_VALUE_TYPE = 0xB23;
 
