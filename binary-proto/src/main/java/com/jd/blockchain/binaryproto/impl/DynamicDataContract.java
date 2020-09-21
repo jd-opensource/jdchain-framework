@@ -127,12 +127,6 @@ class DynamicDataContract implements InvocationHandler, DataContractProxy {
 			Object result = method.invoke(this, args);
 			return result;
 		} catch (Exception e) {
-//			if (method.getReturnType().isPrimitive()) {
-//				result = 0;
-//			} else {
-//				result = null;
-//			}
-//			e.printStackTrace();
 			String errorMessage = String.format("Unsupported method[%s] by data proxy of DataContract[%s]! --%s",
 					method.toString(), getContractType().getName(), e.getMessage());
 			throw new DataContractException(errorMessage, e);

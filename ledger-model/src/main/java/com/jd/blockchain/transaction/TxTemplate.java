@@ -3,6 +3,7 @@ package com.jd.blockchain.transaction;
 import java.io.IOException;
 import java.util.Collection;
 
+import com.jd.blockchain.crypto.CryptoAlgorithm;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.PreparedTransaction;
 import com.jd.blockchain.ledger.TransactionRequestBuilder;
@@ -17,9 +18,15 @@ public class TxTemplate implements TransactionTemplate {
 
 	private TxStateManager stateManager;
 
-	public TxTemplate(HashDigest ledgerHash, TransactionService txService) {
+	public TxTemplate(HashDigest ledgerHash, short hashAlgorithm, TransactionService txService) {
 		this.stateManager = new TxStateManager();
-		this.txBuilder = new TxBuilder(ledgerHash);
+		this.txBuilder = new TxBuilder(ledgerHash, hashAlgorithm);
+		this.txService = txService;
+	}
+	
+	public TxTemplate(HashDigest ledgerHash, CryptoAlgorithm hashAlgorithm, TransactionService txService) {
+		this.stateManager = new TxStateManager();
+		this.txBuilder = new TxBuilder(ledgerHash, hashAlgorithm);
 		this.txService = txService;
 	}
 

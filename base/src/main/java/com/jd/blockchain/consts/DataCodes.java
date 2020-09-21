@@ -10,11 +10,23 @@ public interface DataCodes {
 
 	public static final int MERKLE_SNAPSHOT = 0x070;
 
-	public static final int MERKLE_DATA = 0x071;
+	public static final int MERKLE_TRIE_DATA = 0x071;
 
-	public static final int MERKLE_LEAF = 0x072;
+	public static final int MERKLE_TRIE_LEAF = 0x072;
 
-	public static final int MERKLE_PATH = 0x073;
+	public static final int MERKLE_TRIE_PATH = 0x073;
+	
+	public static final int MERKLE_TRIE_KEY = 0x074;
+	
+//	public static final int MERKLE_SORTED_TREE_DATA = 0x075;
+	
+	public static final int MERKLE_SORTED_TREE_INDEX = 0x076;
+	
+//	public static final int  MERKLE_HASH_SORTED_TREE_KV_ENTRY = 0x077;
+	
+	public static final int  MERKLE_HASH_SORTED_TREE_KEY_INDEX = 0x078;
+	
+	public static final int  MERKLE_HASH_SORTED_TREE_KEY_HASH_BUCKET = 0x079;
 
 
 
@@ -34,15 +46,21 @@ public interface DataCodes {
 
 	public static final int LEDGER_ADMIN_INFO = 0x131;
 
-	public static final int EVENT_SNAPSHOT = 0x132;
+//	public static final int EVENT_SNAPSHOT = 0x132;
 
-	public static final int TX = 0x200;
+//	public static final int TX = 0x200;
 
-	public static final int TX_LEDGER = 0x201;
+//	public static final int TX_LEDGER = 0x201;
 
-	public static final int TX_CONTENT = 0x210;
+	public static final int TX_CONTENT = 0x200;
+	
+	public static final int TX_REQUEST = 0x202;
+	
+	public static final int TX_RESULT = 0x203;
 
-	public static final int TX_CONTENT_BODY = 0x220;
+//	public static final int TX_CONTENT_BODY = 0x220;
+	
+	public static final int TX_RECORD = 0x206;
 
 	public static final int TX_RETURN_MESSAGE = 0x230;
 
@@ -163,7 +181,7 @@ public interface DataCodes {
 
 	public static final int CRYPTO_ALGORITHM = 0xB21;
 
-	public static final int ENUM_TYPE_TRANSACTION_STATE = 0xB22;
+	public static final int TRANSACTION_EXEC_STATE = 0xB22;
 
 	public static final int ENUM_TYPE_BYTES_VALUE_TYPE = 0xB23;
 
@@ -177,11 +195,9 @@ public interface DataCodes {
 
 	public static final int CLIENT_IDENTIFICATIONS = 0xC10;
 
-	public static final int REQUEST = 0xD00;
-
-	public static final int REQUEST_NODE = 0xD10;
-
-	public static final int REQUEST_ENDPOINT = 0xD20;
+//	public static final int REQUEST_NODE = 0xD10;
+//
+//	public static final int REQUEST_ENDPOINT = 0xD20;
 
 	// ------------------ 共识相关 ----------------
 

@@ -4,12 +4,61 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 /**
- * @author haiq
+ * @author huanghaiquan
  *
  */
 public abstract class ArrayUtils {
 	private ArrayUtils() {
 
+	}
+
+	/**
+	 * 对数组求和；
+	 * <p>
+	 * 注：此方法不处理溢出；
+	 * 
+	 * @param array
+	 * @return
+	 */
+	public static long sum(long[] array) {
+		long sum = 0;
+		for (long c : array) {
+			sum += c;
+		}
+		return sum;
+	}
+
+	/**
+	 * 对数组求和；
+	 * <p>
+	 * 注：此方法不处理溢出；
+	 * 
+	 * @param array 数组；
+	 * @param from  起始位置（含）；
+	 * @param to    截止位置（不含）；
+	 * @return
+	 */
+	public static long sum(long[] array, int from, int to) {
+		long sum = 0;
+		for (int i = from; i < to && i < array.length; i++) {
+			sum += array[i];
+		}
+		return sum;
+	}
+
+	public static long[] concat(long[] array1, long[] array2) {
+		long[] newArray = (long[]) Array.newInstance(long.class, array1.length + array2.length);
+		System.arraycopy(array1, 0, newArray, 0, array1.length);
+		System.arraycopy(array2, 0, newArray, array1.length, array2.length);
+		return newArray;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T[] concat(T[] array1, T[] array2, Class<T> clazz) {
+		T[] newArray = (T[]) Array.newInstance(clazz, array1.length + array2.length);
+		System.arraycopy(array1, 0, newArray, 0, array1.length);
+		System.arraycopy(array2, 0, newArray, array1.length, array2.length);
+		return newArray;
 	}
 
 	public static <T, R> R[] cast(T[] objs, Class<R> clazz, CastFunction<T, R> cf) {
@@ -117,6 +166,19 @@ public abstract class ArrayUtils {
 		}
 
 		T t;
+		for (int i = 0, j = array.length - 1; i < j; i++, j--) {
+			t = array[i];
+			array[i] = array[j];
+			array[j] = t;
+		}
+	}
+
+	public static void reverse(long[] array) {
+		if (array == null || array.length < 2) {
+			return;
+		}
+
+		long t;
 		for (int i = 0, j = array.length - 1; i < j; i++, j--) {
 			t = array[i];
 			array[i] = array[j];

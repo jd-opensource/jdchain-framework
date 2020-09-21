@@ -20,12 +20,13 @@ public interface LedgerDataSnapshot {
 	
 	@DataField(order=4, primitiveType = PrimitiveType.BYTES)
 	HashDigest getContractAccountSetHash();
-
-//	HashDigest getUserPrivilegeHash();
-
-//	HashDigest getDataPrivilegeHash();
-
-//	HashDigest getContractPrivilegeHash();
+	
+	@DataField(order=5, primitiveType = PrimitiveType.BYTES)
+	HashDigest getSystemEventSetHash();
+	
+	@DataField(order=6, primitiveType = PrimitiveType.BYTES)
+	HashDigest getUserEventSetHash();
+	
 	
 
 }

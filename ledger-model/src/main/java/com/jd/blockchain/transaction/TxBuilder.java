@@ -5,27 +5,56 @@ import java.util.Collection;
 import com.jd.blockchain.binaryproto.BinaryProtocol;
 import com.jd.blockchain.binaryproto.DataContractRegistry;
 import com.jd.blockchain.crypto.Crypto;
+import com.jd.blockchain.crypto.CryptoAlgorithm;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.TransactionBuilder;
 import com.jd.blockchain.ledger.TransactionContent;
-import com.jd.blockchain.ledger.TransactionContentBody;
 import com.jd.blockchain.ledger.TransactionRequestBuilder;
 import com.jd.blockchain.utils.Bytes;
 
 public class TxBuilder implements TransactionBuilder {
 
 	static {
-		DataContractRegistry.register(TransactionContentBody.class);
+		DataContractRegistry.register(TransactionContent.class);
 	}
 
 	private BlockchainOperationFactory opFactory = new BlockchainOperationFactory();
 
-	private static final String DEFAULT_HASH_ALGORITHM = "SHA256";
+	private CryptoAlgorithm hashAlgorithm;
 
 	private HashDigest ledgerHash;
 
-	public TxBuilder(HashDigest ledgerHash) {
+	/**
+	 * 创建一个针对指定账本的交易构建器；
+	 * 
+	 * @param ledgerHash    账本哈希，也是账本的唯一ID；
+	 * @param hashAlgorithm 生成交易时使用的哈希算法的名称；
+	 */
+	public TxBuilder(HashDigest ledgerHash, String hashAlgorithm) {
 		this.ledgerHash = ledgerHash;
+		this.hashAlgorithm = Crypto.getAlgorithm(hashAlgorithm);
+	}
+
+	/**
+	 * 创建一个针对指定账本的交易构建器；
+	 * 
+	 * @param ledgerHash        账本哈希，也是账本的唯一ID；
+	 * @param hashAlgorithmCode 生成交易时使用的哈希算法的代码；
+	 */
+	public TxBuilder(HashDigest ledgerHash, short hashAlgorithmCode) {
+		this.ledgerHash = ledgerHash;
+		this.hashAlgorithm = Crypto.getAlgorithm(hashAlgorithmCode);
+	}
+	
+	/**
+	 * 创建一个针对指定账本的交易构建器；
+	 * 
+	 * @param ledgerHash        账本哈希，也是账本的唯一ID；
+	 * @param hashAlgorithmCode 生成交易时使用的哈希算法的代码；
+	 */
+	public TxBuilder(HashDigest ledgerHash, CryptoAlgorithm hashAlgorithm) {
+		this.ledgerHash = ledgerHash;
+		this.hashAlgorithm = hashAlgorithm;
 	}
 
 	@Override
@@ -46,7 +75,8 @@ public class TxBuilder implements TransactionBuilder {
 	@Override
 	public TransactionRequestBuilder prepareRequest(long time) {
 		TransactionContent txContent = prepareContent(time);
-		return new TxRequestBuilder(txContent);
+		HashDigest transactionHash = computeTxContentHash(hashAlgorithm, txContent);
+		return new TxRequestBuilder(transactionHash, txContent);
 	}
 
 	@Override
@@ -55,27 +85,39 @@ public class TxBuilder implements TransactionBuilder {
 		txContent.addOperations(opFactory.getOperations());
 		txContent.setTime(time);
 
-		HashDigest contentHash = computeTxContentHash(txContent);
-		txContent.setHash(contentHash);
+//		HashDigest contentHash = computeTxContentHash(txContent);
+//		txContent.setHash(contentHash);
 
 		return txContent;
 	}
-	
-	public static HashDigest computeTxContentHash(TransactionContent txContent) {
-		byte[] contentBodyBytes = BinaryProtocol.encode(txContent, TransactionContentBody.class);
-		HashDigest contentHash = Crypto.getHashFunction(DEFAULT_HASH_ALGORITHM).hash(contentBodyBytes);
+
+	public static HashDigest computeTxContentHash(CryptoAlgorithm hashAlgorithm, TransactionContent txContent) {
+		byte[] contentBodyBytes = BinaryProtocol.encode(txContent, TransactionContent.class);
+		HashDigest contentHash = Crypto.getHashFunction(hashAlgorithm).hash(contentBodyBytes);
 		return contentHash;
 	}
-	
+
+	public static HashDigest computeTxContentHash(short algorithmCode, TransactionContent txContent) {
+		byte[] contentBodyBytes = BinaryProtocol.encode(txContent, TransactionContent.class);
+		HashDigest contentHash = Crypto.getHashFunction(algorithmCode).hash(contentBodyBytes);
+		return contentHash;
+	}
+
+	public static HashDigest computeTxContentHash(String algorithmName, TransactionContent txContent) {
+		byte[] contentBodyBytes = BinaryProtocol.encode(txContent, TransactionContent.class);
+		HashDigest contentHash = Crypto.getHashFunction(algorithmName).hash(contentBodyBytes);
+		return contentHash;
+	}
+
 	public static boolean verifyTxContentHash(TransactionContent txContent, HashDigest verifiedHash) {
-		HashDigest hash = computeTxContentHash(txContent);
+		HashDigest hash = computeTxContentHash(verifiedHash.getAlgorithm(), txContent);
 		return hash.equals(verifiedHash);
 	}
 
 	public Collection<OperationResultHandle> getReturnValuehandlers() {
 		return opFactory.getReturnValuetHandlers();
 	}
-	
+
 	@Override
 	public SecurityOperationBuilder security() {
 		return opFactory.security();
@@ -116,13 +158,19 @@ public class TxBuilder implements TransactionBuilder {
 	}
 
 	@Override
-	public ParticipantRegisterOperationBuilder participants() {return  opFactory.participants(); }
+	public ParticipantRegisterOperationBuilder participants() {
+		return opFactory.participants();
+	}
 
 	@Override
-	public ParticipantStateUpdateOperationBuilder states() {return  opFactory.states(); }
+	public ParticipantStateUpdateOperationBuilder states() {
+		return opFactory.states();
+	}
 
 	@Override
-	public ConsensusSettingsUpdateOperationBuilder settings() {return  opFactory.settings(); }
+	public ConsensusSettingsUpdateOperationBuilder settings() {
+		return opFactory.settings();
+	}
 
 	@Override
 	public <T> T contract(Bytes address, Class<T> contractIntf) {

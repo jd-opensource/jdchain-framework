@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.jd.blockchain</groupId>
 		<artifactId>utils</artifactId>
-		<version>1.3.0.RELEASE</version>
+		<version>1.3.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>utils-common</artifactId>
 
@@ -83,6 +83,13 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>net.openhft</groupId>
+			<artifactId>zero-allocation-hashing</artifactId>
+			<version>0.11</version>
 			<scope>test</scope>
 		</dependency>
 

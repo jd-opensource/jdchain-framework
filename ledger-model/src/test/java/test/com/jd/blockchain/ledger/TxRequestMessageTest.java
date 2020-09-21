@@ -27,14 +27,13 @@ import com.jd.blockchain.ledger.BlockchainKeyGenerator;
 import com.jd.blockchain.ledger.BlockchainKeypair;
 import com.jd.blockchain.ledger.DataAccountKVSetOperation;
 import com.jd.blockchain.ledger.DigitalSignature;
-import com.jd.blockchain.ledger.EndpointRequest;
 import com.jd.blockchain.ledger.HashObject;
-import com.jd.blockchain.ledger.NodeRequest;
 import com.jd.blockchain.ledger.Operation;
 import com.jd.blockchain.ledger.TransactionContent;
 import com.jd.blockchain.ledger.TransactionRequest;
 import com.jd.blockchain.transaction.BlockchainOperationFactory;
 import com.jd.blockchain.transaction.DigitalSignatureBlob;
+import com.jd.blockchain.transaction.TxBuilder;
 import com.jd.blockchain.transaction.TxContentBlob;
 import com.jd.blockchain.transaction.TxRequestMessage;
 
@@ -52,11 +51,11 @@ public class TxRequestMessageTest {
 	@Before
 	public void initTxRequestMessage() throws Exception {
 		DataContractRegistry.register(TransactionRequest.class);
-		DataContractRegistry.register(NodeRequest.class);
-		DataContractRegistry.register(EndpointRequest.class);
 		DataContractRegistry.register(HashObject.class);
 
-		data = new TxRequestMessage(initTransactionContent());
+		TransactionContent txContent = initTransactionContent();
+		HashDigest txHash = TxBuilder.computeTxContentHash("SHA256", txContent);
+		data = new TxRequestMessage(txHash, txContent);
 
 		SignatureFunction signFunc = Crypto.getSignatureFunction("ED25519");
 		AsymmetricKeypair key1 = signFunc.generateKeypair();
@@ -78,8 +77,6 @@ public class TxRequestMessageTest {
 		data.addNodeSignatures(node1);
 		data.addNodeSignatures(node2);
 
-		HashDigest hash = Crypto.getHashFunction("SHA256").hash("DATA".getBytes());
-		data.setHash(hash);
 	}
 
 	@Test
@@ -117,14 +114,14 @@ public class TxRequestMessageTest {
 		}
 		assertEqual(dataTxContent, resolvedTxContent);
 
-		assertEquals(resolvedData.getHash(), data.getHash());
+		assertEquals(resolvedData.getTransactionHash(), data.getTransactionHash());
 		System.out.println("------Assert OK ------");
 	}
 
 	@Test
 	public void testSerialize_NodeRequest() {
-		byte[] serialBytes = BinaryProtocol.encode(data, NodeRequest.class);
-		NodeRequest resolvedData = BinaryProtocol.decode(serialBytes);
+		byte[] serialBytes = BinaryProtocol.encode(data, TransactionRequest.class);
+		TransactionRequest resolvedData = BinaryProtocol.decode(serialBytes);
 		System.out.println("------Assert start ------");
 		assertEquals(resolvedData.getEndpointSignatures().length, data.getEndpointSignatures().length);
 		assertEquals(resolvedData.getNodeSignatures().length, data.getNodeSignatures().length);
@@ -160,8 +157,8 @@ public class TxRequestMessageTest {
 
 	@Test
 	public void testSerialize_EndpointRequest() {
-		byte[] serialBytes = BinaryProtocol.encode(data, EndpointRequest.class);
-		EndpointRequest resolvedData = BinaryProtocol.decode(serialBytes);
+		byte[] serialBytes = BinaryProtocol.encode(data, TransactionRequest.class);
+		TransactionRequest resolvedData = BinaryProtocol.decode(serialBytes);
 		System.out.println("------Assert start ------");
 		assertEquals(resolvedData.getEndpointSignatures().length, data.getEndpointSignatures().length);
 		DigitalSignature[] dataEndpointSignatures = data.getEndpointSignatures();
@@ -184,8 +181,10 @@ public class TxRequestMessageTest {
 	}
 
 	private void assertEqual(TransactionContent dataTxContent, TransactionContent resolvedTxContent) {
-		assertEquals(dataTxContent.getHash(), resolvedTxContent.getHash());
+//		assertEquals(dataTxContent.getHash(), resolvedTxContent.getHash());
 		assertEquals(dataTxContent.getLedgerHash(), resolvedTxContent.getLedgerHash());
+		assertEquals(dataTxContent.getTimestamp(), resolvedTxContent.getTimestamp());
+		
 		// assertEquals(dataTxContent.getSequenceNumber(),
 		// resolvedTxContent.getSequenceNumber());
 		// assertEquals(dataTxContent.getSubjectAccount(),
@@ -199,7 +198,7 @@ public class TxRequestMessageTest {
 		HashDigest ledgerHash = hashFunc.hash(UUID.randomUUID().toString().getBytes("UTF-8"));
 		BlockchainOperationFactory opFactory = new BlockchainOperationFactory();
 		contentBlob = new TxContentBlob(ledgerHash);
-		contentBlob.setHash(hashFunc.hash("jd.com".getBytes()));
+		
 		// contentBlob.setSubjectAccount(id.getAddress());
 		// contentBlob.setSequenceNumber(1);
 		DataAccountKVSetOperation kvsetOP = opFactory.dataAccount(id.getAddress())
