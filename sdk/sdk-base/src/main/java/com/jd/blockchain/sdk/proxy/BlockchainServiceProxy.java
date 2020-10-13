@@ -191,6 +191,16 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	}
 
 	@Override
+	public LedgerTransaction[] getAdditionalTransactions(HashDigest ledgerHash, long height, int fromIndex, int count) {
+		return getQueryService(ledgerHash).getAdditionalTransactions(ledgerHash, height, fromIndex, count);
+	}
+
+	@Override
+	public LedgerTransaction[] getAdditionalTransactions(HashDigest ledgerHash, HashDigest blockHash, int fromIndex, int count) {
+		return getQueryService(ledgerHash).getAdditionalTransactions(ledgerHash, blockHash, fromIndex, count);
+	}
+
+	@Override
 	public LedgerTransaction getTransactionByContentHash(HashDigest ledgerHash, HashDigest contentHash) {
 		return getQueryService(ledgerHash).getTransactionByContentHash(ledgerHash, contentHash);
 	}
