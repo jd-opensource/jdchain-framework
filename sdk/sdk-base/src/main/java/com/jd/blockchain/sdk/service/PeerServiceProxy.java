@@ -1,6 +1,7 @@
 package com.jd.blockchain.sdk.service;
 
 import com.jd.blockchain.crypto.HashDigest;
+import com.jd.blockchain.ledger.CryptoSetting;
 import com.jd.blockchain.ledger.TransactionRequest;
 import com.jd.blockchain.ledger.TransactionResponse;
 import com.jd.blockchain.sdk.BlockchainException;
@@ -54,6 +55,11 @@ public class PeerServiceProxy extends BlockchainServiceProxy implements Transact
 		} finally {
 			accessLock.unlock();
 		}
+	}
+	
+	@Override
+	protected CryptoSetting getCryptoSetting(HashDigest ledgerHash) {
+		return getLedgerAccessContext(ledgerHash).getCryptoSetting();
 	}
 
 	@Override

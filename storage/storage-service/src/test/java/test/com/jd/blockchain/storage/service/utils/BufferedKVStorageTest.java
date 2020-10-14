@@ -16,8 +16,8 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import com.jd.blockchain.storage.service.ExPolicy;
 import com.jd.blockchain.storage.service.ExPolicyKVStorage;
-import com.jd.blockchain.storage.service.ExPolicyKVStorage.ExPolicy;
 import com.jd.blockchain.storage.service.VersioningKVStorage;
 import com.jd.blockchain.storage.service.utils.BufferedKVStorage;
 import com.jd.blockchain.utils.Bytes;

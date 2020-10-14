@@ -41,23 +41,4 @@ public interface ExPolicyKVStorage extends BatchStorageService{
 	 */
 	boolean exist(Bytes key);
 
-	/**
-	 * 存在性策略；
-	 * 
-	 * @author huanghaiquan
-	 *
-	 */
-	public static enum ExPolicy {
-
-		/**
-		 * 已存在；
-		 */
-		EXISTING,
-
-		/**
-		 * 不存在；
-		 */
-		NOT_EXISTING
-	}
-
 }

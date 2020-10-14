@@ -28,15 +28,30 @@ public abstract class JSONSerializeUtils {
 	private static final ToStringSerializer TO_STRING_SERIALIZER = new ToStringSerializer();
 
 	private static final RuntimeDeserializer RUNTIME_DESERIALIZER = new RuntimeDeserializer();
+	
+	private static volatile SerializeConfig SERIALIZE_CONFIG = SerializeConfig.globalInstance;
+	
+	private static volatile ParserConfig PARSER_CONFIG = ParserConfig.getGlobalInstance();
+	
+	public static void setSerializeConfig(SerializeConfig serializeConfig) {
+		if (serializeConfig == null) {
+			throw new IllegalArgumentException("SerializeConfig is null!");
+		}
+		SERIALIZE_CONFIG = serializeConfig;
+	}
+	
+	public static SerializeConfig getSerializeConfig() {
+		return SERIALIZE_CONFIG;
+	}
 
 	public static void addTypeMap(Class<?> fromClazz, Class<?> toClazz) {
 		RUNTIME_DESERIALIZER.addTypeMap(fromClazz, toClazz);
-		ParserConfig.getGlobalInstance().putDeserializer(fromClazz, RUNTIME_DESERIALIZER);
+		PARSER_CONFIG.putDeserializer(fromClazz, RUNTIME_DESERIALIZER);
 	}
 	
 	public static void configSerialization(Class<?> clazz, ObjectSerializer serializer, ObjectDeserializer deserializer) {
-		SerializeConfig.globalInstance.put(clazz, serializer);
-		ParserConfig.getGlobalInstance().putDeserializer(clazz, deserializer);
+		SERIALIZE_CONFIG.put(clazz, serializer);
+		PARSER_CONFIG.putDeserializer(clazz, deserializer);
 	}
 
 	/**
@@ -45,7 +60,7 @@ public abstract class JSONSerializeUtils {
 	 * @param type
 	 */
 	public static void configStringSerializer(Class<?> type) {
-		SerializeConfig.globalInstance.put(type, TO_STRING_SERIALIZER);
+		SERIALIZE_CONFIG.put(type, TO_STRING_SERIALIZER);
 	}
 
 	/**
@@ -261,7 +276,7 @@ public abstract class JSONSerializeUtils {
 					serializedType = data.getClass();
 				}
 
-				JSONSerializer serializer = new JSONSerializer(out, SerializeConfig.globalInstance);
+				JSONSerializer serializer = new JSONSerializer(out, SERIALIZE_CONFIG);
 
 				// 配置日期格式；
 				if (dateFormat != null && dateFormat.length() != 0) {
@@ -290,7 +305,7 @@ public abstract class JSONSerializeUtils {
 	 * @return
 	 */
 	public static <T> T deserializeFromJSON(String json, Class<T> dataClazz) {
-		return JSON.parseObject(json, dataClazz);
+		return JSON.parseObject(json, dataClazz, PARSER_CONFIG);
 	}
 
 	/**
@@ -312,7 +327,7 @@ public abstract class JSONSerializeUtils {
 	 * @return
 	 */
 	public static <T> T deserializeFromJSON(String json, GenericType<T> type) {
-		return JSON.parseObject(json, type.getTypeArgument());
+		return JSON.parseObject(json, type.getTypeArgument(), PARSER_CONFIG);
 	}
 
 	@SuppressWarnings("unchecked")

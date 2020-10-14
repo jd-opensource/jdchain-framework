@@ -11,15 +11,14 @@ import com.jd.blockchain.crypto.HashDigest;
  * @author huanghaiquan
  *
  */
-public interface PreparedTransaction extends HashObject, Closeable {
+public interface PreparedTransaction extends Closeable {
 
 	/**
 	 * 交易内容的 Hash；
 	 * 
 	 * @return
 	 */
-	@Override
-	HashDigest getHash();
+	HashDigest getTransactionHash();
 
 	/**
 	 * 交易数据内容； <br>

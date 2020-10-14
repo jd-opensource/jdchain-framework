@@ -17,6 +17,10 @@ import com.jd.blockchain.utils.io.RuntimeIOException;
  */
 public class Bytes implements BytesSerializable, Serializable {
 
+	private static final long serialVersionUID = 4774903322403127601L;
+
+	public static final int INIT_CODE = 1;
+
 	public static final Bytes EMPTY = new Bytes(BytesUtils.EMPTY_BYTES);
 
 	private static final int MAX_CACHE = 256;
@@ -35,7 +39,7 @@ public class Bytes implements BytesSerializable, Serializable {
 	}
 
 	private final Bytes prefix;
-	
+
 	private final int prefixSize;
 
 	private final byte[] bytes;
@@ -54,7 +58,7 @@ public class Bytes implements BytesSerializable, Serializable {
 		prefix = null;
 		prefixSize = 0;
 		bytes = BytesUtils.EMPTY_BYTES;
-		hashCode = hashCode(1);
+		hashCode = hashCode(INIT_CODE);
 	}
 
 	public Bytes(byte[] bytes) {
@@ -64,7 +68,7 @@ public class Bytes implements BytesSerializable, Serializable {
 		this.prefix = null;
 		this.prefixSize = 0;
 		this.bytes = bytes;
-		hashCode = hashCode(1);
+		hashCode = hashCode(INIT_CODE);
 	}
 
 	public Bytes(Bytes prefix, byte[] bytes) {
@@ -77,7 +81,7 @@ public class Bytes implements BytesSerializable, Serializable {
 		this.prefix = prefix;
 		this.prefixSize = prefix.size();
 		this.bytes = bytes;
-		hashCode = hashCode(1);
+		hashCode = hashCode(INIT_CODE);
 	}
 
 	public Bytes(Bytes prefix, Bytes bytes) {
@@ -91,7 +95,7 @@ public class Bytes implements BytesSerializable, Serializable {
 		this.prefixSize = prefix.size();
 		this.bytes = bytes.toBytes();
 
-		hashCode = hashCode(1);
+		hashCode = hashCode(INIT_CODE);
 	}
 
 	public byte read(int index) {
@@ -102,7 +106,7 @@ public class Bytes implements BytesSerializable, Serializable {
 			return prefix.read(index);
 		}
 		if (index < (prefixSize + bytes.length)) {
-			return bytes[index-prefixSize];
+			return bytes[index - prefixSize];
 		}
 		throw new IndexOutOfBoundsException("Index is negative!");
 	}
@@ -116,12 +120,24 @@ public class Bytes implements BytesSerializable, Serializable {
 		return bytes;
 	}
 
+	/**
+	 * 以默认字符集( {@link BytesUtils#DEFAULT_CHARSET} 把字符串转为字节形式；
+	 * 
+	 * @param str
+	 * @return
+	 */
 	public static Bytes fromString(String str) {
 		return new Bytes(BytesUtils.toBytes(str));
 	}
 
-	public static Bytes fromBase58(String str) {
-		return new Bytes(Base58Utils.decode(str));
+	/**
+	 * 把Base58编码字符串转为字节形式；
+	 * 
+	 * @param base58Str
+	 * @return
+	 */
+	public static Bytes fromBase58(String base58Str) {
+		return new Bytes(Base58Utils.decode(base58Str));
 	}
 
 	public Bytes concat(Bytes key) {
@@ -146,15 +162,19 @@ public class Bytes implements BytesSerializable, Serializable {
 		}
 	}
 
-	private int hashCode(int result) {
+	private int hashCode(int initCode) {
 		if (prefix != null) {
-			result = prefix.hashCode(result);
+			initCode = prefix.hashCode(initCode);
 		}
+		return hashCode(initCode, bytes);
+	}
+
+	private int hashCode(int initCode, byte[] bytes) {
 		for (byte element : bytes) {
-			result = 31 * result + element;
+			initCode = 31 * initCode + element;
 		}
 
-		return result;
+		return initCode;
 	}
 
 	@Override
@@ -170,10 +190,22 @@ public class Bytes implements BytesSerializable, Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof Bytes)) {
+		if (obj instanceof byte[]) {
+			return equals((byte[]) obj);
+		} else if (obj instanceof Bytes) {
+			return equals((Bytes) obj);
+		}
+
+		return false;
+	}
+
+	public boolean equals(Bytes oth) {
+		if (oth == null) {
 			return false;
 		}
-		Bytes oth = (Bytes) obj;
+		if (this == oth) {
+			return true;
+		}
 		if (this.hashCode != oth.hashCode) {
 			return false;
 		}
@@ -187,17 +219,100 @@ public class Bytes implements BytesSerializable, Serializable {
 			}
 		}
 		return true;
-//		if (this.prefix == null && oth.prefix == null) {
-//			return BytesUtils.equals(this.bytes, oth.bytes);
-//		} else if (this.prefix == null) {
-//			// this.prefix == null && oth.prefix != null
-//			return false;
-//		} else if (this.prefix.equals(oth.prefix)) {
-//			// this.prefix != null && oth.prefix != null && this.prefix.equals(oth.prefix)
-//			return BytesUtils.equals(this.bytes, oth.bytes);
-//		}
-//		// this.prefix != null && oth.prefix != null && !this.prefix.equals(oth.prefix)
-//		return false;
+	}
+
+	public boolean equals(byte[] oth) {
+		if (oth == null) {
+			return false;
+		}
+		int size = this.size();
+		if (size != oth.length) {
+			return false;
+		}
+		for (int i = 0; i < size; i++) {
+			if (read(i) != oth[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Compare this bytes and specified bytes;
+	 * 
+	 * @param otherKey
+	 * @return Values: -1, 0, 1. <br>
+	 *         Return -1 means that the current bytes is less than the bytes2 ;<br>
+	 *         Return 0 means that the current bytes is equal to the bytes2 ;<br>
+	 *         Return 1 means that the current bytes is great than the bytes2;
+	 */
+	public int compare(Bytes bytes2) {
+		int len1 = size();
+		int len2 = bytes2.size();
+		int len = Math.min(len1, len2);
+		for (int i = 0; i < len; i++) {
+			if (read(i) == bytes2.read(i)) {
+				continue;
+			}
+			return read(i) < bytes2.read(i) ? -1 : 1;
+		}
+		if (len1 == len2) {
+			return 0;
+		}
+		return len1 < len2 ? -1 : 1;
+	}
+
+	/**
+	 * Compare this bytes and specified bytes;
+	 * 
+	 * @param otherKey
+	 * @return Values: -1, 0, 1. <br>
+	 *         Return -1 means that the current bytes is less than the bytes2 ;<br>
+	 *         Return 0 means that the current bytes is equal to the bytes2 ;<br>
+	 *         Return 1 means that the current bytes is great than the bytes2;
+	 */
+	public int compare(byte[] bytes2) {
+		int len1 = size();
+		int len2 = bytes2.length;
+		int len = Math.min(len1, len2);
+		for (int i = 0; i < len; i++) {
+			if (read(i) == bytes2[i]) {
+				continue;
+			}
+			return read(i) < bytes2[i] ? -1 : 1;
+		}
+		if (len1 == len2) {
+			return 0;
+		}
+
+		return len1 < len2 ? -1 : 1;
+	}
+
+	/**
+	 * Compare two bytes;
+	 * 
+	 * @param bytes1
+	 * @param bytes2
+	 * @return Values: -1, 0, 1. <br>
+	 *         Return -1 means that the bytes1 is less than the bytes2 ;<br>
+	 *         Return 0 means that the bytes1 is equal to the bytes2 ;<br>
+	 *         Return 1 means that the bytes1 is great than the bytes2;
+	 */
+	public static int compare(byte[] bytes1, byte[] bytes2) {
+		int len1 = bytes1.length;
+		int len2 = bytes2.length;
+		int len = Math.min(len1, len2);
+		for (int i = 0; i < len; i++) {
+			if (bytes1[i] == bytes2[i]) {
+				continue;
+			}
+			return bytes1[i] < bytes2[i] ? -1 : 1;
+		}
+		if (len1 == len2) {
+			return 0;
+		}
+
+		return len1 < len2 ? -1 : 1;
 	}
 
 	public int copyTo(byte[] buffer, int offset, int len) {
@@ -244,6 +359,10 @@ public class Bytes implements BytesSerializable, Serializable {
 
 	public String toUTF8String() {
 		return BytesUtils.toString(toBytes());
+	}
+
+	public String toString(String charset) {
+		return BytesUtils.toString(toBytes(), charset);
 	}
 
 	public static Bytes fromLong(long value) {

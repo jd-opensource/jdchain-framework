@@ -1,5 +1,6 @@
 package test.com.jd.blockchain.binaryproto;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -23,6 +24,9 @@ import com.jd.blockchain.utils.io.BytesEncoding;
 import com.jd.blockchain.utils.io.BytesUtils;
 import com.jd.blockchain.utils.io.NumberMask;
 import com.jd.blockchain.utils.net.NetworkAddress;
+
+import test.com.jd.blockchain.binaryproto.FieldOverrideDataContractTest.TestData;
+import test.com.jd.blockchain.binaryproto.FieldOverrideDataContractTest.TestDataContract;
 
 public class BinaryEncodingTest {
 
@@ -683,5 +687,19 @@ public class BinaryEncodingTest {
 					"expected error of [" + FieldOrderConflictedDatas.class.toString() + "] --" + e.getMessage());
 		}
 		assertNotNull(ex);
+	}
+
+	/**
+	 * 验证数据契约的属性方法采用 {@link Override} 标注从父类型继承而来的情况下，能够正确处理；
+	 */
+	@Test
+	public void testFieldOverride() {
+		TestData data = new TestData("KEY-2332", 2332, BytesUtils.toBytes("Test"));
+		
+		byte[] bytes = BinaryProtocol.encode(data, TestDataContract.class);
+		TestDataContract decodedData = BinaryProtocol.decode(bytes);
+		
+		assertEquals(data.getId(), decodedData.getId());
+		assertEquals(data.getDataValue(), decodedData.getDataValue());
 	}
 }

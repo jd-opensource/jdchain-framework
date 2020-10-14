@@ -7,6 +7,7 @@ import com.jd.blockchain.consensus.ClientIdentification;
 import com.jd.blockchain.consensus.ClientIdentifications;
 import com.jd.blockchain.consensus.action.ActionRequest;
 import com.jd.blockchain.consensus.action.ActionResponse;
+import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.*;
 import com.jd.blockchain.sdk.BlockchainService;
 import com.jd.blockchain.sdk.BlockchainServiceFactory;
@@ -29,10 +30,7 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
 
 	static {
 		DataContractRegistry.register(TransactionContent.class);
-		DataContractRegistry.register(TransactionContentBody.class);
 		DataContractRegistry.register(TransactionRequest.class);
-		DataContractRegistry.register(NodeRequest.class);
-		DataContractRegistry.register(EndpointRequest.class);
 		DataContractRegistry.register(TransactionResponse.class);
 		DataContractRegistry.register(DataAccountKVSetOperation.class);
 		DataContractRegistry.register(DataAccountKVSetOperation.KVWriteEntry.class);
@@ -73,9 +71,16 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
 		httpConnectionManager = new ServiceConnectionManager();
 		this.userKey = userKey;
 
-		BlockchainQueryService queryService = createQueryService(gatewayEndpoint);
+		HttpBlockchainQueryService queryService = createQueryService(gatewayEndpoint);
 		TransactionService txProcSrv = createConsensusService(gatewayEndpoint);
-		this.blockchainService = new GatewayBlockchainServiceProxy(txProcSrv, queryService);
+
+		HashDigest[] ledgerHashs = queryService.getLedgerHashs();
+		CryptoSetting[] cryptoSettings = new CryptoSetting[ledgerHashs.length];
+		for (int i = 0; i < cryptoSettings.length; i++) {
+			cryptoSettings[i] = queryService.getLedgerAdminInfo(ledgerHashs[i]).getSettings().getCryptoSetting();
+		}
+		this.blockchainService = new GatewayBlockchainServiceProxy(ledgerHashs, cryptoSettings, txProcSrv,
+				queryService);
 	}
 
 	@Override
@@ -144,14 +149,11 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
 	 * @param gatewayHost 网关节点的地址；
 	 * @param gatewayPort 网关节点的端口；
 	 * @param secure      是否采用安全的通讯协议(HTTPS)；
-	 * @param userKey     自动交易签名的用户密钥；可选参数，如果不为 null，则在提交交易时，自动以参数指定的密钥签署交易；
+	 * @param userKey     自动对交易签名的用户密钥；这是可选参数，如果不为 null，则在提交交易时，自动以该用户密钥签署交易；
 	 * @return 网关服务工厂的实例；
 	 */
 	public static GatewayServiceFactory connect(String gatewayHost, int gatewayPort, boolean secure,
 			BlockchainKeypair userKey) {
-//		if (userKey == null) {
-//			throw new IllegalArgumentException("User key is null!");
-//		}
 		ServiceEndpoint gatewayEndpoint = new ServiceEndpoint(gatewayHost, gatewayPort, secure);
 		GatewayServiceFactory factory = new GatewayServiceFactory(gatewayEndpoint, userKey);
 		factory.setMaxConnections(100);
@@ -174,7 +176,7 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
 		return gatewayConsensusService;
 	}
 
-	private BlockchainQueryService createQueryService(ServiceEndpoint gatewayEndpoint) {
+	private HttpBlockchainQueryService createQueryService(ServiceEndpoint gatewayEndpoint) {
 		ServiceConnection conn = httpConnectionManager.create(gatewayEndpoint);
 		return HttpServiceAgent.createService(HttpBlockchainQueryService.class, conn, null);
 	}
@@ -201,20 +203,8 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
 			// TODO: 未实现按不同的账本的密码参数配置，采用不同的哈希算法和签名算法；
 			if (!reqMsg.containsEndpointSignature(userKey.getAddress())) {
 				// TODO: 优化上下文对此 TransactionContent 的多次序列化带来的额外性能开销；
-				DigitalSignature signature = SignatureUtils.sign(txRequest.getTransactionContent(), userKey);
+				DigitalSignature signature = SignatureUtils.sign(txRequest.getTransactionHash(), userKey);
 				reqMsg.addEndpointSignatures(signature);
-//
-//
-//
-//				byte[] txContentBytes = BinaryProtocol.encode(txRequest.getTransactionContent(),
-//						TransactionContent.class);
-//				PrivKey userPrivKey = userKey.getPrivKey();
-//				SignatureFunction signatureFunction = Crypto.getSignatureFunction(userKey.getAlgorithm());
-//				if (signatureFunction != null) {
-//					SignatureDigest signatureDigest = signatureFunction.sign(userPrivKey, txContentBytes);
-//					DigitalSignature signature = new DigitalSignatureBlob(userKey.getPubKey(), signatureDigest);
-//					reqMsg.addEndpointSignatures(signature);
-//				}
 			}
 			return innerService.process(txRequest);
 		}

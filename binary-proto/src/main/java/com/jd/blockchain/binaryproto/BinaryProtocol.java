@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import com.jd.blockchain.binaryproto.impl.DataContractContext;
+import com.jd.blockchain.binaryproto.impl.DataContractProxy;
 import com.jd.blockchain.binaryproto.impl.HeaderEncoder;
 import com.jd.blockchain.utils.io.BytesOutputBuffer;
 import com.jd.blockchain.utils.io.BytesSlice;
@@ -23,7 +24,7 @@ public class BinaryProtocol {
 		// TODO: Not implemented!;
 		throw new IllegalStateException("Not implemented!");
 	}
-	
+
 	/**
 	 * 返回指定的数据契约类型的映射；
 	 * 
@@ -95,12 +96,33 @@ public class BinaryProtocol {
 		BytesSlice bytes = new BytesSlice(dataSegment, 0, dataSegment.length);
 		return encoder.decode(bytes.getInputStream());
 	}
+	
+	public static boolean isProxy(Object obj) {
+		return obj instanceof DataContractProxy;
+	}
 
+	/**
+	 * 不推荐使用；替换为 {@link #decode(byte[], Class)};
+	 * 
+	 * @param <T>
+	 * @param dataSegment
+	 * @param contractType
+	 * @return
+	 */
 	@Deprecated
 	public static <T> T decodeAs(byte[] dataSegment, Class<T> contractType) {
 		return decode(dataSegment, contractType, true);
 	}
 
+	/**
+	 * 不推荐使用；替换为 {@link #decode(byte[], Class, boolean)};
+	 * 
+	 * @param <T>
+	 * @param dataSegment
+	 * @param contractType
+	 * @param autoRegister
+	 * @return
+	 */
 	@Deprecated
 	public static <T> T decodeAs(byte[] dataSegment, Class<T> contractType, boolean autoRegister) {
 		return decode(dataSegment, contractType, autoRegister);

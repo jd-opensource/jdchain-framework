@@ -13,13 +13,11 @@ import com.jd.blockchain.ledger.LedgerMetadata;
 import com.jd.blockchain.ledger.LedgerTransaction;
 import com.jd.blockchain.ledger.ParticipantNode;
 import com.jd.blockchain.ledger.PrivilegeSet;
-import com.jd.blockchain.ledger.Transaction;
 import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.ledger.TypedKVEntry;
 import com.jd.blockchain.ledger.UserInfo;
 import com.jd.blockchain.ledger.UserPrivilegeSet;
 import com.jd.blockchain.sdk.BlockchainExtendQueryService;
-import com.jd.blockchain.sdk.converters.EventResponseConverter;
 import com.jd.blockchain.sdk.converters.HashDigestToStringConverter;
 import com.jd.blockchain.sdk.converters.HashDigestsResponseConverter;
 import com.jd.blockchain.utils.http.HttpAction;
@@ -70,6 +68,10 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
     @Override
 	LedgerBlock getLatestBlock(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash);
 
+//	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/settings/crypto")
+//	@Override
+//	CryptoSetting getCryptoSetting(HashDigest ledgerHash) ;
+	
     /**
      * 获取指定区块高度中新增的交易总数（即该区块中交易集合的数量）
      * @param ledgerHash
@@ -457,6 +459,52 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
                                         @RequestParam(name="count", required = false) int count);
 
 	/**
+	 * 分页返回指定账本序号的区块中的增量交易列表；
+	 *
+	 * @param ledgerHash
+	 *            账本hash；
+	 * @param height
+	 *            账本高度；
+	 * @param fromIndex
+	 *            开始的记录数；
+	 * @param count
+	 *            本次返回的记录数；<br>
+	 *            最小为1，最大值受到系统参数的限制；<br>
+	 *            注：通过 {@link #getBlock(String, long)} 方法获得的区块信息中可以得到区块的总交易数
+	 *            {@link Block#getTxCount()}；
+	 * @return
+	 */
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/blocks/height/{blockHeight}/txs/additional-txs")
+	@Override
+	LedgerTransaction[] getAdditionalTransactions(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+										@PathParam(name="blockHeight") long height,
+										@RequestParam(name="fromIndex", required = false) int fromIndex,
+										@RequestParam(name="count", required = false) int count);
+
+	/**
+	 * 分页返回指定账本序号的区块中的增量交易列表；
+	 *
+	 * @param ledgerHash
+	 *            账本hash；
+	 * @param blockHash
+	 *            账本高度；
+	 * @param fromIndex
+	 *            开始的记录数；
+	 * @param count
+	 *            本次返回的记录数；<br>
+	 *            如果参数值为 -1，则返回全部的记录；<br>
+	 *            注：通过 {@link #getBlock(String, String)} 方法获得的区块信息中可以得到区块的总交易数
+	 *            {@link Block#getTxCount()}；
+	 * @return
+	 */
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/blocks/hash/{blockHash}/txs/additional-txs")
+	@Override
+	LedgerTransaction[] getAdditionalTransactions(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+										@PathParam(name="blockHash", converter=HashDigestToStringConverter.class) HashDigest blockHash,
+										@RequestParam(name="fromIndex", required = false) int fromIndex,
+										@RequestParam(name="count", required = false) int count);
+
+	/**
 	 * 根据交易内容的哈希获取对应的交易记录；
 	 *
 	 * @param ledgerHash
@@ -588,7 +636,7 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	 * @param count     最大数量；
 	 * @return
 	 */
-	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names/{eventName}", responseConverter = EventResponseConverter.class)
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names/{eventName}")
 	@Override
 	Event[] getSystemEvents(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 							@PathParam(name="eventName") String eventName,
@@ -619,7 +667,7 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	 * @param count        最大数量；
 	 * @return
 	 */
-	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}", responseConverter = EventResponseConverter.class)
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}")
 	@Override
 	Event[] getUserEvents(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 						  @PathParam(name="address") String address,
@@ -720,12 +768,12 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 								 @PathParam(name="address") String address,
 								 @PathParam(name="eventName") String eventName);
 
-	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names/{eventName}/latest", responseConverter = EventResponseConverter.class)
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names/{eventName}/latest")
 	@Override
 	Event getLatestEvent(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 						 @PathParam(name="eventName") String eventName);
 
-	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}/latest", responseConverter = EventResponseConverter.class)
+	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}/latest")
 	@Override
 	Event getLatestEvent(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 						 @PathParam(name="address") String address,

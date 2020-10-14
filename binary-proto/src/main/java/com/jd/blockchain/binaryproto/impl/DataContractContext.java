@@ -316,6 +316,14 @@ public class DataContractContext {
 			if (annoField == null) {
 				continue;
 			}
+			//当数据契约类型继承自父接口，覆盖（Override）父接口中的字段方法的情况下，
+			//尽管父接口中并未使用 DataField 标注，只在子接口中声明为 DataField，
+			//某些情况下 method.getAnnotation(DataField.class) 仍然能够返回 DataField 实例，（JDK1.8.0_212下测试，原因未知）
+			//由于父接口中声明为泛型，方法返回类型在反射中得到的是 Object.class, 进而导致以下的解析出现字段声明类型与实际类型不匹配的异常；
+			//父接口在方法中返回的这类 Method 实例都被标记为 default 方法，因此忽略这类方法可以避免错误；
+			if (method.isDefault()) {
+				continue;
+			}
 			Class<?> declaredType = method.getDeclaringClass();
 			DeclaredFieldGroup group = declaredFielGroups.get(declaredType);
 			if (group != null) {

@@ -23,7 +23,13 @@ public enum ParticipantNodeState {
     /**
      * 共识；
      */
-	CONSENSUS((byte) 1);
+	CONSENSUS((byte) 1),
+
+    /**
+     * 去共识；
+     */
+    DECONSENSUS((byte) 2);
+
 
     @EnumField(type= PrimitiveType.INT8)
     public final byte CODE;

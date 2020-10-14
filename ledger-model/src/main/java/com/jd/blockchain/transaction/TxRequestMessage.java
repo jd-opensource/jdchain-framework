@@ -10,7 +10,6 @@ import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.DigitalSignature;
 import com.jd.blockchain.ledger.MagicNumber;
-import com.jd.blockchain.ledger.NodeRequest;
 import com.jd.blockchain.ledger.TransactionContent;
 import com.jd.blockchain.ledger.TransactionRequest;
 import com.jd.blockchain.utils.Bytes;
@@ -40,14 +39,14 @@ import com.jd.blockchain.utils.Bytes;
  * @author huanghaiquan
  *
  */
-public class TxRequestMessage implements TransactionRequest {// , Externalizable {
+public class TxRequestMessage implements TransactionRequest {  
 
 	/**
 	 * 交易参与者的个数的最大值；
 	 */
 	public static final int MAX_TX_PARTICIPANT_COUNT = 0xFF;
 
-	private HashDigest hash;
+	private HashDigest transactionHash;
 
 	private TransactionContent transactionContent;
 
@@ -55,26 +54,18 @@ public class TxRequestMessage implements TransactionRequest {// , Externalizable
 
 	private Map<Bytes, DigitalSignature> nodeSignatureMap = new LinkedHashMap<>();
 
-	// private CryptoAlgorithm defaultHashAlgorithm = CryptoAlgorithm.SHA_256;
-
-	// public TxRequestMessage() {
-	// }
-
 	static {
-		DataContractRegistry.register(NodeRequest.class);
+		DataContractRegistry.register(TransactionRequest.class);
 	}
 
-	public TxRequestMessage(TransactionContent txContent) {
-		// if (!(txContent instanceof BytesWriter)) {
-		// throw new IllegalArgumentException("The tx content must be instance of
-		// BytesWriter!");
-		// }
+	public TxRequestMessage(HashDigest transactionHash, TransactionContent txContent) {
+		this.transactionHash = transactionHash;
 		this.transactionContent = txContent;
 	}
 
 	public TxRequestMessage(TransactionRequest txRequest) {
+		this.transactionHash = txRequest.getTransactionHash();
 		this.transactionContent = txRequest.getTransactionContent();
-		setHash(txRequest.getHash());
 		setEndpointSignatures(txRequest.getEndpointSignatures());
 		setNodeSignatures(txRequest.getNodeSignatures());
 	}
@@ -186,12 +177,8 @@ public class TxRequestMessage implements TransactionRequest {// , Externalizable
 	}
 
 	@Override
-	public HashDigest getHash() {
-		return hash;
-	}
-
-	public void setHash(HashDigest hash) {
-		this.hash = hash;
+	public HashDigest getTransactionHash() {
+		return transactionHash;
 	}
 
 	// public HashDigest updateHash() {
