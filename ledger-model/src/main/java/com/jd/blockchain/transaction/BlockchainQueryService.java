@@ -220,6 +220,34 @@ public interface BlockchainQueryService {
 	LedgerTransaction[] getTransactions(HashDigest ledgerHash, HashDigest blockHash, int fromIndex, int count);
 
 	/**
+	 * 分页返回指定账本序号的区块中的交易列表；
+	 *
+	 * @param ledgerHash 账本hash；
+	 * @param height     账本高度；
+	 * @param fromIndex  开始的记录数；
+	 * @param count      本次返回的记录数；<br>
+	 *                   最小为1，最大值受到系统参数的限制；<br>
+	 *                   注：通过 {@link #getBlock(String, long)} 方法获得的区块信息中可以得到区块的总交易数
+	 *                   {@link Block#getTxCount()}；
+	 * @return
+	 */
+	LedgerTransaction[] getAdditionalTransactions(HashDigest ledgerHash, long height, int fromIndex, int count);
+
+	/**
+	 * 分页返回指定账本序号的区块中的交易列表；
+	 *
+	 * @param ledgerHash 账本hash；
+	 * @param blockHash  账本高度；
+	 * @param fromIndex  开始的记录数；
+	 * @param count      本次返回的记录数；<br>
+	 *                   如果参数值为 -1，则返回全部的记录；<br>
+	 *                   注：通过 {@link #getBlock(String, String)}
+	 *                   方法获得的区块信息中可以得到区块的总交易数 {@link Block#getTxCount()}；
+	 * @return
+	 */
+	LedgerTransaction[] getAdditionalTransactions(HashDigest ledgerHash, HashDigest blockHash, int fromIndex, int count);
+
+	/**
 	 * 根据交易内容的哈希获取对应的交易记录；
 	 *
 	 * @param ledgerHash  账本hash；
