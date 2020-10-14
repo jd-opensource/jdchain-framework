@@ -140,6 +140,7 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 			BlockchainQueryService queryService = peerManageService.getQueryService();
 
 			Map<HashDigest, LedgerAccessContextImpl> tempAccessCtxs = new HashMap<>();
+			Map<HashDigest, MonitorService> tempMonitors = new HashMap<>();
 			for (int i = 0; i < needInitSettings.size(); i++) {
 				LedgerIncomingSetting ledgerSetting = needInitSettings.get(i);
 				String providerName = ledgerSetting.getProviderName();
@@ -151,8 +152,14 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 				ClientSettings clientSettings = clientFactory.buildClientSettings(clientIncomingSettings);
 				ConsensusClient consensusClient = clientFactory.setupClient(clientSettings);
 
+				MonitorService monitorService = null;
+
 				TransactionService autoSigningTxProcService = enableGatewayAutoSigning(gatewayKey,
 						ledgerSetting.getCryptoSetting(), consensusClient);
+				if (autoSigningTxProcService instanceof NodeSigningAppender) {
+					monitorService = new PeerMonitorHandler((((NodeSigningAppender) autoSigningTxProcService)));
+				}
+
 				LedgerAccessContextImpl accCtx = new LedgerAccessContextImpl();
 				accCtx.ledgerHash = ledgerSetting.getLedgerHash();
 				accCtx.cryptoSetting = ledgerSetting.getCryptoSetting();
@@ -163,12 +170,16 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 				tempAccessCtxs.put(accCtx.ledgerHash, accCtx);
 				// 添加对应Hash到该Peer节点
 				currentPeerLedgers.add(accCtx.ledgerHash);
+				if (monitorService != null) {
+					tempMonitors.put(accCtx.ledgerHash, monitorService);
+				}
 			}
 			if (factory == null) {
 				// 第一次连接成功
 				factory = new PeerBlockchainServiceFactory(httpConnectionManager,
 						accessAbleLedgers);
 				factory.accessContextMap.putAll(tempAccessCtxs);
+				factory.monitorServiceMap.putAll(tempMonitors);
 				peerBlockchainServiceFactories.put(peerAddr, factory);
 				if (!tempAccessCtxs.isEmpty()) {
 					for (HashDigest hash : tempAccessCtxs.keySet()) {
@@ -177,6 +188,7 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 				}
 			} else {
 				factory.accessContextMap.putAll(tempAccessCtxs);
+				factory.monitorServiceMap.putAll(tempMonitors);
 				factory.addLedgerAccessContexts(accessAbleLedgers);
 				if (!tempAccessCtxs.isEmpty()) {
 					for (HashDigest hash : tempAccessCtxs.keySet()) {
@@ -277,6 +289,10 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 		}
 	}
 
+	public Map<HashDigest, MonitorService> getMonitorServiceMap() {
+		return monitorServiceMap;
+	}
+
 	private static ClientIdentificationsProvider authIdProvider(AsymmetricKeypair gatewayKey, List<String> peerProviders) {
 		ClientIdentificationsProvider authIdProvider = new ClientIdentificationsProvider();
 		for (String peerProvider : peerProviders) {
@@ -319,7 +335,6 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 		public BlockchainQueryService getQueryService() {
 			return queryService;
 		}
-
 	}
 
 	private static final class PeerManageService {
