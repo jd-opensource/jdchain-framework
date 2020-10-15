@@ -1,15 +1,13 @@
 package com.jd.blockchain.sdk.service;
 
-import com.alibaba.fastjson.JSON;
+import com.jd.blockchain.binaryproto.BinaryProtocol;
 import com.jd.blockchain.consensus.MessageService;
-import com.jd.blockchain.transaction.MonitorService;
+import com.jd.blockchain.consensus.NodeNetworkAddresses;
+import com.jd.blockchain.consensus.service.MonitorService;
 import com.jd.blockchain.utils.concurrent.AsyncFuture;
-import com.jd.blockchain.utils.net.NetworkAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -29,7 +27,7 @@ public class PeerMonitorHandler implements MonitorService {
     }
 
     @Override
-    public List<NetworkAddress> loadMonitors() {
+    public NodeNetworkAddresses loadMonitors() {
         lock.lock();
         try {
             MessageService messageService = nodeSigningAppender.getMessageService();
@@ -54,9 +52,7 @@ public class PeerMonitorHandler implements MonitorService {
      * @param response
      * @return
      */
-    private List<NetworkAddress> convert(byte[] response) {
-        // 使用fastJson进行序列化/反序列化操作
-        String responseText = new String(response, StandardCharsets.UTF_8);
-        return JSON.parseObject(responseText, List.class);
+    private NodeNetworkAddresses convert(byte[] response) {
+        return BinaryProtocol.decode(response);
     }
 }

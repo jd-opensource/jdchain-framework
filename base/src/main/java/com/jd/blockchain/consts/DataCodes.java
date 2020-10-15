@@ -213,6 +213,10 @@ public interface DataCodes {
 
 	public static final int CONSENSUS_CLI_INCOMING_SETTINGS = CONSENSUS | 0x05;
 
+	public static final int CONSENSUS_NODE_NETWORK_ADDRESS = CONSENSUS | 0x06;
+
+	public static final int CONSENSUS_NODE_NETWORK_ADDRESSES = CONSENSUS | 0x07;
+
 	// ------------------ 共识相关（BFTSMART） ----------------
 	public static final int CONSENSUS_BFTSMART = 0x1100;
 
