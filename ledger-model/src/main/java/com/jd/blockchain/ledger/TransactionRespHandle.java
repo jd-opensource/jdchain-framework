@@ -100,4 +100,9 @@ public class TransactionRespHandle implements TransactionResponse {
     public OperationResult[] getOperationResults() {
         return operationResults;
     }
+
+    @Override
+    public long getBlockGenerateTime() {
+        return this.block == null ? -1 : this.block.getTimestamp();
+    }
 }

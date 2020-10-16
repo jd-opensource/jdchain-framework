@@ -65,4 +65,12 @@ public interface TransactionResponse {
 	 */
 	@DataField(order=6, list=true, refContract = true)
 	OperationResult[] getOperationResults();
+
+	/**
+	 * 区块结块时间
+	 *
+	 * @return
+	 */
+	@DataField(order = 7, primitiveType = PrimitiveType.INT64)
+	long getBlockGenerateTime();
 }

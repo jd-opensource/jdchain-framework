@@ -129,5 +129,10 @@ public class NodeSigningAppender implements TransactionService {
 		public OperationResult[] getOperationResults() {
 			return null;
 		}
+
+		@Override
+		public long getBlockGenerateTime() {
+			return -1L;
+		}
 	}
 }
