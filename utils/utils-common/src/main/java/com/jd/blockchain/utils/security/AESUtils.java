@@ -18,6 +18,7 @@ import com.jd.blockchain.utils.codec.HexUtils;
  * @author haiq
  *
  */
+@Deprecated
 public class AESUtils {
 
 	/**

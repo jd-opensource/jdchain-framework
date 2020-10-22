@@ -1,7 +1,10 @@
 package com.jd.blockchain.crypto.utils.classic;
 
-import com.jd.blockchain.crypto.CryptoException;
+import java.security.SecureRandom;
+import java.util.Arrays;
+
 import org.bouncycastle.crypto.CipherKeyGenerator;
+import org.bouncycastle.crypto.CryptoException;
 import org.bouncycastle.crypto.KeyGenerationParameters;
 import org.bouncycastle.crypto.engines.AESEngine;
 import org.bouncycastle.crypto.modes.CBCBlockCipher;
@@ -9,8 +12,8 @@ import org.bouncycastle.crypto.paddings.PKCS7Padding;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 
-import java.security.SecureRandom;
-import java.util.Arrays;
+import com.jd.blockchain.utils.security.DecryptionException;
+import com.jd.blockchain.utils.security.EncryptionException;
 
 /**
  * @author zhanglin33
@@ -63,17 +66,17 @@ public class AESUtils {
         // To ensure that plaintext is not null
         if (plainBytes == null)
         {
-            throw new CryptoException("plaintext is null!");
+            throw new EncryptionException("plaintext is null!");
         }
 
         if (secretKey.length != KEY_SIZE)
         {
-            throw new CryptoException("secretKey's length is wrong!");
+            throw new EncryptionException("secretKey's length is wrong!");
         }
 
         if (iv.length != IV_SIZE)
         {
-            throw new CryptoException("iv's length is wrong!");
+            throw new EncryptionException("iv's length is wrong!");
         }
 
         // To get the value padded into input
@@ -121,18 +124,18 @@ public class AESUtils {
         // To ensure that the ciphertext is not null
         if (cipherBytes == null)
         {
-            throw new CryptoException("ciphertext is null!");
+            throw new DecryptionException("ciphertext is null!");
         }
 
         // To ensure that the ciphertext's length is integral multiples of 16 bytes
         if (cipherBytes.length % BLOCK_SIZE != 0)
         {
-            throw new CryptoException("ciphertext's length is wrong!");
+            throw new DecryptionException("ciphertext's length is wrong!");
         }
 
         if (secretKey.length != KEY_SIZE)
         {
-            throw new CryptoException("secretKey's length is wrong!");
+            throw new DecryptionException("secretKey's length is wrong!");
         }
 
         byte[] iv = new byte[IV_SIZE];
@@ -151,14 +154,14 @@ public class AESUtils {
         // To ensure that the padding of output_p is valid
         if(p > BLOCK_SIZE || p < 0x01)
         {
-            throw new CryptoException("There no exists such padding!");
+            throw new DecryptionException("There no exists such padding!");
 
         }
         for(int i = 0 ; i < p ; i++)
         {
             if(outputWithPadding[outputWithPadding.length - i -1] != p)
             {
-                throw new CryptoException("Padding is invalid!");
+                throw new DecryptionException("Padding is invalid!");
             }
         }
 

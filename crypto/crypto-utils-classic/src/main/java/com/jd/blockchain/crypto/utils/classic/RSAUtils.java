@@ -38,6 +38,12 @@ import org.bouncycastle.crypto.signers.RSADigestSigner;
 import org.bouncycastle.jcajce.provider.asymmetric.util.KeyUtil;
 
 import com.jd.blockchain.utils.io.BytesUtils;
+import com.jd.blockchain.utils.io.RuntimeIOException;
+import com.jd.blockchain.utils.security.AlgorithmNotExistException;
+import com.jd.blockchain.utils.security.DecryptionException;
+import com.jd.blockchain.utils.security.EncryptionException;
+import com.jd.blockchain.utils.security.SignatureException;
+import com.jd.blockchain.utils.security.SpecificationException;
 
 /**
  * @author zhanglin33
@@ -140,7 +146,7 @@ public class  RSAUtils {
         try {
             return signer.generateSignature();
         } catch (CryptoException e) {
-            throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+            throw new SignatureException(e.getMessage(), e);
         }
     }
 
@@ -209,7 +215,7 @@ public class  RSAUtils {
                         result, i * CIPHERTEXT_BLOCKSIZE, CIPHERTEXT_BLOCKSIZE);
             }
         } catch (InvalidCipherTextException e) {
-            throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+            throw new EncryptionException(e.getMessage(), e);
         }
         return result;
     }
@@ -230,7 +236,7 @@ public class  RSAUtils {
 
         if (cipherBytes.length % CIPHERTEXT_BLOCKSIZE != 0)
         {
-            throw new com.jd.blockchain.crypto.CryptoException("ciphertext's length is wrong!");
+            throw new DecryptionException("ciphertext's length is wrong!");
         }
 
         int blockNum = cipherBytes.length / CIPHERTEXT_BLOCKSIZE;
@@ -248,7 +254,7 @@ public class  RSAUtils {
                 System.arraycopy(buffer,0,plaintextWithZeros, i * PLAINTEXT_BLOCKSIZE, buffer.length);
             }
         } catch (InvalidCipherTextException e) {
-            throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+            throw new DecryptionException(e.getMessage(), e);
         }
 
         result = new byte[count];
@@ -279,7 +285,7 @@ public class  RSAUtils {
         try {
             result = pubKeySequence.getEncoded(ASN1Encoding.DER);
         } catch (IOException e) {
-            throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+            throw new RuntimeIOException(e.getMessage(), e);
         }
 
         return result;
@@ -325,9 +331,11 @@ public class  RSAUtils {
         try {
             keyFactory = KeyFactory.getInstance("RSA");
             publicKey = (RSAPublicKey) keyFactory.generatePublic(keySpec);
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
-        }
+        } catch (InvalidKeySpecException e) {
+            throw new SpecificationException(e.getMessage(), e);
+    } catch (NoSuchAlgorithmException e) {
+    	throw new AlgorithmNotExistException(e.getMessage(), e);
+    }
 
         BigInteger exponent = publicKey.getPublicExponent();
         BigInteger modulus = publicKey.getModulus();
@@ -391,7 +399,7 @@ public class  RSAUtils {
         try {
             result = privKeySequence.getEncoded(ASN1Encoding.DER);
         } catch (IOException e) {
-            throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+            throw new RuntimeIOException(e.getMessage(), e);
         }
 
         return result;
@@ -462,8 +470,10 @@ public class  RSAUtils {
         try {
             keyFactory = KeyFactory.getInstance("RSA");
             privateKey = (RSAPrivateCrtKey) keyFactory.generatePrivate(keySpec);
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+        } catch (InvalidKeySpecException  e) {
+            throw new SpecificationException(e.getMessage(), e);
+        } catch ( NoSuchAlgorithmException e) {
+        	throw new AlgorithmNotExistException(e.getMessage(), e);
         }
 
         BigInteger modulus = privateKey.getModulus();

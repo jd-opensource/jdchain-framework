@@ -1,9 +1,20 @@
 package com.jd.blockchain.crypto.utils.classic;
 
-import com.jd.blockchain.crypto.CryptoException;
+import static java.math.BigInteger.ONE;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.math.BigInteger;
+
 import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
-import org.bouncycastle.crypto.params.*;
+import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
+import org.bouncycastle.crypto.params.DSAParameters;
+import org.bouncycastle.crypto.params.DSAPrivateKeyParameters;
+import org.bouncycastle.crypto.params.ECDomainParameters;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
+import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
+import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;
 import org.bouncycastle.crypto.util.OpenSSHPrivateKeyUtil;
 import org.bouncycastle.crypto.util.OpenSSHPublicKeyUtil;
 import org.bouncycastle.jce.spec.OpenSSHPrivateKeySpec;
@@ -12,11 +23,8 @@ import org.bouncycastle.util.Strings;
 import org.bouncycastle.util.encoders.Base64;
 import org.bouncycastle.util.io.pem.PemReader;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.math.BigInteger;
-
-import static java.math.BigInteger.ONE;
+import com.jd.blockchain.utils.io.RuntimeIOException;
+import com.jd.blockchain.utils.security.SpecificationException;
 
 /**
  * @author zhanglin33
@@ -57,7 +65,7 @@ public class SSHKeyParser {
         try {
             privKeyBytes = new PemReader(new StringReader(privKeyStr)).readPemObject().getContent();
         } catch (IOException e) {
-            throw new CryptoException(e.getMessage(), e);
+            throw new RuntimeIOException(e.getMessage(), e);
         }
 
         OpenSSHPrivateKeySpec privKeySpec = new OpenSSHPrivateKeySpec(privKeyBytes);
@@ -75,23 +83,23 @@ public class SSHKeyParser {
             String cipherName = Strings.fromByteArray(buffer);
             if (!cipherName.equals("none"))
             {
-                throw new CryptoException("encrypted keys are not supported!");
+                throw new SpecificationException("encrypted keys are not supported!");
             }
 
             String kdfName = Strings.fromByteArray(keyReader.readBytes());
             if (!kdfName.equals("none"))
             {
-                throw new CryptoException("KDFs are not supported!");
+                throw new SpecificationException("KDFs are not supported!");
             }
 
             int kdfLength = keyReader.read32Bits();
             if (kdfLength != 0) {
-                throw new CryptoException("KDF's length should be 0!");
+                throw new SpecificationException("KDF's length should be 0!");
             }
 
             int keysNum = keyReader.read32Bits();
             if (keysNum != 1) {
-                throw new CryptoException("Number of keys should be 1!");
+                throw new SpecificationException("Number of keys should be 1!");
             }
 
             byte[] pubKeyBytes = keyReader.readBytes();
@@ -104,12 +112,12 @@ public class SSHKeyParser {
             int rnd1 = privKeyReader.read32Bits();
             int rnd2 = privKeyReader.read32Bits();
             if (rnd1 != rnd2) {
-                throw new CryptoException("Two random values for checking are not same!");
+                throw new SpecificationException("Two random values for checking are not same!");
             }
 
             String privKeyType = Strings.fromByteArray(privKeyReader.readBytes());
             if (!privKeyType.equals(keyType)) {
-                throw new CryptoException("Two key types in public/private keys are not same!");
+                throw new SpecificationException("Two key types in public/private keys are not same!");
             }
 
             AsymmetricKeyParameter result = null;

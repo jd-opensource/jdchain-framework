@@ -1,6 +1,9 @@
 package com.jd.blockchain.crypto.utils.sm;
 
-import com.jd.blockchain.utils.io.BytesUtils;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.SecureRandom;
+
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -11,15 +14,20 @@ import org.bouncycastle.crypto.CryptoException;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.engines.SM2Engine;
 import org.bouncycastle.crypto.generators.ECKeyPairGenerator;
-import org.bouncycastle.crypto.params.*;
+import org.bouncycastle.crypto.params.ECDomainParameters;
+import org.bouncycastle.crypto.params.ECKeyGenerationParameters;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
+import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.crypto.params.ParametersWithID;
+import org.bouncycastle.crypto.params.ParametersWithRandom;
 import org.bouncycastle.crypto.signers.SM2Signer;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
-import org.bouncycastle.math.ec.*;
+import org.bouncycastle.math.ec.ECCurve;
+import org.bouncycastle.math.ec.ECPoint;
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.SecureRandom;
+import com.jd.blockchain.utils.io.BytesUtils;
+import com.jd.blockchain.utils.security.SignatureException;
 
 public class SM2Utils {
 
@@ -79,6 +87,7 @@ public class SM2Utils {
      * @param data data to be signed
      * @param privateKey private key
      * @return signature
+     * @throws SignatureException 
      */
     public static byte[] sign(byte[] data, byte[] privateKey){
 
@@ -89,7 +98,7 @@ public class SM2Utils {
         return sign(data,params);
     }
 
-    public static byte[] sign(byte[] data, byte[] privateKey, SecureRandom random, String ID){
+    public static byte[] sign(byte[] data, byte[] privateKey, SecureRandom random, String ID) throws SignatureException{
 
         ECPrivateKeyParameters privKey = new ECPrivateKeyParameters(new BigInteger(1,privateKey), DOMAIN_PARAMS);
         CipherParameters params = new ParametersWithID(new ParametersWithRandom(privKey,random), BytesUtils.toBytes(ID));
@@ -97,7 +106,7 @@ public class SM2Utils {
         return sign(data,params);
     }
 
-    public static byte[] sign(byte[] data, CipherParameters params){
+    public static byte[] sign(byte[] data, CipherParameters params) {
 
         SM2Signer signer = new SM2Signer();
 
@@ -111,7 +120,7 @@ public class SM2Utils {
         try {
             encodedSignature = signer.generateSignature();
         } catch (CryptoException e) {
-            throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+            throw new SignatureException(e.getMessage(), e);
         }
 
         // To decode the signature
@@ -270,7 +279,7 @@ public class SM2Utils {
         try {
             return decryptor.processBlock(c1c2c3,0,c1c2c3.length);
         } catch (InvalidCipherTextException e) {
-            throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+            throw new SignatureException(e.getMessage(), e);
         }
     }
 

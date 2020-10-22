@@ -13,6 +13,7 @@ import java.util.Arrays;
  * @author haiq
  *
  */
+@Deprecated
 public class ShaUtils {
 
 	/**
