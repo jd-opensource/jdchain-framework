@@ -1,6 +1,6 @@
 package com.jd.blockchain.crypto.utils.classic;
 
-import com.jd.blockchain.crypto.CryptoException;
+import com.jd.blockchain.utils.security.SpecificationException;
 
 /**
  * @author zhanglin33
@@ -21,7 +21,7 @@ public class SSHKeyReader {
 
         for (int i = 0; i < magic.length; i++) {
             if (magic[i] != keyBytes[i]) {
-                throw new CryptoException("Magic bytes are inconsistent!");
+                throw new SpecificationException("Magic bytes are inconsistent!");
             }
         }
         pos += magic.length;

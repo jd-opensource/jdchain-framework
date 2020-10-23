@@ -25,6 +25,7 @@ import com.jd.blockchain.utils.codec.Base58Utils;
  * @author haiq
  *
  */
+@Deprecated
 public class RSAUtils {
 	public static final String ALG_RSA = "RSA";
 	public static final String KEYPAIR_PUBKEY = "pubKey";

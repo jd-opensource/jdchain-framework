@@ -6,6 +6,7 @@ import java.security.Security;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+@Deprecated
 public class RipeMD160Utils {
 
 	static {
