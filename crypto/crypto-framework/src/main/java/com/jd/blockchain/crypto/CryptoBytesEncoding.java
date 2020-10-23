@@ -5,11 +5,11 @@ import com.jd.blockchain.utils.io.BytesUtils;
 
 public final class CryptoBytesEncoding {
 
-	static byte[] encodeBytes(short algorithm, byte[] rawCryptoBytes) {
+	public static byte[] encodeBytes(short algorithm, byte[] rawCryptoBytes) {
 		return BytesUtils.concat(BytesUtils.toBytes(algorithm), rawCryptoBytes);
 	}
 
-	static byte[] encodeBytes(CryptoAlgorithm algorithm, byte[] rawCryptoBytes) {
+	public static byte[] encodeBytes(CryptoAlgorithm algorithm, byte[] rawCryptoBytes) {
 		return BytesUtils.concat(CryptoAlgorithm.getCodeBytes(algorithm), rawCryptoBytes);
 	}
 

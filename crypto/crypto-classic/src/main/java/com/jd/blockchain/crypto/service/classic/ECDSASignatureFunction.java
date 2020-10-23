@@ -139,22 +139,11 @@ public class ECDSASignatureFunction implements SignatureFunction {
 		ECPrivateKeyParameters privKeyParams = (ECPrivateKeyParameters) keyPair.getPrivate();
 		ECPublicKeyParameters pubKeyParams = (ECPublicKeyParameters) keyPair.getPublic();
 
-		byte[] privKeyBytes = BigIntegerTo32Bytes(privKeyParams.getD());
+		byte[] privKeyBytes = ECDSAUtils.trimBigIntegerTo32Bytes(privKeyParams.getD());
 		byte[] pubKeyBytes = pubKeyParams.getQ().getEncoded(false);
 
 		return new AsymmetricKeypair(new PubKey(ECDSA, pubKeyBytes), new PrivKey(ECDSA, privKeyBytes));
 	}
 
-	// To convert BigInteger to byte[] whose length is 32
-	private static byte[] BigIntegerTo32Bytes(BigInteger b){
-		byte[] tmp = b.toByteArray();
-		byte[] result = new byte[32];
-		if (tmp.length > result.length) {
-			System.arraycopy(tmp, tmp.length - result.length, result, 0, result.length);
-		}
-		else {
-			System.arraycopy(tmp,0,result,result.length-tmp.length,tmp.length);
-		}
-		return result;
-	}
+	
 }

@@ -69,23 +69,40 @@ public class ED25519Utils {
         return signer.generateSignature();
     }
 
-    /**
-     * verification
-     *
-     * @param data data to be signed
-     * @param publicKey public key
-     * @param signature signature to be verified
-     * @return true or false
-     */
-    public static boolean verify(byte[] data, byte[] publicKey, byte[] signature){
-        Ed25519PublicKeyParameters pubKeyParams = new Ed25519PublicKeyParameters(publicKey,0);
-        return verify(data,pubKeyParams,signature);
-    }
+	/**
+	 * verification
+	 *
+	 * @param data      data to be signed
+	 * @param publicKey public key
+	 * @param signature signature to be verified
+	 * @return true or false
+	 */
+	public static boolean verify(byte[] data, byte[] publicKey, byte[] signature) {
+		Ed25519PublicKeyParameters pubKeyParams = new Ed25519PublicKeyParameters(publicKey, 0);
+		return verify(data, 0, data.length, pubKeyParams, signature);
+	}
 
-    public static boolean verify(byte[] data, CipherParameters params, byte[] signature){
-        Ed25519Signer verifier = new Ed25519Signer();
-        verifier.init(false, params);
-        verifier.update(data,0,data.length);
-        return verifier.verifySignature(signature);
-    }
+	/**
+	 * verification
+	 *
+	 * @param data      data to be signed
+	 * @param publicKey public key
+	 * @param signature signature to be verified
+	 * @return true or false
+	 */
+	public static boolean verify(byte[] data, int offset, int length, byte[] publicKey, byte[] signature) {
+		Ed25519PublicKeyParameters pubKeyParams = new Ed25519PublicKeyParameters(publicKey, 0);
+		return verify(data, offset, length, pubKeyParams, signature);
+	}
+
+	public static boolean verify(byte[] data, CipherParameters params, byte[] signature) {
+		return verify(data, 0, data.length, params, signature);
+	}
+
+	public static boolean verify(byte[] data, int offset, int length, CipherParameters params, byte[] signature) {
+		Ed25519Signer verifier = new Ed25519Signer();
+		verifier.init(false, params);
+		verifier.update(data, offset, length);
+		return verifier.verifySignature(signature);
+	}
 }
