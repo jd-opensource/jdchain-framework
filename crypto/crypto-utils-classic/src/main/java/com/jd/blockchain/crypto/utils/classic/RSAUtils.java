@@ -40,6 +40,12 @@ import org.bouncycastle.jcajce.provider.asymmetric.util.KeyUtil;
 
 import com.jd.blockchain.utils.io.BytesOutputBuffer;
 import com.jd.blockchain.utils.io.BytesUtils;
+import com.jd.blockchain.utils.io.RuntimeIOException;
+import com.jd.blockchain.utils.security.AlgorithmNotExistException;
+import com.jd.blockchain.utils.security.DecryptionException;
+import com.jd.blockchain.utils.security.EncryptionException;
+import com.jd.blockchain.utils.security.SignatureException;
+import com.jd.blockchain.utils.security.SpecificationException;
 
 /**
  * @author zhanglin33
@@ -142,7 +148,7 @@ public class RSAUtils {
 		try {
 			return signer.generateSignature();
 		} catch (CryptoException e) {
-			throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+			throw new SignatureException(e.getMessage(), e);
 		}
 	}
 
@@ -158,7 +164,7 @@ public class RSAUtils {
 		RSAKeyParameters pubKey = bytes2PubKey_RawKey(publicKey);
 		return verify(data, 0, data.length, pubKey, signature);
 	}
-	
+
 	/**
 	 * verification
 	 *
@@ -175,12 +181,12 @@ public class RSAUtils {
 	public static boolean verify(byte[] data, CipherParameters params, byte[] signature) {
 		return verify(data, 0, data.length, params, signature);
 	}
-	
+
 	public static boolean verify(byte[] data, int offset, int length, CipherParameters params, byte[] signature) {
-		
+
 		SHA256Digest digest = new SHA256Digest();
 		RSADigestSigner signer = new RSADigestSigner(digest);
-		
+
 		signer.init(false, params);
 		signer.update(data, offset, length);
 		return signer.verifySignature(signature);
@@ -280,7 +286,7 @@ public class RSAUtils {
 			outOffset += CIPHERTEXT_BLOCKSIZE;
 
 		} catch (InvalidCipherTextException e) {
-			throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+			throw new EncryptionException(e.getMessage(), e);
 		}
 		return result;
 	}
@@ -323,8 +329,10 @@ public class RSAUtils {
 			inOffset += PLAINTEXT_BLOCKSIZE;
 
 			return ciphertextSize;
-		} catch (InvalidCipherTextException | IOException e) {
-			throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+		} catch (InvalidCipherTextException e) {
+			throw new EncryptionException(e.getMessage(), e);
+		} catch (IOException e) {
+			throw new RuntimeIOException(e.getMessage(), e);
 		}
 	}
 
@@ -361,7 +369,7 @@ public class RSAUtils {
 
 	public static byte[] decrypt(byte[] cipherBytes, int offset, int length, CipherParameters params) {
 		if (length % CIPHERTEXT_BLOCKSIZE != 0) {
-			throw new com.jd.blockchain.crypto.CryptoException(
+			throw new DecryptionException(
 					"ciphertext's length is wrong! Must be an integer multiple of CIPHERTEXT_BLOCKSIZE["
 							+ CIPHERTEXT_BLOCKSIZE + "]!");
 		}
@@ -384,17 +392,17 @@ public class RSAUtils {
 
 			return outBuffer.toBytes();
 		} catch (InvalidCipherTextException e) {
-			throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+			throw new EncryptionException(e.getMessage(), e);
 		}
 	}
-	
+
 	public static int decrypt(byte[] cipherBytes, CipherParameters params, OutputStream out) {
 		return decrypt(cipherBytes, 0, cipherBytes.length, params, out);
 	}
 
 	public static int decrypt(byte[] cipherBytes, int offset, int length, CipherParameters params, OutputStream out) {
 		if (length % CIPHERTEXT_BLOCKSIZE != 0) {
-			throw new com.jd.blockchain.crypto.CryptoException(
+			throw new EncryptionException(
 					"ciphertext's length is wrong! Must be an integer multiple of CIPHERTEXT_BLOCKSIZE["
 							+ CIPHERTEXT_BLOCKSIZE + "]!");
 		}
@@ -416,8 +424,10 @@ public class RSAUtils {
 			}
 
 			return size;
-		} catch (InvalidCipherTextException | IOException e) {
-			throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+		} catch (InvalidCipherTextException e) {
+			throw new EncryptionException(e.getMessage(), e);
+		} catch (IOException e) {
+			throw new RuntimeIOException(e.getMessage(), e);
 		}
 	}
 
@@ -438,7 +448,7 @@ public class RSAUtils {
 		try {
 			result = pubKeySequence.getEncoded(ASN1Encoding.DER);
 		} catch (IOException e) {
-			throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+			throw new RuntimeIOException(e.getMessage(), e);
 		}
 
 		return result;
@@ -484,8 +494,10 @@ public class RSAUtils {
 		try {
 			keyFactory = KeyFactory.getInstance("RSA");
 			publicKey = (RSAPublicKey) keyFactory.generatePublic(keySpec);
-		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-			throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+		} catch (InvalidKeySpecException e) {
+			throw new SpecificationException(e.getMessage(), e);
+		} catch (NoSuchAlgorithmException e) {
+			throw new AlgorithmNotExistException(e.getMessage(), e);
 		}
 
 		BigInteger exponent = publicKey.getPublicExponent();
@@ -542,7 +554,7 @@ public class RSAUtils {
 		try {
 			result = privKeySequence.getEncoded(ASN1Encoding.DER);
 		} catch (IOException e) {
-			throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+			throw new RuntimeIOException(e.getMessage(), e);
 		}
 
 		return result;
@@ -612,8 +624,10 @@ public class RSAUtils {
 		try {
 			keyFactory = KeyFactory.getInstance("RSA");
 			privateKey = (RSAPrivateCrtKey) keyFactory.generatePrivate(keySpec);
-		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-			throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+		} catch (InvalidKeySpecException e) {
+			throw new SpecificationException(e.getMessage(), e);
+		} catch (NoSuchAlgorithmException e) {
+			throw new AlgorithmNotExistException(e.getMessage(), e);
 		}
 
 		BigInteger modulus = privateKey.getModulus();

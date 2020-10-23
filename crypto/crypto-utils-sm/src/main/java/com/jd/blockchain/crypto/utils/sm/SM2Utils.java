@@ -27,6 +27,9 @@ import org.bouncycastle.math.ec.ECCurve;
 import org.bouncycastle.math.ec.ECPoint;
 
 import com.jd.blockchain.utils.io.BytesUtils;
+import com.jd.blockchain.utils.security.DecryptionException;
+import com.jd.blockchain.utils.security.EncryptionException;
+import com.jd.blockchain.utils.security.SignatureException;
 
 public class SM2Utils {
 
@@ -160,7 +163,7 @@ public class SM2Utils {
 		try {
 			encodedSignature = signer.generateSignature();
 		} catch (CryptoException e) {
-			throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+			throw new SignatureException(e.getMessage(), e);
 		}
 
 		// To decode the signature
@@ -301,7 +304,7 @@ public class SM2Utils {
 		try {
 			c1c2c3 = encryptor.processBlock(plainBytes, offset, length);
 		} catch (InvalidCipherTextException e) {
-			throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+			throw new EncryptionException(e.getMessage(), e);
 		}
 
 		// get correct output c1c3c2 from c1c2c3
@@ -360,7 +363,7 @@ public class SM2Utils {
 		try {
 			return decryptor.processBlock(c1c2c3, 0, c1c2c3.length);
 		} catch (InvalidCipherTextException e) {
-			throw new com.jd.blockchain.crypto.CryptoException(e.getMessage(), e);
+			throw new DecryptionException(e.getMessage(), e);
 		}
 	}
 
