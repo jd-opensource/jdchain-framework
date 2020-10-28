@@ -1,10 +1,12 @@
 package com.jd.blockchain.utils.io;
 
+import com.jd.blockchain.utils.ByteSequence;
+
 /**
  * @author huanghaiquan
  *
  */
-public class BytesSlice implements BytesSerializable {
+public class BytesSlice implements ByteSequence, BytesSerializable {
 
 	public static final BytesSlice EMPTY = new BytesSlice(new byte[0], 0, 0);
 
@@ -211,6 +213,21 @@ public class BytesSlice implements BytesSerializable {
 	@Override
 	public byte[] toBytes() {
 		return getBytesCopy();
+	}
+
+	@Override
+	public int size() {
+		return size;
+	}
+
+	@Override
+	public byte byteAt(int index) {
+		return getByte(index);
+	}
+
+	@Override
+	public ByteSequence subSequence(int start, int end) {
+		return getSlice(start, end - start);
 	}
 
 }

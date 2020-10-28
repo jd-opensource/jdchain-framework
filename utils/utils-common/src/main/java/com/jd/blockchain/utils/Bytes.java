@@ -15,7 +15,7 @@ import com.jd.blockchain.utils.io.RuntimeIOException;
  * @author huanghaiquan
  *
  */
-public class Bytes implements BytesSerializable, Serializable {
+public class Bytes implements ByteSequence, BytesSerializable, Serializable {
 
 	private static final long serialVersionUID = 4774903322403127601L;
 
@@ -380,4 +380,62 @@ public class Bytes implements BytesSerializable, Serializable {
 		return toBase58();
 	}
 
+	@Override
+	public byte byteAt(int index) {
+		return read(index);
+	}
+
+	@Override
+	public ByteSequence subSequence(int start, int end) {
+		if (start < 0) {
+			throw new IndexOutOfBoundsException("Start index of subsequence is out of bounds!");
+		}
+		int s = end - start;
+		if (s < 0 || s > size()) {
+			throw new IndexOutOfBoundsException("End index of subsequence is out of bounds!");
+		}
+		return new SubSequence(this, start, s);
+	}
+
+	private static class SubSequence implements ByteSequence {
+
+		private int offset;
+
+		private int size;
+
+		private Bytes bytes;
+
+		public SubSequence(Bytes bytes, int offset, int size) {
+			this.bytes = bytes;
+			this.offset = offset;
+			this.size = size;
+		}
+
+		@Override
+		public int size() {
+			return size;
+		}
+
+		@Override
+		public byte byteAt(int index) {
+			if (index < 0 || index >= size) {
+				throw new IndexOutOfBoundsException("Index of subsequence is out of bounds!");
+			}
+			return bytes.read(offset + index);
+		}
+
+		@Override
+		public ByteSequence subSequence(int start, int end) {
+			if (start < 0) {
+				throw new IndexOutOfBoundsException("Start index of subsequence is out of bounds!");
+			}
+			int s = end - start;
+			if (s < 0 || s > size) {
+				throw new IndexOutOfBoundsException("End index of subsequence is out of bounds!");
+			}
+
+			return new SubSequence(bytes, offset + start, s);
+		}
+
+	}
 }
