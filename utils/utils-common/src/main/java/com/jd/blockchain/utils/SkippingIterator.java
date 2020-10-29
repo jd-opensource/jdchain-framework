@@ -43,7 +43,4 @@ public interface SkippingIterator<E> extends Iterator<E> {
 	 */
 	long skip(long count);
 
-	public static <E> SkippingIterator<E> empty() {
-		return new EmptySkippingIterator<E>();
-	}
 }
