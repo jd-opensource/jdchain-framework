@@ -1,5 +1,7 @@
 package com.jd.blockchain.ledger;
 
+import com.jd.blockchain.utils.SkippingIterator;
+
 public interface RolePrivilegeSettings {
 
 	/**
@@ -25,21 +27,23 @@ public interface RolePrivilegeSettings {
 	 */
 	RolePrivileges getRolePrivilege(String roleName);
 
-	/**
-	 * 返回指定位置的角色权限；
-	 * 
-	 * @param index
-	 * @param count
-	 * @return
-	 */
-	RolePrivileges[] getRolePrivileges(int index, int count);
-
-	/**
-	 * 返回所有的角色权限；
-	 * 
-	 * @return
-	 */
-	RolePrivileges[] getRolePrivileges();
+//	/**
+//	 * 返回指定位置的角色权限；
+//	 * 
+//	 * @param index
+//	 * @param count
+//	 * @return
+//	 */
+//	RolePrivileges[] getRolePrivileges(int index, int count);
+//
+//	/**
+//	 * 返回所有的角色权限；
+//	 * 
+//	 * @return
+//	 */
+//	RolePrivileges[] getRolePrivileges();
+	
+	SkippingIterator<RolePrivileges> rolePrivilegesIterator();
 
 	/**
 	 * 是否只读；
