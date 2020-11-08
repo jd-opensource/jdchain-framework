@@ -84,18 +84,4 @@ public interface Dataset<K, V> {
 	 */
 	DataEntry<K, V> getDataEntry(K key, long version);
 
-	/**
-	 * Ascending iterator；
-	 * 
-	 * @return
-	 */
-	DataIterator<K, V> iterator();
-
-	/**
-	 * Descending iterator；
-	 * 
-	 * @return
-	 */
-	DataIterator<K, V> iteratorDesc();
-
 }
