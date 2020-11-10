@@ -22,6 +22,7 @@ import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.SymmetricEncryptionFunction;
 import com.jd.blockchain.crypto.SymmetricKey;
 import com.jd.blockchain.crypto.service.classic.ClassicAlgorithm;
+import com.jd.blockchain.crypto.utils.classic.AESUtils;
 import com.jd.blockchain.utils.io.BytesUtils;
 
 /**
@@ -37,8 +38,7 @@ public class AESEncryptionFunctionTest {
 		CryptoAlgorithm algorithm = Crypto.getAlgorithm("aes");
 		assertNotNull(algorithm);
 
-		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto
-				.getSymmetricEncryptionFunction(algorithm);
+		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto.getSymmetricEncryptionFunction(algorithm);
 
 		assertEquals(symmetricEncryptionFunction.getAlgorithm().name(), algorithm.name());
 		assertEquals(symmetricEncryptionFunction.getAlgorithm().code(), algorithm.code());
@@ -58,8 +58,7 @@ public class AESEncryptionFunctionTest {
 		CryptoAlgorithm algorithm = Crypto.getAlgorithm("aes");
 		assertNotNull(algorithm);
 
-		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto
-				.getSymmetricEncryptionFunction(algorithm);
+		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto.getSymmetricEncryptionFunction(algorithm);
 
 		SymmetricKey symmetricKey = (SymmetricKey) symmetricEncryptionFunction.generateSymmetricKey();
 
@@ -85,15 +84,16 @@ public class AESEncryptionFunctionTest {
 		CryptoAlgorithm algorithm = Crypto.getAlgorithm("aes");
 		assertNotNull(algorithm);
 
-		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto
-				.getSymmetricEncryptionFunction(algorithm);
+		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto.getSymmetricEncryptionFunction(algorithm);
 
 		SymmetricKey symmetricKey = (SymmetricKey) symmetricEncryptionFunction.generateSymmetricKey();
 
 		Ciphertext ciphertext = symmetricEncryptionFunction.encrypt(symmetricKey, data);
 
 		byte[] ciphertextBytes = ciphertext.toBytes();
-		assertEquals(2 + 16 + 1024, ciphertextBytes.length);
+
+		assertEquals(CryptoAlgorithm.CODE_SIZE + AESUtils.getCiphertextSizeWithPadding_IV(data.length),
+				ciphertextBytes.length);
 		assertEquals(ClassicAlgorithm.AES.code(), ciphertext.getAlgorithm());
 		assertEquals((short) (ENCRYPTION_ALGORITHM | SYMMETRIC_KEY | ((byte) 26 & 0x00FF)), ciphertext.getAlgorithm());
 
@@ -112,8 +112,7 @@ public class AESEncryptionFunctionTest {
 		CryptoAlgorithm algorithm = Crypto.getAlgorithm("aes");
 		assertNotNull(algorithm);
 
-		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto
-				.getSymmetricEncryptionFunction(algorithm);
+		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto.getSymmetricEncryptionFunction(algorithm);
 
 		SymmetricKey symmetricKey = (SymmetricKey) symmetricEncryptionFunction.generateSymmetricKey();
 
@@ -157,8 +156,7 @@ public class AESEncryptionFunctionTest {
 		CryptoAlgorithm algorithm = Crypto.getAlgorithm("aes");
 		assertNotNull(algorithm);
 
-		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto
-				.getSymmetricEncryptionFunction(algorithm);
+		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto.getSymmetricEncryptionFunction(algorithm);
 
 		SymmetricKey symmetricKey = (SymmetricKey) symmetricEncryptionFunction.generateSymmetricKey();
 		byte[] symmetricKeyBytes = symmetricKey.toBytes();
@@ -181,8 +179,7 @@ public class AESEncryptionFunctionTest {
 		CryptoAlgorithm algorithm = Crypto.getAlgorithm("aes");
 		assertNotNull(algorithm);
 
-		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto
-				.getSymmetricEncryptionFunction(algorithm);
+		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto.getSymmetricEncryptionFunction(algorithm);
 
 		SymmetricKey symmetricKey = (SymmetricKey) symmetricEncryptionFunction.generateSymmetricKey();
 		byte[] symmetricKeyBytes = symmetricKey.toBytes();
@@ -223,8 +220,7 @@ public class AESEncryptionFunctionTest {
 		CryptoAlgorithm algorithm = Crypto.getAlgorithm("aes");
 		assertNotNull(algorithm);
 
-		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto
-				.getSymmetricEncryptionFunction(algorithm);
+		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto.getSymmetricEncryptionFunction(algorithm);
 
 		SymmetricKey symmetricKey = (SymmetricKey) symmetricEncryptionFunction.generateSymmetricKey();
 
@@ -252,18 +248,22 @@ public class AESEncryptionFunctionTest {
 		CryptoAlgorithm algorithm = Crypto.getAlgorithm("aes");
 		assertNotNull(algorithm);
 
-		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto
-				.getSymmetricEncryptionFunction(algorithm);
+		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto.getSymmetricEncryptionFunction(algorithm);
 
 		SymmetricKey symmetricKey = (SymmetricKey) symmetricEncryptionFunction.generateSymmetricKey();
 
 		Ciphertext ciphertext = symmetricEncryptionFunction.encrypt(symmetricKey, data);
 
-		byte[] ciphertextBytes = ciphertext.toBytes();
+		byte[] rawCipherBytes = AESUtils.encrypt(data, symmetricKey.getRawKeyBytes());
 
+		byte[] ciphertextBytes = ciphertext.toBytes();
 		Ciphertext resolvedCiphertext = symmetricEncryptionFunction.resolveCiphertext(ciphertextBytes);
 
-		assertEquals(1024 + 16, resolvedCiphertext.getRawCiphertext().length);
+		byte[] resolvedRawCipherBytes = resolvedCiphertext.getRawCiphertext();
+		assertEquals(rawCipherBytes.length, resolvedRawCipherBytes.length);
+		// 密文的预期长度；
+		int expectedCiphertextSize = AESUtils.getCiphertextSizeWithPadding_IV(data.length);
+		assertEquals(expectedCiphertextSize, resolvedRawCipherBytes.length);
 		assertEquals(ClassicAlgorithm.AES.code(), resolvedCiphertext.getAlgorithm());
 		assertEquals((short) (ENCRYPTION_ALGORITHM | SYMMETRIC_KEY | ((byte) 26 & 0x00FF)),
 				resolvedCiphertext.getAlgorithm());

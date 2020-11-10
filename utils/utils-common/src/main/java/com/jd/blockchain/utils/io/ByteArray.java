@@ -188,6 +188,12 @@ public class ByteArray implements Externalizable, ByteSequence {
 	public byte[] bytesCopy() {
 		return Arrays.copyOf(bytes, bytes.length);
 	}
+	
+	@Override
+	public int copyTo(int sourceOffset, byte[] dest, int destOffset, int length) {
+		System.arraycopy(bytes, sourceOffset, dest, destOffset, length);
+		return length;
+	}
 
 	/**
 	 * 返回原始的字节数组；

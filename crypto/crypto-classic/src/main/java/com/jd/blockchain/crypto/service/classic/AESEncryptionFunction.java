@@ -10,12 +10,12 @@ import java.io.OutputStream;
 
 import com.jd.blockchain.crypto.Ciphertext;
 import com.jd.blockchain.crypto.CryptoAlgorithm;
+import com.jd.blockchain.crypto.CryptoBytes;
 import com.jd.blockchain.crypto.CryptoException;
-import com.jd.blockchain.crypto.CryptoKey;
 import com.jd.blockchain.crypto.SymmetricCiphertext;
 import com.jd.blockchain.crypto.SymmetricEncryptionFunction;
 import com.jd.blockchain.crypto.SymmetricKey;
-import com.jd.blockchain.utils.security.AESUtils;
+import com.jd.blockchain.crypto.utils.classic.AESUtils;
 
 public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 
@@ -57,10 +57,10 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 		// 读输入流得到明文，加密，密文数据写入输出流
 		try {
 
-
 			byte[] buffBytes = new byte[PLAINTEXT_BUFFER_LENGTH];
 
-			// The final byte of plaintextWithPadding represents the length of padding in the first 256 bytes,
+			// The final byte of plaintextWithPadding represents the length of padding in
+			// the first 256 bytes,
 			// and the padded value in hexadecimal
 			byte[] plaintextWithPadding = new byte[buffBytes.length + 1];
 
@@ -69,14 +69,14 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 			int len;
 			int i;
 
-			while((len=in.read(buffBytes)) > 0) {
+			while ((len = in.read(buffBytes)) > 0) {
 				padding = (byte) (PLAINTEXT_BUFFER_LENGTH - len);
 				i = len;
 				while (i < plaintextWithPadding.length) {
 					plaintextWithPadding[i] = padding;
 					i++;
 				}
-				out.write(encrypt(key,plaintextWithPadding).toBytes());
+				out.write(encrypt(key, plaintextWithPadding).toBytes());
 			}
 //			// TODO: 错误地使用 available 方法；
 //			int size = in.available();
@@ -137,7 +137,7 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 			byte padding;
 			byte[] plaintext;
 
-			int len,i;
+			int len, i;
 			while ((len = in.read(buffBytes)) > 0) {
 				if (len != CIPHERTEXT_BUFFER_LENGTH) {
 					throw new CryptoException("inputStream's length is wrong!");
@@ -146,7 +146,7 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 					throw new CryptoException("InputStream is not valid AES ciphertext!");
 				}
 
-				plaintextWithPadding = decrypt(key,resolveCiphertext(buffBytes));
+				plaintextWithPadding = decrypt(key, resolveCiphertext(buffBytes));
 
 				if (plaintextWithPadding.length != (PLAINTEXT_BUFFER_LENGTH + 1)) {
 					throw new CryptoException("The decrypted plaintext is invalid");
@@ -163,7 +163,7 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 					i--;
 				}
 				plaintext = new byte[PLAINTEXT_BUFFER_LENGTH - padding];
-				System.arraycopy(plaintextWithPadding,0,plaintext,0,plaintext.length);
+				System.arraycopy(plaintextWithPadding, 0, plaintext, 0, plaintext.length);
 				out.write(plaintext);
 			}
 
@@ -223,6 +223,12 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 	@Override
 	public SymmetricKey generateSymmetricKey() {
 		// 根据对应的标识和原始密钥生成相应的密钥数据
-		return new SymmetricKey(AES, AESUtils.generateKey128_Bytes());
+		return new SymmetricKey(AES, AESUtils.generateKey());
+	}
+
+	@Override
+	public <T extends CryptoBytes> boolean support(Class<T> cryptoDataType, byte[] encodedCryptoBytes) {
+		return (SymmetricKey.class == cryptoDataType && supportSymmetricKey(encodedCryptoBytes))
+				|| (SymmetricCiphertext.class == cryptoDataType && supportCiphertext(encodedCryptoBytes));
 	}
 }

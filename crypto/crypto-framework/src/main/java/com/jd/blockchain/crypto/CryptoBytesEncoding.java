@@ -1,5 +1,7 @@
 package com.jd.blockchain.crypto;
 
+import java.util.Arrays;
+
 import com.jd.blockchain.utils.io.BytesSlice;
 import com.jd.blockchain.utils.io.BytesUtils;
 
@@ -23,5 +25,13 @@ public final class CryptoBytesEncoding {
 
 	static CryptoKeyType decodeKeyType(BytesSlice cryptoBytes) {
 		return CryptoKeyType.valueOf(cryptoBytes.getByte());
+	}
+	
+	public static byte[] decodeRawBytes(byte[] cryptoBytes) {
+		return Arrays.copyOfRange(cryptoBytes, CryptoAlgorithm.CODE_SIZE, cryptoBytes.length);
+	}
+	
+	public static BytesSlice decodeRawBytesSlice(byte[] cryptoBytes) {
+		return new BytesSlice(cryptoBytes, CryptoAlgorithm.CODE_SIZE);
 	}
 }

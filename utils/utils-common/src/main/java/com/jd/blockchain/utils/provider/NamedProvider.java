@@ -1,4 +1,4 @@
-package com.jd.blockchain.provider;
+package com.jd.blockchain.utils.provider;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

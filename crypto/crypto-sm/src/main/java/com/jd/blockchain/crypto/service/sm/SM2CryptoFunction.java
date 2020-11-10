@@ -11,14 +11,16 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 
 import com.jd.blockchain.crypto.AsymmetricCiphertext;
 import com.jd.blockchain.crypto.AsymmetricEncryptionFunction;
+import com.jd.blockchain.crypto.AsymmetricKeypair;
 import com.jd.blockchain.crypto.Ciphertext;
 import com.jd.blockchain.crypto.CryptoAlgorithm;
+import com.jd.blockchain.crypto.CryptoBytes;
 import com.jd.blockchain.crypto.CryptoException;
-import com.jd.blockchain.crypto.AsymmetricKeypair;
 import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.crypto.SignatureFunction;
+import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 import com.jd.blockchain.crypto.utils.sm.SM2Utils;
 
 public class SM2CryptoFunction implements AsymmetricEncryptionFunction, SignatureFunction {
@@ -33,7 +35,7 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	private static final int PUBKEY_LENGTH = ALGORYTHM_CODE_SIZE + KEY_TYPE_BYTES + ECPOINT_SIZE;
 	private static final int PRIVKEY_LENGTH = ALGORYTHM_CODE_SIZE + KEY_TYPE_BYTES + PRIVKEY_SIZE;
 	private static final int SIGNATUREDIGEST_LENGTH = ALGORYTHM_CODE_SIZE + SIGNATUREDIGEST_SIZE;
-	
+
 	SM2CryptoFunction() {
 	}
 
@@ -73,8 +75,7 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 		}
 
 		// 验证密文数据的算法标识对应SM2算法，并且密文符合长度要求
-		if (ciphertext.getAlgorithm() != SM2.code()
-				|| rawCiphertextBytes.length < ECPOINT_SIZE + HASHDIGEST_SIZE) {
+		if (ciphertext.getAlgorithm() != SM2.code() || rawCiphertextBytes.length < ECPOINT_SIZE + HASHDIGEST_SIZE) {
 			throw new CryptoException("This is not SM2 ciphertext!");
 		}
 
@@ -153,7 +154,8 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 		}
 
 		// 调用SM2签名算法计算签名结果
-		return new SignatureDigest(SM2, SM2Utils.sign(data, rawPrivKeyBytes));
+		byte[] signatureBytes = SM2Utils.sign(data, rawPrivKeyBytes);
+		return DefaultCryptoEncoding.encodeSignatureDigest(SM2, signatureBytes);
 	}
 
 	@Override
@@ -190,7 +192,7 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	@Override
 	public SignatureDigest resolveDigest(byte[] digestBytes) {
 		if (supportDigest(digestBytes)) {
-			return new SignatureDigest(digestBytes);
+			return DefaultCryptoEncoding.createSignatureDigest(SM2.code(), digestBytes);
 		} else {
 			throw new CryptoException("digestBytes are invalid!");
 		}
@@ -212,16 +214,21 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 		byte[] privKeyBytesD = ecPriv.getD().toByteArray();
 		byte[] privKeyBytes = new byte[PRIVKEY_SIZE];
 		if (privKeyBytesD.length > PRIVKEY_SIZE) {
-			System.arraycopy(privKeyBytesD, privKeyBytesD.length - PRIVKEY_SIZE,
-					privKeyBytes, 0, PRIVKEY_SIZE);
-		}
-		else {
-			System.arraycopy(privKeyBytesD, 0,
-					privKeyBytes, PRIVKEY_SIZE - privKeyBytesD.length, privKeyBytesD.length);
+			System.arraycopy(privKeyBytesD, privKeyBytesD.length - PRIVKEY_SIZE, privKeyBytes, 0, PRIVKEY_SIZE);
+		} else {
+			System.arraycopy(privKeyBytesD, 0, privKeyBytes, PRIVKEY_SIZE - privKeyBytesD.length, privKeyBytesD.length);
 		}
 
 		byte[] pubKeyBytes = ecPub.getQ().getEncoded(false);
 
 		return new AsymmetricKeypair(new PubKey(SM2, pubKeyBytes), new PrivKey(SM2, privKeyBytes));
+	}
+
+	@Override
+	public <T extends CryptoBytes> boolean support(Class<T> cryptoDataType, byte[] encodedCryptoBytes) {
+		return (SignatureDigest.class == cryptoDataType && supportDigest(encodedCryptoBytes))
+				|| (PubKey.class == cryptoDataType && supportPubKey(encodedCryptoBytes))
+				|| (PrivKey.class == cryptoDataType && supportPrivKey(encodedCryptoBytes))
+				|| (AsymmetricCiphertext.class == cryptoDataType && supportCiphertext(encodedCryptoBytes));
 	}
 }

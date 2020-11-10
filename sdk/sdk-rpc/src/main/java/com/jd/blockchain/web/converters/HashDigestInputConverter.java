@@ -8,6 +8,7 @@
  */
 package com.jd.blockchain.web.converters;
 
+import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.utils.codec.Base58Utils;
 
@@ -25,6 +26,6 @@ public class HashDigestInputConverter implements Converter<String, HashDigest> {
     @Override
     public HashDigest convert(String inText) {
         byte[] hashBytes = Base58Utils.decode(inText);
-        return new HashDigest(hashBytes);
+        return Crypto.resolveAsHashDigest(hashBytes);
     }
 }

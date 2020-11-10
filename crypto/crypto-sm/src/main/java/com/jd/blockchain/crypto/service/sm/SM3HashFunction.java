@@ -7,6 +7,7 @@ import com.jd.blockchain.crypto.CryptoBytes;
 import com.jd.blockchain.crypto.CryptoException;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.crypto.HashFunction;
+import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 import com.jd.blockchain.crypto.utils.sm.SM3Utils;
 
 public class SM3HashFunction implements HashFunction {
@@ -32,7 +33,7 @@ public class SM3HashFunction implements HashFunction {
 		}
 
 		byte[] digestBytes = SM3Utils.hash(data);
-		return new HashDigest(SM3, digestBytes);
+		return DefaultCryptoEncoding.encodeHashDigest(SM3, digestBytes);
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class SM3HashFunction implements HashFunction {
 		}
 
 		byte[] digestBytes = SM3Utils.hash(data, offset, len);
-		return new HashDigest(SM3, digestBytes);
+		return DefaultCryptoEncoding.encodeHashDigest(SM3, digestBytes);
 	}
 	
 	@Override
@@ -80,9 +81,15 @@ public class SM3HashFunction implements HashFunction {
 	@Override
 	public HashDigest resolveHashDigest(byte[] digestBytes) {
 		if (supportHashDigest(digestBytes)) {
-			return new HashDigest(digestBytes);
+			return DefaultCryptoEncoding.createHashDigest(SM3.code(),digestBytes);
 		} else {
 			throw new CryptoException("digestBytes is invalid!");
 		}
+	}
+	
+	@Override
+	public <T extends CryptoBytes> boolean support(Class<T> cryptoDataType, byte[] encodedCryptoBytes) {
+		return (HashDigest.class == cryptoDataType && supportHashDigest(encodedCryptoBytes))
+				;
 	}
 }

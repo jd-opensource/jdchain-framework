@@ -13,26 +13,35 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.jd.blockchain.binaryproto.BinaryProtocol;
 import com.jd.blockchain.binaryproto.BinarySliceSpec;
+import com.jd.blockchain.binaryproto.BytesConverter;
 import com.jd.blockchain.binaryproto.DataContract;
+import com.jd.blockchain.binaryproto.DataContractAutoRegistrar;
 import com.jd.blockchain.binaryproto.DataContractEncoder;
 import com.jd.blockchain.binaryproto.DataContractException;
+import com.jd.blockchain.binaryproto.DataContractRegistry;
 import com.jd.blockchain.binaryproto.DataField;
 import com.jd.blockchain.binaryproto.DataSpecification;
-import com.jd.blockchain.binaryproto.PrimitiveType;
 import com.jd.blockchain.binaryproto.EnumContract;
 import com.jd.blockchain.binaryproto.EnumField;
 import com.jd.blockchain.binaryproto.EnumSpecification;
 import com.jd.blockchain.binaryproto.FieldSpec;
 import com.jd.blockchain.binaryproto.NumberEncoding;
+import com.jd.blockchain.binaryproto.PrimitiveType;
 import com.jd.blockchain.binaryproto.impl.EnumSpecificationInfo.EnumConstant;
 import com.jd.blockchain.utils.io.BytesSerializable;
 import com.jd.blockchain.utils.io.BytesUtils;
 import com.jd.blockchain.utils.io.NumberMask;
+import com.jd.blockchain.utils.provider.Provider;
+import com.jd.blockchain.utils.provider.ProviderManager;
 import com.jd.blockchain.utils.security.SHA256Hash;
 import com.jd.blockchain.utils.security.ShaUtils;
 
 public class DataContractContext {
+
+	private static ProviderManager pm = new ProviderManager();
+
 
 	public static DataContractEncoderLookup ENCODER_LOOKUP;
 
@@ -115,6 +124,25 @@ public class DataContractContext {
 				return typeMap.get(contractType);
 			}
 		};
+
+		// 加载自动注册提供者，注册类型；
+		autoRegister();
+	}
+
+	private static void autoRegister() {
+		// 从当前类型的类加载器加载服务提供者；
+		pm.installAllProviders(DataContractAutoRegistrar.class, BinaryProtocol.class.getClassLoader());
+		// 从线程上下文类加载器加载服务提供者；（多次加载避免由于类加载器的原因产生遗漏，ProviderManager 内部会过滤重复加载）；
+		pm.installAllProviders(DataContractAutoRegistrar.class, Thread.currentThread().getContextClassLoader());
+
+		Iterable<Provider<DataContractAutoRegistrar>> providers = pm.getAllProviders(DataContractAutoRegistrar.class);
+		for (Provider<DataContractAutoRegistrar> provider : providers) {
+			register(provider);
+		}
+	}
+
+	private static void register(Provider<DataContractAutoRegistrar> provider) {
+		provider.getService().initContext(DataContractRegistry.getInstance());
 	}
 
 	private static void initNumberEncodingConverterMapping(PrimitiveType protocalType, Class<?> javaType,
@@ -140,13 +168,14 @@ public class DataContractContext {
 		}
 	}
 
-	private static void addConverterMapping(PrimitiveType protocalType, Class<?> javaType, ValueConverter converter,
-			Class<? extends NumberEncodingConverter> numberEncodingConverterType) {
+	private synchronized static void addConverterMapping(PrimitiveType protocalType, Class<?> javaType,
+			ValueConverter converter, Class<? extends NumberEncodingConverter> numberEncodingConverterType) {
 		addConverterMapping(protocalType, javaType, converter);
 		initNumberEncodingConverterMapping(protocalType, javaType, numberEncodingConverterType);
 	}
 
-	private static void addConverterMapping(PrimitiveType protocalType, Class<?> javaType, ValueConverter converter) {
+	private synchronized static void addConverterMapping(PrimitiveType protocalType, Class<?> javaType,
+			ValueConverter converter) {
 		Map<Class<?>, ValueConverter> converterMap = primitiveTypeConverters.get(protocalType);
 		if (converterMap == null) {
 			converterMap = new HashMap<>();
@@ -183,6 +212,11 @@ public class DataContractContext {
 		}
 		throw new IllegalArgumentException(String.format("Unsupport types mapping: [PrimitiveType=%s]-[JavaType=%s]",
 				protocalType.toString(), javaType.toString()));
+	}
+
+	public synchronized static <T> void registerBytesConverter(Class<T> javaType, BytesConverter<T> converter) {
+		DelegatingBytesValueConverter<T> bytesValueConverter = new DelegatingBytesValueConverter<>(javaType, converter);
+		addConverterMapping(PrimitiveType.BYTES, javaType, bytesValueConverter);
 	}
 
 	public static DataContractEncoder resolve(Class<?> contractType) {
@@ -316,11 +350,12 @@ public class DataContractContext {
 			if (annoField == null) {
 				continue;
 			}
-			//当数据契约类型继承自父接口，覆盖（Override）父接口中的字段方法的情况下，
-			//尽管父接口中并未使用 DataField 标注，只在子接口中声明为 DataField，
-			//某些情况下 method.getAnnotation(DataField.class) 仍然能够返回 DataField 实例，（JDK1.8.0_212下测试，原因未知）
-			//由于父接口中声明为泛型，方法返回类型在反射中得到的是 Object.class, 进而导致以下的解析出现字段声明类型与实际类型不匹配的异常；
-			//父接口在方法中返回的这类 Method 实例都被标记为 default 方法，因此忽略这类方法可以避免错误；
+			// 当数据契约类型继承自父接口，覆盖（Override）父接口中的字段方法的情况下，
+			// 尽管父接口中并未使用 DataField 标注，只在子接口中声明为 DataField，
+			// 某些情况下 method.getAnnotation(DataField.class) 仍然能够返回 DataField
+			// 实例，（JDK1.8.0_212下测试，原因未知）
+			// 由于父接口中声明为泛型，方法返回类型在反射中得到的是 Object.class, 进而导致以下的解析出现字段声明类型与实际类型不匹配的异常；
+			// 父接口在方法中返回的这类 Method 实例都被标记为 default 方法，因此忽略这类方法可以避免错误；
 			if (method.isDefault()) {
 				continue;
 			}

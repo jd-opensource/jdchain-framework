@@ -1,17 +1,24 @@
 package com.jd.blockchain.crypto.service.classic;
 
-import com.jd.blockchain.crypto.*;
-import com.jd.blockchain.crypto.utils.classic.ECDSAUtils;
-import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
-import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
-
-import java.math.BigInteger;
-
 import static com.jd.blockchain.crypto.BaseCryptoKey.KEY_TYPE_BYTES;
 import static com.jd.blockchain.crypto.CryptoBytes.ALGORYTHM_CODE_SIZE;
 import static com.jd.blockchain.crypto.CryptoKeyType.PRIVATE;
 import static com.jd.blockchain.crypto.CryptoKeyType.PUBLIC;
+
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
+import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+
+import com.jd.blockchain.crypto.AsymmetricKeypair;
+import com.jd.blockchain.crypto.CryptoAlgorithm;
+import com.jd.blockchain.crypto.CryptoBytes;
+import com.jd.blockchain.crypto.CryptoException;
+import com.jd.blockchain.crypto.PrivKey;
+import com.jd.blockchain.crypto.PubKey;
+import com.jd.blockchain.crypto.SignatureDigest;
+import com.jd.blockchain.crypto.SignatureFunction;
+import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
+import com.jd.blockchain.crypto.utils.classic.ECDSAUtils;
 
 public class ECDSASignatureFunction implements SignatureFunction {
 
@@ -44,7 +51,8 @@ public class ECDSASignatureFunction implements SignatureFunction {
 		}
 
 		// 调用ECDSA签名算法计算签名结果
-		return new SignatureDigest(ECDSA, ECDSAUtils.sign(data, rawPrivKeyBytes));
+		byte[] signatureBytes = ECDSAUtils.sign(data, rawPrivKeyBytes);
+		return DefaultCryptoEncoding.encodeSignatureDigest(ECDSA, signatureBytes);
 	}
 
 	@Override
@@ -120,7 +128,7 @@ public class ECDSASignatureFunction implements SignatureFunction {
 	@Override
 	public SignatureDigest resolveDigest(byte[] digestBytes) {
 		if (supportDigest(digestBytes)) {
-			return new SignatureDigest(digestBytes);
+			return DefaultCryptoEncoding.createSignatureDigest(ECDSA.code(), digestBytes);
 		} else {
 			throw new CryptoException("digestBytes are invalid!");
 		}
@@ -145,5 +153,11 @@ public class ECDSASignatureFunction implements SignatureFunction {
 		return new AsymmetricKeypair(new PubKey(ECDSA, pubKeyBytes), new PrivKey(ECDSA, privKeyBytes));
 	}
 
-	
+	@Override
+	public <T extends CryptoBytes> boolean support(Class<T> cryptoDataType, byte[] encodedCryptoBytes) {
+		return (SignatureDigest.class == cryptoDataType && supportDigest(encodedCryptoBytes))
+				|| (PubKey.class == cryptoDataType && supportPubKey(encodedCryptoBytes))
+				|| (PrivKey.class == cryptoDataType && supportPrivKey(encodedCryptoBytes));
+	}
+
 }

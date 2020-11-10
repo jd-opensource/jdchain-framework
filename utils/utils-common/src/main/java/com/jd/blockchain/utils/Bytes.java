@@ -140,6 +140,15 @@ public class Bytes implements ByteSequence, BytesSerializable, Serializable {
 		return new Bytes(Base58Utils.decode(base58Str));
 	}
 
+	public Bytes concat(ByteSequence key) {
+		if (key instanceof Bytes) {
+			return new Bytes(this, (Bytes) key);
+		}
+		byte[] newBytes = new byte[key.size()];
+		key.copyTo(newBytes, 0, newBytes.length);
+		return new Bytes(this, newBytes);
+	}
+
 	public Bytes concat(Bytes key) {
 		return new Bytes(this, key);
 	}
@@ -336,6 +345,35 @@ public class Bytes implements ByteSequence, BytesSerializable, Serializable {
 	}
 
 	@Override
+	public int copyTo(int sourceOffset, byte[] target, int targetOffset, int len) {
+		if (sourceOffset < 0) {
+			throw new IllegalArgumentException("Argument sourceOffset is negative!");
+		}
+		if (targetOffset < 0) {
+			throw new IllegalArgumentException("Argument targetOffset is negative!");
+		}
+		if (len < 0) {
+			throw new IllegalArgumentException("Argument len is negative!");
+		}
+		if (len == 0) {
+			return 0;
+		}
+		int s = 0;
+		if (prefix != null) {
+			if (sourceOffset < prefix.size()) {
+				s = prefix.copyTo(target, targetOffset, len);
+			}
+		}
+		if (s < len) {
+			int l = len - s;
+			l = l < bytes.length ? l : bytes.length;
+			System.arraycopy(bytes, 0, target, targetOffset + s, l);
+			s += l;
+		}
+		return s;
+	}
+
+	@Override
 	public byte[] toBytes() {
 		if (prefix == null || prefix.size() == 0) {
 			return bytes.clone();
@@ -403,9 +441,9 @@ public class Bytes implements ByteSequence, BytesSerializable, Serializable {
 
 		private int size;
 
-		private Bytes bytes;
+		private ByteSequence bytes;
 
-		public SubSequence(Bytes bytes, int offset, int size) {
+		public SubSequence(ByteSequence bytes, int offset, int size) {
 			this.bytes = bytes;
 			this.offset = offset;
 			this.size = size;
@@ -421,7 +459,7 @@ public class Bytes implements ByteSequence, BytesSerializable, Serializable {
 			if (index < 0 || index >= size) {
 				throw new IndexOutOfBoundsException("Index of subsequence is out of bounds!");
 			}
-			return bytes.read(offset + index);
+			return bytes.byteAt(offset + index);
 		}
 
 		@Override
@@ -435,6 +473,11 @@ public class Bytes implements ByteSequence, BytesSerializable, Serializable {
 			}
 
 			return new SubSequence(bytes, offset + start, s);
+		}
+
+		@Override
+		public int copyTo(int sourceOffset, byte[] target, int targetOffset, int len) {
+			return bytes.copyTo(offset + sourceOffset, target, targetOffset, len);
 		}
 
 	}

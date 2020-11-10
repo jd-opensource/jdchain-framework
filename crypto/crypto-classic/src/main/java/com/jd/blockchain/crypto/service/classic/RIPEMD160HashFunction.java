@@ -5,9 +5,11 @@ import static com.jd.blockchain.crypto.CryptoBytes.ALGORYTHM_CODE_SIZE;
 import java.util.Arrays;
 
 import com.jd.blockchain.crypto.CryptoAlgorithm;
+import com.jd.blockchain.crypto.CryptoBytes;
 import com.jd.blockchain.crypto.CryptoException;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.crypto.HashFunction;
+import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 import com.jd.blockchain.crypto.utils.classic.RIPEMD160Utils;
 
 public class RIPEMD160HashFunction implements HashFunction {
@@ -33,7 +35,7 @@ public class RIPEMD160HashFunction implements HashFunction {
 		}
 
 		byte[] digestBytes = RIPEMD160Utils.hash(data);
-		return new HashDigest(RIPEMD160, digestBytes);
+		return DefaultCryptoEncoding.encodeHashDigest(RIPEMD160, digestBytes);
 	}
 
 	@Override
@@ -43,7 +45,7 @@ public class RIPEMD160HashFunction implements HashFunction {
 		}
 
 		byte[] digestBytes = RIPEMD160Utils.hash(data, offset, len);
-		return new HashDigest(RIPEMD160, digestBytes);
+		return DefaultCryptoEncoding.encodeHashDigest(RIPEMD160, digestBytes);
 	}
 	
 	@Override
@@ -81,10 +83,15 @@ public class RIPEMD160HashFunction implements HashFunction {
 	@Override
 	public HashDigest resolveHashDigest(byte[] digestBytes) {
 		if (supportHashDigest(digestBytes)) {
-			return new HashDigest(digestBytes);
+			return DefaultCryptoEncoding.createHashDigest(RIPEMD160.code(), digestBytes);
 		} else {
 			throw new CryptoException("digestBytes is invalid!");
 		}
+	}
+
+	@Override
+	public <T extends CryptoBytes> boolean support(Class<T> cryptoDataType, byte[] encodedCryptoBytes) {
+		return HashDigest.class == cryptoDataType && supportHashDigest(encodedCryptoBytes);
 	}
 
 }

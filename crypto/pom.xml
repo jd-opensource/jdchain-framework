@@ -12,6 +12,7 @@
 
 	<modules>
 		<module>crypto-framework</module>
+		<module>crypto-base</module>
 		<module>crypto-classic</module>
 		<module>crypto-sm</module>
 		<module>crypto-utils-classic</module>

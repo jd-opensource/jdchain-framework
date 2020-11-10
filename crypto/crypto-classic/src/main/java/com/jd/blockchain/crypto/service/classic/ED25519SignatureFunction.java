@@ -5,18 +5,20 @@ import static com.jd.blockchain.crypto.CryptoBytes.ALGORYTHM_CODE_SIZE;
 import static com.jd.blockchain.crypto.CryptoKeyType.PRIVATE;
 import static com.jd.blockchain.crypto.CryptoKeyType.PUBLIC;
 
-import com.jd.blockchain.crypto.CryptoAlgorithm;
-import com.jd.blockchain.crypto.CryptoException;
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
+import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
+
 import com.jd.blockchain.crypto.AsymmetricKeypair;
+import com.jd.blockchain.crypto.CryptoAlgorithm;
+import com.jd.blockchain.crypto.CryptoBytes;
+import com.jd.blockchain.crypto.CryptoException;
 import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.crypto.SignatureFunction;
+import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 import com.jd.blockchain.crypto.utils.classic.ED25519Utils;
-
-import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
-import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
-import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
 
 public class ED25519SignatureFunction implements SignatureFunction {
 
@@ -49,7 +51,8 @@ public class ED25519SignatureFunction implements SignatureFunction {
 		}
 
 		// 调用ED25519签名算法计算签名结果
-		return new SignatureDigest(ED25519, ED25519Utils.sign(data, rawPrivKeyBytes));
+		byte[] signatureBytes = ED25519Utils.sign(data, rawPrivKeyBytes);
+		return DefaultCryptoEncoding.encodeSignatureDigest(ED25519, signatureBytes);
 	}
 
 	@Override
@@ -125,7 +128,7 @@ public class ED25519SignatureFunction implements SignatureFunction {
 	@Override
 	public SignatureDigest resolveDigest(byte[] digestBytes) {
 		if (supportDigest(digestBytes)) {
-			return new SignatureDigest(digestBytes);
+			return DefaultCryptoEncoding.createSignatureDigest(ED25519.code(), digestBytes);
 		} else {
 			throw new CryptoException("digestBytes are invalid!");
 		}
@@ -147,5 +150,12 @@ public class ED25519SignatureFunction implements SignatureFunction {
 		byte[] privKeyBytes = privKeyParams.getEncoded();
 		byte[] pubKeyBytes = pubKeyParams.getEncoded();
 		return new AsymmetricKeypair(new PubKey(ED25519, pubKeyBytes), new PrivKey(ED25519, privKeyBytes));
+	}
+
+	@Override
+	public <T extends CryptoBytes> boolean support(Class<T> cryptoDataType, byte[] encodedCryptoBytes) {
+		return (SignatureDigest.class == cryptoDataType && supportDigest(encodedCryptoBytes))
+				|| (PubKey.class == cryptoDataType && supportPubKey(encodedCryptoBytes))
+				|| (PrivKey.class == cryptoDataType && supportPrivKey(encodedCryptoBytes));
 	}
 }

@@ -1,12 +1,12 @@
 package com.jd.blockchain.crypto;
 
-import java.util.Arrays;
-
 import com.jd.blockchain.utils.Bytes;
 import com.jd.blockchain.utils.io.BytesSlice;
 
 public abstract class BaseCryptoBytes extends Bytes implements CryptoBytes {
 
+	private static final long serialVersionUID = -678329317790546654L;
+	
 	private short algorithm;
 	
 	public BaseCryptoBytes() {
@@ -33,10 +33,6 @@ public abstract class BaseCryptoBytes extends Bytes implements CryptoBytes {
 	}
 
 	protected abstract boolean support(short algorithm);
-
-	protected byte[] resolveRawCryptoBytes(byte[] cryptoBytes) {
-		return Arrays.copyOfRange(cryptoBytes, 1, cryptoBytes.length);
-	}
 
 	@Override
 	public short getAlgorithm() {

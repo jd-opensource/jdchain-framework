@@ -209,6 +209,11 @@ public class BytesSlice implements ByteSequence, BytesSerializable {
 		
 		return count;
 	}
+	
+	@Override
+	public int copyTo(int srcOffset, byte[] dest, int destOffset, int length) {
+		return copy(srcOffset, dest, destOffset, length);
+	}
 
 	@Override
 	public byte[] toBytes() {

@@ -209,4 +209,10 @@ public class SM4EncryptionFunction implements SymmetricEncryptionFunction {
 		// 根据对应的标识和原始密钥生成相应的密钥数据
 		return new SymmetricKey(SM4, SM4Utils.generateKey());
 	}
+	
+	@Override
+	public <T extends CryptoBytes> boolean support(Class<T> cryptoDataType, byte[] encodedCryptoBytes) {
+		return (SymmetricKey.class == cryptoDataType && supportSymmetricKey(encodedCryptoBytes))
+				|| (SymmetricCiphertext.class == cryptoDataType && supportCiphertext(encodedCryptoBytes));
+	}
 }

@@ -12,7 +12,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.jd.blockchain</groupId>
-			<artifactId>crypto-framework</artifactId>
+			<artifactId>crypto-base</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

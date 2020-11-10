@@ -58,10 +58,6 @@ public interface CryptoAlgorithm {
 	/**
 	 * 密码算法的唯一编码；
 	 * <p>
-	 * 长度16位，高4位标识算法类型（包括： {@link #RANDOM_ALGORITHM}, {@link #HASH_ALGORITHM},
-	 * {@link #SIGNATURE_ALGORITHM}, {@link #ENCRYPTION_ALGORITHM},
-	 * {@link #EXT_ALGORITHM}) 5 种）; 接下来4位标识密钥类型（包括：{@link #SYMMETRIC_KEY},
-	 * {@link #ASYMMETRIC_KEY}）； 最后8位是算法唯一ID；
 	 */
 	@DataField(order = 0, primitiveType = PrimitiveType.INT16)
 	short code();
@@ -83,10 +79,6 @@ public interface CryptoAlgorithm {
 		return String.format("%s[%s]", algorithm.name(), (algorithm.code() & 0xFFFF));
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
 	static byte[] getCodeBytes(CryptoAlgorithm algorithm) {
 		return BytesUtils.toBytes(algorithm.code());
 	}

@@ -117,6 +117,7 @@ public class AESUtils {
 	 */
 	public static byte[] encrypt(byte[] plainBytes, SecretKey key) {
 		try {
+			//使用CBC模式更安全：AES/CBC/PKCS5Padding
 			Cipher cipher = Cipher.getInstance("AES");
 			cipher.init(Cipher.ENCRYPT_MODE, key);
 			return cipher.doFinal(plainBytes);

@@ -1,4 +1,4 @@
-package com.jd.blockchain.provider;
+package com.jd.blockchain.utils.provider;
 
 public class ProviderException extends RuntimeException {
 
