@@ -19,6 +19,7 @@ import org.apache.commons.codec.binary.Base64;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.CryptoProvider;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.transaction.ContractCodeDeployOpTemplate;
@@ -211,7 +212,8 @@ public class ClientResolveUtil {
 				JSONObject pubKeyObj = currConsensusParticipant.getJSONObject("pubKey");
 				String pubKeyBase58 = pubKeyObj.getString("value");
 				// 生成ParticipantNode对象
-                ParticipantCertData participantCertData = new ParticipantCertData(id, address, name, new PubKey(Bytes.fromBase58(pubKeyBase58).toBytes()), null);
+				ParticipantCertData participantCertData = new ParticipantCertData(id, address, name,
+						Crypto.resolveAsPubKey(Bytes.fromBase58(pubKeyBase58).toBytes()), null);
 				participantNodes[i] = participantCertData;
 			}
 			ledgerInitSettingData.setConsensusParticipants(participantNodes);
@@ -248,7 +250,8 @@ public class ClientResolveUtil {
 		String participantName = jsonObject.getString("participantName");
 		JSONObject participantID = jsonObject.getJSONObject("participantID");
 		BlockchainIdentityData blockchainIdentity = blockchainIdentity(participantID);
-		ParticipantRegisterOpTemplate participantRegisterOpTemplate = new ParticipantRegisterOpTemplate(participantName, blockchainIdentity);
+		ParticipantRegisterOpTemplate participantRegisterOpTemplate = new ParticipantRegisterOpTemplate(participantName,
+				blockchainIdentity);
 		return participantRegisterOpTemplate;
 	}
 
@@ -263,9 +266,11 @@ public class ClientResolveUtil {
 				properties[i] = new Property(name, value);
 			}
 		}
-		ConsensusSettingsUpdateOpTemplate consensusSettingsUpdateOpTemplate = new ConsensusSettingsUpdateOpTemplate(properties);
+		ConsensusSettingsUpdateOpTemplate consensusSettingsUpdateOpTemplate = new ConsensusSettingsUpdateOpTemplate(
+				properties);
 		return consensusSettingsUpdateOpTemplate;
 	}
+
 	public static ParticipantStateUpdateOperation convertParticipantStateUpdateOperation(JSONObject jsonObject) {
 		JSONObject participantID = jsonObject.getJSONObject("participantID");
 		BlockchainIdentityData blockchainIdentity = blockchainIdentity(participantID);
@@ -276,7 +281,8 @@ public class ClientResolveUtil {
 		} else if ("DECONSENSUS".equals(state)) {
 			code = 2;
 		}
-		ParticipantStateUpdateOpTemplate participantStateUpdateOpTemplate = new ParticipantStateUpdateOpTemplate(blockchainIdentity, ParticipantNodeState.valueOf(code));
+		ParticipantStateUpdateOpTemplate participantStateUpdateOpTemplate = new ParticipantStateUpdateOpTemplate(
+				blockchainIdentity, ParticipantNodeState.valueOf(code));
 		return participantStateUpdateOpTemplate;
 	}
 
@@ -289,7 +295,7 @@ public class ClientResolveUtil {
 		JSONObject pubKeyObj = jsonObject.getJSONObject("pubKey");
 		// base58值
 		String pubKeyBase58 = pubKeyObj.getString("value");
-		PubKey pubKey = new PubKey(Bytes.fromBase58(pubKeyBase58).toBytes());
+		PubKey pubKey = Crypto.resolveAsPubKey(Bytes.fromBase58(pubKeyBase58).toBytes());
 
 		// 生成对应的对象
 		return new BlockchainIdentityData(address, pubKey);
@@ -330,7 +336,7 @@ public class ClientResolveUtil {
 		private Bytes address;
 		private String name;
 		private PubKey pubKey;
-        private ParticipantNodeState participantNodeState;
+		private ParticipantNodeState participantNodeState;
 
 		public ParticipantCertData() {
 		}
@@ -341,13 +347,14 @@ public class ClientResolveUtil {
 			this.pubKey = participantNode.getPubKey();
 		}
 
-        public ParticipantCertData(int id, Bytes address, String name, PubKey pubKey, ParticipantNodeState participantNodeState) {
+		public ParticipantCertData(int id, Bytes address, String name, PubKey pubKey,
+				ParticipantNodeState participantNodeState) {
 			this.id = id;
 			this.address = address;
 			this.name = name;
 			this.pubKey = pubKey;
-			
-            this.participantNodeState = participantNodeState;
+
+			this.participantNodeState = participantNodeState;
 		}
 
 		@Override
@@ -370,10 +377,10 @@ public class ClientResolveUtil {
 			return id;
 		}
 
-        @Override
-        public ParticipantNodeState getParticipantNodeState() {
-            return participantNodeState;
-        }
+		@Override
+		public ParticipantNodeState getParticipantNodeState() {
+			return participantNodeState;
+		}
 
 	}
 

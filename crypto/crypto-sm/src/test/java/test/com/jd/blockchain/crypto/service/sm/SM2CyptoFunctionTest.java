@@ -1,16 +1,34 @@
 package test.com.jd.blockchain.crypto.service.sm;
 
-import com.jd.blockchain.crypto.*;
-import com.jd.blockchain.crypto.service.sm.SMAlgorithm;
-import com.jd.blockchain.utils.io.BytesUtils;
-import org.junit.Test;
+import static com.jd.blockchain.crypto.CryptoAlgorithm.ASYMMETRIC_KEY;
+import static com.jd.blockchain.crypto.CryptoAlgorithm.ENCRYPTION_ALGORITHM;
+import static com.jd.blockchain.crypto.CryptoAlgorithm.SIGNATURE_ALGORITHM;
+import static com.jd.blockchain.crypto.CryptoKeyType.PRIVATE;
+import static com.jd.blockchain.crypto.CryptoKeyType.PUBLIC;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
 
-import static com.jd.blockchain.crypto.CryptoAlgorithm.*;
-import static com.jd.blockchain.crypto.CryptoKeyType.PRIVATE;
-import static com.jd.blockchain.crypto.CryptoKeyType.PUBLIC;
-import static org.junit.Assert.*;
+import org.junit.Test;
+
+import com.jd.blockchain.crypto.AsymmetricCiphertext;
+import com.jd.blockchain.crypto.AsymmetricEncryptionFunction;
+import com.jd.blockchain.crypto.AsymmetricKeypair;
+import com.jd.blockchain.crypto.Ciphertext;
+import com.jd.blockchain.crypto.Crypto;
+import com.jd.blockchain.crypto.CryptoAlgorithm;
+import com.jd.blockchain.crypto.CryptoException;
+import com.jd.blockchain.crypto.PrivKey;
+import com.jd.blockchain.crypto.PubKey;
+import com.jd.blockchain.crypto.SignatureDigest;
+import com.jd.blockchain.crypto.SignatureFunction;
+import com.jd.blockchain.crypto.service.sm.SMAlgorithm;
+import com.jd.blockchain.utils.io.BytesUtils;
 
 /**
  * @author zhanglin33
@@ -195,7 +213,7 @@ public class SM2CyptoFunctionTest {
 		PubKey pubKey = keyPair.getPubKey();
 		PrivKey privKey = keyPair.getPrivKey();
 
-		Ciphertext ciphertext = asymmetricEncryptionFunction.encrypt(pubKey, data);
+		AsymmetricCiphertext ciphertext = asymmetricEncryptionFunction.encrypt(pubKey, data);
 
 		byte[] decryptedPlaintext = asymmetricEncryptionFunction.decrypt(privKey, ciphertext);
 
@@ -484,4 +502,5 @@ public class SM2CyptoFunctionTest {
 		assertNotNull(actualEx);
 		assertTrue(expectedException.isAssignableFrom(actualEx.getClass()));
 	}
+	
 }

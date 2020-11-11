@@ -16,7 +16,7 @@ public class SM3HashFunction implements HashFunction {
 
 	private static final int DIGEST_BYTES = 256 / 8;
 
-	private static final int DIGEST_LENGTH = CryptoBytes.ALGORYTHM_CODE_SIZE + DIGEST_BYTES;
+	private static final int DIGEST_LENGTH = CryptoAlgorithm.CODE_SIZE + DIGEST_BYTES;
 
 	SM3HashFunction() {
 	}

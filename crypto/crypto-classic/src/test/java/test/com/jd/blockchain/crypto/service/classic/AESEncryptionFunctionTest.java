@@ -16,9 +16,10 @@ import java.util.Random;
 import org.junit.Test;
 
 import com.jd.blockchain.crypto.Ciphertext;
+import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.CryptoAlgorithm;
 import com.jd.blockchain.crypto.CryptoException;
-import com.jd.blockchain.crypto.Crypto;
+import com.jd.blockchain.crypto.SymmetricCiphertext;
 import com.jd.blockchain.crypto.SymmetricEncryptionFunction;
 import com.jd.blockchain.crypto.SymmetricKey;
 import com.jd.blockchain.crypto.service.classic.ClassicAlgorithm;
@@ -116,7 +117,7 @@ public class AESEncryptionFunctionTest {
 
 		SymmetricKey symmetricKey = (SymmetricKey) symmetricEncryptionFunction.generateSymmetricKey();
 
-		Ciphertext ciphertext = symmetricEncryptionFunction.encrypt(symmetricKey, data);
+		SymmetricCiphertext ciphertext = symmetricEncryptionFunction.encrypt(symmetricKey, data);
 
 		byte[] decryptedPlaintext = symmetricEncryptionFunction.decrypt(symmetricKey, ciphertext);
 

@@ -224,6 +224,16 @@ public interface CryptoAlgorithm {
 	static boolean isSymmetricEncryptionAlgorithm(CryptoAlgorithm algorithm) {
 		return isEncryptionAlgorithm(algorithm) && hasSymmetricKey(algorithm);
 	}
+	
+	/**
+	 * 是否属于对称加密算法；
+	 * 
+	 * @param algorithm
+	 * @return
+	 */
+	static boolean isSymmetricEncryptionAlgorithm(short algorithm) {
+		return isEncryptionAlgorithm(algorithm) && hasSymmetricKey(algorithm);
+	}
 
 	/**
 	 * 是否属于非对称加密算法；

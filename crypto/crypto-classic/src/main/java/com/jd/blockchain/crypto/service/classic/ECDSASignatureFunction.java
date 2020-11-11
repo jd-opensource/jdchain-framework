@@ -1,9 +1,9 @@
 package com.jd.blockchain.crypto.service.classic;
 
-import static com.jd.blockchain.crypto.BaseCryptoKey.KEY_TYPE_BYTES;
-import static com.jd.blockchain.crypto.CryptoBytes.ALGORYTHM_CODE_SIZE;
 import static com.jd.blockchain.crypto.CryptoKeyType.PRIVATE;
 import static com.jd.blockchain.crypto.CryptoKeyType.PUBLIC;
+
+import java.security.SecureRandom;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
@@ -13,6 +13,7 @@ import com.jd.blockchain.crypto.AsymmetricKeypair;
 import com.jd.blockchain.crypto.CryptoAlgorithm;
 import com.jd.blockchain.crypto.CryptoBytes;
 import com.jd.blockchain.crypto.CryptoException;
+import com.jd.blockchain.crypto.CryptoKeyType;
 import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
@@ -28,9 +29,9 @@ public class ECDSASignatureFunction implements SignatureFunction {
 	private static final int PRIVKEY_SIZE = 32;
 	private static final int SIGNATUREDIGEST_SIZE = 64;
 
-	private static final int PUBKEY_LENGTH = ALGORYTHM_CODE_SIZE + KEY_TYPE_BYTES + PUBKEY_SIZE;
-	private static final int PRIVKEY_LENGTH = ALGORYTHM_CODE_SIZE + KEY_TYPE_BYTES + PRIVKEY_SIZE;
-	private static final int SIGNATUREDIGEST_LENGTH = ALGORYTHM_CODE_SIZE + SIGNATUREDIGEST_SIZE;
+	private static final int PUBKEY_LENGTH = CryptoAlgorithm.CODE_SIZE + CryptoKeyType.TYPE_CODE_SIZE + PUBKEY_SIZE;
+	private static final int PRIVKEY_LENGTH = CryptoAlgorithm.CODE_SIZE + CryptoKeyType.TYPE_CODE_SIZE + PRIVKEY_SIZE;
+	private static final int SIGNATUREDIGEST_LENGTH = CryptoAlgorithm.CODE_SIZE + SIGNATUREDIGEST_SIZE;
 
 	ECDSASignatureFunction() {
 	}
@@ -84,20 +85,20 @@ public class ECDSASignatureFunction implements SignatureFunction {
 	public PubKey retrievePubKey(PrivKey privKey) {
 		byte[] rawPrivKeyBytes = privKey.getRawKeyBytes();
 		byte[] rawPubKeyBytes = ECDSAUtils.retrievePublicKey(rawPrivKeyBytes);
-		return new PubKey(ECDSA, rawPubKeyBytes);
+		return DefaultCryptoEncoding.encodePubKey(ECDSA, rawPubKeyBytes);
 	}
 
 	@Override
 	public boolean supportPrivKey(byte[] privKeyBytes) {
 		// 验证输入字节数组长度=算法标识长度+密钥类型长度+密钥长度，密钥数据的算法标识对应ECDSA签名算法，并且密钥类型是私钥
 		return privKeyBytes.length == PRIVKEY_LENGTH && CryptoAlgorithm.match(ECDSA, privKeyBytes)
-				&& privKeyBytes[ALGORYTHM_CODE_SIZE] == PRIVATE.CODE;
+				&& privKeyBytes[CryptoAlgorithm.CODE_SIZE] == PRIVATE.CODE;
 	}
 
 	@Override
 	public PrivKey resolvePrivKey(byte[] privKeyBytes) {
 		if (supportPrivKey(privKeyBytes)) {
-			return new PrivKey(privKeyBytes);
+			return DefaultCryptoEncoding.createPrivKey(ECDSA.code(), privKeyBytes);
 		} else {
 			throw new CryptoException("privKeyBytes are invalid!");
 		}
@@ -107,13 +108,13 @@ public class ECDSASignatureFunction implements SignatureFunction {
 	public boolean supportPubKey(byte[] pubKeyBytes) {
 		// 验证输入字节数组长度=算法标识长度+密钥类型长度+密钥长度，密钥数据的算法标识对应ECDSA签名算法，并且密钥类型是公钥
 		return pubKeyBytes.length == PUBKEY_LENGTH && CryptoAlgorithm.match(ECDSA, pubKeyBytes)
-				&& pubKeyBytes[ALGORYTHM_CODE_SIZE] == PUBLIC.CODE;
+				&& pubKeyBytes[CryptoAlgorithm.CODE_SIZE] == PUBLIC.CODE;
 	}
 
 	@Override
 	public PubKey resolvePubKey(byte[] pubKeyBytes) {
 		if (supportPubKey(pubKeyBytes)) {
-			return new PubKey(pubKeyBytes);
+			return DefaultCryptoEncoding.createPubKey(ECDSA.code(), pubKeyBytes);
 		} else {
 			throw new CryptoException("pubKeyBytes are invalid!");
 		}
@@ -141,16 +142,27 @@ public class ECDSASignatureFunction implements SignatureFunction {
 
 	@Override
 	public AsymmetricKeypair generateKeypair() {
+		return generateKeypair(new SecureRandom());
+	}
 
+	@Override
+	public AsymmetricKeypair generateKeypair(byte[] seed) {
+		return generateKeypair(new SecureRandom(seed));
+	}
+
+	public AsymmetricKeypair generateKeypair(SecureRandom random) {
 		// 调用ECDSA算法的密钥生成算法生成公私钥对priKey和pubKey，返回密钥对
-		AsymmetricCipherKeyPair keyPair = ECDSAUtils.generateKeyPair();
+		AsymmetricCipherKeyPair keyPair = ECDSAUtils.generateKeyPair(random);
 		ECPrivateKeyParameters privKeyParams = (ECPrivateKeyParameters) keyPair.getPrivate();
 		ECPublicKeyParameters pubKeyParams = (ECPublicKeyParameters) keyPair.getPublic();
 
 		byte[] privKeyBytes = ECDSAUtils.trimBigIntegerTo32Bytes(privKeyParams.getD());
 		byte[] pubKeyBytes = pubKeyParams.getQ().getEncoded(false);
 
-		return new AsymmetricKeypair(new PubKey(ECDSA, pubKeyBytes), new PrivKey(ECDSA, privKeyBytes));
+		PrivKey privKey = DefaultCryptoEncoding.encodePrivKey(ECDSA, privKeyBytes);
+		PubKey pubKey = DefaultCryptoEncoding.encodePubKey(ECDSA, pubKeyBytes);
+
+		return new AsymmetricKeypair(pubKey, privKey);
 	}
 
 	@Override

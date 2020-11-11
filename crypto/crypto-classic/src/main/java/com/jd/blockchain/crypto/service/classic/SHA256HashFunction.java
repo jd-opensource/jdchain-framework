@@ -1,7 +1,5 @@
 package com.jd.blockchain.crypto.service.classic;
 
-import static com.jd.blockchain.crypto.CryptoBytes.ALGORYTHM_CODE_SIZE;
-
 import java.util.Arrays;
 
 import com.jd.blockchain.crypto.CryptoAlgorithm;
@@ -18,7 +16,7 @@ public class SHA256HashFunction implements HashFunction {
 
 	public static final int DIGEST_BYTES = 256 / 8;
 
-	private static final int DIGEST_LENGTH = ALGORYTHM_CODE_SIZE + SHA256HashFunction.DIGEST_BYTES;
+	private static final int DIGEST_LENGTH = CryptoAlgorithm.CODE_SIZE + SHA256HashFunction.DIGEST_BYTES;
 
 	SHA256HashFunction() {
 	}

@@ -114,7 +114,6 @@ public class RSAUtils {
 
 	// Retrieve public key in raw keys form
 	public static byte[] retrievePublicKey(byte[] privateKey) {
-
 		RSAPrivateCrtKeyParameters privKey = bytes2PrivKey_RawKey(privateKey);
 
 		BigInteger modulus = privKey.getModulus();

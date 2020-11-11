@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jd.blockchain.crypto.AddressEncoding;
-import com.jd.blockchain.crypto.CryptoAlgorithm;
+import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.utils.Bytes;
 import com.jd.blockchain.utils.io.ByteArray;
@@ -42,11 +42,6 @@ public class BlockchainIdentityData implements BytesWriter, BytesReader, Externa
 		this.address = AddressEncoding.generateAddress(pubKey);
 	}
 
-	public BlockchainIdentityData(CryptoAlgorithm algorithm, ByteArray pubKeyBytes) {
-		this.pubKey = new PubKey(algorithm, pubKeyBytes.bytes());
-		this.address = AddressEncoding.generateAddress(pubKey);
-	}
-
 	public BlockchainIdentityData(Bytes address, PubKey pubKey) {
 		if (!verifyAddress(address, pubKey)) {
 			throw new IllegalArgumentException("Blockchain address is mismatch with the pub-key!");
@@ -64,7 +59,7 @@ public class BlockchainIdentityData implements BytesWriter, BytesReader, Externa
 	public void resolvFrom(InputStream in) throws IOException {
 		Bytes addr = AddressEncoding.readAddress(in);
 		byte[] value = BytesEncoding.readInShort(in);
-		PubKey pk = new PubKey(value);
+		PubKey pk = Crypto.resolveAsPubKey(value);
 		this.address = addr;
 		this.pubKey = pk;
 	}

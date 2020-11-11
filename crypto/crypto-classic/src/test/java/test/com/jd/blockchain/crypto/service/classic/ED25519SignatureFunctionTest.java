@@ -24,7 +24,10 @@ import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.crypto.SignatureFunction;
 import com.jd.blockchain.crypto.service.classic.ClassicAlgorithm;
+import com.jd.blockchain.crypto.service.classic.ED25519SignatureFunction;
+import com.jd.blockchain.crypto.utils.classic.ED25519Utils;
 import com.jd.blockchain.utils.io.BytesUtils;
+import com.jd.blockchain.utils.security.RandomUtils;
 
 /**
  * @author zhanglin33
@@ -86,6 +89,31 @@ public class ED25519SignatureFunctionTest {
 		byte[] rawPrivKeyBytes = privKey.getRawKeyBytes();
 		assertArrayEquals(BytesUtils.concat(algoBytes, pubKeyTypeBytes, rawPubKeyBytes), pubKey.toBytes());
 		assertArrayEquals(BytesUtils.concat(algoBytes, privKeyTypeBytes, rawPrivKeyBytes), privKey.toBytes());
+	}
+
+	@Test
+	public void generateKeyWithFixedSeedTest() {
+		// 验证基于固定的种子是否能够生成相同密钥的操作；
+		byte[] seed = RandomUtils.generateRandomBytes(32);
+		
+		CryptoAlgorithm algorithm = Crypto.getAlgorithm("ed25519");
+		assertNotNull(algorithm);
+
+		SignatureFunction signatureFunction = Crypto.getSignatureFunction(algorithm);
+		AsymmetricKeypair keypair1 =  signatureFunction.generateKeypair(seed);
+		AsymmetricKeypair keypair2 = signatureFunction.generateKeypair(seed);
+
+		assertArrayEquals(keypair1.getPrivKey().toBytes(), keypair2.getPrivKey().toBytes());
+		assertArrayEquals(keypair1.getPubKey().toBytes(), keypair2.getPubKey().toBytes());
+
+		// 循环一万次验证结果；
+		for (int i = 0; i < 10000; i++) {
+			keypair1 =  signatureFunction.generateKeypair(seed);
+			keypair2 = signatureFunction.generateKeypair(seed);
+
+			assertArrayEquals(keypair1.getPrivKey().toBytes(), keypair2.getPrivKey().toBytes());
+			assertArrayEquals(keypair1.getPubKey().toBytes(), keypair2.getPubKey().toBytes());
+		}
 	}
 
 	@Test

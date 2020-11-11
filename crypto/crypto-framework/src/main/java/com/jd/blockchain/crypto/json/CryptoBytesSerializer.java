@@ -6,11 +6,11 @@ import java.lang.reflect.Type;
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.ObjectSerializer;
 import com.alibaba.fastjson.serializer.SerializeWriter;
-import com.jd.blockchain.crypto.HashDigest;
+import com.jd.blockchain.crypto.CryptoBytes;
 
-public class HashDigestSerializer implements ObjectSerializer {
+public class CryptoBytesSerializer implements ObjectSerializer {
 	
-	public static HashDigestSerializer INSTANCE = new HashDigestSerializer();
+	public static CryptoBytesSerializer INSTANCE = new CryptoBytesSerializer();
 
 	@Override
 	public void write(JSONSerializer serializer, Object object, Object fieldName, Type fieldType, int features)
@@ -20,8 +20,7 @@ public class HashDigestSerializer implements ObjectSerializer {
 			out.writeNull();
 			return;
 		}
-		HashDigest hash = (HashDigest) object;
-		out.writeString(hash.toBase58());
+		out.writeString(((CryptoBytes) object).toBase58());
 	}
 
 }

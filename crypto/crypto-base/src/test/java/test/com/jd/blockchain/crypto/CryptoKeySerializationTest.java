@@ -1,6 +1,8 @@
 package test.com.jd.blockchain.crypto;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.UUID;
 
@@ -11,6 +13,8 @@ import com.jd.blockchain.crypto.CryptoAlgorithmDefinition;
 import com.jd.blockchain.crypto.CryptoKeyType;
 import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.crypto.PubKey;
+import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
+import com.jd.blockchain.crypto.base.PrivKeyBytes;
 import com.jd.blockchain.utils.io.BytesUtils;
 
 public class CryptoKeySerializationTest {
@@ -25,7 +29,7 @@ public class CryptoKeySerializationTest {
 		// Simulate a public key with a random number;
 		byte[] rawBytes = BytesUtils.toBytes(UUID.randomUUID().toString());
 
-		PubKey pubKey = new PubKey(algorithm, rawBytes);
+		PubKey pubKey = DefaultCryptoEncoding.encodePubKey(algorithm, rawBytes);
 
 		assertEquals(algorithm.code(), pubKey.getAlgorithm());
 		assertEquals(CryptoKeyType.PUBLIC, pubKey.getKeyType());
@@ -34,12 +38,16 @@ public class CryptoKeySerializationTest {
 		byte[] keyBytes = pubKey.toBytes();
 
 		// deserialize;
-		PubKey desPubKey = new PubKey(keyBytes);
+		
+		short algorithmCode = DefaultCryptoEncoding.decodeAlgorithm(keyBytes);
+		assertEquals(algorithm.code(), algorithmCode);
+		
+		PubKey desPubKey = DefaultCryptoEncoding.createPubKey(algorithmCode, keyBytes);
 
 		assertEquals(algorithm.code(), desPubKey.getAlgorithm());
 		assertEquals(CryptoKeyType.PUBLIC, desPubKey.getKeyType());
 		byte[] desRawBytes = desPubKey.getRawKeyBytes();
-		assertTrue(BytesUtils.equals(rawBytes, desRawBytes));
+		assertArrayEquals(rawBytes, desRawBytes);
 
 	}
 	
@@ -53,7 +61,7 @@ public class CryptoKeySerializationTest {
 		// Simulate a public key with a random number;
 		byte[] rawBytes = BytesUtils.toBytes(UUID.randomUUID().toString());
 		
-		PrivKey privKey = new PrivKey(algorithm, rawBytes);
+		PrivKey privKey = DefaultCryptoEncoding.encodePrivKey(algorithm, rawBytes);
 		
 		assertEquals(algorithm.code(), privKey.getAlgorithm());
 		assertEquals(CryptoKeyType.PRIVATE, privKey.getKeyType());
@@ -62,7 +70,9 @@ public class CryptoKeySerializationTest {
 		byte[] keyBytes = privKey.toBytes();
 		
 		// deserialize;
-		PrivKey desPrivKey = new PrivKey(keyBytes);
+		short algorithmCode = DefaultCryptoEncoding.decodeAlgorithm(keyBytes);
+		assertEquals(algorithm.code(), algorithmCode);
+		PrivKey desPrivKey = new PrivKeyBytes(algorithmCode, keyBytes);
 		
 		assertEquals(algorithm.code(), desPrivKey.getAlgorithm());
 		assertEquals(CryptoKeyType.PRIVATE, desPrivKey.getKeyType());

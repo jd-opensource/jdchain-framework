@@ -1,6 +1,5 @@
 package com.jd.blockchain.crypto.base;
 
-import com.jd.blockchain.crypto.CryptoBytesEncoding;
 import com.jd.blockchain.crypto.CryptoDigest;
 
 public class EncodedCryptoDigest extends EncodedCryptoBytes implements CryptoDigest {
@@ -13,7 +12,7 @@ public class EncodedCryptoDigest extends EncodedCryptoBytes implements CryptoDig
 
 	@Override
 	public byte[] getRawDigest() {
-		return CryptoBytesEncoding.decodeRawBytes(getDirectBytes());
+		return DefaultCryptoEncoding.decodeRawBytes(getDirectBytes());
 	}
 
 

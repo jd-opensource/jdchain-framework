@@ -59,7 +59,7 @@ public class KeyGenUtils {
 	private static PubKey decodePubKeyBytes(byte[] encodedPubKeyBytes) {
 		byte[] pubKeyBytes = Arrays.copyOfRange(encodedPubKeyBytes, PUB_KEY_FILE_MAGICNUM.length,
 				encodedPubKeyBytes.length);
-		return new PubKey(pubKeyBytes);
+		return Crypto.resolveAsPubKey(pubKeyBytes);
 	}
 
 	public static PrivKey decryptedPrivKeyBytes(byte[] encodedPrivKeyBytes, byte[] pwdBytes) {
@@ -69,7 +69,7 @@ public class KeyGenUtils {
 				encodedPrivKeyBytes.length);
 		try {
 			byte[] plainKeyBytes = AESUtils.decrypt(encryptedKeyBytes, userKey);
-			return new PrivKey(plainKeyBytes);
+			return Crypto.resolveAsPrivKey(plainKeyBytes);
 		} catch (DecryptionException e) {
 			throw new DecryptionException("Invalid password!", e);
 		}

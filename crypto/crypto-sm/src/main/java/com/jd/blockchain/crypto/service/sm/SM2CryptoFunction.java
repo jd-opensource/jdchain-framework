@@ -1,9 +1,9 @@
 package com.jd.blockchain.crypto.service.sm;
 
-import static com.jd.blockchain.crypto.BaseCryptoKey.KEY_TYPE_BYTES;
-import static com.jd.blockchain.crypto.CryptoBytes.ALGORYTHM_CODE_SIZE;
 import static com.jd.blockchain.crypto.CryptoKeyType.PRIVATE;
 import static com.jd.blockchain.crypto.CryptoKeyType.PUBLIC;
+
+import java.security.SecureRandom;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
@@ -12,10 +12,10 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import com.jd.blockchain.crypto.AsymmetricCiphertext;
 import com.jd.blockchain.crypto.AsymmetricEncryptionFunction;
 import com.jd.blockchain.crypto.AsymmetricKeypair;
-import com.jd.blockchain.crypto.Ciphertext;
 import com.jd.blockchain.crypto.CryptoAlgorithm;
 import com.jd.blockchain.crypto.CryptoBytes;
 import com.jd.blockchain.crypto.CryptoException;
+import com.jd.blockchain.crypto.CryptoKeyType;
 import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
@@ -32,15 +32,15 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	private static final int SIGNATUREDIGEST_SIZE = 64;
 	private static final int HASHDIGEST_SIZE = 32;
 
-	private static final int PUBKEY_LENGTH = ALGORYTHM_CODE_SIZE + KEY_TYPE_BYTES + ECPOINT_SIZE;
-	private static final int PRIVKEY_LENGTH = ALGORYTHM_CODE_SIZE + KEY_TYPE_BYTES + PRIVKEY_SIZE;
-	private static final int SIGNATUREDIGEST_LENGTH = ALGORYTHM_CODE_SIZE + SIGNATUREDIGEST_SIZE;
+	private static final int PUBKEY_LENGTH = CryptoAlgorithm.CODE_SIZE + CryptoKeyType.TYPE_CODE_SIZE + ECPOINT_SIZE;
+	private static final int PRIVKEY_LENGTH = CryptoAlgorithm.CODE_SIZE + CryptoKeyType.TYPE_CODE_SIZE + PRIVKEY_SIZE;
+	private static final int SIGNATUREDIGEST_LENGTH = CryptoAlgorithm.CODE_SIZE + SIGNATUREDIGEST_SIZE;
 
 	SM2CryptoFunction() {
 	}
 
 	@Override
-	public Ciphertext encrypt(PubKey pubKey, byte[] data) {
+	public AsymmetricCiphertext encrypt(PubKey pubKey, byte[] data) {
 
 		byte[] rawPubKeyBytes = pubKey.getRawKeyBytes();
 
@@ -55,11 +55,12 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 		}
 
 		// 调用SM2加密算法计算密文
-		return new AsymmetricCiphertext(SM2, SM2Utils.encrypt(data, rawPubKeyBytes));
+		byte[] rawCipherBytes = SM2Utils.encrypt(data, rawPubKeyBytes);
+		return DefaultCryptoEncoding.encodeAsymmetricCiphertext(SM2, rawCipherBytes);
 	}
 
 	@Override
-	public byte[] decrypt(PrivKey privKey, Ciphertext ciphertext) {
+	public byte[] decrypt(PrivKey privKey, AsymmetricCiphertext ciphertext) {
 
 		byte[] rawPrivKeyBytes = privKey.getRawKeyBytes();
 		byte[] rawCiphertextBytes = ciphertext.getRawCiphertext();
@@ -87,20 +88,20 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	public PubKey retrievePubKey(PrivKey privKey) {
 		byte[] rawPrivKeyBytes = privKey.getRawKeyBytes();
 		byte[] rawPubKeyBytes = SM2Utils.retrievePublicKey(rawPrivKeyBytes);
-		return new PubKey(SM2, rawPubKeyBytes);
+		return DefaultCryptoEncoding.encodePubKey(SM2, rawPubKeyBytes);
 	}
 
 	@Override
 	public boolean supportPrivKey(byte[] privKeyBytes) {
 		// 验证输入字节数组长度=算法标识长度+密钥类型长度+密钥长度，密钥数据的算法标识对应SM2算法，并且密钥类型是私钥
 		return privKeyBytes.length == PRIVKEY_LENGTH && CryptoAlgorithm.match(SM2, privKeyBytes)
-				&& privKeyBytes[ALGORYTHM_CODE_SIZE] == PRIVATE.CODE;
+				&& privKeyBytes[CryptoAlgorithm.CODE_SIZE] == PRIVATE.CODE;
 	}
 
 	@Override
 	public PrivKey resolvePrivKey(byte[] privKeyBytes) {
 		if (supportPrivKey(privKeyBytes)) {
-			return new PrivKey(privKeyBytes);
+			return DefaultCryptoEncoding.createPrivKey(SM2.code(), privKeyBytes);
 		} else {
 			throw new CryptoException("privKeyBytes are invalid!");
 		}
@@ -110,13 +111,13 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	public boolean supportPubKey(byte[] pubKeyBytes) {
 		// 验证输入字节数组长度=算法标识长度+密钥类型长度+椭圆曲线点长度，密钥数据的算法标识对应SM2算法，并且密钥类型是公钥
 		return pubKeyBytes.length == PUBKEY_LENGTH && CryptoAlgorithm.match(SM2, pubKeyBytes)
-				&& pubKeyBytes[ALGORYTHM_CODE_SIZE] == PUBLIC.CODE;
+				&& pubKeyBytes[CryptoAlgorithm.CODE_SIZE] == PUBLIC.CODE;
 	}
 
 	@Override
 	public PubKey resolvePubKey(byte[] pubKeyBytes) {
 		if (supportPubKey(pubKeyBytes)) {
-			return new PubKey(pubKeyBytes);
+			return DefaultCryptoEncoding.createPubKey(SM2.code(), pubKeyBytes);
 		} else {
 			throw new CryptoException("pubKeyBytes are invalid!");
 		}
@@ -125,14 +126,14 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	@Override
 	public boolean supportCiphertext(byte[] ciphertextBytes) {
 		// 验证输入字节数组长度>=算法标识长度+椭圆曲线点长度+哈希长度，字节数组的算法标识对应SM2算法
-		return ciphertextBytes.length >= ALGORYTHM_CODE_SIZE + ECPOINT_SIZE + HASHDIGEST_SIZE
+		return ciphertextBytes.length >= CryptoAlgorithm.CODE_SIZE + ECPOINT_SIZE + HASHDIGEST_SIZE
 				&& CryptoAlgorithm.match(SM2, ciphertextBytes);
 	}
 
 	@Override
 	public AsymmetricCiphertext resolveCiphertext(byte[] ciphertextBytes) {
 		if (supportCiphertext(ciphertextBytes)) {
-			return new AsymmetricCiphertext(ciphertextBytes);
+			return DefaultCryptoEncoding.createAsymmetricCiphertext(SM2.code(), ciphertextBytes);
 		} else {
 			throw new CryptoException("ciphertextBytes are invalid!");
 		}
@@ -205,7 +206,15 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 
 	@Override
 	public AsymmetricKeypair generateKeypair() {
+		return generateKeypair(new SecureRandom());
+	}
 
+	@Override
+	public AsymmetricKeypair generateKeypair(byte[] seed) {
+		return generateKeypair(new SecureRandom(seed));
+	}
+
+	private AsymmetricKeypair generateKeypair(SecureRandom random) {
 		// 调用SM2算法的密钥生成算法生成公私钥对priKey和pubKey，返回密钥对
 		AsymmetricCipherKeyPair keyPair = SM2Utils.generateKeyPair();
 		ECPrivateKeyParameters ecPriv = (ECPrivateKeyParameters) keyPair.getPrivate();
@@ -221,7 +230,10 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 
 		byte[] pubKeyBytes = ecPub.getQ().getEncoded(false);
 
-		return new AsymmetricKeypair(new PubKey(SM2, pubKeyBytes), new PrivKey(SM2, privKeyBytes));
+		PrivKey privKey = DefaultCryptoEncoding.encodePrivKey(SM2, privKeyBytes);
+		PubKey pubKey = DefaultCryptoEncoding.encodePubKey(SM2, pubKeyBytes);
+
+		return new AsymmetricKeypair(pubKey, privKey);
 	}
 
 	@Override

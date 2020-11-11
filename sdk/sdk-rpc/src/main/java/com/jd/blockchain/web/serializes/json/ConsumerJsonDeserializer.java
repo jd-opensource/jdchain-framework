@@ -40,15 +40,15 @@ public class ConsumerJsonDeserializer implements ExtendJsonDeserializer {
 			if (ByteArrayObjectUtil.BYTEARRAY_JSON_SERIALIZE_CLASS_ARRAY.contains(clazz)) {
 				// 首先做JSON序列化，获取value结果
 				ValueJson valueJson = JSON.parseObject(parseText, ValueJson.class);
-				byte[] hashBytes = Base58Utils.decode(valueJson.getValue());
+				byte[] valueBytes = Base58Utils.decode(valueJson.getValue());
 				if (clazz == HashDigest.class) {
-					return (T) Crypto.resolveAsHashDigest(hashBytes);
+					return (T) Crypto.resolveAsHashDigest(valueBytes);
 				} else if (clazz == PubKey.class) {
-					return (T) new PubKey(hashBytes);
+					return (T) Crypto.resolveAsPubKey(valueBytes);
 				} else if (clazz == SignatureDigest.class) {
-					return (T) Crypto.resolveAsSignatureDigest(hashBytes);
+					return (T) Crypto.resolveAsSignatureDigest(valueBytes);
 				} else if (clazz == Bytes.class) {
-					return (T) new Bytes(hashBytes);
+					return (T) new Bytes(valueBytes);
 				}
 			}
 		}
@@ -61,17 +61,17 @@ public class ConsumerJsonDeserializer implements ExtendJsonDeserializer {
 			for (Map.Entry<String, Object> entry : map.entrySet()) {
 				Object value = entry.getValue();
 				if (value instanceof String) {
-					byte[] hashBytes = Base58Utils.decode((String) value);
+					byte[] valueBytes = Base58Utils.decode((String) value);
 					if (clazz == HashDigest.class) {
-						return Crypto.resolveAsHashDigest(hashBytes);
+						return Crypto.resolveAsHashDigest(valueBytes);
 					} else if (clazz == PubKey.class) {
-						return new PubKey(hashBytes);
+						return Crypto.resolveAsPubKey(valueBytes);
 					} else if (clazz == SignatureDigest.class) {
-						return Crypto.resolveAsSignatureDigest(hashBytes);
+						return Crypto.resolveAsSignatureDigest(valueBytes);
 					} else if (clazz == Bytes.class) {
-						return new Bytes(hashBytes);
+						return new Bytes(valueBytes);
 					} else if (clazz == BytesSlice.class) {
-						return new BytesSlice(hashBytes);
+						return new BytesSlice(valueBytes);
 					}
 				}
 			}

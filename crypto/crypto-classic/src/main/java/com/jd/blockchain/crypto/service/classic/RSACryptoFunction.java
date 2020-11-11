@@ -1,21 +1,22 @@
 package com.jd.blockchain.crypto.service.classic;
 
-import static com.jd.blockchain.crypto.BaseCryptoKey.KEY_TYPE_BYTES;
-import static com.jd.blockchain.crypto.CryptoBytes.ALGORYTHM_CODE_SIZE;
 import static com.jd.blockchain.crypto.CryptoKeyType.PRIVATE;
 import static com.jd.blockchain.crypto.CryptoKeyType.PUBLIC;
+
+import java.security.SecureRandom;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.RSAKeyParameters;
 import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;
+import org.bouncycastle.crypto.prng.FixedSecureRandom;
 
 import com.jd.blockchain.crypto.AsymmetricCiphertext;
 import com.jd.blockchain.crypto.AsymmetricEncryptionFunction;
 import com.jd.blockchain.crypto.AsymmetricKeypair;
-import com.jd.blockchain.crypto.Ciphertext;
 import com.jd.blockchain.crypto.CryptoAlgorithm;
 import com.jd.blockchain.crypto.CryptoBytes;
 import com.jd.blockchain.crypto.CryptoException;
+import com.jd.blockchain.crypto.CryptoKeyType;
 import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
@@ -44,12 +45,12 @@ public class RSACryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	private static final int SIGNATUREDIGEST_SIZE = 256;
 	private static final int CIPHERTEXTBLOCK_SIZE = 256;
 
-	private static final int PUBKEY_LENGTH = ALGORYTHM_CODE_SIZE + KEY_TYPE_BYTES + PUBKEY_SIZE;
-	private static final int PRIVKEY_LENGTH = ALGORYTHM_CODE_SIZE + KEY_TYPE_BYTES + PRIVKEY_SIZE;
-	private static final int SIGNATUREDIGEST_LENGTH = ALGORYTHM_CODE_SIZE + SIGNATUREDIGEST_SIZE;
+	private static final int PUBKEY_LENGTH = CryptoAlgorithm.CODE_SIZE + CryptoKeyType.TYPE_CODE_SIZE + PUBKEY_SIZE;
+	private static final int PRIVKEY_LENGTH = CryptoAlgorithm.CODE_SIZE + CryptoKeyType.TYPE_CODE_SIZE + PRIVKEY_SIZE;
+	private static final int SIGNATUREDIGEST_LENGTH = CryptoAlgorithm.CODE_SIZE + SIGNATUREDIGEST_SIZE;
 
 	@Override
-	public Ciphertext encrypt(PubKey pubKey, byte[] data) {
+	public AsymmetricCiphertext encrypt(PubKey pubKey, byte[] data) {
 
 		byte[] rawPubKeyBytes = pubKey.getRawKeyBytes();
 
@@ -64,11 +65,12 @@ public class RSACryptoFunction implements AsymmetricEncryptionFunction, Signatur
 		}
 
 		// 调用RSA加密算法计算密文
-		return new AsymmetricCiphertext(ALGORITHM, RSAUtils.encrypt(data, rawPubKeyBytes));
+		byte[] cipherbytes = RSAUtils.encrypt(data, rawPubKeyBytes);
+		return DefaultCryptoEncoding.encodeAsymmetricCiphertext(ALGORITHM, cipherbytes);
 	}
 
 	@Override
-	public byte[] decrypt(PrivKey privKey, Ciphertext ciphertext) {
+	public byte[] decrypt(PrivKey privKey, AsymmetricCiphertext ciphertext) {
 
 		byte[] rawPrivKeyBytes = privKey.getRawKeyBytes();
 		byte[] rawCiphertextBytes = ciphertext.getRawCiphertext();
@@ -96,7 +98,7 @@ public class RSACryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	public PubKey retrievePubKey(PrivKey privKey) {
 		byte[] rawPrivKeyBytes = privKey.getRawKeyBytes();
 		byte[] rawPubKeyBytes = RSAUtils.retrievePublicKey(rawPrivKeyBytes);
-		return new PubKey(ALGORITHM, rawPubKeyBytes);
+		return DefaultCryptoEncoding.encodePubKey(ALGORITHM, rawPubKeyBytes);
 	}
 
 	@Override
@@ -149,13 +151,13 @@ public class RSACryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	public boolean supportPrivKey(byte[] privKeyBytes) {
 		// 验证输入字节数组长度=算法标识长度+密钥类型长度+密钥长度，密钥数据的算法标识对应RSA算法，并且密钥类型是私钥
 		return privKeyBytes.length == PRIVKEY_LENGTH && CryptoAlgorithm.match(ALGORITHM, privKeyBytes)
-				&& privKeyBytes[ALGORYTHM_CODE_SIZE] == PRIVATE.CODE;
+				&& privKeyBytes[CryptoAlgorithm.CODE_SIZE] == PRIVATE.CODE;
 	}
 
 	@Override
 	public PrivKey resolvePrivKey(byte[] privKeyBytes) {
 		if (supportPrivKey(privKeyBytes)) {
-			return new PrivKey(privKeyBytes);
+			return DefaultCryptoEncoding.createPrivKey(ALGORITHM.code(), privKeyBytes);
 		} else {
 			throw new CryptoException("privKeyBytes are invalid!");
 		}
@@ -165,13 +167,13 @@ public class RSACryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	public boolean supportPubKey(byte[] pubKeyBytes) {
 		// 验证输入字节数组长度=算法标识长度+密钥类型长度+椭圆曲线点长度，密钥数据的算法标识对应RSA算法，并且密钥类型是公钥
 		return pubKeyBytes.length == PUBKEY_LENGTH && CryptoAlgorithm.match(ALGORITHM, pubKeyBytes)
-				&& pubKeyBytes[ALGORYTHM_CODE_SIZE] == PUBLIC.CODE;
+				&& pubKeyBytes[CryptoAlgorithm.CODE_SIZE] == PUBLIC.CODE;
 	}
 
 	@Override
 	public PubKey resolvePubKey(byte[] pubKeyBytes) {
 		if (supportPubKey(pubKeyBytes)) {
-			return new PubKey(pubKeyBytes);
+			return DefaultCryptoEncoding.createPubKey(ALGORITHM.code(), pubKeyBytes);
 		} else {
 			throw new CryptoException("pubKeyBytes are invalid!");
 		}
@@ -195,14 +197,14 @@ public class RSACryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	@Override
 	public boolean supportCiphertext(byte[] ciphertextBytes) {
 		// 验证输入字节数组长度=密文分组的整数倍，字节数组的算法标识对应RSA算法
-		return (ciphertextBytes.length % CIPHERTEXTBLOCK_SIZE == ALGORYTHM_CODE_SIZE)
+		return (ciphertextBytes.length % CIPHERTEXTBLOCK_SIZE == CryptoAlgorithm.CODE_SIZE)
 				&& CryptoAlgorithm.match(ALGORITHM, ciphertextBytes);
 	}
 
 	@Override
 	public AsymmetricCiphertext resolveCiphertext(byte[] ciphertextBytes) {
 		if (supportCiphertext(ciphertextBytes)) {
-			return new AsymmetricCiphertext(ciphertextBytes);
+			return DefaultCryptoEncoding.createAsymmetricCiphertext(ALGORITHM.code(), ciphertextBytes);
 		} else {
 			throw new CryptoException("ciphertextBytes are invalid!");
 		}
@@ -215,15 +217,26 @@ public class RSACryptoFunction implements AsymmetricEncryptionFunction, Signatur
 
 	@Override
 	public AsymmetricKeypair generateKeypair() {
+		return generateKeypair(new SecureRandom());
+	}
 
-		AsymmetricCipherKeyPair keyPair = RSAUtils.generateKeyPair();
-		RSAKeyParameters pubKey = (RSAKeyParameters) keyPair.getPublic();
-		RSAPrivateCrtKeyParameters privKey = (RSAPrivateCrtKeyParameters) keyPair.getPrivate();
+	@Override
+	public AsymmetricKeypair generateKeypair(byte[] seed) {
+		return generateKeypair(new FixedSecureRandom(seed));
+	}
 
-		byte[] pubKeyBytes = RSAUtils.pubKey2Bytes_RawKey(pubKey);
-		byte[] privKeyBytes = RSAUtils.privKey2Bytes_RawKey(privKey);
+	public AsymmetricKeypair generateKeypair(SecureRandom random) {
+		AsymmetricCipherKeyPair keyPair = RSAUtils.generateKeyPair(random);
+		RSAKeyParameters pubKeyParams = (RSAKeyParameters) keyPair.getPublic();
+		RSAPrivateCrtKeyParameters privKeyParams = (RSAPrivateCrtKeyParameters) keyPair.getPrivate();
 
-		return new AsymmetricKeypair(new PubKey(ALGORITHM, pubKeyBytes), new PrivKey(ALGORITHM, privKeyBytes));
+		byte[] pubKeyBytes = RSAUtils.pubKey2Bytes_RawKey(pubKeyParams);
+		byte[] privKeyBytes = RSAUtils.privKey2Bytes_RawKey(privKeyParams);
+
+		PrivKey privKey = DefaultCryptoEncoding.encodePrivKey(ALGORITHM, privKeyBytes);
+		PubKey pubKey = DefaultCryptoEncoding.encodePubKey(ALGORITHM, pubKeyBytes);
+
+		return new AsymmetricKeypair(pubKey, privKey);
 	}
 
 	@Override

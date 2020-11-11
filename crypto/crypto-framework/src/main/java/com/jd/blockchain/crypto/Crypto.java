@@ -363,12 +363,92 @@ public final class Crypto {
 		return encoding.decodeSignatureDigest(encodedCryptoBytes);
 	}
 
+	public static PrivKey resolveAsPrivKey(byte[] encodedCryptoBytes) {
+		return encoding.decodePrivKey(encodedCryptoBytes);
+	}
+
+	public static PubKey resolveAsPubKey(byte[] encodedCryptoBytes) {
+		return encoding.decodePubKey(encodedCryptoBytes);
+	}
+	
+	public static SymmetricKey resolveAsSymmetricKey(byte[] encodedCryptoBytes) {
+		return encoding.decodeSymmetricKey(encodedCryptoBytes);
+	}
+	
+	public static SymmetricCiphertext resolveAsSymmetricCiphertext(byte[] encodedCryptoBytes) {
+		return encoding.decodeSymmetricCiphertext(encodedCryptoBytes);
+	}
+	
+	public static AsymmetricCiphertext resolveAsAsymmetricCiphertext(byte[] encodedCryptoBytes) {
+		return encoding.decodeAsymmetricCiphertext(encodedCryptoBytes);
+	}
+
 	private static class CompositeCryptoEncoding implements CryptoEncoding {
 
 		private ArrayList<CryptoEncoding> encodings = new ArrayList<>();
 
 		public void register(CryptoEncoding encoding) {
 			encodings.add(encoding);
+		}
+
+		@Override
+		public SymmetricCiphertext decodeSymmetricCiphertext(byte[] encodedCryptoBytes) {
+			SymmetricCiphertext cryptoBytes = null;
+			for (CryptoEncoding encoding : encodings) {
+				cryptoBytes = encoding.decodeSymmetricCiphertext(encodedCryptoBytes);
+				if (cryptoBytes !=null) {
+					return cryptoBytes;
+				}
+			}
+			throw new CryptoException("Unsupport the specified encoded symmetric cipher bytes!");
+		}
+
+		@Override
+		public AsymmetricCiphertext decodeAsymmetricCiphertext(byte[] encodedCryptoBytes) {
+			AsymmetricCiphertext cryptoBytes = null;
+			for (CryptoEncoding encoding : encodings) {
+				cryptoBytes = encoding.decodeAsymmetricCiphertext(encodedCryptoBytes);
+				if (cryptoBytes !=null) {
+					return cryptoBytes;
+				}
+			}
+			throw new CryptoException("Unsupport the specified encoded asymmetric cipher bytes!");
+		}
+
+		@Override
+		public SymmetricKey decodeSymmetricKey(byte[] encodedCryptoBytes) {
+			SymmetricKey cryptoBytes = null;
+			for (CryptoEncoding encoding : encodings) {
+				cryptoBytes = encoding.decodeSymmetricKey(encodedCryptoBytes);
+				if (cryptoBytes !=null) {
+					return cryptoBytes;
+				}
+			}
+			throw new CryptoException("Unsupport the specified encoded symmetric key bytes!");
+		}
+
+		@Override
+		public PubKey decodePubKey(byte[] encodedCryptoBytes) {
+			PubKey cryptoBytes = null;
+			for (CryptoEncoding encoding : encodings) {
+				cryptoBytes = encoding.decodePubKey(encodedCryptoBytes);
+				if (cryptoBytes !=null) {
+					return cryptoBytes;
+				}
+			}
+			throw new CryptoException("Unsupport the specified encoded public key bytes!");
+		}
+
+		@Override
+		public PrivKey decodePrivKey(byte[] encodedCryptoBytes) {
+			PrivKey cryptoBytes = null;
+			for (CryptoEncoding encoding : encodings) {
+				cryptoBytes = encoding.decodePrivKey(encodedCryptoBytes);
+				if (cryptoBytes !=null) {
+					return cryptoBytes;
+				}
+			}
+			throw new CryptoException("Unsupport the specified encoded private key bytes!");
 		}
 
 		@Override
@@ -396,4 +476,5 @@ public final class Crypto {
 		}
 
 	}
+
 }

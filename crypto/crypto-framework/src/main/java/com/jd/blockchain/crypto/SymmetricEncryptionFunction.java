@@ -12,7 +12,7 @@ public interface SymmetricEncryptionFunction extends SymmetricKeyGenerator, Cryp
 	 * @param data 明文；
 	 * @return
 	 */
-	Ciphertext encrypt(SymmetricKey key, byte[] data);
+	SymmetricCiphertext encrypt(SymmetricKey key, byte[] data);
 	
 	/**
 	 * 加密明文的输入流，把密文写入输出流；
@@ -30,7 +30,7 @@ public interface SymmetricEncryptionFunction extends SymmetricKeyGenerator, Cryp
 	 * @param ciphertext 密文；
 	 * @return
 	 */
-	byte[] decrypt(SymmetricKey key, Ciphertext ciphertext);
+	byte[] decrypt(SymmetricKey key, SymmetricCiphertext ciphertext);
 	
 	/**
 	 * 解密密文的输入流，把明文写入输出流；<br>

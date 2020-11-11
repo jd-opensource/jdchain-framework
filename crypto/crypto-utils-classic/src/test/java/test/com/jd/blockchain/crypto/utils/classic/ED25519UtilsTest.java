@@ -1,10 +1,14 @@
 package test.com.jd.blockchain.crypto.utils.classic;
 
 import com.jd.blockchain.crypto.utils.classic.ED25519Utils;
+import com.jd.blockchain.utils.io.BytesUtils;
 import com.jd.blockchain.utils.security.Ed25519Utils;
+import com.jd.blockchain.utils.security.RandomUtils;
+
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
+import org.bouncycastle.util.test.FixedSecureRandom;
 import org.junit.Test;
 
 import java.util.Random;
@@ -46,6 +50,28 @@ public class ED25519UtilsTest {
         byte[] retrievedPubKeyBytes = ED25519Utils.retrievePublicKey(privKeyBytes);
 
         assertArrayEquals(pubKeyBytes,retrievedPubKeyBytes);
+        
+        
+    }
+    
+    @Test
+    public void generateKeyWithFixedSeedTest() {
+    	//验证基于固定的种子是否能够生成相同密钥的操作；
+    	byte[] seed = RandomUtils.generateRandomBytes(32);
+    	byte[][] keypair1 = ED25519Utils.generateKeyPairBytes(seed);
+    	byte[][] keypair2 = ED25519Utils.generateKeyPairBytes(seed);
+    	
+    	assertArrayEquals(keypair1[0], keypair2[0]);
+    	assertArrayEquals(keypair1[1], keypair2[1]);
+    	
+    	// 循环一万次验证结果；
+    	for (int i = 0; i < 10000; i++) {
+    		keypair1 = ED25519Utils.generateKeyPairBytes(seed);
+        	keypair2 = ED25519Utils.generateKeyPairBytes(seed);
+        	
+        	assertArrayEquals(keypair1[0], keypair2[0]);
+        	assertArrayEquals(keypair1[1], keypair2[1]);
+		}
     }
 
     @Test

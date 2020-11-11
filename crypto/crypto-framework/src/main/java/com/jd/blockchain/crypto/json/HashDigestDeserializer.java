@@ -17,7 +17,9 @@ public class HashDigestDeserializer implements ObjectDeserializer{
 	@Override
 	public <T> T deserialze(DefaultJSONParser parser, Type type, Object fieldName) {
 		if (type instanceof Class && HashDigest.class.isAssignableFrom((Class<?>) type)) {
+			
 			String base58Str = parser.parseObject(String.class);
+			
 			byte[] hashBytes = Base58Utils.decode(base58Str);
 			return (T) Crypto.resolveAsHashDigest(hashBytes);
 		}

@@ -1,22 +1,7 @@
 package com.jd.blockchain.crypto;
 
-public class AsymmetricCiphertext extends BaseCryptoBytes implements Ciphertext {
+import java.io.Serializable;
 
-	public AsymmetricCiphertext(CryptoAlgorithm algorithm, byte[] rawCryptoBytes) {
-		super(algorithm, rawCryptoBytes);
-	}
+public interface AsymmetricCiphertext extends Ciphertext, Serializable {
 
-	public AsymmetricCiphertext(byte[] cryptoBytes) {
-		super(cryptoBytes);
-	}
-
-	@Override
-	protected boolean support(short algorithm) {
-		return CryptoAlgorithm.isAsymmetricEncryptionAlgorithm(algorithm);
-	}
-
-	@Override
-	public byte[] getRawCiphertext() {
-		return getRawCryptoBytes().getBytesCopy();
-	}
 }

@@ -1,7 +1,5 @@
 package com.jd.blockchain.crypto.service.classic;
 
-import static com.jd.blockchain.crypto.CryptoBytes.ALGORYTHM_CODE_SIZE;
-
 import java.util.Arrays;
 
 import com.jd.blockchain.crypto.CryptoAlgorithm;
@@ -18,7 +16,7 @@ public class RIPEMD160HashFunction implements HashFunction {
 
 	private static final int DIGEST_BYTES = 160 / 8;
 
-	private static final int DIGEST_LENGTH = ALGORYTHM_CODE_SIZE + DIGEST_BYTES;
+	private static final int DIGEST_LENGTH = CryptoAlgorithm.CODE_SIZE + DIGEST_BYTES;
 
 	RIPEMD160HashFunction() {
 	}

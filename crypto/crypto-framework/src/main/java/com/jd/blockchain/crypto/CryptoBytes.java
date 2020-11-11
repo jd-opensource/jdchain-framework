@@ -12,11 +12,6 @@ import com.jd.blockchain.utils.io.BytesSerializable;
 public interface CryptoBytes extends ByteSequence, BytesSerializable {
 
 	/**
-	 * 算法标识符的长度；
-	 */
-	int ALGORYTHM_CODE_SIZE = CryptoAlgorithm.CODE_SIZE;
-
-	/**
 	 * 算法；
 	 * 
 	 * @return

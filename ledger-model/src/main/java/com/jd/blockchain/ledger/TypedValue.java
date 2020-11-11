@@ -367,7 +367,7 @@ public class TypedValue implements BytesValue {
 	}
 
 	private PubKey toPubKey() {
-		return new PubKey(toBytesArray());
+		return Crypto.resolveAsPubKey(toBytesArray());
 	}
 
 	public SignatureDigest signatureDigestValue() {

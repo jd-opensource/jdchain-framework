@@ -63,7 +63,7 @@ public class ClassicCryptoService implements CryptoService {
 		protected <T extends CryptoBytes> boolean supportCryptoBytes(short algorithmCode, Class<T> cryptoDataType,
 				byte[] encodedCryptoBytes) {
 			for (CryptoFunction func : functions) {
-				if (func.support(cryptoDataType, encodedCryptoBytes)) {
+				if (func.getAlgorithm().code() == algorithmCode && func.support(cryptoDataType, encodedCryptoBytes)) {
 					return true;
 				}
 			}
