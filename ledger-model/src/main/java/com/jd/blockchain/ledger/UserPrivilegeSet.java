@@ -14,5 +14,5 @@ public interface UserPrivilegeSet {
 	Bytes getUserAddress();
 	Set<String> getUserRole();
 	LedgerPrivilege getLedgerPrivilegesBitset();
-	PrivilegeBitset<TransactionPermission> getTransactionPrivilegesBitset();
+	TransactionPrivilege getTransactionPrivilegesBitset();
 }
