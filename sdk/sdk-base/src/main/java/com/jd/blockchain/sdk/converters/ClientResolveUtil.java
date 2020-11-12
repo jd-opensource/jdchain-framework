@@ -205,7 +205,8 @@ public class ClientResolveUtil {
 			ParticipantNode[] participantNodes = new ParticipantNode[consensusParticipantsArray.size()];
 			for (int i = 0; i < consensusParticipantsArray.size(); i++) {
 				JSONObject currConsensusParticipant = consensusParticipantsArray.getJSONObject(i);
-				Bytes address = Bytes.fromBase58(currConsensusParticipant.getString("address"));
+				JSONObject addressJsonObj = currConsensusParticipant.getJSONObject("address");
+				Bytes address = Bytes.fromBase58(addressJsonObj.getString("value"));
 				String name = currConsensusParticipant.getString("name");
 				int id = currConsensusParticipant.getInteger("id");
 				JSONObject pubKeyObj = currConsensusParticipant.getJSONObject("pubKey");
