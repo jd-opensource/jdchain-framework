@@ -3,6 +3,7 @@ package com.jd.blockchain.crypto.service.classic;
 import java.security.SecureRandom;
 
 import com.jd.blockchain.crypto.CryptoAlgorithm;
+import com.jd.blockchain.crypto.CryptoBytes;
 import com.jd.blockchain.crypto.RandomFunction;
 import com.jd.blockchain.crypto.RandomGenerator;
 
@@ -50,5 +51,10 @@ public class JVMSecureRandomFunction implements RandomFunction {
 			sr.nextBytes(buffer);
 		}
 
+	}
+	
+	@Override
+	public <T extends CryptoBytes> boolean support(Class<T> cryptoDataType, byte[] encodedCryptoBytes) {
+		return false;
 	}
 }

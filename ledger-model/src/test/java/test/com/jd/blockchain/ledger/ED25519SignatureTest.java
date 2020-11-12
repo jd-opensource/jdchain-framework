@@ -2,11 +2,10 @@ package test.com.jd.blockchain.ledger;
 
 import java.util.Random;
 
-import org.junit.Test;
-
 import com.jd.blockchain.crypto.AsymmetricKeypair;
 import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.SignatureFunction;
+import com.jd.blockchain.crypto.utils.classic.ED25519Utils;
 import com.jd.blockchain.utils.security.Ed25519Utils;
 
 public class ED25519SignatureTest {
@@ -30,7 +29,7 @@ public class ED25519SignatureTest {
 			System.out.println("------------- round[" + r + "] --------------");
 			long startTS = System.currentTimeMillis();
 			for (int i = 0; i < count; i++) {
-				sign = Ed25519Utils.sign_512(data, privKey);
+				sign = ED25519Utils.sign(data, privKey);
 			}
 			long elapsedTS = System.currentTimeMillis() - startTS;
 			System.out.println(String.format("Siging Count=%s; Elapsed Times=%s; TPS=%.2f", count, elapsedTS,

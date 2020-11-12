@@ -1,16 +1,35 @@
 package test.com.jd.blockchain.crypto.service.classic;
 
-import com.jd.blockchain.crypto.*;
-import com.jd.blockchain.crypto.service.classic.ClassicAlgorithm;
-import com.jd.blockchain.utils.io.BytesUtils;
-import org.junit.Test;
+import static com.jd.blockchain.crypto.CryptoAlgorithm.ASYMMETRIC_KEY;
+import static com.jd.blockchain.crypto.CryptoAlgorithm.ENCRYPTION_ALGORITHM;
+import static com.jd.blockchain.crypto.CryptoAlgorithm.SIGNATURE_ALGORITHM;
+import static com.jd.blockchain.crypto.CryptoKeyType.PRIVATE;
+import static com.jd.blockchain.crypto.CryptoKeyType.PUBLIC;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
 
-import static com.jd.blockchain.crypto.CryptoAlgorithm.*;
-import static com.jd.blockchain.crypto.CryptoKeyType.PRIVATE;
-import static com.jd.blockchain.crypto.CryptoKeyType.PUBLIC;
-import static org.junit.Assert.*;
+import org.junit.Test;
+
+import com.jd.blockchain.crypto.AsymmetricCiphertext;
+import com.jd.blockchain.crypto.AsymmetricEncryptionFunction;
+import com.jd.blockchain.crypto.AsymmetricKeypair;
+import com.jd.blockchain.crypto.Ciphertext;
+import com.jd.blockchain.crypto.Crypto;
+import com.jd.blockchain.crypto.CryptoAlgorithm;
+import com.jd.blockchain.crypto.CryptoException;
+import com.jd.blockchain.crypto.PrivKey;
+import com.jd.blockchain.crypto.PubKey;
+import com.jd.blockchain.crypto.SignatureDigest;
+import com.jd.blockchain.crypto.SignatureFunction;
+import com.jd.blockchain.crypto.service.classic.ClassicAlgorithm;
+import com.jd.blockchain.utils.io.BytesUtils;
+import com.jd.blockchain.utils.security.RandomUtils;
 
 /**
  * @author zhanglin33
@@ -40,6 +59,31 @@ public class RSACryptoFunctionTest {
         algorithm = Crypto.getAlgorithm("rsa2");
         assertNull(algorithm);
     }
+    
+	public void generateKeyWithFixedSeedTest() {
+		// 验证基于固定的种子是否能够生成相同密钥的操作；
+		byte[] seed = RandomUtils.generateRandomBytes(1024*120 - 1);
+		
+		CryptoAlgorithm algorithm = Crypto.getAlgorithm("RSA");
+		assertNotNull(algorithm);
+
+		SignatureFunction signatureFunction = Crypto.getSignatureFunction(algorithm);
+		AsymmetricKeypair keypair1 =  signatureFunction.generateKeypair(seed);
+		AsymmetricKeypair keypair2 = signatureFunction.generateKeypair(seed);
+
+		assertArrayEquals(keypair1.getPrivKey().toBytes(), keypair2.getPrivKey().toBytes());
+		assertArrayEquals(keypair1.getPubKey().toBytes(), keypair2.getPubKey().toBytes());
+
+//		// 循环一万次验证结果；
+//		for (int i = 0; i < 10000; i++) {
+//			keypair1 =  signatureFunction.generateKeypair(seed);
+//			keypair2 = signatureFunction.generateKeypair(seed);
+//
+//			assertArrayEquals(keypair1.getPrivKey().toBytes(), keypair2.getPrivKey().toBytes());
+//			assertArrayEquals(keypair1.getPubKey().toBytes(), keypair2.getPubKey().toBytes());
+//		}
+	}
+
 
     @Test
     public void test() {
@@ -107,7 +151,7 @@ public class RSACryptoFunctionTest {
         AsymmetricEncryptionFunction asymmetricEncryptionFunction = Crypto
                 .getAsymmetricEncryptionFunction(algorithm);
 
-        Ciphertext ciphertext = asymmetricEncryptionFunction.encrypt(pubKey, data);
+        AsymmetricCiphertext ciphertext = asymmetricEncryptionFunction.encrypt(pubKey, data);
 
         byte[] ciphertextBytes = ciphertext.toBytes();
         assertEquals(2 + 256, ciphertextBytes.length);

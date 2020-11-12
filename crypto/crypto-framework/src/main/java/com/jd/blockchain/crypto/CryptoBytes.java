@@ -1,5 +1,6 @@
 package com.jd.blockchain.crypto;
 
+import com.jd.blockchain.utils.ByteSequence;
 import com.jd.blockchain.utils.io.BytesSerializable;
 
 /**
@@ -8,12 +9,7 @@ import com.jd.blockchain.utils.io.BytesSerializable;
  * @author huanghaiquan
  *
  */
-public interface CryptoBytes extends BytesSerializable {
-
-	/**
-	 * 算法标识符的长度；
-	 */
-	int ALGORYTHM_CODE_SIZE = CryptoAlgorithm.CODE_SIZE;
+public interface CryptoBytes extends ByteSequence, BytesSerializable {
 
 	/**
 	 * 算法；
@@ -23,14 +19,17 @@ public interface CryptoBytes extends BytesSerializable {
 	short getAlgorithm();
 
 	/**
-	 * 返回编码后的摘要信息；<br>
+	 * 返回编码后的密码字节；
 	 * 
-	 * 这是算法标识 {@link #getAlgorithm()} 与原始的摘要数据
-	 * 按照特定的编码方式合并后的结果；
 	 */
 	@Override
 	byte[] toBytes();
-	
-	
+
+	/**
+	 * 返回 Base58 格式字符串的编码数据；
+	 * 
+	 * @return
+	 */
+	String toBase58();
 
 }

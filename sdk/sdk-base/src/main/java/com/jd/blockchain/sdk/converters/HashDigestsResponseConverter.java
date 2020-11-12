@@ -1,28 +1,20 @@
 package com.jd.blockchain.sdk.converters;
 
-import com.alibaba.fastjson.JSON;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.jd.blockchain.binaryproto.BinaryProtocol;
+import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.HashDigest;
-import com.jd.blockchain.crypto.PubKey;
-import com.jd.blockchain.crypto.SignatureDigest;
-import com.jd.blockchain.transaction.TxResponseMessage;
 import com.jd.blockchain.utils.codec.Base58Utils;
 import com.jd.blockchain.utils.http.HttpServiceContext;
 import com.jd.blockchain.utils.http.ResponseConverter;
 import com.jd.blockchain.utils.http.agent.ServiceRequest;
 import com.jd.blockchain.utils.http.converters.JsonResponseConverter;
-import com.jd.blockchain.utils.io.BytesUtils;
-import com.jd.blockchain.utils.serialize.json.JSONSerializeUtils;
 import com.jd.blockchain.utils.web.client.WebServiceException;
 import com.jd.blockchain.utils.web.model.WebResponse;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by zhangshuang3 on 2018/10/17.
@@ -66,7 +58,7 @@ public class HashDigestsResponseConverter implements ResponseConverter {
                 if (obj instanceof Map) {
                     Map<String, String> objMap = (Map)obj;
                     String base58Str = objMap.get("value");
-                    hashDigests.add(new HashDigest(Base58Utils.decode(base58Str)));
+                    hashDigests.add(Crypto.resolveAsHashDigest(Base58Utils.decode(base58Str)));
                 }
             }
         }

@@ -192,7 +192,7 @@ public class DeployMojo extends AbstractContractMojo {
 	}
 
 	private HashDigest ledgerHash() {
-		return new HashDigest(Base58Utils.decode(deployment.getLedger()));
+		return Crypto.resolveAsHashDigest(Base58Utils.decode(deployment.getLedger()));
 	}
 
 	private byte[] contractBytes(File carFile) throws IOException {

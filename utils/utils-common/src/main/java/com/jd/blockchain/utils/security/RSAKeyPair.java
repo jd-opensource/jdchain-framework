@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 
 import com.jd.blockchain.utils.codec.Base58Utils;
 
+@Deprecated
 public class RSAKeyPair {
 	
 	private byte[] publicKey;

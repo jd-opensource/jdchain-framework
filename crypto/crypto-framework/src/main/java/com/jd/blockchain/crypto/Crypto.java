@@ -1,5 +1,6 @@
 package com.jd.blockchain.crypto;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -7,8 +8,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jd.blockchain.provider.Provider;
-import com.jd.blockchain.provider.ProviderManager;
+import com.jd.blockchain.utils.provider.Provider;
+import com.jd.blockchain.utils.provider.ProviderManager;
 
 /**
  * 密码服务提供者的管理器；
@@ -25,6 +26,8 @@ public final class Crypto {
 	private static Map<Short, CryptoAlgorithm> algorithms = new ConcurrentHashMap<>();
 
 	private static Map<String, Short> names = new ConcurrentHashMap<>();
+
+	private static CompositeCryptoEncoding encoding = new CompositeCryptoEncoding();
 
 	private static ProviderManager pm = new ProviderManager();
 
@@ -43,6 +46,7 @@ public final class Crypto {
 	}
 
 	private static void register(Provider<CryptoService> provider) {
+		boolean available = false;
 		for (CryptoFunction cryptoFunction : provider.getService().getFunctions()) {
 
 			String name = cryptoFunction.getAlgorithm().name().toUpperCase();
@@ -100,6 +104,11 @@ public final class Crypto {
 			functions.put(algorithm.code(), cryptoFunction);
 			algorithms.put(algorithm.code(), algorithm);
 			names.put(algorithm.name(), algorithm.code());
+
+			available = true;
+		}
+		if (available) {
+			encoding.register(provider.getService().getEncoding());
 		}
 	}
 
@@ -344,6 +353,128 @@ public final class Crypto {
 		}
 
 		return func;
+	}
+
+	public static HashDigest resolveAsHashDigest(byte[] encodedCryptoBytes) {
+		return encoding.decodeHashDigest(encodedCryptoBytes);
+	}
+
+	public static SignatureDigest resolveAsSignatureDigest(byte[] encodedCryptoBytes) {
+		return encoding.decodeSignatureDigest(encodedCryptoBytes);
+	}
+
+	public static PrivKey resolveAsPrivKey(byte[] encodedCryptoBytes) {
+		return encoding.decodePrivKey(encodedCryptoBytes);
+	}
+
+	public static PubKey resolveAsPubKey(byte[] encodedCryptoBytes) {
+		return encoding.decodePubKey(encodedCryptoBytes);
+	}
+	
+	public static SymmetricKey resolveAsSymmetricKey(byte[] encodedCryptoBytes) {
+		return encoding.decodeSymmetricKey(encodedCryptoBytes);
+	}
+	
+	public static SymmetricCiphertext resolveAsSymmetricCiphertext(byte[] encodedCryptoBytes) {
+		return encoding.decodeSymmetricCiphertext(encodedCryptoBytes);
+	}
+	
+	public static AsymmetricCiphertext resolveAsAsymmetricCiphertext(byte[] encodedCryptoBytes) {
+		return encoding.decodeAsymmetricCiphertext(encodedCryptoBytes);
+	}
+
+	private static class CompositeCryptoEncoding implements CryptoEncoding {
+
+		private ArrayList<CryptoEncoding> encodings = new ArrayList<>();
+
+		public void register(CryptoEncoding encoding) {
+			encodings.add(encoding);
+		}
+
+		@Override
+		public SymmetricCiphertext decodeSymmetricCiphertext(byte[] encodedCryptoBytes) {
+			SymmetricCiphertext cryptoBytes = null;
+			for (CryptoEncoding encoding : encodings) {
+				cryptoBytes = encoding.decodeSymmetricCiphertext(encodedCryptoBytes);
+				if (cryptoBytes !=null) {
+					return cryptoBytes;
+				}
+			}
+			throw new CryptoException("Unsupport the specified encoded symmetric cipher bytes!");
+		}
+
+		@Override
+		public AsymmetricCiphertext decodeAsymmetricCiphertext(byte[] encodedCryptoBytes) {
+			AsymmetricCiphertext cryptoBytes = null;
+			for (CryptoEncoding encoding : encodings) {
+				cryptoBytes = encoding.decodeAsymmetricCiphertext(encodedCryptoBytes);
+				if (cryptoBytes !=null) {
+					return cryptoBytes;
+				}
+			}
+			throw new CryptoException("Unsupport the specified encoded asymmetric cipher bytes!");
+		}
+
+		@Override
+		public SymmetricKey decodeSymmetricKey(byte[] encodedCryptoBytes) {
+			SymmetricKey cryptoBytes = null;
+			for (CryptoEncoding encoding : encodings) {
+				cryptoBytes = encoding.decodeSymmetricKey(encodedCryptoBytes);
+				if (cryptoBytes !=null) {
+					return cryptoBytes;
+				}
+			}
+			throw new CryptoException("Unsupport the specified encoded symmetric key bytes!");
+		}
+
+		@Override
+		public PubKey decodePubKey(byte[] encodedCryptoBytes) {
+			PubKey cryptoBytes = null;
+			for (CryptoEncoding encoding : encodings) {
+				cryptoBytes = encoding.decodePubKey(encodedCryptoBytes);
+				if (cryptoBytes !=null) {
+					return cryptoBytes;
+				}
+			}
+			throw new CryptoException("Unsupport the specified encoded public key bytes!");
+		}
+
+		@Override
+		public PrivKey decodePrivKey(byte[] encodedCryptoBytes) {
+			PrivKey cryptoBytes = null;
+			for (CryptoEncoding encoding : encodings) {
+				cryptoBytes = encoding.decodePrivKey(encodedCryptoBytes);
+				if (cryptoBytes !=null) {
+					return cryptoBytes;
+				}
+			}
+			throw new CryptoException("Unsupport the specified encoded private key bytes!");
+		}
+
+		@Override
+		public HashDigest decodeHashDigest(byte[] encodedBytes) {
+			HashDigest cryptoBytes = null;
+			for (CryptoEncoding encoding : encodings) {
+				cryptoBytes = encoding.decodeHashDigest(encodedBytes);
+				if (cryptoBytes !=null) {
+					return cryptoBytes;
+				}
+			}
+			throw new CryptoException("Unsupport the specified encoded hash digest bytes!");
+		}
+
+		@Override
+		public SignatureDigest decodeSignatureDigest(byte[] encodedBytes) {
+			SignatureDigest cryptoBytes = null;
+			for (CryptoEncoding encoding : encodings) {
+				cryptoBytes = encoding.decodeSignatureDigest(encodedBytes);
+				if (cryptoBytes !=null) {
+					return cryptoBytes;
+				}
+			}
+			throw new CryptoException("Unsupport the specified encoded signature digest bytes!");
+		}
+
 	}
 
 }

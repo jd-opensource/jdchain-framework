@@ -28,18 +28,44 @@ public abstract class JSONSerializeUtils {
 	private static final ToStringSerializer TO_STRING_SERIALIZER = new ToStringSerializer();
 
 	private static final RuntimeDeserializer RUNTIME_DESERIALIZER = new RuntimeDeserializer();
-	
+
 	private static volatile SerializeConfig SERIALIZE_CONFIG = SerializeConfig.globalInstance;
-	
+
 	private static volatile ParserConfig PARSER_CONFIG = ParserConfig.getGlobalInstance();
+
+	private static volatile boolean autoConfigured = false;
 	
+	static {
+		enableAutoConfigure();
+	}
+
+	/**
+	 * 启用自动配置服务；
+	 * <p>
+	 * 
+	 * 自动配置服务通过 {@link JSONAutoConfigure} 定义，实现者以 SPI 方式提供；<br>
+	 * 
+	 * 调用此方法将触发一次对所有的 {@link JSONAutoConfigure} 提供者的加载；
+	 * 
+	 * 
+	 */
+	public synchronized static void enableAutoConfigure() {
+		if (autoConfigured) {
+			return;
+		}
+		SERIALIZE_CONFIG.register(JSONAutoConfigureModule.getInstance());
+		PARSER_CONFIG.register(JSONAutoConfigureModule.getInstance());
+
+		autoConfigured = true;
+	}
+
 	public static void setSerializeConfig(SerializeConfig serializeConfig) {
 		if (serializeConfig == null) {
 			throw new IllegalArgumentException("SerializeConfig is null!");
 		}
 		SERIALIZE_CONFIG = serializeConfig;
 	}
-	
+
 	public static SerializeConfig getSerializeConfig() {
 		return SERIALIZE_CONFIG;
 	}
@@ -48,8 +74,9 @@ public abstract class JSONSerializeUtils {
 		RUNTIME_DESERIALIZER.addTypeMap(fromClazz, toClazz);
 		PARSER_CONFIG.putDeserializer(fromClazz, RUNTIME_DESERIALIZER);
 	}
-	
-	public static void configSerialization(Class<?> clazz, ObjectSerializer serializer, ObjectDeserializer deserializer) {
+
+	public static void configSerialization(Class<?> clazz, ObjectSerializer serializer,
+			ObjectDeserializer deserializer) {
 		SERIALIZE_CONFIG.put(clazz, serializer);
 		PARSER_CONFIG.putDeserializer(clazz, deserializer);
 	}
@@ -74,31 +101,6 @@ public abstract class JSONSerializeUtils {
 	public static void disableCircularReferenceDetect() {
 		JSON.DEFAULT_GENERATE_FEATURE |= SerializerFeature.DisableCircularReferenceDetect.getMask();
 	}
-
-	// /**
-	// * 禁用循环引用检测；
-	// *
-	// * <br>
-	// * 默认是开启的；
-	// *
-	// * @param type
-	// */
-	// public static void disableCircularReferenceDetect(Class<?> type) {
-	// SerializeConfig.globalInstance.config(type,
-	// SerializerFeature.DisableCircularReferenceDetect, true);
-	// }
-
-	// public static void addSerialzedType(Class<?> objectType, Class<?>
-	// serialzedType) {
-	// if (!serialzedType.isAssignableFrom(objectType)) {
-	// throw new IllegalArgumentException("The filteredType[" +
-	// serialzedType.getName()
-	// + "] isn't assignable from the objectType[" + objectType.getName() +
-	// "]!");
-	// }
-	// JavaBeanSerializer serializer = new JavaBeanSerializer(serialzedType);
-	// SerializeConfig.globalInstance.put(objectType, serializer);
-	// }
 
 	private JSONSerializeUtils() {
 	}
@@ -204,10 +206,8 @@ public abstract class JSONSerializeUtils {
 	/**
 	 * 将对象序列化为 JSON 字符串；
 	 * 
-	 * @param data
-	 *            要序列化的对象；
-	 * @param prettyFormat
-	 *            是否以包含换行和缩进的良好格式输出 JSON;
+	 * @param data         要序列化的对象；
+	 * @param prettyFormat 是否以包含换行和缩进的良好格式输出 JSON;
 	 * @return
 	 */
 	public static String serializeToJSON(Object data, boolean prettyFormat) {
@@ -217,14 +217,11 @@ public abstract class JSONSerializeUtils {
 	/**
 	 * 将对象序列化为 JSON 字符串；
 	 * 
-	 * @param data
-	 *            要序列化的对象；
-	 * @param serializedType
-	 *            要序列化的对象的输出的类型；<br>
-	 *            指定该对象的父类或者某一个实现的接口类型，序列化输出的 JSON 将只包含该类型的属性；<br>
-	 *            如果指定为 null, 则按对象本身的类型进行序列化；
-	 * @param prettyFormat
-	 *            是否以包含换行和缩进的良好格式输出 JSON;
+	 * @param data           要序列化的对象；
+	 * @param serializedType 要序列化的对象的输出的类型；<br>
+	 *                       指定该对象的父类或者某一个实现的接口类型，序列化输出的 JSON 将只包含该类型的属性；<br>
+	 *                       如果指定为 null, 则按对象本身的类型进行序列化；
+	 * @param prettyFormat   是否以包含换行和缩进的良好格式输出 JSON;
 	 * @return
 	 */
 	public static String serializeToJSON(Object data, Class<?> serializedType, boolean prettyFormat) {
@@ -234,16 +231,12 @@ public abstract class JSONSerializeUtils {
 	/**
 	 * 将对象序列化为 JSON 字符串；
 	 * 
-	 * @param data
-	 *            要序列化的对象；
-	 * @param serializedType
-	 *            要序列化的对象的输出的类型；<br>
-	 *            指定该对象的父类或者某一个实现的接口类型，序列化输出的 JSON 将只包含该类型的属性；<br>
-	 *            如果指定为 null, 则按对象本身的类型进行序列化；
-	 * @param dateFormat
-	 *            日期格式；
-	 * @param prettyFormat
-	 *            是否以包含换行和缩进的良好格式输出 JSON;
+	 * @param data           要序列化的对象；
+	 * @param serializedType 要序列化的对象的输出的类型；<br>
+	 *                       指定该对象的父类或者某一个实现的接口类型，序列化输出的 JSON 将只包含该类型的属性；<br>
+	 *                       如果指定为 null, 则按对象本身的类型进行序列化；
+	 * @param dateFormat     日期格式；
+	 * @param prettyFormat   是否以包含换行和缩进的良好格式输出 JSON;
 	 * @return
 	 */
 	public static String serializeToJSON(Object data, Class<?> serializedType, String dateFormat,
@@ -317,7 +310,7 @@ public abstract class JSONSerializeUtils {
 	 * @return
 	 */
 	public static <T> T deserializeFromJSONObject(JSONObject jsonObj, Class<T> dataClazz) {
-		return (T)Proxy.newProxyInstance(dataClazz.getClassLoader(), new Class[] {dataClazz}, jsonObj);
+		return (T) Proxy.newProxyInstance(dataClazz.getClassLoader(), new Class[] { dataClazz }, jsonObj);
 	}
 
 	/**
@@ -350,7 +343,7 @@ public abstract class JSONSerializeUtils {
 				return deserializeFromJSON((String) data, clazz);
 			}
 			if (clazz.isEnum()) {
-				return deserializeFromJSON("\""+data + "\"", clazz);
+				return deserializeFromJSON("\"" + data + "\"", clazz);
 			}
 		}
 		if (data instanceof JSONString) {

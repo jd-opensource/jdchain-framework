@@ -1,5 +1,6 @@
 package com.jd.blockchain.utils.security;
 
+@Deprecated
 public interface SHA256Hash {
 
 	/**

@@ -16,15 +16,14 @@ public interface CryptoFunction {
 	 */
 	CryptoAlgorithm getAlgorithm();
 
-//	/**
-//	 * Resolve ciphertext from byte array to CyptoBytes object, and check if its
-//	 * algorithm matches this function.
-//	 * 
-//	 * @param bytes
-//	 *            ciphertext
-//	 * @return Return {@link CryptoBytes} object, or throw {@link CryptoException}
-//	 *         if its algorithm does not match.
-//	 */
-//	CryptoBytes resolveCryptoBytes(byte[] bytes);
+	/**
+	 * 检查是否支持指定的已编码密码数据；
+	 * 
+	 * @param <T>
+	 * @param cryptoDataType     密码数据类型；
+	 * @param encodedCryptoBytes 已编码密码数据；
+	 * @return
+	 */
+	<T extends CryptoBytes> boolean support(Class<T> cryptoDataType, byte[] encodedCryptoBytes);
 
 }
