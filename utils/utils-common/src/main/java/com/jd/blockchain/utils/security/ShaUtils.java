@@ -13,6 +13,7 @@ import java.util.Arrays;
  * @author haiq
  *
  */
+@Deprecated
 public class ShaUtils {
 
 	/**
@@ -95,32 +96,6 @@ public class ShaUtils {
 			throw new IllegalStateException(e.getMessage(), e);
 		}
 	}
-
-	// /**
-	// * 组装待签名数据
-	// *
-	// * @param userAgent
-	// * 客户端
-	// * @param url
-	// * 请求路径
-	// * @param requestBody
-	// * 请求体 可为空
-	// * @return
-	// */
-	// @Deprecated
-	// public static byte[] getData(byte[] userAgent, byte[] url, byte[]
-	// requestBody) {
-	//
-	// byte[] bytes = new byte[userAgent.length + url.length + (requestBody == null
-	// ? 0 : requestBody.length)];
-	// System.arraycopy(userAgent, 0, bytes, 0, userAgent.length);
-	// System.arraycopy(url, 0, bytes, userAgent.length, url.length);
-	// if (requestBody != null) {
-	// System.arraycopy(requestBody, 0, bytes, userAgent.length + url.length,
-	// requestBody.length);
-	// }
-	// return bytes;
-	// }
 
 	private static class SHA256HashImpl implements SHA256Hash {
 

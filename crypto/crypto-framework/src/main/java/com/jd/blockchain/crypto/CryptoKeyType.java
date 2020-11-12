@@ -2,6 +2,8 @@ package com.jd.blockchain.crypto;
 
 public enum CryptoKeyType {
 
+
+
 	/**
 	 * 非对称密钥的公钥
 	 */
@@ -17,8 +19,13 @@ public enum CryptoKeyType {
 	 */
 	SYMMETRIC((byte)0x03);
 
+	/**
+	 * 密钥类型码的字节长度；
+	 */
+	public static int TYPE_CODE_SIZE = 1;
+	
+	
 	public final byte CODE;
-
 	CryptoKeyType(byte code) {
 		CODE = code;
 	}

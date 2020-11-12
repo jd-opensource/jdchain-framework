@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
+import com.jd.blockchain.utils.ByteSequence;
 import com.jd.blockchain.utils.Bytes;
 import com.jd.blockchain.utils.IllegalDataException;
 
@@ -684,6 +685,21 @@ public class BytesUtils {
 		for (Bytes bs : bytesList) {
 			bs.copyTo(bytesAll, size, bs.size());
 			size += bs.size();
+		}
+		
+		return bytesAll;
+	}
+	
+	public static byte[] concat(ByteSequence... bytesList) {
+		int size = 0;
+		for (ByteSequence bs : bytesList) {
+			size += bs.size();
+		}
+		
+		byte[] bytesAll = new byte[size];
+		size = 0;
+		for (ByteSequence bs : bytesList) {
+			size += bs.copyTo(bytesAll, size, bs.size());
 		}
 		
 		return bytesAll;

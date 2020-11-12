@@ -8,7 +8,7 @@ public interface AsymmetricEncryptionFunction extends AsymmetricKeypairGenerator
 	 * @param data
 	 * @return
 	 */
-	Ciphertext encrypt(PubKey pubKey, byte[] data);
+	AsymmetricCiphertext encrypt(PubKey pubKey, byte[] data);
 
 	/**
 	 * 解密；
@@ -17,7 +17,7 @@ public interface AsymmetricEncryptionFunction extends AsymmetricKeypairGenerator
 	 * @param ciphertext
 	 * @return
 	 */
-	byte[] decrypt(PrivKey privKey, Ciphertext ciphertext);
+	byte[] decrypt(PrivKey privKey, AsymmetricCiphertext ciphertext);
 
 	/**
 	 * 使用私钥恢复公钥；

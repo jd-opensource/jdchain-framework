@@ -15,7 +15,7 @@ import com.jd.blockchain.utils.io.RuntimeIOException;
  * @author huanghaiquan
  *
  */
-public class Bytes implements BytesSerializable, Serializable {
+public class Bytes implements ByteSequence, BytesSerializable, Serializable {
 
 	private static final long serialVersionUID = 4774903322403127601L;
 
@@ -138,6 +138,15 @@ public class Bytes implements BytesSerializable, Serializable {
 	 */
 	public static Bytes fromBase58(String base58Str) {
 		return new Bytes(Base58Utils.decode(base58Str));
+	}
+
+	public Bytes concat(ByteSequence key) {
+		if (key instanceof Bytes) {
+			return new Bytes(this, (Bytes) key);
+		}
+		byte[] newBytes = new byte[key.size()];
+		key.copyTo(newBytes, 0, newBytes.length);
+		return new Bytes(this, newBytes);
 	}
 
 	public Bytes concat(Bytes key) {
@@ -336,6 +345,35 @@ public class Bytes implements BytesSerializable, Serializable {
 	}
 
 	@Override
+	public int copyTo(int sourceOffset, byte[] target, int targetOffset, int len) {
+		if (sourceOffset < 0) {
+			throw new IllegalArgumentException("Argument sourceOffset is negative!");
+		}
+		if (targetOffset < 0) {
+			throw new IllegalArgumentException("Argument targetOffset is negative!");
+		}
+		if (len < 0) {
+			throw new IllegalArgumentException("Argument len is negative!");
+		}
+		if (len == 0) {
+			return 0;
+		}
+		int s = 0;
+		if (prefix != null) {
+			if (sourceOffset < prefix.size()) {
+				s = prefix.copyTo(target, targetOffset, len);
+			}
+		}
+		if (s < len) {
+			int l = len - s;
+			l = l < bytes.length ? l : bytes.length;
+			System.arraycopy(bytes, 0, target, targetOffset + s, l);
+			s += l;
+		}
+		return s;
+	}
+
+	@Override
 	public byte[] toBytes() {
 		if (prefix == null || prefix.size() == 0) {
 			return bytes.clone();
@@ -380,4 +418,67 @@ public class Bytes implements BytesSerializable, Serializable {
 		return toBase58();
 	}
 
+	@Override
+	public byte byteAt(int index) {
+		return read(index);
+	}
+
+	@Override
+	public ByteSequence subSequence(int start, int end) {
+		if (start < 0) {
+			throw new IndexOutOfBoundsException("Start index of subsequence is out of bounds!");
+		}
+		int s = end - start;
+		if (s < 0 || s > size()) {
+			throw new IndexOutOfBoundsException("End index of subsequence is out of bounds!");
+		}
+		return new SubSequence(this, start, s);
+	}
+
+	private static class SubSequence implements ByteSequence {
+
+		private int offset;
+
+		private int size;
+
+		private ByteSequence bytes;
+
+		public SubSequence(ByteSequence bytes, int offset, int size) {
+			this.bytes = bytes;
+			this.offset = offset;
+			this.size = size;
+		}
+
+		@Override
+		public int size() {
+			return size;
+		}
+
+		@Override
+		public byte byteAt(int index) {
+			if (index < 0 || index >= size) {
+				throw new IndexOutOfBoundsException("Index of subsequence is out of bounds!");
+			}
+			return bytes.byteAt(offset + index);
+		}
+
+		@Override
+		public ByteSequence subSequence(int start, int end) {
+			if (start < 0) {
+				throw new IndexOutOfBoundsException("Start index of subsequence is out of bounds!");
+			}
+			int s = end - start;
+			if (s < 0 || s > size) {
+				throw new IndexOutOfBoundsException("End index of subsequence is out of bounds!");
+			}
+
+			return new SubSequence(bytes, offset + start, s);
+		}
+
+		@Override
+		public int copyTo(int sourceOffset, byte[] target, int targetOffset, int len) {
+			return bytes.copyTo(offset + sourceOffset, target, targetOffset, len);
+		}
+
+	}
 }

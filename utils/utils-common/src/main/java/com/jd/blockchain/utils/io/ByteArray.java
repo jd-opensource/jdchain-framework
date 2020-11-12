@@ -10,8 +10,10 @@ import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+
 import org.springframework.util.Base64Utils;
 
+import com.jd.blockchain.utils.ByteSequence;
 import com.jd.blockchain.utils.codec.Base58Utils;
 import com.jd.blockchain.utils.codec.HexUtils;
 
@@ -21,7 +23,7 @@ import com.jd.blockchain.utils.codec.HexUtils;
  * @author huanghaiquan
  *
  */
-public class ByteArray implements Externalizable {
+public class ByteArray implements Externalizable, ByteSequence {
 
 	public static final ByteArray EMPTY = ByteArray.wrap(new byte[0]);
 
@@ -186,6 +188,12 @@ public class ByteArray implements Externalizable {
 	public byte[] bytesCopy() {
 		return Arrays.copyOf(bytes, bytes.length);
 	}
+	
+	@Override
+	public int copyTo(int sourceOffset, byte[] dest, int destOffset, int length) {
+		System.arraycopy(bytes, sourceOffset, dest, destOffset, length);
+		return length;
+	}
 
 	/**
 	 * 返回原始的字节数组；
@@ -313,5 +321,15 @@ public class ByteArray implements Externalizable {
 		in.readFully(bts);
 
 		this.bytes = bts;
+	}
+
+	@Override
+	public byte byteAt(int index) {
+		return bytes[index];
+	}
+
+	@Override
+	public ByteSequence subSequence(int start, int end) {
+		return new BytesSlice(bytes, start, end - start);
 	}
 }

@@ -1,5 +1,13 @@
 package com.jd.blockchain.ledger;
 
+import com.jd.blockchain.utils.SkippingIterator;
+
+/**
+ * 角色权限配置；
+ * 
+ * @author huanghaiquan
+ *
+ */
 public interface RolePrivilegeSettings {
 
 	/**
@@ -26,20 +34,19 @@ public interface RolePrivilegeSettings {
 	RolePrivileges getRolePrivilege(String roleName);
 
 	/**
-	 * 返回指定位置的角色权限；
+	 * 返回遍历全部角色权限的迭代器；
 	 * 
-	 * @param index
-	 * @param count
 	 * @return
 	 */
-	RolePrivileges[] getRolePrivileges(int index, int count);
+	SkippingIterator<RolePrivileges> rolePrivilegesIterator();
 
 	/**
-	 * 返回所有的角色权限；
+	 * 是否包含指定的角色；
 	 * 
+	 * @param role
 	 * @return
 	 */
-	RolePrivileges[] getRolePrivileges();
+	boolean contains(String role);
 
 	/**
 	 * 是否只读；
@@ -47,114 +54,4 @@ public interface RolePrivilegeSettings {
 	 * @return
 	 */
 	boolean isReadonly();
-
-	/**
-	 * 加入新的角色权限； <br>
-	 * 
-	 * 如果指定的角色已经存在，则引发 {@link LedgerException} 异常；
-	 * 
-	 * @param roleName        角色名称；不能超过 {@link #MAX_ROLE_NAME_LENGTH} 个 Unicode 字符；
-	 * @param ledgerPrivilege
-	 * @param txPrivilege
-	 */
-	long addRolePrivilege(String roleName, Privileges privileges);
-
-	/**
-	 * 加入新的角色权限； <br>
-	 *
-	 * 如果指定的角色已经存在，则引发 {@link LedgerException} 异常；
-	 *
-	 * @param roleName        角色名称；不能超过 {@link #MAX_ROLE_NAME_LENGTH} 个 Unicode 字符；
-	 * @param ledgerPrivilege
-	 * @param txPrivilege
-	 */
-	long addRolePrivilege(String roleName, LedgerPrivilegeBitset ledgerPrivilege, TransactionPrivilegeBitset txPrivilege);
-
-	/**
-	 * 加入新的角色权限； <br>
-	 *
-	 * 如果指定的角色已经存在，则引发 {@link LedgerException} 异常；
-	 *
-	 * @param roleName          角色名称；不能超过 {@link #MAX_ROLE_NAME_LENGTH} 个 Unicode
-	 *                          字符；
-	 * @param ledgerPermissions 给角色授予的账本权限列表；
-	 * @param txPermissions     给角色授予的交易权限列表；
-	 * @return
-	 */
-	long addRolePrivilege(String roleName, LedgerPermission[] ledgerPermissions, TransactionPermission[] txPermissions);
-
-	/**
-	 * 更新角色权限； <br>
-	 * 如果指定的角色不存在，或者版本不匹配，则引发 {@link LedgerException} 异常；
-	 * 
-	 * @param participant
-	 */
-	void updateRolePrivilege(RolePrivileges roleAuth);
-
-	/**
-	 * 授权角色指定的权限； <br>
-	 * 如果角色不存在，则返回 -1；
-	 * 
-	 * @param roleName    角色；
-	 * @param permissions 权限列表；
-	 * @return
-	 */
-	long enablePermissions(String roleName, LedgerPermission... permissions);
-
-	/**
-	 * 授权角色指定的权限； <br>
-	 * 如果角色不存在，则返回 -1；
-	 * 
-	 * @param roleName    角色；
-	 * @param permissions 权限列表；
-	 * @return
-	 */
-	long enablePermissions(String roleName, TransactionPermission... permissions);
-
-	/**
-	 * 禁止角色指定的权限； <br>
-	 * 如果角色不存在，则返回 -1；
-	 * 
-	 * @param roleName    角色；
-	 * @param permissions 权限列表；
-	 * @return
-	 */
-	long disablePermissions(String roleName, LedgerPermission... permissions);
-
-	/**
-	 * 禁止角色指定的权限； <br>
-	 * 如果角色不存在，则返回 -1；
-	 * 
-	 * @param roleName    角色；
-	 * @param permissions 权限列表；
-	 * @return
-	 */
-	long disablePermissions(String roleName, TransactionPermission... permissions);
-
-	/**
-	 * 授权角色指定的权限； <br>
-	 * 如果角色不存在，则返回 -1；
-	 * 
-	 * @param roleName
-	 * @param ledgerPermissions
-	 * @param txPermissions
-	 * @return
-	 */
-	long enablePermissions(String roleName, LedgerPermission[] ledgerPermissions,
-			TransactionPermission[] txPermissions);
-
-	/**
-	 * 禁用角色指定的权限； <br>
-	 * 如果角色不存在，则返回 -1；
-	 * 
-	 * @param roleName
-	 * @param ledgerPermissions
-	 * @param txPermissions
-	 * @return
-	 */
-	long disablePermissions(String roleName, LedgerPermission[] ledgerPermissions,
-			TransactionPermission[] txPermissions);
-
-	boolean contains(String r);
-
 }

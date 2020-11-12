@@ -10,12 +10,15 @@ import com.jd.blockchain.binaryproto.impl.DataContractContext;
  */
 public class DataContractRegistry {
 
+	private static DataContractRegistry instance = new DataContractRegistry();
+
+	public static DataContractRegistry getInstance() {
+		return instance;
+	}
+
 	private DataContractRegistry() {
 	}
 
-	
-	//TODO: Refactor contract type registering in service provider mode;
-	
 	public static DataContractEncoder register(Class<?> contractType) {
 		DataContractEncoder encoder = DataContractContext.resolve(contractType);
 		return encoder;
@@ -27,6 +30,10 @@ public class DataContractRegistry {
 
 	public static DataContractEncoder getEncoder(int contractCode, long version) {
 		return DataContractContext.ENCODER_LOOKUP.lookup(contractCode, version);
+	}
+
+	public static <T> void registerBytesConverter(Class<T> javaType, BytesConverter<T> converter) {
+		DataContractContext.registerBytesConverter(javaType, converter);
 	}
 
 }
