@@ -210,8 +210,7 @@ public class ClientResolveUtil {
 				Bytes address = Bytes.fromBase58(addressJsonObj.getString("value"));
 				String name = currConsensusParticipant.getString("name");
 				int id = currConsensusParticipant.getInteger("id");
-				JSONObject pubKeyObj = currConsensusParticipant.getJSONObject("pubKey");
-				String pubKeyBase58 = pubKeyObj.getString("value");
+				String pubKeyBase58 = currConsensusParticipant.getString("pubKey");
 				// 生成ParticipantNode对象
 				ParticipantCertData participantCertData = new ParticipantCertData(id, address, name,
 						Crypto.resolveAsPubKey(Bytes.fromBase58(pubKeyBase58).toBytes()), null);
@@ -293,9 +292,8 @@ public class ClientResolveUtil {
 		String addressBase58 = addressObj.getString("value");
 		Bytes address = Bytes.fromBase58(addressBase58);
 
-		JSONObject pubKeyObj = jsonObject.getJSONObject("pubKey");
 		// base58值
-		String pubKeyBase58 = pubKeyObj.getString("value");
+		String pubKeyBase58 = jsonObject.getString("value");
 		PubKey pubKey = Crypto.resolveAsPubKey(Bytes.fromBase58(pubKeyBase58).toBytes());
 
 		// 生成对应的对象
