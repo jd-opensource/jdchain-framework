@@ -293,13 +293,12 @@ public class ClientResolveUtil {
 		Bytes address = Bytes.fromBase58(addressBase58);
 
 		// base58值
-		String pubKeyBase58 = jsonObject.getString("value");
+		String pubKeyBase58 = jsonObject.getString("pubKey");
 		PubKey pubKey = Crypto.resolveAsPubKey(Bytes.fromBase58(pubKeyBase58).toBytes());
 
 		// 生成对应的对象
 		return new BlockchainIdentityData(address, pubKey);
 	}
-
 	public static class CryptoConfig implements CryptoSetting {
 
 		private short hashAlgorithm;
