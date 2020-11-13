@@ -30,9 +30,9 @@ import java.util.List;
 public class ByteArrayObjectUtil {
 
     private static final Class<?>[] BYTEARRAY_JSON_SERIALIZE_CLASS = new Class<?>[] {
-            HashDigest.class,
-            PubKey.class,
-            SignatureDigest.class,
+//            HashDigest.class,
+//            PubKey.class,
+//            SignatureDigest.class,
             Bytes.class,
             BytesSlice.class};
 
