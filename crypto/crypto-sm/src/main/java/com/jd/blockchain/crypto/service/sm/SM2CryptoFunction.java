@@ -27,6 +27,9 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 
 	private static final CryptoAlgorithm SM2 = SMAlgorithm.SM2;
 
+	/**
+	 * 原始公钥的长度；
+	 */
 	private static final int ECPOINT_SIZE = 65;
 	private static final int PRIVKEY_SIZE = SM2Utils.PRIVKEY_SIZE;
 	private static final int SIGNATUREDIGEST_SIZE = 64;

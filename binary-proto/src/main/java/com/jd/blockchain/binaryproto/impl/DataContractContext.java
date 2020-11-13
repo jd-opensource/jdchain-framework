@@ -129,7 +129,7 @@ public class DataContractContext {
 		autoRegister();
 	}
 
-	private static void autoRegister() {
+	public static void autoRegister() {
 		// 从当前类型的类加载器加载服务提供者；
 		pm.installAllProviders(DataContractAutoRegistrar.class, BinaryProtocol.class.getClassLoader());
 		// 从线程上下文类加载器加载服务提供者；（多次加载避免由于类加载器的原因产生遗漏，ProviderManager 内部会过滤重复加载）；

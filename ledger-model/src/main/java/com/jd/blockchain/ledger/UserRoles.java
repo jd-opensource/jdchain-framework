@@ -34,7 +34,6 @@ public class UserRoles implements RoleSet {
 		this.version = version;
 		this.policy = roleSet.getPolicy();
 		this.roles = initRoles(roleSet.getRoles());
-
 	}
 
 	private Set<String> initRoles(String[] roles) {
