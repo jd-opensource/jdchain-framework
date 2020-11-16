@@ -13,6 +13,13 @@ import com.jd.blockchain.consensus.action.ActionRequest;
 import com.jd.blockchain.consensus.action.ActionResponse;
 
 public class ConsensusDataContractAutoRegistrar implements DataContractAutoRegistrar {
+	
+	public static final int ORDER = 80;
+	
+	@Override
+	public int order() {
+		return ORDER;
+	}
 
 	@Override
 	public void initContext(DataContractRegistry registry) {

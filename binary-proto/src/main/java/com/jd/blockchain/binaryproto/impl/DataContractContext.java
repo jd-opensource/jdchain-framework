@@ -7,6 +7,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,7 @@ import com.jd.blockchain.binaryproto.FieldSpec;
 import com.jd.blockchain.binaryproto.NumberEncoding;
 import com.jd.blockchain.binaryproto.PrimitiveType;
 import com.jd.blockchain.binaryproto.impl.EnumSpecificationInfo.EnumConstant;
+import com.jd.blockchain.utils.ArrayUtils;
 import com.jd.blockchain.utils.io.BytesSerializable;
 import com.jd.blockchain.utils.io.BytesUtils;
 import com.jd.blockchain.utils.io.NumberMask;
@@ -41,7 +44,6 @@ import com.jd.blockchain.utils.security.ShaUtils;
 public class DataContractContext {
 
 	private static ProviderManager pm = new ProviderManager();
-
 
 	public static DataContractEncoderLookup ENCODER_LOOKUP;
 
@@ -136,13 +138,22 @@ public class DataContractContext {
 		pm.installAllProviders(DataContractAutoRegistrar.class, Thread.currentThread().getContextClassLoader());
 
 		Iterable<Provider<DataContractAutoRegistrar>> providers = pm.getAllProviders(DataContractAutoRegistrar.class);
+		List<DataContractAutoRegistrar> autoRegistrars = new ArrayList<DataContractAutoRegistrar>();
 		for (Provider<DataContractAutoRegistrar> provider : providers) {
-			register(provider);
+			autoRegistrars.add(provider.getService());
 		}
-	}
 
-	private static void register(Provider<DataContractAutoRegistrar> provider) {
-		provider.getService().initContext(DataContractRegistry.getInstance());
+		//排序；
+		autoRegistrars.sort(new Comparator<DataContractAutoRegistrar>() {
+			@Override
+			public int compare(DataContractAutoRegistrar o1, DataContractAutoRegistrar o2) {
+				return o1.order() - o2.order();
+			}
+		});
+		
+		for (DataContractAutoRegistrar registrar : autoRegistrars) {
+			registrar.initContext(DataContractRegistry.getInstance());
+		}
 	}
 
 	private static void initNumberEncodingConverterMapping(PrimitiveType protocalType, Class<?> javaType,

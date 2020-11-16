@@ -1,4 +1,4 @@
-package com.jd.blockchain.serialize;
+package com.jd.blockchain.crypto.binaryproto;
 
 import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.SymmetricKey;
