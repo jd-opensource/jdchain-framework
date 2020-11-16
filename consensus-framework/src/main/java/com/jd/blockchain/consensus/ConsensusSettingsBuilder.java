@@ -1,7 +1,5 @@
 package com.jd.blockchain.consensus;
 
-import com.jd.blockchain.ledger.ParticipantNode;
-
 import java.util.Properties;
 
 public interface ConsensusSettingsBuilder {
@@ -11,11 +9,11 @@ public interface ConsensusSettingsBuilder {
 	 * 
 	 * @param props
 	 *            属性表；
-	 * @param participantNodes
+	 * @param replicas
 	 *            参与方列表；<br>
 	 * @return
 	 */
-	ConsensusSettings createSettings(Properties props, ParticipantNode[] participantNodes);
+	ConsensusSettings createSettings(Properties props, Replica[] replicas);
 
 	Properties createPropertiesTemplate();
 
