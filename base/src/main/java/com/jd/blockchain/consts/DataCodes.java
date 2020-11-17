@@ -62,6 +62,8 @@ public interface DataCodes {
 	
 	public static final int TX_RECORD = 0x206;
 
+	public static final int TX_RECORDS = 0x207;
+
 	public static final int TX_RETURN_MESSAGE = 0x230;
 
 	public static final int TX_OP = 0x300;
