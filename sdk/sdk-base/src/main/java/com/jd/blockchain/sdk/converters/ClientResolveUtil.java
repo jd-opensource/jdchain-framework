@@ -64,6 +64,8 @@ public class ClientResolveUtil {
 			case TEXT:
 			case JSON:
 			case XML:
+			case IMG:
+			case VIDEO:
 				innerKvData.setValue(valueObj.toString());
 				break;
 			case INT32:
