@@ -136,6 +136,7 @@ public class JSONAutoConfigureModule implements Module, JSONConfigure {
 	@Override
 	public void registerDeserializer(Class<?> type, ObjectDeserializer deserializer) {
 		deserializers.put(type, deserializer);
+		ParserConfig.getGlobalInstance().putDeserializer(type, deserializer);
 	}
 
 }
