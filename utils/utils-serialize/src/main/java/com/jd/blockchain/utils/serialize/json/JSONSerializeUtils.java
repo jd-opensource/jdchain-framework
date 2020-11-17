@@ -70,6 +70,10 @@ public abstract class JSONSerializeUtils {
 		return SERIALIZE_CONFIG;
 	}
 
+	public static ParserConfig getParserConfig() {
+		return PARSER_CONFIG;
+	}
+
 	public static void addTypeMap(Class<?> fromClazz, Class<?> toClazz) {
 		RUNTIME_DESERIALIZER.addTypeMap(fromClazz, toClazz);
 		PARSER_CONFIG.putDeserializer(fromClazz, RUNTIME_DESERIALIZER);
