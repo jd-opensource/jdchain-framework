@@ -158,7 +158,9 @@ public interface DataCodes {
 	public static final int METADATA_CRYPTO_SETTING_PROVIDER = 0x643;
 
 //	public static final int ACCOUNT = 0x700;
-
+	
+	public static final int ACCOUNT_SNAPSHOT = 0x701;
+	
 	public static final int DATA_ACCOUNT_INFO = 0x710;
 
 	public static final int USER_ACCOUNT_HEADER = 0x800;

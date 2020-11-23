@@ -3,6 +3,7 @@ package com.jd.blockchain.ledger.binaryproto;
 import com.jd.blockchain.binaryproto.DataContractAutoRegistrar;
 import com.jd.blockchain.binaryproto.DataContractRegistry;
 import com.jd.blockchain.ledger.BlockchainIdentity;
+import com.jd.blockchain.ledger.AccountSnapshot;
 import com.jd.blockchain.ledger.MerkleSnapshot;
 
 public class LedgerModelDataContractAutoRegistrar implements DataContractAutoRegistrar{
@@ -11,6 +12,7 @@ public class LedgerModelDataContractAutoRegistrar implements DataContractAutoReg
 	public void initContext(DataContractRegistry registry) {
 		DataContractRegistry.register(MerkleSnapshot.class);
 		DataContractRegistry.register(BlockchainIdentity.class);
+		DataContractRegistry.register(AccountSnapshot.class);
 		
 		
 		
