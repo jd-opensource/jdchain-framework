@@ -2,6 +2,8 @@ package com.jd.blockchain.crypto.utils.classic;
 
 import org.bouncycastle.crypto.digests.RIPEMD160Digest;
 
+import com.jd.blockchain.utils.security.Hasher;
+
 /**
  * @author zhanglin33
  * @title: RIPEMD160Utils
@@ -32,4 +34,32 @@ public class RIPEMD160Utils {
 		ripemd160Digest.doFinal(result, 0);
 		return result;
 	}
+	
+
+    public static Hasher beginHash() {
+    	return new RipeMD160Hasher();
+    }
+    
+    private static class RipeMD160Hasher implements Hasher{
+    	
+    	private RIPEMD160Digest digest = new RIPEMD160Digest();
+    	
+		@Override
+		public void update(byte[] bytes) {
+			digest.update(bytes, 0, bytes.length);
+		}
+
+		@Override
+		public void update(byte[] bytes, int offset, int len) {
+			digest.update(bytes, offset, len);
+		}
+
+		@Override
+		public byte[] complete() {
+			byte[] result = new byte[RIPEMD160DIGEST_LENGTH];
+			digest.doFinal(result, 0);
+			return result;
+		}
+    	
+    }
 }

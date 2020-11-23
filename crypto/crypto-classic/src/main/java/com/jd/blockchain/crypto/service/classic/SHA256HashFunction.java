@@ -6,9 +6,12 @@ import com.jd.blockchain.crypto.CryptoAlgorithm;
 import com.jd.blockchain.crypto.CryptoBytes;
 import com.jd.blockchain.crypto.CryptoException;
 import com.jd.blockchain.crypto.HashDigest;
+import com.jd.blockchain.crypto.HashDigester;
 import com.jd.blockchain.crypto.HashFunction;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
+import com.jd.blockchain.crypto.base.EncodedHashDigester;
 import com.jd.blockchain.crypto.utils.classic.SHA256Utils;
+import com.jd.blockchain.utils.security.Hasher;
 
 public class SHA256HashFunction implements HashFunction {
 
@@ -92,4 +95,21 @@ public class SHA256HashFunction implements HashFunction {
 		return HashDigest.class == cryptoDataType && supportHashDigest(encodedCryptoBytes);
 	}
 
+	@Override
+	public HashDigester beginHash() {
+		return new SHA256HashDigester(SHA256Utils.beginHash());
+	}
+	
+	private static class SHA256HashDigester extends EncodedHashDigester{
+
+		public SHA256HashDigester(Hasher hasher) {
+			super(hasher);
+		}
+
+		@Override
+		protected HashDigest encodeHashDigest(byte[] rawHashDigestBytes) {
+			return DefaultCryptoEncoding.encodeHashDigest(ALGORITHM, rawHashDigestBytes);
+		}
+		
+	}
 }

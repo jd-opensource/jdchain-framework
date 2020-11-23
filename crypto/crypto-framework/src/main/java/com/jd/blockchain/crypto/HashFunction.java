@@ -9,7 +9,7 @@ public interface HashFunction extends CryptoFunction {
 	 * @return
 	 */
 	HashDigest hash(byte[] data);
-	
+
 	/**
 	 * 计算指定数据的哈希值；
 	 * 
@@ -17,7 +17,7 @@ public interface HashFunction extends CryptoFunction {
 	 * @return
 	 */
 	HashDigest hash(byte[] data, int offset, int len);
-	
+
 	/**
 	 * 计算指定数据的哈希值 ，返回未编码的原始哈希值；
 	 * 
@@ -25,7 +25,7 @@ public interface HashFunction extends CryptoFunction {
 	 * @return
 	 */
 	byte[] rawHash(byte[] data);
-	
+
 	/**
 	 * 计算指定数据的 hash；
 	 * 
@@ -33,7 +33,6 @@ public interface HashFunction extends CryptoFunction {
 	 * @return
 	 */
 	byte[] rawHash(byte[] data, int offset, int len);
-	
 
 	/**
 	 * 校验 hash 摘要与指定的数据是否匹配；
@@ -59,5 +58,11 @@ public interface HashFunction extends CryptoFunction {
 	 * @return HashDigest形式的hash摘要
 	 */
 	HashDigest resolveHashDigest(byte[] digestBytes);
-	
+
+	/**
+	 * 开始创建哈希摘要器用于连续的哈希运算；
+	 * 
+	 * @return
+	 */
+	HashDigester beginHash();
 }

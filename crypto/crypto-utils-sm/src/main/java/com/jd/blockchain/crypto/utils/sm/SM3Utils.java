@@ -2,6 +2,8 @@ package com.jd.blockchain.crypto.utils.sm;
 
 import org.bouncycastle.crypto.digests.SM3Digest;
 
+import com.jd.blockchain.utils.security.Hasher;
+
 public class SM3Utils {
 
 	// The length of sm3 output is 32 bytes
@@ -30,4 +32,32 @@ public class SM3Utils {
 
 		return result;
 	}
+	
+
+    public static Hasher beginHash() {
+    	return new SM3Hasher();
+    }
+    
+    private static class SM3Hasher implements Hasher{
+    	
+    	private SM3Digest digest = new SM3Digest();
+    	
+		@Override
+		public void update(byte[] bytes) {
+			digest.update(bytes, 0, bytes.length);
+		}
+
+		@Override
+		public void update(byte[] bytes, int offset, int len) {
+			digest.update(bytes, offset, len);
+		}
+
+		@Override
+		public byte[] complete() {
+			byte[] result = new byte[SM3DIGEST_LENGTH];
+			digest.doFinal(result, 0);
+			return result;
+		}
+    	
+    }
 }

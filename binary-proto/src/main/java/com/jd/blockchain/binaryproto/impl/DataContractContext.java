@@ -7,7 +7,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -32,14 +31,13 @@ import com.jd.blockchain.binaryproto.FieldSpec;
 import com.jd.blockchain.binaryproto.NumberEncoding;
 import com.jd.blockchain.binaryproto.PrimitiveType;
 import com.jd.blockchain.binaryproto.impl.EnumSpecificationInfo.EnumConstant;
-import com.jd.blockchain.utils.ArrayUtils;
+import com.jd.blockchain.crypto.utils.classic.SHA256Utils;
 import com.jd.blockchain.utils.io.BytesSerializable;
 import com.jd.blockchain.utils.io.BytesUtils;
 import com.jd.blockchain.utils.io.NumberMask;
 import com.jd.blockchain.utils.provider.Provider;
 import com.jd.blockchain.utils.provider.ProviderManager;
-import com.jd.blockchain.utils.security.SHA256Hash;
-import com.jd.blockchain.utils.security.ShaUtils;
+import com.jd.blockchain.utils.security.Hasher;
 
 public class DataContractContext {
 
@@ -312,7 +310,7 @@ public class DataContractContext {
 
 		dataSliceSpecs[0] = HEAD_SLICE;
 
-		SHA256Hash versionHash = ShaUtils.hash_256();// 用于计算 DataContract 的版本号的哈希生成器；
+		Hasher versionHash = SHA256Utils.beginHash();// 用于计算 DataContract 的版本号的哈希生成器；
 		int i = 0;
 		for (FieldDeclaredInfo fieldInfo : allFields) {
 			fieldSpecs[i] = fieldInfo.fieldSpec;

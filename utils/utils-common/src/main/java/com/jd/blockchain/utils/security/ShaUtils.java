@@ -88,7 +88,7 @@ public class ShaUtils {
 		}
 	}
 
-	public static SHA256Hash hash_256() {
+	public static Hasher hash_256() {
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
 			return new SHA256HashImpl(md);
@@ -97,7 +97,7 @@ public class ShaUtils {
 		}
 	}
 
-	private static class SHA256HashImpl implements SHA256Hash {
+	private static class SHA256HashImpl implements Hasher {
 
 		private MessageDigest md;
 

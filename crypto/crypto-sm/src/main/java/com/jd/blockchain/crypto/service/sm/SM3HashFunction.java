@@ -6,9 +6,12 @@ import com.jd.blockchain.crypto.CryptoAlgorithm;
 import com.jd.blockchain.crypto.CryptoBytes;
 import com.jd.blockchain.crypto.CryptoException;
 import com.jd.blockchain.crypto.HashDigest;
+import com.jd.blockchain.crypto.HashDigester;
 import com.jd.blockchain.crypto.HashFunction;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
+import com.jd.blockchain.crypto.base.EncodedHashDigester;
 import com.jd.blockchain.crypto.utils.sm.SM3Utils;
+import com.jd.blockchain.utils.security.Hasher;
 
 public class SM3HashFunction implements HashFunction {
 
@@ -91,5 +94,24 @@ public class SM3HashFunction implements HashFunction {
 	public <T extends CryptoBytes> boolean support(Class<T> cryptoDataType, byte[] encodedCryptoBytes) {
 		return (HashDigest.class == cryptoDataType && supportHashDigest(encodedCryptoBytes))
 				;
+	}
+	
+
+	@Override
+	public HashDigester beginHash() {
+		return new SM3HashDigester(SM3Utils.beginHash());
+	}
+	
+	private static class SM3HashDigester extends EncodedHashDigester{
+
+		public SM3HashDigester(Hasher hasher) {
+			super(hasher);
+		}
+
+		@Override
+		protected HashDigest encodeHashDigest(byte[] rawHashDigestBytes) {
+			return DefaultCryptoEncoding.encodeHashDigest(SM3, rawHashDigestBytes);
+		}
+		
 	}
 }

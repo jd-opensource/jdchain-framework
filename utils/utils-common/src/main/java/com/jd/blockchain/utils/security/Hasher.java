@@ -1,7 +1,6 @@
 package com.jd.blockchain.utils.security;
 
-@Deprecated
-public interface SHA256Hash {
+public interface Hasher {
 
 	/**
 	 * 追加要一起计算哈希的数据；
