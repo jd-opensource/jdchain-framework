@@ -162,6 +162,8 @@ public interface DataCodes {
 	public static final int ACCOUNT_SNAPSHOT = 0x701;
 	
 	public static final int DATA_ACCOUNT_INFO = 0x710;
+	
+	public static final int EVENT_ACCOUNT_INFO = 0x740;
 
 	public static final int USER_ACCOUNT_HEADER = 0x800;
 
