@@ -52,11 +52,19 @@ public class ContractSettings {
 		this.pubKey = pubKey;
 	}
 
-	public HashDigest getRootHash() {
+	public HashDigest getHeaderRootHash() {
+		return headerRootHash;
+	}
+
+	public void setHeaderRootHash(HashDigest rootHash) {
+		this.headerRootHash = rootHash;
+	}
+
+	public HashDigest getDataRootHash() {
 		return dataRootHash;
 	}
 
-	public void setRootHash(HashDigest rootHash) {
+	public void setDataRootHash(HashDigest rootHash) {
 		this.dataRootHash = rootHash;
 	}
 
