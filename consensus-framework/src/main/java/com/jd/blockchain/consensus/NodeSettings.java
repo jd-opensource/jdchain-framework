@@ -12,7 +12,7 @@ import com.jd.blockchain.crypto.PubKey;
  * @author huanghaiquan
  *
  */
-@DataContract(code=DataCodes.CONSENSUS_NODE_SETTINGS)
+@DataContract(code=DataCodes.CONSENSUS_VIEW_NODE_SETTINGS)
 public interface NodeSettings {
 
 	/**

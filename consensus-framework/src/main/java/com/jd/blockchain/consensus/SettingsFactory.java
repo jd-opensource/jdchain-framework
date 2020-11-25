@@ -12,7 +12,7 @@ public interface SettingsFactory {
 
 	ConsensusSettingsBuilder getConsensusSettingsBuilder();
 
-	BytesEncoder<ConsensusSettings> getConsensusSettingsEncoder();
+	BytesEncoder<ConsensusViewSettings> getConsensusSettingsEncoder();
 
 	BytesEncoder<ClientIncomingSettings> getIncomingSettingsEncoder();
 	

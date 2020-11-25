@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 
 /**
  * 提供对异步操作的结果描述；
+ * 
  * @param <V> class
  */
 public interface AsyncFuture<V> {
@@ -13,12 +14,27 @@ public interface AsyncFuture<V> {
 	/**
 	 * 返回异步操作的结果；<br>
 	 * 
+	 * 如果异步操作发生了异常，则此方法也将以抛出异常的方式返回；
+	 * <p>
+	 * 
 	 * 注：此方法将堵塞当前线程直至异步操作完成并返回结果；
 	 * 
 	 * @return v
 	 */
 	V get();
 
+	/**
+	 * 返回异步操作的结果；<br>
+	 * 
+	 * 如果异步操作发生了异常，则此方法也将以抛出异常的方式返回；
+	 * <p>
+	 * 
+	 * 注：此方法将堵塞当前线程等待操作完成并返回结果，如果等待超过指定的超时时间则抛出超时异常 {@link RuntimeTimeoutException}；
+	 * 
+	 * @param timeout
+	 * @param unit
+	 * @return
+	 */
 	V get(long timeout, TimeUnit unit);
 
 	/**

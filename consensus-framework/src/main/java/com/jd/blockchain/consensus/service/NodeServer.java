@@ -1,12 +1,12 @@
 package com.jd.blockchain.consensus.service;
 
-import com.jd.blockchain.consensus.ConsensusManageService;
+import com.jd.blockchain.consensus.ClientAuthencationService;
 
 public interface NodeServer {
 	
 	String getProviderName();
 	
-	ConsensusManageService getConsensusManageService();
+	ClientAuthencationService getClientAuthencationService();
 	
 	ServerSettings getSettings();
 	

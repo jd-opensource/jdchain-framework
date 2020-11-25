@@ -5,7 +5,7 @@ import com.jd.blockchain.binaryproto.DataContractRegistry;
 import com.jd.blockchain.consensus.ClientIdentification;
 import com.jd.blockchain.consensus.ClientIdentifications;
 import com.jd.blockchain.consensus.ClientIncomingSettings;
-import com.jd.blockchain.consensus.ConsensusSettings;
+import com.jd.blockchain.consensus.ConsensusViewSettings;
 import com.jd.blockchain.consensus.NodeNetworkAddress;
 import com.jd.blockchain.consensus.NodeNetworkAddresses;
 import com.jd.blockchain.consensus.NodeSettings;
@@ -24,7 +24,7 @@ public class ConsensusDataContractAutoRegistrar implements DataContractAutoRegis
 	@Override
 	public void initContext(DataContractRegistry registry) {
 		DataContractRegistry.register(NodeSettings.class);
-		DataContractRegistry.register(ConsensusSettings.class);
+		DataContractRegistry.register(ConsensusViewSettings.class);
 		DataContractRegistry.register(NodeNetworkAddress.class);
 		DataContractRegistry.register(NodeNetworkAddresses.class);
 		

@@ -11,7 +11,7 @@ public interface ConsensusSettingsBuilder {
 	 * @param replicas 参与方列表；<br>
 	 * @return
 	 */
-	ConsensusSettings createSettings(Properties props, Replica[] replicas);
+	ConsensusViewSettings createSettings(Properties props, Replica[] replicas);
 
 	/**
 	 * 创建共识配置属性的模板；
@@ -27,7 +27,16 @@ public interface ConsensusSettingsBuilder {
 	 * @param props    属性表；
 	 * @return
 	 */
-	void writeSettings(ConsensusSettings settings, Properties props);
+	Properties convertToProperties(ConsensusViewSettings settings);
+
+	/**
+	 * 更新配置加入新的参与方；
+	 * 
+	 * @param settings 现有的配置；
+	 * @param replica  要加入的新参与方；
+	 * @return
+	 */
+	ConsensusViewSettings addReplicaSetting(ConsensusViewSettings settings, Replica replica);
 
 	/**
 	 * 根据属性信息对旧的共识环境进行更新 如果oldConsensusSettings是代理对象，需要在方法内部建立新的对象返回；
@@ -36,5 +45,5 @@ public interface ConsensusSettingsBuilder {
 	 * @param props                新添加的属性表；
 	 * @return
 	 */
-	ConsensusSettings updateSettings(ConsensusSettings oldConsensusSettings, Properties newProps);
+	ConsensusViewSettings updateSettings(ConsensusViewSettings oldConsensusSettings, Properties newProps);
 }

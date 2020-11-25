@@ -211,9 +211,9 @@ public interface DataCodes {
 
 	public static final int CONSENSUS_ACTION_RESPONSE = CONSENSUS | 0x02;
 
-	public static final int CONSENSUS_SETTINGS = CONSENSUS | 0x03;
+	public static final int CONSENSUS_VIEW_SETTINGS = CONSENSUS | 0x03;
 
-	public static final int CONSENSUS_NODE_SETTINGS = CONSENSUS | 0x04;
+	public static final int CONSENSUS_VIEW_NODE_SETTINGS = CONSENSUS | 0x04;
 
 	public static final int CONSENSUS_CLI_INCOMING_SETTINGS = CONSENSUS | 0x05;
 
