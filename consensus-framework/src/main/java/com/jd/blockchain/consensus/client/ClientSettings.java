@@ -1,6 +1,6 @@
 package com.jd.blockchain.consensus.client;
 
-import com.jd.blockchain.consensus.ConsensusSettings;
+import com.jd.blockchain.consensus.ConsensusViewSettings;
 import com.jd.blockchain.crypto.PubKey;
 
 /**
@@ -30,6 +30,6 @@ public interface ClientSettings {
 	 * 
 	 * @return
 	 */
-	ConsensusSettings getConsensusSettings();
+	ConsensusViewSettings getConsensusSettings();
 
 }

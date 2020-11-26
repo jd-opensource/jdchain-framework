@@ -127,6 +127,14 @@ public abstract class PropertiesUtils {
 		setValues(obj, props);
 	}
 
+	/**
+	 * 从指定路径加载属性文件；
+	 * 
+	 * @param configFilePathPattern 文件路径；也可以是类路径；
+	 * @param charset
+	 * @return
+	 * @throws IOException
+	 */
 	public static Properties loadProperties(String configFilePathPattern, String charset) throws IOException {
 		ResourcePatternResolver resResolver = new PathMatchingResourcePatternResolver();
 		Resource configResource = resResolver.getResource(configFilePathPattern);
@@ -251,7 +259,7 @@ public abstract class PropertiesUtils {
 		String value = getRequiredProperty(props, key);
 		return Boolean.parseBoolean(value);
 	}
-	
+
 	public static boolean getBooleanOptional(Properties props, String key, boolean defaultValue) {
 		String value = getProperty(props, key, false);
 		if (value == null) {
@@ -271,11 +279,11 @@ public abstract class PropertiesUtils {
 	public static String getRequiredProperty(Properties props, String key) {
 		return getProperty(props, key, true);
 	}
-	
+
 	public static String getOptionalProperty(Properties props, String key) {
 		return getProperty(props, key, false);
 	}
-	
+
 	public static String getOptionalProperty(Properties props, String key, String defaultValue) {
 		String value = getProperty(props, key, false);
 		if (value == null) {

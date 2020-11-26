@@ -28,6 +28,7 @@ public class JsonWebResponseMessageConverter extends FastJsonHttpMessageConverte
 			throws IOException, HttpMessageNotWritableException {
 		// 确保使用一致的序列化配置；
 		getFastJsonConfig().setSerializeConfig(JSONSerializeUtils.getSerializeConfig());
+		getFastJsonConfig().setParserConfig(JSONSerializeUtils.getParserConfig());
 
 		// 把返回结果自动转换为 WebResponse；
 		if (obj instanceof WebResponse) {

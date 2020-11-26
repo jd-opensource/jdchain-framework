@@ -5,13 +5,13 @@ import com.jd.blockchain.binaryproto.DataField;
 import com.jd.blockchain.consts.DataCodes;
 
 /**
- * 共识网络的配置参数；
+ * 共识网络的视图配置；
  * 
  * @author huanghaiquan
  *
  */
-@DataContract(code = DataCodes.CONSENSUS_SETTINGS)
-public interface ConsensusSettings {
+@DataContract(code = DataCodes.CONSENSUS_VIEW_SETTINGS)
+public interface ConsensusViewSettings {
 
 	/**
 	 * 共识网络中的节点列表；

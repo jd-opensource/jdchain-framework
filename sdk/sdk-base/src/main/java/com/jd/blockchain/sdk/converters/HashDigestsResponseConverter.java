@@ -59,6 +59,9 @@ public class HashDigestsResponseConverter implements ResponseConverter {
                     Map<String, String> objMap = (Map)obj;
                     String base58Str = objMap.get("value");
                     hashDigests.add(Crypto.resolveAsHashDigest(Base58Utils.decode(base58Str)));
+                } else {
+                    hashDigests.add(Crypto.resolveAsHashDigest(Base58Utils.decode(obj.toString())));
+
                 }
             }
         }

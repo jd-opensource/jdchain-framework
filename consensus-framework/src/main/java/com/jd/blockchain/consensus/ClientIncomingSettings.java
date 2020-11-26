@@ -36,6 +36,6 @@ public interface ClientIncomingSettings {
 	 * @return
 	 */
 	@DataField(order = 2, refContract = true, genericContract = true)
-	ConsensusSettings getConsensusSettings();
+	ConsensusViewSettings getConsensusSettings();
 
 }

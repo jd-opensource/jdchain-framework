@@ -1,4 +1,4 @@
-package com.jd.blockchain.serialize;
+package com.jd.blockchain.crypto.binaryproto;
 
 import com.jd.blockchain.binaryproto.DataContractAutoRegistrar;
 import com.jd.blockchain.binaryproto.DataContractRegistry;
@@ -10,7 +10,7 @@ import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.crypto.SymmetricCiphertext;
 import com.jd.blockchain.crypto.SymmetricKey;
 
-public class CryptoBytesSerializationAutoRegistrar implements DataContractAutoRegistrar{
+public class CryptoDataContractAutoRegistrar implements DataContractAutoRegistrar{
 	
 	
 	public static void configure() {
@@ -21,6 +21,14 @@ public class CryptoBytesSerializationAutoRegistrar implements DataContractAutoRe
 		DataContractRegistry.registerBytesConverter(SymmetricKey.class, new SymmetricKeyConverter());
 		DataContractRegistry.registerBytesConverter(SymmetricCiphertext.class, new SymmetricCiphertextConverter());
 		DataContractRegistry.registerBytesConverter(AsymmetricCiphertext.class, new AsymmetricCiphertextConverter());
+	}
+	
+	/**
+	 * 密码框架是基础性的，因此采用顺序优先级 10 ，确保最先注册；
+	 */
+	@Override
+	public int order() {
+		return 10;
 	}
 
 

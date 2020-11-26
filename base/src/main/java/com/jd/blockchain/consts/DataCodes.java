@@ -62,6 +62,8 @@ public interface DataCodes {
 	
 	public static final int TX_RECORD = 0x206;
 
+	public static final int TX_RECORDS = 0x207;
+
 	public static final int TX_RETURN_MESSAGE = 0x230;
 
 	public static final int TX_OP = 0x300;
@@ -156,8 +158,12 @@ public interface DataCodes {
 	public static final int METADATA_CRYPTO_SETTING_PROVIDER = 0x643;
 
 //	public static final int ACCOUNT = 0x700;
-
+	
+	public static final int ACCOUNT_SNAPSHOT = 0x701;
+	
 	public static final int DATA_ACCOUNT_INFO = 0x710;
+	
+	public static final int EVENT_ACCOUNT_INFO = 0x740;
 
 	public static final int USER_ACCOUNT_HEADER = 0x800;
 
@@ -205,11 +211,15 @@ public interface DataCodes {
 
 	public static final int CONSENSUS_ACTION_RESPONSE = CONSENSUS | 0x02;
 
-	public static final int CONSENSUS_SETTINGS = CONSENSUS | 0x03;
+	public static final int CONSENSUS_VIEW_SETTINGS = CONSENSUS | 0x03;
 
-	public static final int CONSENSUS_NODE_SETTINGS = CONSENSUS | 0x04;
+	public static final int CONSENSUS_VIEW_NODE_SETTINGS = CONSENSUS | 0x04;
 
 	public static final int CONSENSUS_CLI_INCOMING_SETTINGS = CONSENSUS | 0x05;
+
+	public static final int CONSENSUS_NODE_NETWORK_ADDRESS = CONSENSUS | 0x06;
+
+	public static final int CONSENSUS_NODE_NETWORK_ADDRESSES = CONSENSUS | 0x07;
 
 	// ------------------ 共识相关（BFTSMART） ----------------
 	public static final int CONSENSUS_BFTSMART = 0x1100;

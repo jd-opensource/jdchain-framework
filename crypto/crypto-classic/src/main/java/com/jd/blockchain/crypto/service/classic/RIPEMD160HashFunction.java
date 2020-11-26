@@ -6,9 +6,12 @@ import com.jd.blockchain.crypto.CryptoAlgorithm;
 import com.jd.blockchain.crypto.CryptoBytes;
 import com.jd.blockchain.crypto.CryptoException;
 import com.jd.blockchain.crypto.HashDigest;
+import com.jd.blockchain.crypto.HashDigester;
 import com.jd.blockchain.crypto.HashFunction;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
+import com.jd.blockchain.crypto.base.EncodedHashDigester;
 import com.jd.blockchain.crypto.utils.classic.RIPEMD160Utils;
+import com.jd.blockchain.utils.security.Hasher;
 
 public class RIPEMD160HashFunction implements HashFunction {
 
@@ -92,4 +95,21 @@ public class RIPEMD160HashFunction implements HashFunction {
 		return HashDigest.class == cryptoDataType && supportHashDigest(encodedCryptoBytes);
 	}
 
+	@Override
+	public HashDigester beginHash() {
+		return new RipeMD160HashDigester(RIPEMD160Utils.beginHash());
+	}
+	
+	private static class RipeMD160HashDigester extends EncodedHashDigester{
+
+		public RipeMD160HashDigester(Hasher hasher) {
+			super(hasher);
+		}
+
+		@Override
+		protected HashDigest encodeHashDigest(byte[] rawHashDigestBytes) {
+			return DefaultCryptoEncoding.encodeHashDigest(RIPEMD160, rawHashDigestBytes);
+		}
+		
+	}
 }

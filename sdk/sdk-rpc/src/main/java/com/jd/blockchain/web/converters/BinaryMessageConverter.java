@@ -110,6 +110,10 @@ public class BinaryMessageConverter extends AbstractHttpMessageConverter<Object>
             byte[] serializeBytes = BinaryProtocol.encode(t, TransactionResponse.class);
             out.write(serializeBytes);
             out.flush();
+        } else if (t instanceof LedgerTransactions) {
+            byte[] serializeBytes = BinaryProtocol.encode(t, LedgerTransactions.class);
+            out.write(serializeBytes);
+            out.flush();
         }
     }
 }

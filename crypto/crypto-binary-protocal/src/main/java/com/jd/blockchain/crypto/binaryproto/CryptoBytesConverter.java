@@ -1,4 +1,4 @@
-package com.jd.blockchain.serialize;
+package com.jd.blockchain.crypto.binaryproto;
 
 import com.jd.blockchain.binaryproto.BytesConverter;
 import com.jd.blockchain.crypto.CryptoBytes;

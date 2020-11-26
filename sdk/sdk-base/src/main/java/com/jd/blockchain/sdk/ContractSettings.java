@@ -6,68 +6,81 @@ import com.jd.blockchain.utils.Bytes;
 
 public class ContractSettings {
 
-    private Bytes address;
+	private Bytes address;
 
-    private PubKey pubKey;
+	private PubKey pubKey;
 
-    private HashDigest rootHash;
+	private HashDigest headerRootHash;
 
-    private String chainCode;
-    private long chainCodeVersion;
+	private HashDigest dataRootHash;
 
-    public ContractSettings() {
-    }
+	private String chainCode;
+	private long chainCodeVersion;
 
-    public ContractSettings(Bytes address, PubKey pubKey, HashDigest rootHash) {
-        this.address = address;
-        this.pubKey = pubKey;
-        this.rootHash = rootHash;
-    }
+	public ContractSettings() {
+	}
 
-    public ContractSettings(Bytes address, PubKey pubKey, HashDigest rootHash, String chainCode) {
-        this.address = address;
-        this.pubKey = pubKey;
-        this.rootHash = rootHash;
-        this.chainCode = chainCode;
-    }
+	public ContractSettings(Bytes address, PubKey pubKey, HashDigest headerRootHash, HashDigest dataRootHash) {
+		this.address = address;
+		this.pubKey = pubKey;
+		this.headerRootHash = headerRootHash;
+		this.dataRootHash = dataRootHash;
+	}
 
-    public Bytes getAddress() {
-        return address;
-    }
+	public ContractSettings(Bytes address, PubKey pubKey, HashDigest headerRootHash, HashDigest dataRootHash,
+			String chainCode) {
+		this.address = address;
+		this.pubKey = pubKey;
+		this.headerRootHash = headerRootHash;
+		this.dataRootHash = dataRootHash;
+		this.chainCode = chainCode;
+	}
 
-    public void setAddress(Bytes address) {
-        this.address = address;
-    }
+	public Bytes getAddress() {
+		return address;
+	}
 
-    public PubKey getPubKey() {
-        return pubKey;
-    }
+	public void setAddress(Bytes address) {
+		this.address = address;
+	}
 
-    public void setPubKey(PubKey pubKey) {
-        this.pubKey = pubKey;
-    }
+	public PubKey getPubKey() {
+		return pubKey;
+	}
 
-    public HashDigest getRootHash() {
-        return rootHash;
-    }
+	public void setPubKey(PubKey pubKey) {
+		this.pubKey = pubKey;
+	}
 
-    public void setRootHash(HashDigest rootHash) {
-        this.rootHash = rootHash;
-    }
+	public HashDigest getHeaderRootHash() {
+		return headerRootHash;
+	}
 
-    public String getChainCode() {
-        return chainCode;
-    }
+	public void setHeaderRootHash(HashDigest rootHash) {
+		this.headerRootHash = rootHash;
+	}
 
-    public void setChainCode(String chainCode) {
-        this.chainCode = chainCode;
-    }
+	public HashDigest getDataRootHash() {
+		return dataRootHash;
+	}
 
-    public long getChainCodeVersion() {
-        return chainCodeVersion;
-    }
+	public void setDataRootHash(HashDigest rootHash) {
+		this.dataRootHash = rootHash;
+	}
 
-    public void setChainCodeVersion(long chainCodeVersion) {
-        this.chainCodeVersion = chainCodeVersion;
-    }
+	public String getChainCode() {
+		return chainCode;
+	}
+
+	public void setChainCode(String chainCode) {
+		this.chainCode = chainCode;
+	}
+
+	public long getChainCodeVersion() {
+		return chainCodeVersion;
+	}
+
+	public void setChainCodeVersion(long chainCodeVersion) {
+		this.chainCodeVersion = chainCodeVersion;
+	}
 }

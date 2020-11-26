@@ -17,6 +17,8 @@ public class TxResponseMessage implements TransactionResponse {
 	
 	private long blockHeight;
 
+	private long blockGenerateTime;
+
 	private TransactionState executionState;
 
 	private OperationResult[] operationResults;
@@ -29,6 +31,7 @@ public class TxResponseMessage implements TransactionResponse {
 		this.contentHash = transactionResponse.getContentHash();
 		this.blockHash = transactionResponse.getBlockHash();
 		this.blockHeight = transactionResponse.getBlockHeight();
+		this.blockGenerateTime = transactionResponse.getBlockGenerateTime();
 		this.executionState = transactionResponse.getExecutionState();
 		this.operationResults = operationResults;
 	}
@@ -83,4 +86,12 @@ public class TxResponseMessage implements TransactionResponse {
 		return operationResults;
 	}
 
+	@Override
+	public long getBlockGenerateTime() {
+		return blockGenerateTime;
+	}
+
+	public void setBlockGenerateTime(long blockGenerateTime) {
+		this.blockGenerateTime = blockGenerateTime;
+	}
 }

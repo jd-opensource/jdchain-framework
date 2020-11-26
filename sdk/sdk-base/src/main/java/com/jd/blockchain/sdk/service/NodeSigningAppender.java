@@ -78,12 +78,18 @@ public class NodeSigningAppender implements TransactionService {
 			}
 			return BinaryProtocol.decode(result);
 		} catch (IllegalStateException e) {
-			e.printStackTrace();
-			LOGGER.error("Gateway send tx [{}] error {} !", txRequest.getTransactionHash(), e);
+			LOGGER.error(String.format("Gateway tx sending error! [tx=%s] -- %s", txRequest.getTransactionHash(), e.getMessage()), e);
 			return new ErrorTransactionResponse(txRequest.getTransactionHash());
 		}
 	}
 
+	public MessageService getMessageService() {
+		return messageService;
+	}
+
+	public ConsensusClient getConsensusClient() {
+		return consensusClient;
+	}
 
 	private static class ErrorTransactionResponse implements TransactionResponse {
 
@@ -121,6 +127,11 @@ public class NodeSigningAppender implements TransactionService {
 		@Override
 		public OperationResult[] getOperationResults() {
 			return null;
+		}
+
+		@Override
+		public long getBlockGenerateTime() {
+			return -1L;
 		}
 	}
 }

@@ -64,6 +64,8 @@ public class ClientResolveUtil {
 			case TEXT:
 			case JSON:
 			case XML:
+			case IMG:
+			case VIDEO:
 				innerKvData.setValue(valueObj.toString());
 				break;
 			case INT32:
@@ -206,11 +208,11 @@ public class ClientResolveUtil {
 			ParticipantNode[] participantNodes = new ParticipantNode[consensusParticipantsArray.size()];
 			for (int i = 0; i < consensusParticipantsArray.size(); i++) {
 				JSONObject currConsensusParticipant = consensusParticipantsArray.getJSONObject(i);
-				Bytes address = Bytes.fromBase58(currConsensusParticipant.getString("address"));
+				JSONObject addressJsonObj = currConsensusParticipant.getJSONObject("address");
+				Bytes address = Bytes.fromBase58(addressJsonObj.getString("value"));
 				String name = currConsensusParticipant.getString("name");
 				int id = currConsensusParticipant.getInteger("id");
-				JSONObject pubKeyObj = currConsensusParticipant.getJSONObject("pubKey");
-				String pubKeyBase58 = pubKeyObj.getString("value");
+				String pubKeyBase58 = currConsensusParticipant.getString("pubKey");
 				// 生成ParticipantNode对象
 				ParticipantCertData participantCertData = new ParticipantCertData(id, address, name,
 						Crypto.resolveAsPubKey(Bytes.fromBase58(pubKeyBase58).toBytes()), null);
@@ -292,15 +294,13 @@ public class ClientResolveUtil {
 		String addressBase58 = addressObj.getString("value");
 		Bytes address = Bytes.fromBase58(addressBase58);
 
-		JSONObject pubKeyObj = jsonObject.getJSONObject("pubKey");
 		// base58值
-		String pubKeyBase58 = pubKeyObj.getString("value");
+		String pubKeyBase58 = jsonObject.getString("pubKey");
 		PubKey pubKey = Crypto.resolveAsPubKey(Bytes.fromBase58(pubKeyBase58).toBytes());
 
 		// 生成对应的对象
 		return new BlockchainIdentityData(address, pubKey);
 	}
-
 	public static class CryptoConfig implements CryptoSetting {
 
 		private short hashAlgorithm;

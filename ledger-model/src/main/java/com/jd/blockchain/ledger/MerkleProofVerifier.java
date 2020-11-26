@@ -16,7 +16,7 @@ public class MerkleProofVerifier {
 			if (!verify(parentHash, childHashs)) {
 				return false;
 			}
-			parentHash = childHashs[level.getPathPoint()];
+			parentHash = childHashs[level.getProofPoint()];
 		}
 		
 		return parentHash.equals(proof.getDataHash());

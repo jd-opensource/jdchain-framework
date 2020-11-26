@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import com.jd.blockchain.utils.io.BytesUtils;
 import com.jd.blockchain.utils.security.RandomUtils;
-import com.jd.blockchain.utils.security.SHA256Hash;
+import com.jd.blockchain.utils.security.Hasher;
 import com.jd.blockchain.utils.security.ShaUtils;
 
 public class ShaUtilsTest {
@@ -89,7 +89,7 @@ public class ShaUtilsTest {
 		byte[] randBytes2 = RandomUtils.generateRandomBytes(256);
 		byte[] randBytes3 = RandomUtils.generateRandomBytes(256);
 
-		SHA256Hash sha256Hash = ShaUtils.hash_256();
+		Hasher sha256Hash = ShaUtils.hash_256();
 
 		sha256Hash.update(randBytes1);
 		sha256Hash.update(randBytes2);
@@ -97,7 +97,7 @@ public class ShaUtilsTest {
 
 		byte[] hash1 = sha256Hash.complete();
 
-		SHA256Hash sha256Hash2 = ShaUtils.hash_256();
+		Hasher sha256Hash2 = ShaUtils.hash_256();
 
 		byte[] bytes4 = BytesUtils.concat(randBytes1, randBytes2, randBytes3);
 		sha256Hash2.update(bytes4);

@@ -14,12 +14,12 @@ import com.jd.blockchain.crypto.HashDigest;
 public interface MerkleProofLevel {
 
 	/**
-	 * 路径点，即在本层的哈希节点列表（{@link #getHashNodes()}）中属于证明路径的哈希节点的列表位置；
+	 * 证明点，即在本层的哈希节点列表（{@link #getHashNodes()}）中属于证明路径的哈希节点的列表位置；
 	 * <p>
 	 * 
 	 * @return 返回值大于等于 0，小于 {@link #getHashNodes()} 的长度；
 	 */
-	int getPathPoint();
+	int getProofPoint();
 
 	/**
 	 * 哈希节点列表；
