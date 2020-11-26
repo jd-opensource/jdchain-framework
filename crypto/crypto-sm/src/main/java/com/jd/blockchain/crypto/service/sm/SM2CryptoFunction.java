@@ -214,12 +214,12 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 
 	@Override
 	public AsymmetricKeypair generateKeypair(byte[] seed) {
-		return generateKeypair(new SecureRandom(seed));
+		return generateKeypair(new SM3SecureRandom(seed));
 	}
 
 	private AsymmetricKeypair generateKeypair(SecureRandom random) {
 		// 调用SM2算法的密钥生成算法生成公私钥对priKey和pubKey，返回密钥对
-		AsymmetricCipherKeyPair keyPair = SM2Utils.generateKeyPair();
+		AsymmetricCipherKeyPair keyPair = SM2Utils.generateKeyPair(random);
 		ECPrivateKeyParameters ecPriv = (ECPrivateKeyParameters) keyPair.getPrivate();
 		ECPublicKeyParameters ecPub = (ECPublicKeyParameters) keyPair.getPublic();
 

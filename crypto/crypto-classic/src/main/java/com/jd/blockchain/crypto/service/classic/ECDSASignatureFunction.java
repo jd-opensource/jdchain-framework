@@ -147,7 +147,7 @@ public class ECDSASignatureFunction implements SignatureFunction {
 
 	@Override
 	public AsymmetricKeypair generateKeypair(byte[] seed) {
-		return generateKeypair(new SecureRandom(seed));
+		return generateKeypair(new SHA256SecureRandom(seed));
 	}
 
 	public AsymmetricKeypair generateKeypair(SecureRandom random) {

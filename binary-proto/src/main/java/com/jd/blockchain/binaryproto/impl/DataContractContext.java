@@ -4,6 +4,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,13 +33,11 @@ import com.jd.blockchain.binaryproto.FieldSpec;
 import com.jd.blockchain.binaryproto.NumberEncoding;
 import com.jd.blockchain.binaryproto.PrimitiveType;
 import com.jd.blockchain.binaryproto.impl.EnumSpecificationInfo.EnumConstant;
-import com.jd.blockchain.crypto.utils.classic.SHA256Utils;
 import com.jd.blockchain.utils.io.BytesSerializable;
 import com.jd.blockchain.utils.io.BytesUtils;
 import com.jd.blockchain.utils.io.NumberMask;
 import com.jd.blockchain.utils.provider.Provider;
 import com.jd.blockchain.utils.provider.ProviderManager;
-import com.jd.blockchain.utils.security.Hasher;
 
 public class DataContractContext {
 
@@ -310,7 +310,7 @@ public class DataContractContext {
 
 		dataSliceSpecs[0] = HEAD_SLICE;
 
-		Hasher versionHash = SHA256Utils.beginHash();// 用于计算 DataContract 的版本号的哈希生成器；
+		MessageDigest versionHash =hash_256();// 用于计算 DataContract 的版本号的哈希生成器；
 		int i = 0;
 		for (FieldDeclaredInfo fieldInfo : allFields) {
 			fieldSpecs[i] = fieldInfo.fieldSpec;
@@ -328,7 +328,7 @@ public class DataContractContext {
 		}
 
 		// 数据契约的版本号取自对所有字段的数据类型的哈希前 8 位；
-		byte[] allFieldTypesHash = versionHash.complete();
+		byte[] allFieldTypesHash = versionHash.digest();
 		long version = BytesUtils.toLong(allFieldTypesHash);
 
 		HeaderEncoder headerEncoder = new HeaderEncoder(HEAD_SLICE, annoContract.code(), version, annoContract.name(),
@@ -903,4 +903,14 @@ public class DataContractContext {
 		}
 
 	}
+	
+	private static MessageDigest hash_256() {
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			return md;
+		} catch (NoSuchAlgorithmException e) {
+			throw new IllegalStateException(e.getMessage(), e);
+		}
+	}
+
 }

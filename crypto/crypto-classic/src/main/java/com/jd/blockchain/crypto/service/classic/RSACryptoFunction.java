@@ -8,7 +8,6 @@ import java.security.SecureRandom;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.RSAKeyParameters;
 import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;
-import org.bouncycastle.crypto.prng.FixedSecureRandom;
 
 import com.jd.blockchain.crypto.AsymmetricCiphertext;
 import com.jd.blockchain.crypto.AsymmetricEncryptionFunction;
@@ -222,7 +221,7 @@ public class RSACryptoFunction implements AsymmetricEncryptionFunction, Signatur
 
 	@Override
 	public AsymmetricKeypair generateKeypair(byte[] seed) {
-		return generateKeypair(new FixedSecureRandom(seed));
+		return generateKeypair(new SHA256SecureRandom(seed));
 	}
 
 	public AsymmetricKeypair generateKeypair(SecureRandom random) {
@@ -246,4 +245,6 @@ public class RSACryptoFunction implements AsymmetricEncryptionFunction, Signatur
 				|| (PrivKey.class == cryptoDataType && supportPrivKey(encodedCryptoBytes))
 				|| (AsymmetricCiphertext.class == cryptoDataType && supportCiphertext(encodedCryptoBytes));
 	}
+
+	
 }

@@ -8,7 +8,6 @@ import java.security.SecureRandom;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
-import org.bouncycastle.crypto.prng.FixedSecureRandom;
 
 import com.jd.blockchain.crypto.AsymmetricKeypair;
 import com.jd.blockchain.crypto.CryptoAlgorithm;
@@ -149,7 +148,7 @@ public class ED25519SignatureFunction implements SignatureFunction {
 	@Override
 	public AsymmetricKeypair generateKeypair(byte[] seed) {
 		ED25519Utils.checkKeyGenSeed(seed);
-		return generateKeypair(new FixedSecureRandom(seed));
+		return generateKeypair(new SHA256SecureRandom(seed));
 	}
 
 	public AsymmetricKeypair generateKeypair(SecureRandom random) {

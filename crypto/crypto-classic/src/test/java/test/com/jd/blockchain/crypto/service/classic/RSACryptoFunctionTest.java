@@ -60,9 +60,35 @@ public class RSACryptoFunctionTest {
         assertNull(algorithm);
     }
     
+//    @Test
+//	public void generateKeyWithFixedSeedTest() {
+//		// 验证基于固定的种子是否能够生成相同密钥的操作；
+//		byte[] seed = RandomUtils.generateRandomBytes(32);
+//		
+//		CryptoAlgorithm algorithm = Crypto.getAlgorithm("RSA");
+//		assertNotNull(algorithm);
+//
+//		SignatureFunction signatureFunction = Crypto.getSignatureFunction(algorithm);
+//		AsymmetricKeypair keypair1 =  signatureFunction.generateKeypair(seed);
+//		AsymmetricKeypair keypair2 = signatureFunction.generateKeypair(seed);
+//
+//		assertArrayEquals(keypair1.getPrivKey().toBytes(), keypair2.getPrivKey().toBytes());
+//		assertArrayEquals(keypair1.getPubKey().toBytes(), keypair2.getPubKey().toBytes());
+//
+////		// 循环一万次验证结果；
+////		for (int i = 0; i < 10000; i++) {
+////			keypair1 =  signatureFunction.generateKeypair(seed);
+////			keypair2 = signatureFunction.generateKeypair(seed);
+////
+////			assertArrayEquals(keypair1.getPrivKey().toBytes(), keypair2.getPrivKey().toBytes());
+////			assertArrayEquals(keypair1.getPubKey().toBytes(), keypair2.getPubKey().toBytes());
+////		}
+//	}
+    
+    @Test
 	public void generateKeyWithFixedSeedTest() {
 		// 验证基于固定的种子是否能够生成相同密钥的操作；
-		byte[] seed = RandomUtils.generateRandomBytes(1024*120 - 1);
+		byte[] seed = RandomUtils.generateRandomBytes(32);
 		
 		CryptoAlgorithm algorithm = Crypto.getAlgorithm("RSA");
 		assertNotNull(algorithm);
@@ -74,14 +100,14 @@ public class RSACryptoFunctionTest {
 		assertArrayEquals(keypair1.getPrivKey().toBytes(), keypair2.getPrivKey().toBytes());
 		assertArrayEquals(keypair1.getPubKey().toBytes(), keypair2.getPubKey().toBytes());
 
-//		// 循环一万次验证结果；
-//		for (int i = 0; i < 10000; i++) {
-//			keypair1 =  signatureFunction.generateKeypair(seed);
-//			keypair2 = signatureFunction.generateKeypair(seed);
-//
-//			assertArrayEquals(keypair1.getPrivKey().toBytes(), keypair2.getPrivKey().toBytes());
-//			assertArrayEquals(keypair1.getPubKey().toBytes(), keypair2.getPubKey().toBytes());
-//		}
+		// 循环多次验证结果；
+		for (int i = 0; i < 2; i++) {
+			keypair1 =  signatureFunction.generateKeypair(seed);
+			keypair2 = signatureFunction.generateKeypair(seed);
+
+			assertArrayEquals(keypair1.getPrivKey().toBytes(), keypair2.getPrivKey().toBytes());
+			assertArrayEquals(keypair1.getPubKey().toBytes(), keypair2.getPubKey().toBytes());
+		}
 	}
 
 

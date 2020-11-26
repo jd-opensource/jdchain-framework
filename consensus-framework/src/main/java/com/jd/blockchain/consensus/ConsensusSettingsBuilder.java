@@ -32,11 +32,11 @@ public interface ConsensusSettingsBuilder {
 	/**
 	 * 更新配置加入新的参与方；
 	 * 
-	 * @param settings 现有的配置；
+	 * @param viewSettings 现有的配置；
 	 * @param replica  要加入的新参与方；
 	 * @return
 	 */
-	ConsensusViewSettings addReplicaSetting(ConsensusViewSettings settings, Replica replica);
+	ConsensusViewSettings addReplicaSetting(ConsensusViewSettings viewSettings, Replica replica);
 
 	/**
 	 * 根据属性信息对旧的共识环境进行更新 如果oldConsensusSettings是代理对象，需要在方法内部建立新的对象返回；
