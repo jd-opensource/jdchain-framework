@@ -289,6 +289,13 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 		}
 	}
 
+	// 重连时先清理
+	public static void clear() {
+		peerBlockchainServiceFactories.clear();
+		peerManageServices.clear();
+		peerLedgers.clear();
+	}
+
 	public Map<HashDigest, MonitorService> getMonitorServiceMap() {
 		return monitorServiceMap;
 	}

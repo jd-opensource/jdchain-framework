@@ -1,5 +1,6 @@
 package com.jd.blockchain.sdk.service;
 
+import com.jd.blockchain.utils.exception.ViewObsoleteException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,8 +78,11 @@ public class NodeSigningAppender implements TransactionService {
 				return new ErrorTransactionResponse(txRequest.getTransactionHash());
 			}
 			return BinaryProtocol.decode(result);
+		} catch (ViewObsoleteException voe) {
+			throw voe;
 		} catch (IllegalStateException e) {
-			LOGGER.error(String.format("Gateway tx sending error! [tx=%s] -- %s", txRequest.getTransactionHash(), e.getMessage()), e);
+			e.printStackTrace();
+			LOGGER.error("Gateway send tx [{}] error {} !", txRequest.getTransactionHash(), e);
 			return new ErrorTransactionResponse(txRequest.getTransactionHash());
 		}
 	}
