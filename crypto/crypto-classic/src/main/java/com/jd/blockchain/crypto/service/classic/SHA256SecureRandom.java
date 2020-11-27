@@ -1,7 +1,8 @@
 package com.jd.blockchain.crypto.service.classic;
 
+import org.bouncycastle.crypto.digests.SHA256Digest;
+
 import com.jd.blockchain.crypto.base.HashBaseSecureRandom;
-import com.jd.blockchain.crypto.utils.classic.SHA256Utils;
 
 /**
  * 采用基于 SHA256 的“哈希法”生成伪随机数；
@@ -19,6 +20,10 @@ public class SHA256SecureRandom extends HashBaseSecureRandom {
 
 	@Override
 	protected byte[] hash(byte[] bytes) {
-		return SHA256Utils.hash(bytes);
+		SHA256Digest sha256Digest = new SHA256Digest();
+		byte[] result = new byte[sha256Digest.getDigestSize()];
+		sha256Digest.update(bytes, 0, bytes.length);
+		sha256Digest.doFinal(result, 0);
+		return result;
 	}
 }
