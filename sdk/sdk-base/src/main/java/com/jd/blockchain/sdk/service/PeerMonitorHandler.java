@@ -37,7 +37,7 @@ public class PeerMonitorHandler implements MonitorService {
                     byte[] bytes = future.get(MAX_WAIT_MILL_SECONDS, TimeUnit.MILLISECONDS);
                     return convert(bytes);
                 } catch (Exception e) {
-                    LOGGER.error("Load monitors error !!!", e);
+                    LOGGER.warn("Load monitors error !!!", e);
                 }
             }
             return null;

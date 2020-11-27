@@ -94,7 +94,6 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 	 */
 	public static PeerBlockchainServiceFactory connect(AsymmetricKeypair gatewayKey, NetworkAddress peerAddr, List<String> peerProviders) {
 
-		LOGGER.info("====================Gateway connect peer!======================");
 		if (peerProviders == null || peerProviders.isEmpty()) {
 			throw new AuthenticationException("No peer Provider was set!");
 		}
