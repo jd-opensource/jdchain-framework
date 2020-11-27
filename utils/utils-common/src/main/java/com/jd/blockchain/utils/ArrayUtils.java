@@ -61,6 +61,14 @@ public abstract class ArrayUtils {
 		return newArray;
 	}
 
+	public static <T> T[] concat(T[] array1, T newElement, Class<T> clazz) {
+		@SuppressWarnings("unchecked")
+		T[] newArray = (T[]) Array.newInstance(clazz, array1.length + 1);
+		System.arraycopy(array1, 0, newArray, 0, array1.length);
+		newArray[array1.length] = newElement;
+		return newArray;
+	}
+
 	public static <T, R> R[] cast(T[] objs, Class<R> clazz, CastFunction<T, R> cf) {
 		if (objs == null) {
 			return null;
