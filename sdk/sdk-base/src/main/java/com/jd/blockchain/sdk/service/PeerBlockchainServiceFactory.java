@@ -94,6 +94,7 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 	 */
 	public static PeerBlockchainServiceFactory connect(AsymmetricKeypair gatewayKey, NetworkAddress peerAddr, List<String> peerProviders) {
 
+		LOGGER.info("====================Gateway connect peer!======================");
 		if (peerProviders == null || peerProviders.isEmpty()) {
 			throw new AuthenticationException("No peer Provider was set!");
 		}
@@ -287,6 +288,13 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
+	}
+
+	// 重连时先清理
+	public static void clear() {
+		peerBlockchainServiceFactories.clear();
+		peerManageServices.clear();
+		peerLedgers.clear();
 	}
 
 	public Map<HashDigest, MonitorService> getMonitorServiceMap() {
