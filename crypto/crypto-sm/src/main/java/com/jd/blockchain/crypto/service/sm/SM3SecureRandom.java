@@ -1,7 +1,8 @@
 package com.jd.blockchain.crypto.service.sm;
 
+import org.bouncycastle.crypto.digests.SM3Digest;
+
 import com.jd.blockchain.crypto.base.HashBaseSecureRandom;
-import com.jd.blockchain.crypto.utils.sm.SM3Utils;
 
 /**
  * 采用基于 SHA256 的“哈希法”生成伪随机数；
@@ -19,6 +20,10 @@ public class SM3SecureRandom extends HashBaseSecureRandom {
 
 	@Override
 	protected byte[] hash(byte[] bytes) {
-		return SM3Utils.hash(bytes);
+		SM3Digest sm3Digest = new SM3Digest();
+		byte[] result = new byte[sm3Digest.getDigestSize()];
+		sm3Digest.update(bytes, 0, bytes.length);
+		sm3Digest.doFinal(result, 0);
+		return result;
 	}
 }
