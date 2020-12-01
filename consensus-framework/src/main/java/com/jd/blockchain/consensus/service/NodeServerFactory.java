@@ -1,7 +1,6 @@
 package com.jd.blockchain.consensus.service;
 
 import com.jd.blockchain.consensus.ConsensusViewSettings;
-import com.jd.blockchain.consensus.Replica;
 
 /**
  * 共识节点服务器的工厂；
@@ -16,13 +15,13 @@ public interface NodeServerFactory {
 	 * 
 	 * @param realmName
 	 *            共识域的名称；
-	 * @param consensusSetting
+	 * @param viewSettings
 	 *            共识配置；
 	 * @param currentNodeAddress
 	 *            共识节点的虚拟地址；必须是 {@link ConsensusViewSettings#getNodes()} 中的一项；
 	 * @return 共识节点的参数配置；
 	 */
-	ServerSettings buildServerSettings(String realmName, ConsensusViewSettings consensusSetting, String nodeAddress);
+	ServerSettings buildServerSettings(String realmName, ConsensusViewSettings viewSettings, String nodeAddress);
 
 	/**
 	 * 创建一个节点服务器；
