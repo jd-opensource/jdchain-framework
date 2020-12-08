@@ -11,7 +11,7 @@ public class GatewayIncomingSetting {
 	private LedgerIncomingSetting[] ledgers;
 
 	/**
-	 * 所有账本的接入设置；
+	 * 所有账本对应的共识网络的接入配置；
 	 * 
 	 * @return
 	 */
@@ -19,6 +19,11 @@ public class GatewayIncomingSetting {
 		return ledgers;
 	}
 
+	/**
+	 * 所有账本对应的共识网络的接入配置；
+	 * 
+	 * @param ledgerSettings
+	 */
 	public void setLedgers(LedgerIncomingSetting[] ledgerSettings) {
 		this.ledgers = ledgerSettings;
 	}

@@ -27,28 +27,15 @@ public class LedgerIncomingSetting {
 	/**
 	 * Base64 编码的视图配置；
 	 */
-	private String clientSetting;
+	private String consensusClientSettings;
 
-//	/**
-//	 * Base64 编码的网关配置；
-//	 */
-//	private String gatewaySetting;
-
-	public String getClientSetting() {
-		return clientSetting;
+	public String getConsensusClientSettings() {
+		return consensusClientSettings;
 	}
 
-	public void setClientSetting(String clientSetting) {
-		this.clientSetting = clientSetting;
+	public void setConsensusClientSettings(String clientSettings) {
+		this.consensusClientSettings = clientSettings;
 	}
-
-//	public String getGatewaySetting() {
-//		return gatewaySetting;
-//	}
-
-//	public void setGatewaySetting(String gatewaySetting) {
-//		this.gatewaySetting = gatewaySetting;
-//	}
 
 	public boolean isReady() {
 		return ready;

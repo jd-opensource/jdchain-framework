@@ -145,7 +145,7 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 				LedgerIncomingSetting ledgerSetting = needInitSettings.get(i);
 				String providerName = ledgerSetting.getProviderName();
 				ConsensusProvider provider = ConsensusProviders.getProvider(providerName);
-				byte[] clientSettingBytes = ByteArray.fromBase64(ledgerSetting.getClientSetting());
+				byte[] clientSettingBytes = ByteArray.fromBase64(ledgerSetting.getConsensusClientSettings());
 
 				ClientIncomingSettings clientIncomingSettings = provider.getSettingsFactory().getIncomingSettingsEncoder().decode(clientSettingBytes);
 				ClientFactory clientFactory = provider.getClientFactory();
