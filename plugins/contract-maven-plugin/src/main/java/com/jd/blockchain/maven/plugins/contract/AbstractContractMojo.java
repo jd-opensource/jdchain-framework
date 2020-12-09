@@ -316,7 +316,7 @@ public abstract class AbstractContractMojo extends AbstractMojo {
 				cleanToBeTokenizedString(this.excludeArtifactIds));
 		filter.addFilter(userArtifactIdFilter);
 
-		Set<Artifact> artifacts = getProject().getArtifacts();
+		Set<Artifact> artifacts = getProject().getDependencyArtifacts();
 
 		if (getLog().isDebugEnabled()) {
 			getLog().debug("-------- All Dependencies[" + artifacts.size() + "] --------");
