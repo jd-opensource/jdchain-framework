@@ -8,27 +8,27 @@ import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.crypto.SymmetricCiphertext;
 import com.jd.blockchain.crypto.SymmetricKey;
 import com.jd.blockchain.utils.serialize.json.JSONAutoConfigure;
-import com.jd.blockchain.utils.serialize.json.JSONConfigure;
+import com.jd.blockchain.utils.serialize.json.JSONConfigurator;
 
 public class CryptoJSONAutoConfigure implements JSONAutoConfigure {
 
 	@Override
-	public void configure(JSONConfigure configure) {
-		configure.registerInstanceSerializer(HashDigest.class, CryptoBytesSerializer.INSTANCE);
-		configure.registerInstanceSerializer(SignatureDigest.class, CryptoBytesSerializer.INSTANCE);
-		configure.registerInstanceSerializer(PubKey.class, CryptoBytesSerializer.INSTANCE);
-		configure.registerInstanceSerializer(PrivKey.class, CryptoBytesSerializer.INSTANCE);
-		configure.registerInstanceSerializer(SymmetricKey.class, CryptoBytesSerializer.INSTANCE);
-		configure.registerInstanceSerializer(AsymmetricCiphertext.class, CryptoBytesSerializer.INSTANCE);
-		configure.registerInstanceSerializer(SymmetricCiphertext.class, CryptoBytesSerializer.INSTANCE);
+	public void configure(JSONConfigurator configure) {
+		configure.registerSuperSerializer(HashDigest.class, CryptoBytesSerializer.INSTANCE);
+		configure.registerSuperSerializer(SignatureDigest.class, CryptoBytesSerializer.INSTANCE);
+		configure.registerSuperSerializer(PubKey.class, CryptoBytesSerializer.INSTANCE);
+		configure.registerSuperSerializer(PrivKey.class, CryptoBytesSerializer.INSTANCE);
+		configure.registerSuperSerializer(SymmetricKey.class, CryptoBytesSerializer.INSTANCE);
+		configure.registerSuperSerializer(AsymmetricCiphertext.class, CryptoBytesSerializer.INSTANCE);
+		configure.registerSuperSerializer(SymmetricCiphertext.class, CryptoBytesSerializer.INSTANCE);
 
-		configure.registerDeserializer(HashDigest.class, HashDigestDeserializer.INSTANCE);
-		configure.registerDeserializer(SignatureDigest.class, SignatureDigestDeserializer.INSTANCE);
-		configure.registerDeserializer(PubKey.class, PubKeyDeserializer.INSTANCE);
-		configure.registerDeserializer(PrivKey.class, PrivKeyDeserializer.INSTANCE);
-		configure.registerDeserializer(SymmetricKey.class, SymmetricKeyDeserializer.INSTANCE);
-		configure.registerDeserializer(AsymmetricCiphertext.class, AsymmetricCiphertextDeserializer.INSTANCE);
-		configure.registerDeserializer(SymmetricCiphertext.class, AsymmetricCiphertextDeserializer.INSTANCE);
+		configure.configDeserializer(HashDigest.class, HashDigestDeserializer.INSTANCE);
+		configure.configDeserializer(SignatureDigest.class, SignatureDigestDeserializer.INSTANCE);
+		configure.configDeserializer(PubKey.class, PubKeyDeserializer.INSTANCE);
+		configure.configDeserializer(PrivKey.class, PrivKeyDeserializer.INSTANCE);
+		configure.configDeserializer(SymmetricKey.class, SymmetricKeyDeserializer.INSTANCE);
+		configure.configDeserializer(AsymmetricCiphertext.class, AsymmetricCiphertextDeserializer.INSTANCE);
+		configure.configDeserializer(SymmetricCiphertext.class, AsymmetricCiphertextDeserializer.INSTANCE);
 	}
 
 }

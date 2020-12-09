@@ -17,6 +17,6 @@ package com.jd.blockchain.utils.serialize.json;
  */
 public interface JSONAutoConfigure {
 
-	void configure(JSONConfigure configure);
+	void configure(JSONConfigurator configure);
 
 }

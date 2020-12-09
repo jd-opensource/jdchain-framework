@@ -25,20 +25,6 @@ import com.jd.blockchain.utils.PrimitiveUtils;
  */
 public abstract class JSONSerializeUtils {
 
-	private static final ToStringSerializer TO_STRING_SERIALIZER = new ToStringSerializer();
-
-	private static final RuntimeDeserializer RUNTIME_DESERIALIZER = new RuntimeDeserializer();
-
-	private static final SerializeConfig SERIALIZE_CONFIG = SerializeConfig.globalInstance;
-
-	private static final ParserConfig PARSER_CONFIG = ParserConfig.getGlobalInstance();
-
-	private static volatile boolean autoConfigured = false;
-
-	static {
-		enableAutoConfigure();
-	}
-
 	/**
 	 * 启用自动配置服务；
 	 * <p>
@@ -50,50 +36,40 @@ public abstract class JSONSerializeUtils {
 	 * 
 	 */
 	public synchronized static void enableAutoConfigure() {
-		if (autoConfigured) {
-			return;
-		}
-		SERIALIZE_CONFIG.register(JSONAutoConfigureModule.getInstance());
-		PARSER_CONFIG.register(JSONAutoConfigureModule.getInstance());
-
-		autoConfigured = true;
+		JSONGlobalConfigurator.initConfiguration();
 	}
 
 	public static SerializeConfig getSerializeConfig() {
-		return SERIALIZE_CONFIG;
+		return JSONGlobalConfigurator.SERIALIZE_CONFIG;
 	}
 
 	public static ParserConfig getParserConfig() {
-		return PARSER_CONFIG;
+		return JSONGlobalConfigurator.PARSER_CONFIG;
 	}
-	
-	public static void configureInterfaces(Class<?>...types) {
-		ProxyTypeConfigureModule configureModule = new ProxyTypeConfigureModule(types);
-		SERIALIZE_CONFIG.register(configureModule);
-		PARSER_CONFIG.register(configureModule);
+
+	public static void configureInterfaces(Class<?>... types) {
+		JSONGlobalConfigurator.INSTANCE.configureInterfaces(types);
 	}
 
 	public static void addTypeMap(Class<?> fromClazz, Class<?> toClazz) {
-		RUNTIME_DESERIALIZER.addTypeMap(fromClazz, toClazz);
-		PARSER_CONFIG.putDeserializer(fromClazz, RUNTIME_DESERIALIZER);
+		JSONGlobalConfigurator.INSTANCE.addTypeMap(fromClazz, toClazz);
 	}
 
 	public static void configSerialization(Class<?> clazz, ObjectSerializer serializer,
 			ObjectDeserializer deserializer) {
-		SERIALIZE_CONFIG.put(clazz, serializer);
-		PARSER_CONFIG.putDeserializer(clazz, deserializer);
+		JSONGlobalConfigurator.INSTANCE.configSerializer(clazz, serializer);
 	}
-	
+
 	public static void configOutputTypeName(Class<?> clazz, boolean enable) {
-		SERIALIZE_CONFIG.config(clazz, SerializerFeature.WriteClassName, enable);
+		JSONGlobalConfigurator.INSTANCE.configOutputTypeName(clazz, enable);
 	}
 
 	public static void configSerialization(Class<?> clazz, ObjectSerializer serializer) {
-		SERIALIZE_CONFIG.put(clazz, serializer);
+		JSONGlobalConfigurator.INSTANCE.configSerializer(clazz, serializer);
 	}
 
 	public static void configDeserializer(Class<?> clazz, ObjectDeserializer deserializer) {
-		PARSER_CONFIG.putDeserializer(clazz, deserializer);
+		JSONGlobalConfigurator.INSTANCE.configDeserializer(clazz, deserializer);
 	}
 
 	/**
@@ -102,7 +78,7 @@ public abstract class JSONSerializeUtils {
 	 * @param type
 	 */
 	public static void configStringSerializer(Class<?> type) {
-		SERIALIZE_CONFIG.put(type, TO_STRING_SERIALIZER);
+		JSONGlobalConfigurator.INSTANCE.configStringSerializer(type);
 	}
 
 	/**
@@ -284,7 +260,7 @@ public abstract class JSONSerializeUtils {
 					serializedType = data.getClass();
 				}
 
-				JSONSerializer serializer = new JSONSerializer(out, SERIALIZE_CONFIG);
+				JSONSerializer serializer = new JSONSerializer(out, JSONGlobalConfigurator.SERIALIZE_CONFIG);
 
 				// 配置日期格式；
 				if (dateFormat != null && dateFormat.length() != 0) {
@@ -313,19 +289,20 @@ public abstract class JSONSerializeUtils {
 	 * @return
 	 */
 	public static <T> T deserializeFromJSON(String json, Class<T> dataClazz) {
-		return JSON.parseObject(json, dataClazz, PARSER_CONFIG);
+		return JSON.parseObject(json, dataClazz, JSONGlobalConfigurator.PARSER_CONFIG);
 	}
 
 	/**
-	 *
-	 *
-	 * @param jsonObj
-	 * @param dataClazz
+	 * 将指定的 JSONObject 反序列化为指定的数据接口类型；
+	 * 
+	 * @param jsonObj       JSON 数据；
+	 * @param dataInterface 对象接口类型；
 	 * @param <T>
 	 * @return
 	 */
-	public static <T> T deserializeFromJSONObject(JSONObject jsonObj, Class<T> dataClazz) {
-		return (T) Proxy.newProxyInstance(dataClazz.getClassLoader(), new Class[] { dataClazz }, jsonObj);
+	@SuppressWarnings("unchecked")
+	public static <T> T deserializeFromJSONObject(JSONObject jsonObj, Class<T> dataInterface) {
+		return (T) Proxy.newProxyInstance(dataInterface.getClassLoader(), new Class[] { dataInterface }, jsonObj);
 	}
 
 	/**
@@ -335,7 +312,7 @@ public abstract class JSONSerializeUtils {
 	 * @return
 	 */
 	public static <T> T deserializeFromJSON(String json, GenericType<T> type) {
-		return JSON.parseObject(json, type.getTypeArgument(), PARSER_CONFIG);
+		return JSON.parseObject(json, type.getTypeArgument(), JSONGlobalConfigurator.PARSER_CONFIG);
 	}
 
 	@SuppressWarnings("unchecked")
