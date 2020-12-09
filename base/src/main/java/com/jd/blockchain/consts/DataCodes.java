@@ -224,7 +224,7 @@ public interface DataCodes {
 	// ------------------ 共识相关（BFTSMART） ----------------
 	public static final int CONSENSUS_BFTSMART = 0x1100;
 
-	public static final int CONSENSUS_BFTSMART_SETTINGS = CONSENSUS_BFTSMART | 0x01;
+	public static final int CONSENSUS_BFTSMART_VIEW_SETTINGS = CONSENSUS_BFTSMART | 0x01;
 
 	public static final int CONSENSUS_BFTSMART_NODE_SETTINGS = CONSENSUS_BFTSMART | 0x02;
 
