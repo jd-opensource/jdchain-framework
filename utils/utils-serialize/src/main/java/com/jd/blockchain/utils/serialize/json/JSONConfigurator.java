@@ -18,16 +18,38 @@ public interface JSONConfigurator {
 	 * @param superType  超类；
 	 * @param serializer 序列化器；
 	 */
-	void registerSuperSerializer(Class<?> superType, ObjectSerializer serializer);
+	void configSuperSerializer(Class<?> superType, ObjectSerializer serializer);
 
-	void configureInterfaces(Class<?>... types);
+	/**
+	 * 配置指定的接口类型采用代理接口方式进行序列化和反序列化；
+	 * <p>
+	 * 注意避免对同一个类型同时执行 {@link #configSuperSerializer(Class, ObjectSerializer)} 和
+	 * {@link #configProxyInterfaces(Class...)} 配置，这会因为配置互相覆盖而导致结果难以预期；
+	 * 
+	 * @param types
+	 */
+	void configProxyInterfaces(Class<?>... types);
 
-	void addTypeMap(Class<?> fromClazz, Class<?> toClazz);
+	/**
+	 * 配置反序列化的静态类型映射；
+	 * <p>
+	 * 
+	 * @param fromClazz 要反序列化的类型；
+	 * @param toClazz   实际反序列化的类型；必须是 fromClass 的子类；
+	 */
+	void configDeserializeTypeMapping(Class<?> fromClazz, Class<?> toClazz);
 
 	void configSerialization(Class<?> clazz, ObjectSerializer serializer, ObjectDeserializer deserializer);
 
-	void configOutputTypeName(Class<?> clazz, boolean enable);
+//	void configOutputTypeName(Class<?> clazz, boolean enable);
 
+	/**
+	 * 配置与指定类型对应的序列化器；
+	 * <p>
+	 * 
+	 * @param clazz
+	 * @param serializer
+	 */
 	void configSerializer(Class<?> clazz, ObjectSerializer serializer);
 
 	void configDeserializer(Class<?> clazz, ObjectDeserializer deserializer);
@@ -48,6 +70,5 @@ public interface JSONConfigurator {
 	 * @param type
 	 */
 	void disableCircularReferenceDetect();
-
 
 }

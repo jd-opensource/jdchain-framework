@@ -55,7 +55,7 @@ public class JSONSerializeUtilsTest {
 
 		// 基于 JSONSerializeUtils 配置针对接口类型的序列化和反序列化；
 		// 验证是否最终能够得到一致的接口类型的结果；
-		JSONSerializeUtils.configureInterfaces(ICar.class);
+		JSONSerializeUtils.configProxyInterfaces(ICar.class);
 
 		json = JSONSerializeUtils.serializeToJSON(people, true);
 		System.out.println("----------- people -----------");

@@ -1,12 +1,25 @@
 package com.jd.blockchain.utils.serialize.json;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.annotation.JSONType;
+import com.alibaba.fastjson.parser.ParserConfig;
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.JavaBeanSerializer;
+import com.alibaba.fastjson.serializer.SerializeBeanInfo;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.util.FieldInfo;
+import com.alibaba.fastjson.util.TypeUtils;
 
 /**
  * 动态代理类型的序列化器；
@@ -23,7 +36,7 @@ public class ProxyTypeSerializer extends JavaBeanSerializer {
 	private String typeName;
 
 	public ProxyTypeSerializer(Class<?> beanType) {
-		super(beanType);
+		super(JSONGlobalConfigurator.buildBeanInfo(beanType, true));
 		this.typeName = beanType.getName();
 	}
 
@@ -38,12 +51,12 @@ public class ProxyTypeSerializer extends JavaBeanSerializer {
 	@Override
 	protected void write(JSONSerializer serializer, Object object, Object fieldName, Type fieldType, int features,
 			boolean unwrapped) throws IOException {
-		serializer.config(SerializerFeature.WriteClassName, true);
-		try {
-			super.write(serializer, object, fieldName, fieldType, features, unwrapped);
-		} finally {
-			serializer.config(SerializerFeature.WriteClassName, false);
-		}
+		super.write(serializer, object, fieldName, fieldType, features, unwrapped);
+//		serializer.config(SerializerFeature.WriteClassName, true);
+//		try {
+//		} finally {
+//			serializer.config(SerializerFeature.WriteClassName, false);
+//		}
 	}
 
 	@Override
@@ -54,5 +67,6 @@ public class ProxyTypeSerializer extends JavaBeanSerializer {
 		serializer.out.writeFieldName(typeKey, false);
 		serializer.write(typeName);
 	}
+
 
 }

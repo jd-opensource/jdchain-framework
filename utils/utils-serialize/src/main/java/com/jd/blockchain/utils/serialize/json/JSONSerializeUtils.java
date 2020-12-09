@@ -47,22 +47,22 @@ public abstract class JSONSerializeUtils {
 		return JSONGlobalConfigurator.PARSER_CONFIG;
 	}
 
-	public static void configureInterfaces(Class<?>... types) {
-		JSONGlobalConfigurator.INSTANCE.configureInterfaces(types);
+	public static void configProxyInterfaces(Class<?>... types) {
+		JSONGlobalConfigurator.INSTANCE.configProxyInterfaces(types);
 	}
 
-	public static void addTypeMap(Class<?> fromClazz, Class<?> toClazz) {
-		JSONGlobalConfigurator.INSTANCE.addTypeMap(fromClazz, toClazz);
+	public static void configDeserializeTypeMapping(Class<?> fromClazz, Class<?> toClazz) {
+		JSONGlobalConfigurator.INSTANCE.configDeserializeTypeMapping(fromClazz, toClazz);
 	}
 
 	public static void configSerialization(Class<?> clazz, ObjectSerializer serializer,
 			ObjectDeserializer deserializer) {
-		JSONGlobalConfigurator.INSTANCE.configSerializer(clazz, serializer);
+		JSONGlobalConfigurator.INSTANCE.configSerialization(clazz, serializer, deserializer);
 	}
 
-	public static void configOutputTypeName(Class<?> clazz, boolean enable) {
-		JSONGlobalConfigurator.INSTANCE.configOutputTypeName(clazz, enable);
-	}
+//	public static void configOutputTypeName(Class<?> clazz, boolean enable) {
+//		JSONGlobalConfigurator.INSTANCE.configOutputTypeName(clazz, enable);
+//	}
 
 	public static void configSerialization(Class<?> clazz, ObjectSerializer serializer) {
 		JSONGlobalConfigurator.INSTANCE.configSerializer(clazz, serializer);

@@ -14,13 +14,13 @@ public class CryptoJSONAutoConfigure implements JSONAutoConfigure {
 
 	@Override
 	public void configure(JSONConfigurator configure) {
-		configure.registerSuperSerializer(HashDigest.class, CryptoBytesSerializer.INSTANCE);
-		configure.registerSuperSerializer(SignatureDigest.class, CryptoBytesSerializer.INSTANCE);
-		configure.registerSuperSerializer(PubKey.class, CryptoBytesSerializer.INSTANCE);
-		configure.registerSuperSerializer(PrivKey.class, CryptoBytesSerializer.INSTANCE);
-		configure.registerSuperSerializer(SymmetricKey.class, CryptoBytesSerializer.INSTANCE);
-		configure.registerSuperSerializer(AsymmetricCiphertext.class, CryptoBytesSerializer.INSTANCE);
-		configure.registerSuperSerializer(SymmetricCiphertext.class, CryptoBytesSerializer.INSTANCE);
+		configure.configSuperSerializer(HashDigest.class, CryptoBytesSerializer.INSTANCE);
+		configure.configSuperSerializer(SignatureDigest.class, CryptoBytesSerializer.INSTANCE);
+		configure.configSuperSerializer(PubKey.class, CryptoBytesSerializer.INSTANCE);
+		configure.configSuperSerializer(PrivKey.class, CryptoBytesSerializer.INSTANCE);
+		configure.configSuperSerializer(SymmetricKey.class, CryptoBytesSerializer.INSTANCE);
+		configure.configSuperSerializer(AsymmetricCiphertext.class, CryptoBytesSerializer.INSTANCE);
+		configure.configSuperSerializer(SymmetricCiphertext.class, CryptoBytesSerializer.INSTANCE);
 
 		configure.configDeserializer(HashDigest.class, HashDigestDeserializer.INSTANCE);
 		configure.configDeserializer(SignatureDigest.class, SignatureDigestDeserializer.INSTANCE);

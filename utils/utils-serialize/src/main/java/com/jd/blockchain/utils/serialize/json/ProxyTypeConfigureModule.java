@@ -1,5 +1,7 @@
 package com.jd.blockchain.utils.serialize.json;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,20 +19,27 @@ import com.alibaba.fastjson.spi.Module;
  * @author huanghaiquan
  *
  */
-public class ProxyTypeConfigureModule implements Module {
+class ProxyTypeConfigureModule implements Module {
 
-	private Class<?>[] subInterfaces;
+	public static final ProxyTypeConfigureModule INSTANCE = new ProxyTypeConfigureModule();
+
+	private List<Class<?>> subInterfaces = new ArrayList<>();
 
 	private Map<Class<?>, ObjectDeserializer> deserializers = new ConcurrentHashMap<>();
 
 	private Map<Class<?>, ObjectSerializer> serializers = new ConcurrentHashMap<>();
+	
+	private ProxyTypeConfigureModule() {
+	}
 
-	public ProxyTypeConfigureModule(Class<?>[] subInterfaces) {
-		this.subInterfaces = subInterfaces;
+	public void register(Class<?>... subInterfaces) {
 		for (Class<?> type : subInterfaces) {
 			if (!type.isInterface()) {
 				throw new IllegalArgumentException("Type[" + type.getName() + "] is not an interface!");
 			}
+		}
+		for (Class<?> type : subInterfaces) {
+			this.subInterfaces.add(type);
 		}
 	}
 
