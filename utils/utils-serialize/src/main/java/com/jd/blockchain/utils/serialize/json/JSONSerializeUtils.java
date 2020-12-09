@@ -29,12 +29,12 @@ public abstract class JSONSerializeUtils {
 
 	private static final RuntimeDeserializer RUNTIME_DESERIALIZER = new RuntimeDeserializer();
 
-	private static volatile SerializeConfig SERIALIZE_CONFIG = SerializeConfig.globalInstance;
+	private static final SerializeConfig SERIALIZE_CONFIG = SerializeConfig.globalInstance;
 
-	private static volatile ParserConfig PARSER_CONFIG = ParserConfig.getGlobalInstance();
+	private static final ParserConfig PARSER_CONFIG = ParserConfig.getGlobalInstance();
 
 	private static volatile boolean autoConfigured = false;
-	
+
 	static {
 		enableAutoConfigure();
 	}
@@ -59,19 +59,18 @@ public abstract class JSONSerializeUtils {
 		autoConfigured = true;
 	}
 
-	public static void setSerializeConfig(SerializeConfig serializeConfig) {
-		if (serializeConfig == null) {
-			throw new IllegalArgumentException("SerializeConfig is null!");
-		}
-		SERIALIZE_CONFIG = serializeConfig;
-	}
-
 	public static SerializeConfig getSerializeConfig() {
 		return SERIALIZE_CONFIG;
 	}
 
 	public static ParserConfig getParserConfig() {
 		return PARSER_CONFIG;
+	}
+	
+	public static void configureInterfaces(Class<?>...types) {
+		ProxyTypeConfigureModule configureModule = new ProxyTypeConfigureModule(types);
+		SERIALIZE_CONFIG.register(configureModule);
+		PARSER_CONFIG.register(configureModule);
 	}
 
 	public static void addTypeMap(Class<?> fromClazz, Class<?> toClazz) {
@@ -82,6 +81,18 @@ public abstract class JSONSerializeUtils {
 	public static void configSerialization(Class<?> clazz, ObjectSerializer serializer,
 			ObjectDeserializer deserializer) {
 		SERIALIZE_CONFIG.put(clazz, serializer);
+		PARSER_CONFIG.putDeserializer(clazz, deserializer);
+	}
+	
+	public static void configOutputTypeName(Class<?> clazz, boolean enable) {
+		SERIALIZE_CONFIG.config(clazz, SerializerFeature.WriteClassName, enable);
+	}
+
+	public static void configSerialization(Class<?> clazz, ObjectSerializer serializer) {
+		SERIALIZE_CONFIG.put(clazz, serializer);
+	}
+
+	public static void configDeserializer(Class<?> clazz, ObjectDeserializer deserializer) {
 		PARSER_CONFIG.putDeserializer(clazz, deserializer);
 	}
 

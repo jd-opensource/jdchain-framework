@@ -1,10 +1,8 @@
 package test.my.utils.serialize;
 
-public interface ICar {
+public interface ICar extends ICommodity {
 
 	int getWeight();
-
-	int getCost();
 
 	Wheel getWheel();
 }

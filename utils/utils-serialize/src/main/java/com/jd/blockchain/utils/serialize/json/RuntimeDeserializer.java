@@ -1,9 +1,11 @@
 package com.jd.blockchain.utils.serialize.json;
 
+import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.DefaultJSONParser;
 import com.alibaba.fastjson.parser.JSONToken;
 import com.alibaba.fastjson.parser.deserializer.ObjectDeserializer;
@@ -22,10 +24,14 @@ public class RuntimeDeserializer implements ObjectDeserializer {
 		if (type instanceof Class) {
 			Class<?> toClazz = typeMap.get((Class<?>) type);
 			if (toClazz != null) {
-				return (T) parser.parseObject(toClazz);
+				Object obj = parser.parseObject(new JSONObject());
+				JSONObject jsonObj = (JSONObject)obj;
+//				Class<?> clazz = (Class<?>) type;
+				return (T) Proxy.newProxyInstance(toClazz.getClassLoader(), new Class[] { toClazz }, jsonObj);
+//				return (T) parser.parseObject(toClazz, fieldName);
 			}
 		}
-		return (T) parser.parse(fieldName);
+		return (T) parser.parse();
 	}
 
 	@Override
