@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.jd.blockchain.binaryproto.DataContractRegistry;
-import com.jd.blockchain.consensus.ClientIdentification;
+import com.jd.blockchain.consensus.ClientCredential;
 import com.jd.blockchain.consensus.ClientIdentifications;
 import com.jd.blockchain.consensus.action.ActionRequest;
 import com.jd.blockchain.consensus.action.ActionResponse;
@@ -53,7 +53,7 @@ public class BinaryMessageConverter extends AbstractHttpMessageConverter<Object>
         DataContractRegistry.register(ActionRequest.class);
         DataContractRegistry.register(ActionResponse.class);
         DataContractRegistry.register(ClientIdentifications.class);
-        DataContractRegistry.register(ClientIdentification.class);
+        DataContractRegistry.register(ClientCredential.class);
     }
 
 	public BinaryMessageConverter() {

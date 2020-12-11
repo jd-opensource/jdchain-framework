@@ -20,14 +20,14 @@ import java.util.List;
 
 public class ClientIdentificationsProvider implements ClientIdentifications {
 
-    private List<ClientIdentification> clientIdentifications = new ArrayList<>();
+    private List<ClientCredential> clientIdentifications = new ArrayList<>();
 
-    public void add(ClientIdentification clientIdentification) {
+    public void add(ClientCredential clientIdentification) {
         clientIdentifications.add(clientIdentification);
     }
 
     @Override
-    public ClientIdentification[] getClientIdentifications() {
-        return clientIdentifications.toArray(new ClientIdentification[clientIdentifications.size()]);
+    public ClientCredential[] getClientIdentifications() {
+        return clientIdentifications.toArray(new ClientCredential[clientIdentifications.size()]);
     }
 }

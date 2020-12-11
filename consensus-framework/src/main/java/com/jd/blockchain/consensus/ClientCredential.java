@@ -13,16 +13,16 @@ import com.jd.blockchain.crypto.SignatureDigest;
  * @author huanghaiquan
  *
  */
-@DataContract(code = DataCodes.CLIENT_IDENTIFICATION)
-public interface ClientIdentification {
+@DataContract(code = DataCodes.CLIENT_CREDENTIAL)
+public interface ClientCredential {
 
 	/**
 	 * 身份信息；
 	 * 
 	 * @return
 	 */
-	@DataField(order = 0, primitiveType = PrimitiveType.BYTES)
-	byte[] getIdentityInfo();
+	@DataField(order = 0, refContract = true, genericContract = true)
+	CredentialInfo getCredentialInfo();
 
 	/**
 	 * 客户端的公钥；

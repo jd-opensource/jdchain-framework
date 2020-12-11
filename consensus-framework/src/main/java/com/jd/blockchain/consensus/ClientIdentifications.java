@@ -22,5 +22,5 @@ import com.jd.blockchain.consts.DataCodes;
 public interface ClientIdentifications {
 
     @DataField(order = 0, list = true, refContract = true, genericContract = true)
-    ClientIdentification[] getClientIdentifications();
+    ClientCredential[] getClientIdentifications();
 }

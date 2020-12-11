@@ -15,6 +15,6 @@ public interface ClientAuthencationService {
 	 *            客户端的身份信息；
 	 * @return 如果通过认证，则返回接入参数；如果认证失败，则返回 null；
 	 */
-	ClientIncomingSettings authencateIncoming(ClientIdentification authId) throws ConsensusSecurityException;
+	ClientIncomingSettings authencateIncoming(ClientCredential authId) throws ConsensusSecurityException;
 
 }

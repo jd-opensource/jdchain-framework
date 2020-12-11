@@ -3,7 +3,7 @@ package com.jd.blockchain.sdk.client;
 import java.io.Closeable;
 
 import com.jd.blockchain.binaryproto.DataContractRegistry;
-import com.jd.blockchain.consensus.ClientIdentification;
+import com.jd.blockchain.consensus.ClientCredential;
 import com.jd.blockchain.consensus.ClientIdentifications;
 import com.jd.blockchain.consensus.action.ActionRequest;
 import com.jd.blockchain.consensus.action.ActionResponse;
@@ -49,7 +49,7 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
 		DataContractRegistry.register(ActionRequest.class);
 		DataContractRegistry.register(ActionResponse.class);
 		DataContractRegistry.register(ClientIdentifications.class);
-		DataContractRegistry.register(ClientIdentification.class);
+		DataContractRegistry.register(ClientCredential.class);
 		DataContractRegistry.register(BytesValueList.class);
 
 		// 注册角色/权限相关接口

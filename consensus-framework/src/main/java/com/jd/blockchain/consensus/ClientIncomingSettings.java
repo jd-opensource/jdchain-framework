@@ -38,4 +38,11 @@ public interface ClientIncomingSettings {
 	@DataField(order = 2, refContract = true, genericContract = true)
 	ConsensusViewSettings getViewSettings();
 
+	/**
+	 * 回复的凭证信息；
+	 * 
+	 * @return
+	 */
+	@DataField(order = 3, refContract = true, genericContract = true)
+	CredentialInfo getCredential();
 }

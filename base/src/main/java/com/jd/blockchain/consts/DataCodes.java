@@ -195,7 +195,11 @@ public interface DataCodes {
 
 	public static final int DIGITALSIGNATURE_BODY = 0xB31;
 
-	public static final int CLIENT_IDENTIFICATION = 0xC00;
+	public static final int CLIENT_CREDENTIAL = 0xC00;
+	
+	public static final int CLIENT_CREDENTIAL_INFO = 0xC01;
+	
+	public static final int CLIENT_CREDENTIAL_AUTH_REQUEST = 0xC02;
 
 	public static final int CLIENT_IDENTIFICATIONS = 0xC10;
 
@@ -229,7 +233,7 @@ public interface DataCodes {
 	public static final int CONSENSUS_BFTSMART_NODE_SETTINGS = CONSENSUS_BFTSMART | 0x02;
 
 	public static final int CONSENSUS_BFTSMART_CLI_INCOMING_SETTINGS = CONSENSUS_BFTSMART | 0x03;
-
+	
 
 	// ------------------ 共识相关（MSGQUEUE） ----------------
 	public static final int CONSENSUS_MSGQUEUE = 0x1200;
@@ -243,5 +247,7 @@ public interface DataCodes {
 	public static final int CONSENSUS_MSGQUEUE_NETWORK_SETTINGS = CONSENSUS_MSGQUEUE | 0x04;
 
 	public static final int CONSENSUS_MSGQUEUE_BLOCK_SETTINGS = CONSENSUS_MSGQUEUE | 0x05;
+	
+	public static final int CONSENSUS_MSGQUEUE_CLIENT_CREDENTIAL_INFO = CONSENSUS_MSGQUEUE | 0x06;
 
 }
