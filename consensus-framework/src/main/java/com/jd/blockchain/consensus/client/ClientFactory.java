@@ -2,7 +2,7 @@ package com.jd.blockchain.consensus.client;
 
 import com.jd.blockchain.consensus.ClientCredential;
 import com.jd.blockchain.consensus.ClientIncomingSettings;
-import com.jd.blockchain.consensus.CredentialInfo;
+import com.jd.blockchain.consensus.SessionCredential;
 import com.jd.blockchain.crypto.AsymmetricKeypair;
 
 public interface ClientFactory {
@@ -10,11 +10,11 @@ public interface ClientFactory {
 	/**
 	 * 创建客户端的认证身份；
 	 * 
-	 * @param credentialInfo 已有的凭证信息；如果为 null，则方法会产生一个默认凭证；
+	 * @param sessionCredential 过去已分配的会话凭证；如果为 null，则方法会产生一个默认凭证；
 	 * @param clientKeyPair
 	 * @return
 	 */
-	ClientCredential buildAuthId(CredentialInfo credentialInfo, AsymmetricKeypair clientKeyPair);
+	ClientCredential buildCredential(SessionCredential sessionCredential, AsymmetricKeypair clientKeyPair);
 
 	/**
 	 * 根据接入配置信息创建客户端的本地连接配置；

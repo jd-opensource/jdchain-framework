@@ -1,1 +1,1 @@
-com.jd.blockchain.crypto.binaryproto.CryptoDataContractAutoRegistrar
+com.jd.blockchain.crypto.binaryproto.adapter.CryptoBytesConverterAutoRegistrar

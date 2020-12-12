@@ -5,10 +5,19 @@ import java.util.Map;
 
 import com.jd.blockchain.crypto.HashDigest;
 
-public class SystemStateInfo {
+/**
+ * 区块链节点的接入要求；
+ * <p>
+ * 
+ * 描述了一个区块链节点可以提供进行认证接入的账本信息清单；
+ * 
+ * @author huanghaiquan
+ *
+ */
+public class AccessSpecification {
 
 	/**
-	 * 账本哈希列表；
+	 * 可访问的账本的哈希列表；
 	 */
 	private HashDigest[] ledgers;
 
@@ -17,16 +26,14 @@ public class SystemStateInfo {
 	 */
 	private String[] consensusProviders;
 
-	public SystemStateInfo() {
+	public AccessSpecification() {
 	}
 
 	/**
-	 * 创建系统状态信息；
-	 * 
-	 * @param ledgers            账本哈希列表；
-	 * @param consensusProviders 共识提供者程序的名称列表；
+	 * @param ledgers            可访问的账本的哈希列表；
+	 * @param consensusProviders 与可访问账本对应的共识提供者程序的名称列表；
 	 */
-	public SystemStateInfo(HashDigest[] ledgers, String[] consensusProviders) {
+	public AccessSpecification(HashDigest[] ledgers, String[] consensusProviders) {
 		if (ledgers.length != consensusProviders.length) {
 			throw new IllegalArgumentException(
 					"The number of ledgers is not equal to the number of consensus providers!");
@@ -59,7 +66,7 @@ public class SystemStateInfo {
 	 * 
 	 * @return
 	 */
-	public Map<HashDigest, String> getLedgerConsensusProviders() {
+	public Map<HashDigest, String> getConsensusProviderMap() {
 		Map<HashDigest, String> map = new HashMap<>();
 		if (ledgers == null) {
 			return map;

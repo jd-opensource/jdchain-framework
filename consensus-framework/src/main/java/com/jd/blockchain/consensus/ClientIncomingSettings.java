@@ -44,5 +44,5 @@ public interface ClientIncomingSettings {
 	 * @return
 	 */
 	@DataField(order = 3, refContract = true, genericContract = true)
-	CredentialInfo getCredential();
+	SessionCredential getCredential();
 }

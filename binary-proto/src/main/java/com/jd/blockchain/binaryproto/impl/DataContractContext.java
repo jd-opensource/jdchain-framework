@@ -141,14 +141,14 @@ public class DataContractContext {
 			autoRegistrars.add(provider.getService());
 		}
 
-		//排序；
+		// 排序；
 		autoRegistrars.sort(new Comparator<DataContractAutoRegistrar>() {
 			@Override
 			public int compare(DataContractAutoRegistrar o1, DataContractAutoRegistrar o2) {
 				return o1.order() - o2.order();
 			}
 		});
-		
+
 		for (DataContractAutoRegistrar registrar : autoRegistrars) {
 			registrar.initContext(DataContractRegistry.getInstance());
 		}
@@ -246,6 +246,20 @@ public class DataContractContext {
 	}
 
 	/**
+	 * 指定类型是否声明为 DataContract;
+	 * 
+	 * @param contractType
+	 * @return
+	 */
+	public static boolean isDataContractType(Class<?> contractType) {
+		if (!contractType.isInterface()) {
+			return false;
+		}
+		DataContract annoContract = contractType.getAnnotation(DataContract.class);
+		return annoContract != null;
+	}
+
+	/**
 	 * 解析数据契约； <br>
 	 * 
 	 * @param contractType
@@ -310,7 +324,7 @@ public class DataContractContext {
 
 		dataSliceSpecs[0] = HEAD_SLICE;
 
-		MessageDigest versionHash =hash_256();// 用于计算 DataContract 的版本号的哈希生成器；
+		MessageDigest versionHash = hash_256();// 用于计算 DataContract 的版本号的哈希生成器；
 		int i = 0;
 		for (FieldDeclaredInfo fieldInfo : allFields) {
 			fieldSpecs[i] = fieldInfo.fieldSpec;
@@ -903,7 +917,7 @@ public class DataContractContext {
 		}
 
 	}
-	
+
 	private static MessageDigest hash_256() {
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");

@@ -22,7 +22,7 @@ public interface ClientCredential {
 	 * @return
 	 */
 	@DataField(order = 0, refContract = true, genericContract = true)
-	CredentialInfo getCredentialInfo();
+	SessionCredential getSessionCredential();
 
 	/**
 	 * 客户端的公钥；
