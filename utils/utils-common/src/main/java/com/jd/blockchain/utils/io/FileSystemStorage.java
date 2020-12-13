@@ -74,8 +74,11 @@ public class FileSystemStorage implements Storage {
 	}
 
 	@Override
-	public byte[] readBytes(String name) {
+	public synchronized byte[] readBytes(String name) {
 		File dataFile = getDataFile(name);
+		if (!dataFile.exists()) {
+			return null;
+		}
 		return FileUtils.readBytes(dataFile);
 	}
 	
@@ -88,6 +91,9 @@ public class FileSystemStorage implements Storage {
 	@Override
 	public InputStream read(String name) {
 		File dataFile = getDataFile(name);
+		if (!dataFile.exists()) {
+			return null;
+		}
 		try {
 			return new FileInputStream(dataFile);
 		} catch (FileNotFoundException e) {
@@ -96,8 +102,11 @@ public class FileSystemStorage implements Storage {
 	}
 
 	@Override
-	public Properties readProperties(String name) {
+	public synchronized Properties readProperties(String name) {
 		File dataFile = getDataFile(name);
+		if (!dataFile.exists()) {
+			return null;
+		}
 		return FileUtils.readProperties(dataFile);
 	}
 

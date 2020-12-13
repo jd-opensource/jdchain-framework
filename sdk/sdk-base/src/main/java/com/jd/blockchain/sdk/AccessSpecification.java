@@ -66,7 +66,7 @@ public class AccessSpecification {
 	 * 
 	 * @return
 	 */
-	public Map<HashDigest, String> getConsensusProviderMap() {
+	public Map<HashDigest, String> asMap() {
 		Map<HashDigest, String> map = new HashMap<>();
 		if (ledgers == null) {
 			return map;

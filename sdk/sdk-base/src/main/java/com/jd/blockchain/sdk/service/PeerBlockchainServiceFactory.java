@@ -249,7 +249,7 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 
 			// 获得节点的信息；
 			AccessSpecification accSpec = gatewayMngService.getAccessSpecification();
-			Map<HashDigest, String> ledgerProviderMap = accSpec.getConsensusProviderMap();
+			Map<HashDigest, String> ledgerProviderMap = accSpec.asMap();
 
 			GatewayAuthRequestConfig authRequest = new GatewayAuthRequestConfig();
 			for (Entry<HashDigest, String> ledgerProvider : ledgerProviderMap.entrySet()) {
