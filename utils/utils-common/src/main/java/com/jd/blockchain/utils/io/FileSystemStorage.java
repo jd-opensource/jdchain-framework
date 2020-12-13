@@ -18,24 +18,26 @@ public class FileSystemStorage implements Storage {
 	}
 
 	private FileSystemStorage(File rootDir) {
-		if (!this.root.exists()) {
-			this.root.mkdirs();
+		if (!rootDir.exists()) {
+			rootDir.mkdirs();
 		}
-		if (!this.root.isDirectory()) {
+		if (!rootDir.isDirectory()) {
 			throw new IllegalArgumentException(
 					"The specified root path is not a directory! --" + rootDir.getAbsolutePath());
 		}
-		this.name = root.getName();
+		this.root = rootDir;
+		this.name = rootDir.getName();
 	}
 
 	private FileSystemStorage(File rootDir, String name) {
-		if (!this.root.exists()) {
-			this.root.mkdirs();
+		if (!rootDir.exists()) {
+			rootDir.mkdirs();
 		}
-		if (!this.root.isDirectory()) {
+		if (!rootDir.isDirectory()) {
 			throw new IllegalArgumentException(
 					"The specified root path is not a directory! --" + rootDir.getAbsolutePath());
 		}
+		this.root = rootDir;
 		this.name = name;
 	}
 
