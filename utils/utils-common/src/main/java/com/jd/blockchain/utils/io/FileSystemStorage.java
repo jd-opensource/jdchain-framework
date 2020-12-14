@@ -1,6 +1,7 @@
 package com.jd.blockchain.utils.io;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,6 +9,10 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class FileSystemStorage implements Storage {
+	
+	public static final String STORAGE_PREFIX = "~";
+	
+	public static final String DATA_PREFIX = "#";
 
 	private String name;
 
@@ -48,7 +53,17 @@ public class FileSystemStorage implements Storage {
 
 	@Override
 	public String[] list() {
-		return root.list();
+		File[] dirs = root.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				return pathname.isDirectory();
+			}
+		});
+		String[] storageNames = new String[dirs.length];
+		for (int i = 0; i < storageNames.length; i++) {
+			storageNames[i] = dirs[i].getName().substring(STORAGE_PREFIX.length());
+		}
+		return storageNames;
 	}
 
 	private void checkName(String name) {
@@ -58,11 +73,11 @@ public class FileSystemStorage implements Storage {
 	}
 
 	private String formatStorageName(String name) {
-		return "S_" + name;
+		return STORAGE_PREFIX + name;
 	}
 
 	private String formatDataName(String name) {
-		return "D_" + name;
+		return DATA_PREFIX + name;
 	}
 
 	@Override

@@ -48,4 +48,17 @@ public interface Storage {
 	Properties readProperties(String name);
 	
 	void writeProperties(String name, Properties props);
+
+	default int readInt(String name) {
+		return readInt(name, 0);
+	}
+	
+	default int readInt(String name, int defaultValue) {
+		byte[] bytes  = readBytes(name);
+		return bytes == null ? defaultValue : BytesUtils.toInt(bytes);
+	}
+	
+	default void writeInt(String name, int value) {
+		writeBytes(name, BytesUtils.toBytes(value));
+	}
 }

@@ -6,16 +6,16 @@ package com.jd.blockchain.setting;
  * @author huanghaiquan
  *
  */
-public class GatewayIncomingSetting {
+public class GatewayAuthResponse {
 
-	private LedgerIncomingSetting[] ledgers;
+	private LedgerIncomingSettings[] ledgers;
 
 	/**
 	 * 所有账本对应的共识网络的接入配置；
 	 * 
 	 * @return
 	 */
-	public LedgerIncomingSetting[] getLedgers() {
+	public LedgerIncomingSettings[] getLedgers() {
 		return ledgers;
 	}
 
@@ -24,7 +24,7 @@ public class GatewayIncomingSetting {
 	 * 
 	 * @param ledgerSettings
 	 */
-	public void setLedgers(LedgerIncomingSetting[] ledgerSettings) {
+	public void setLedgers(LedgerIncomingSettings[] ledgerSettings) {
 		this.ledgers = ledgerSettings;
 	}
 

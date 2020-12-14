@@ -1,7 +1,7 @@
 package com.jd.blockchain.sdk;
 
 import com.jd.blockchain.sdk.converters.BinarySerializeRequestConverter;
-import com.jd.blockchain.setting.GatewayIncomingSetting;
+import com.jd.blockchain.setting.GatewayAuthResponse;
 import com.jd.blockchain.utils.http.HttpAction;
 import com.jd.blockchain.utils.http.HttpMethod;
 import com.jd.blockchain.utils.http.HttpService;
@@ -20,6 +20,6 @@ public interface ManagementHttpService {
 	public AccessSpecification getAccessSpecification();
 	
 	@HttpAction(method=HttpMethod.POST, path=URL_AUTH_GATEWAY, contentType = BinarySerializeRequestConverter.CONTENT_TYPE_VALUE)
-	public GatewayIncomingSetting authenticateGateway(@RequestBody GatewayAuthRequest clientIdentifications) ;
+	public GatewayAuthResponse authenticateGateway(@RequestBody GatewayAuthRequest clientIdentifications) ;
 	
 }

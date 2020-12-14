@@ -4,14 +4,12 @@ import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.CryptoSetting;
 
 /**
- * 账本的接入设置；
+ * 账本对应的共识网络的接入设置；
  * 
  * @author huanghaiquan
  *
  */
-public class LedgerIncomingSetting {
-
-	private int gatewayId;
+public class LedgerIncomingSettings {
 
 	private HashDigest ledgerHash;
 
@@ -19,32 +17,14 @@ public class LedgerIncomingSetting {
 
 	private String providerName;
 
-	/**
-	 * 节点是否已经启动；
-	 */
 	private boolean ready;
 
-	/**
-	 * Base64 编码的视图配置；
-	 */
 	private String consensusClientSettings;
 
-	public String getConsensusClientSettings() {
-		return consensusClientSettings;
-	}
-
-	public void setConsensusClientSettings(String clientSettings) {
-		this.consensusClientSettings = clientSettings;
-	}
-
-	public boolean isReady() {
-		return ready;
-	}
-
-	public void setReady(boolean ready) {
-		this.ready = ready;
-	}
-
+	/**
+	 * 账本哈希；
+	 * @return
+	 */
 	public HashDigest getLedgerHash() {
 		return ledgerHash;
 	}
@@ -54,20 +34,7 @@ public class LedgerIncomingSetting {
 	}
 
 	/**
-	 * 在共识网络中给当前请求的网关分配的 ID ；
-	 * 
-	 * @return
-	 */
-	public int getGatewayId() {
-		return gatewayId;
-	}
-
-	public void setGatewayId(int gatewayId) {
-		this.gatewayId = gatewayId;
-	}
-
-	/**
-	 * 账本的当前密码配置；
+	 * 账本采用的密码配置；
 	 * 
 	 * @return
 	 */
@@ -79,11 +46,42 @@ public class LedgerIncomingSetting {
 		this.cryptoSetting = cryptoSetting;
 	}
 
+	/**
+	 * 共识协议提供者程序名称；
+	 * @return
+	 */
 	public String getProviderName() {
 		return providerName;
 	}
 
 	public void setProviderName(String providerName) {
 		this.providerName = providerName;
+	}
+	
+	/**
+	 * 以 Base64 格式编码的共识协议客户端配置数据；
+	 * 
+	 * @return
+	 */
+	public String getConsensusClientSettings() {
+		return consensusClientSettings;
+	}
+
+	public void setConsensusClientSettings(String clientSettings) {
+		this.consensusClientSettings = clientSettings;
+	}
+	
+
+	/**
+	 * 节点是否已经启动；
+	 * 
+	 * @return
+	 */
+	public boolean isReady() {
+		return ready;
+	}
+
+	public void setReady(boolean ready) {
+		this.ready = ready;
 	}
 }
