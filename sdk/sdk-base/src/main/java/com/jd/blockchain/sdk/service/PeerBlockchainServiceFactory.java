@@ -10,6 +10,7 @@ import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.CryptoSetting;
 import com.jd.blockchain.sdk.*;
 import com.jd.blockchain.sdk.proxy.HttpBlockchainQueryService;
+import com.jd.blockchain.sdk.service.ConsensusClientManager.ConsensusClientFactory;
 import com.jd.blockchain.setting.GatewayAuthResponse;
 import com.jd.blockchain.setting.LedgerIncomingSettings;
 import com.jd.blockchain.transaction.BlockchainQueryService;
@@ -105,7 +106,7 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 	 * @return 区块链服务工厂实例；
 	 */
 	public static PeerBlockchainServiceFactory connect(AsymmetricKeypair gatewayKey, NetworkAddress peerAddr,
-			SessionCredentialProvider credentialProvider) {
+			SessionCredentialProvider credentialProvider, ConsensusClientManager clientManager) {
 		GatewayAuthResponse gatewayAuthResponse = auth(gatewayKey, peerAddr, credentialProvider);
 
 		PeerBlockchainServiceFactory factory = null;
@@ -146,6 +147,7 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 			Map<HashDigest, LedgerAccessContextImpl> tempAccessCtxs = new HashMap<>();
 			Map<HashDigest, MonitorService> tempMonitors = new HashMap<>();
 			for (int i = 0; i < needInitSettings.size(); i++) {
+
 				LedgerIncomingSettings ledgerSetting = needInitSettings.get(i);
 				String providerName = ledgerSetting.getProviderName();
 				ConsensusProvider provider = ConsensusProviders.getProvider(providerName);
@@ -153,9 +155,22 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 
 				ClientIncomingSettings clientIncomingSettings = provider.getSettingsFactory()
 						.getIncomingSettingsEncoder().decode(clientSettingBytes);
-				ClientFactory clientFactory = provider.getClientFactory();
-				ClientSettings clientSettings = clientFactory.buildClientSettings(clientIncomingSettings);
-				ConsensusClient consensusClient = clientFactory.setupClient(clientSettings);
+
+				SessionCredential sessionCredential = clientIncomingSettings.getCredential();
+				ConsensusClient consensusClient = clientManager.getConsensusClient(ledgerSetting.getLedgerHash(),
+						sessionCredential, new ConsensusClientFactory() {
+							@Override
+							public ConsensusClient create() {
+								ClientFactory clientFactory = provider.getClientFactory();
+								ClientSettings clientSettings = clientFactory
+										.buildClientSettings(clientIncomingSettings);
+								return clientFactory.setupClient(clientSettings);
+							}
+						});
+
+//				ClientFactory clientFactory = provider.getClientFactory();
+//				ClientSettings clientSettings = clientFactory.buildClientSettings(clientIncomingSettings);
+//				consensusClient= clientFactory.setupClient(clientSettings);
 
 				MonitorService monitorService = null;
 
@@ -165,7 +180,6 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 					monitorService = new PeerMonitorHandler((((NodeSigningAppender) autoSigningTxProcService)));
 				}
 
-				SessionCredential sessionCredential = clientIncomingSettings.getCredential();
 				LedgerAccessContextImpl accCtx = new LedgerAccessContextImpl(sessionCredential);
 				accCtx.ledgerHash = ledgerSetting.getLedgerHash();
 				accCtx.cryptoSetting = ledgerSetting.getCryptoSetting();
