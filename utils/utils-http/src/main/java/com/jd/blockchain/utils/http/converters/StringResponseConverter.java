@@ -10,6 +10,7 @@ import com.jd.blockchain.utils.http.HttpServiceContext;
 import com.jd.blockchain.utils.http.HttpServiceException;
 import com.jd.blockchain.utils.http.ResponseConverter;
 import com.jd.blockchain.utils.http.agent.ServiceRequest;
+import org.apache.http.impl.io.EmptyInputStream;
 
 /**
  * 返回字符的转换器；
@@ -26,6 +27,9 @@ public class StringResponseConverter implements ResponseConverter {
 
 	@Override
 	public Object getResponse(ServiceRequest request, InputStream responseStream, HttpServiceContext serviceContext) {
+		if(responseStream instanceof EmptyInputStream) {
+			return null;
+		}
 		String responseText = readString(responseStream);
 		return responseText;
 	}
