@@ -1,6 +1,7 @@
 package com.jd.blockchain.consensus.service;
 
 import com.jd.blockchain.consensus.ClientAuthencationService;
+import com.jd.blockchain.utils.concurrent.AsyncFuture;
 
 /**
  * 共识节点服务器；
@@ -39,6 +40,13 @@ public interface NodeServer {
 	NodeState getState();
 
 	/**
+	 * 连接对象；
+	 * 
+	 * @return
+	 */
+	Communication getCommunication();
+
+	/**
 	 * 是否处于运行中；
 	 * 
 	 * @return
@@ -50,7 +58,7 @@ public interface NodeServer {
 	/**
 	 * 启动节点服务器；
 	 */
-	void start();
+	AsyncFuture<?> start();
 
 	/**
 	 * 停止节点服务器；
