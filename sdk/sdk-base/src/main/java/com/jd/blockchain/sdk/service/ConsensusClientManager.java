@@ -24,6 +24,8 @@ public interface ConsensusClientManager {
 	 */
 	ConsensusClient getConsensusClient(HashDigest ledgerHash,SessionCredential sessionCredential, ConsensusClientFactory factory);
 	
+	void reset();
+	
 	
 	public static interface ConsensusClientFactory{
 		

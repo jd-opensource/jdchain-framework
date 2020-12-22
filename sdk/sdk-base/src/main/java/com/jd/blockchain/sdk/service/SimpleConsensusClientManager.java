@@ -21,5 +21,16 @@ public class SimpleConsensusClientManager implements ConsensusClientManager {
 		}
 		return client;
 	}
+	
+
+	@Override
+	public void reset() {
+		ConsensusClient[] pooledClients = ledgerConsensusClients.values().toArray(new ConsensusClient[ledgerConsensusClients.size()]);
+		ledgerConsensusClients.clear();
+		for (ConsensusClient client : pooledClients) {
+			client.close();
+		}
+	}
+
 
 }
