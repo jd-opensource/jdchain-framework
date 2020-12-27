@@ -186,4 +186,14 @@ public class CompletableAsyncFuture<T> implements AsyncFuture<T> {
 		return this;
 	}
 
+	@Override
+	public boolean cancel(boolean mayInterruptIfRunning) {
+		return cf.cancel(mayInterruptIfRunning);
+	}
+
+	@Override
+	public boolean isCancelled() {
+		return cf.isCancelled();
+	}
+
 }

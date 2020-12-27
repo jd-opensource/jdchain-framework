@@ -1,6 +1,7 @@
 package com.jd.blockchain.utils.concurrent;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -9,7 +10,7 @@ import java.util.function.Consumer;
  * 
  * @param <V> class
  */
-public interface AsyncFuture<V> {
+public interface AsyncFuture<V> extends Future<V> {
 
 	/**
 	 * 返回异步操作的结果；<br>
@@ -52,6 +53,28 @@ public interface AsyncFuture<V> {
 	 * @return boolean
 	 */
 	boolean isExceptionally();
+	
+	/**
+	 * 取消异步执行的任务；
+	 * 
+	 * @return
+	 */
+	default boolean cancel() {
+		return cancel(true);
+	}
+
+	/**
+	 * 取消异步执行的任务；；
+	 * 
+	 * @param mayInterruptIfRunning 是否中断正在执行的任务；
+	 */
+	boolean cancel(boolean mayInterruptIfRunning);
+
+	/**
+	 * 异步任务是否已经取消；
+	 */
+	boolean isCancelled();
+	
 
 	public AsyncFuture<V> thenAccept(Consumer<? super V> action);
 
