@@ -41,8 +41,10 @@ class JSONGlobalConfigurator implements JSONConfigurator {
 
 	private static final ProxyTypeConfigureModule PROXY_TYPE_SERIALIZATION_MODULE = ProxyTypeConfigureModule.INSTANCE;
 
+	private static final DynamicTypeConfigureModule DYNAMIC_TYPE_SERIALIZATION_MODULE = DynamicTypeConfigureModule.INSTANCE;
+
 	private static final Module[] GLOBAL_SERIALIZE_MODULES = { SUPER_TYPE_SERIALIZATION_MODULE,
-			PROXY_TYPE_SERIALIZATION_MODULE };
+			PROXY_TYPE_SERIALIZATION_MODULE, DYNAMIC_TYPE_SERIALIZATION_MODULE };
 
 	private static final Module[] GLOBAL_DESERIALIZE_MODULES = { PROXY_TYPE_SERIALIZATION_MODULE };
 
@@ -69,15 +71,13 @@ class JSONGlobalConfigurator implements JSONConfigurator {
 			return;
 		}
 		PARSER_CONFIG.setAutoTypeSupport(true);
-		
+
 		for (Module module : GLOBAL_SERIALIZE_MODULES) {
 			SERIALIZE_CONFIG.register(module);
 		}
 		for (Module module : GLOBAL_DESERIALIZE_MODULES) {
 			PARSER_CONFIG.register(module);
 		}
-		
-		
 
 		inited = true;
 	}
@@ -106,6 +106,11 @@ class JSONGlobalConfigurator implements JSONConfigurator {
 	@Override
 	public void configProxyInterfaces(Class<?>... types) {
 		PROXY_TYPE_SERIALIZATION_MODULE.register(types);
+	}
+	
+	@Override
+	public void registerDynamicTypeConverter(DynamicTypeConverter typeConverter) {
+		DYNAMIC_TYPE_SERIALIZATION_MODULE.register(typeConverter);
 	}
 
 	@Override
@@ -164,12 +169,11 @@ class JSONGlobalConfigurator implements JSONConfigurator {
 		JSON.DEFAULT_GENERATE_FEATURE |= SerializerFeature.DisableCircularReferenceDetect.getMask();
 	}
 
-	
 	protected static SerializeBeanInfo buildBeanInfo(Class<?> beanType, boolean outputClassName) {
-		Map<String,String> aliasMap = null;
-        PropertyNamingStrategy propertyNamingStrategy =null;
-        boolean fieldBased = false;
-        
+		Map<String, String> aliasMap = null;
+		PropertyNamingStrategy propertyNamingStrategy = null;
+		boolean fieldBased = false;
+
 		JSONType jsonType = TypeUtils.getAnnotation(beanType, JSONType.class);
 		String[] orders = null;
 		int features;
@@ -216,7 +220,7 @@ class JSONGlobalConfigurator implements JSONConfigurator {
 		} else {
 			features = 0;
 		}
-		
+
 		features = SerializerFeature.config(features, SerializerFeature.WriteClassName, outputClassName);
 
 		// fieldName,field ，先生成fieldName的快照，减少之后的findField的轮询

@@ -68,7 +68,7 @@ class ProxyTypeConfigureModule implements Module {
 
 		Class<?> proxyType = getSuperInterface(type);
 		if (proxyType != null) {
-			serializer = new ProxyTypeSerializer(proxyType);
+			serializer = new BeanTypeSerializer(proxyType);
 			serializers.put(type, serializer);
 			config.put(type, serializer);
 			config.put(proxyType, serializer);

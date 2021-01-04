@@ -31,11 +31,11 @@ import com.alibaba.fastjson.util.TypeUtils;
  * @author huanghaiquan
  *
  */
-public class ProxyTypeSerializer extends JavaBeanSerializer {
+public class BeanTypeSerializer extends JavaBeanSerializer {
 
 	private String typeName;
 
-	public ProxyTypeSerializer(Class<?> beanType) {
+	public BeanTypeSerializer(Class<?> beanType) {
 		super(JSONGlobalConfigurator.buildBeanInfo(beanType, true));
 		this.typeName = beanType.getName();
 	}

@@ -31,6 +31,15 @@ public interface JSONConfigurator {
 	void configProxyInterfaces(Class<?>... types);
 
 	/**
+	 * 注册动态的类型转换器；<p>
+	 * 
+	 * 类型转换器用于在序列化时动态生成实际的序列化类型；
+	 * 
+	 * @param typeConverter
+	 */
+	void registerDynamicTypeConverter(DynamicTypeConverter typeConverter);
+
+	/**
 	 * 配置反序列化的静态类型映射；
 	 * <p>
 	 * 
