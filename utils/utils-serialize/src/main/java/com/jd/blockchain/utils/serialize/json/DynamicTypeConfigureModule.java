@@ -25,7 +25,7 @@ class DynamicTypeConfigureModule implements Module {
 
 	private Map<Class<?>, ObjectSerializer> serializers = new ConcurrentHashMap<>();
 
-	private volatile DynamicTypeConverter[] converters;
+	private volatile DynamicTypeConverter[] converters = {};
 
 	private DynamicTypeConfigureModule() {
 	}
