@@ -38,7 +38,7 @@ public abstract class JSONSerializeUtils {
 	public synchronized static void enableAutoConfigure() {
 		JSONGlobalConfigurator.initConfiguration();
 	}
-
+	
 	public static SerializeConfig getSerializeConfig() {
 		return JSONGlobalConfigurator.SERIALIZE_CONFIG;
 	}
@@ -49,6 +49,10 @@ public abstract class JSONSerializeUtils {
 
 	public static void configProxyInterfaces(Class<?>... types) {
 		JSONGlobalConfigurator.INSTANCE.configProxyInterfaces(types);
+	}
+	
+	public static void registerDynamicTypeConverter(DynamicTypeConverter typeConverter) {
+		JSONGlobalConfigurator.INSTANCE.registerDynamicTypeConverter(typeConverter);
 	}
 
 	public static void configDeserializeTypeMapping(Class<?> fromClazz, Class<?> toClazz) {
