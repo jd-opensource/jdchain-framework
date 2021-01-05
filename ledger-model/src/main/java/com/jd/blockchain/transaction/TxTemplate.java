@@ -103,6 +103,12 @@ public class TxTemplate implements TransactionTemplate {
 	}
 
 	@Override
+	public ContractEventSendOperationBuilder contract() {
+		stateManager.operate();
+		return txBuilder.contract();
+	}
+
+	@Override
 	public EventAccountRegisterOperationBuilder eventAccounts() {
 		stateManager.operate();
 		return txBuilder.eventAccounts();
