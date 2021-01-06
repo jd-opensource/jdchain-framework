@@ -148,6 +148,12 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		return contractInvoProxyBuilder.create(address, -1L, contractIntf, contractEventSendOpBuilder);
 	}
 
+	@Override
+	public ContractEventSendOperationBuilder contract() {
+		return contractEventSendOpBuilder;
+	}
+
+
 	/**
 	 * 返回已经定义的操作列表；
 	 *

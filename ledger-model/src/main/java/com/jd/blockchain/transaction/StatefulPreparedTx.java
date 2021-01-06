@@ -1,17 +1,16 @@
 package com.jd.blockchain.transaction;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-
-import org.springframework.cglib.proxy.UndeclaredThrowableException;
-
 import com.jd.blockchain.crypto.AsymmetricKeypair;
 import com.jd.blockchain.ledger.DigitalSignature;
 import com.jd.blockchain.ledger.OperationResult;
 import com.jd.blockchain.ledger.TransactionRequestBuilder;
 import com.jd.blockchain.ledger.TransactionResponse;
+import org.springframework.cglib.proxy.UndeclaredThrowableException;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
 
 class StatefulPreparedTx extends PreparedTx {
 
@@ -90,17 +89,23 @@ class StatefulPreparedTx extends PreparedTx {
         // 解析返回值；正常的情况下，返回结果列表与结果处理器列表中元素对应的操作索引是一致的；
         OperationResult[] opResults = txResponse.getOperationResults();
         if (opResults != null && opResults.length > 0) {
-            if (opResults.length != opReturnValueHandlers.length) {
-                throw new IllegalStateException(String.format(
-                        "The operation result list of tx doesn't match it's return value handler list! --[TX.Content.Hash=%s][NumOfResults=%s][NumOfHandlers=%s]",
-                        txResponse.getContentHash(), opResults.length, opReturnValueHandlers.length));
-            }
             for (int i = 0; i < opResults.length; i++) {
-                if (opResults[i].getIndex() != opReturnValueHandlers[i].getOperationIndex()) {
+                if(null == opResults[i]) {
+                    continue;
+                }
+                int index = opResults[i].getIndex();
+                OperationResultHandle handle = null;
+                for (int j = 0; j < opReturnValueHandlers.length; j++) {
+                    if (index == opReturnValueHandlers[j].getOperationIndex()) {
+                        handle = opReturnValueHandlers[j];
+                        break;
+                    }
+                }
+                if (null == handle) {
                     throw new IllegalStateException(
                             "The operation indexes of the items in the result list and in the handler list don't match!");
                 }
-                opReturnValueHandlers[i].complete(opResults[i].getResult());
+                handle.complete(opResults[i].getResult());
             }
         }
     }
