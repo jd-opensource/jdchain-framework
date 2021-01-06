@@ -25,4 +25,10 @@ public interface ContractEventOperator {
      */
     <T> T contract(Bytes address, Class<T> contractIntf);
 
+    /**
+     * 非代理方式的合约调用
+     *
+     * @return
+     */
+    ContractEventSendOperationBuilder contract();
 }
