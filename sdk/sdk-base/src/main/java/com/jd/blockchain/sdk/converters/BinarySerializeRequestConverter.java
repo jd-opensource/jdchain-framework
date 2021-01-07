@@ -9,8 +9,8 @@
 package com.jd.blockchain.sdk.converters;
 
 import com.jd.blockchain.binaryproto.BinaryProtocol;
-import com.jd.blockchain.consensus.ClientIdentifications;
 import com.jd.blockchain.ledger.TransactionRequest;
+import com.jd.blockchain.sdk.GatewayAuthRequest;
 import com.jd.blockchain.transaction.TxRequestMessage;
 import com.jd.blockchain.utils.http.RequestBodyConverter;
 
@@ -35,8 +35,8 @@ public class BinarySerializeRequestConverter implements RequestBodyConverter {
             byte[] serializeBytes = BinaryProtocol.encode(param, TransactionRequest.class);
             out.write(serializeBytes);
             out.flush();
-        } else if (param instanceof ClientIdentifications) {
-            byte[] serializeBytes = BinaryProtocol.encode(param, ClientIdentifications.class);
+        } else if (param instanceof GatewayAuthRequest) {
+            byte[] serializeBytes = BinaryProtocol.encode(param, GatewayAuthRequest.class);
             out.write(serializeBytes);
             out.flush();
         }

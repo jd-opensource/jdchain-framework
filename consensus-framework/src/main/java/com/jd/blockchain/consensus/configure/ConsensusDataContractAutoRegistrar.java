@@ -2,8 +2,7 @@ package com.jd.blockchain.consensus.configure;
 
 import com.jd.blockchain.binaryproto.DataContractAutoRegistrar;
 import com.jd.blockchain.binaryproto.DataContractRegistry;
-import com.jd.blockchain.consensus.ClientIdentification;
-import com.jd.blockchain.consensus.ClientIdentifications;
+import com.jd.blockchain.consensus.ClientCredential;
 import com.jd.blockchain.consensus.ClientIncomingSettings;
 import com.jd.blockchain.consensus.ConsensusViewSettings;
 import com.jd.blockchain.consensus.NodeNetworkAddress;
@@ -28,8 +27,7 @@ public class ConsensusDataContractAutoRegistrar implements DataContractAutoRegis
 		DataContractRegistry.register(NodeNetworkAddress.class);
 		DataContractRegistry.register(NodeNetworkAddresses.class);
 		
-		DataContractRegistry.register(ClientIdentification.class);
-		DataContractRegistry.register(ClientIdentifications.class);
+		DataContractRegistry.register(ClientCredential.class);
 		DataContractRegistry.register(ClientIncomingSettings.class);
 		
 		DataContractRegistry.register(ActionRequest.class);

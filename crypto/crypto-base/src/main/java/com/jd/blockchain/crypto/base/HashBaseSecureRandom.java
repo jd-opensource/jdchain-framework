@@ -13,37 +13,68 @@ import com.jd.blockchain.utils.io.BytesUtils;
 public abstract class HashBaseSecureRandom extends SecureRandom {
 
 	private static final long serialVersionUID = 5041705497618740310L;
+	
+	private final int HASH_SIZE;
+	
+	private final int OUTPUT_OFFSET;
+	
+	private final int COUNTER_OFFSET;
 
 	private byte[] state;
 
 	private long i = 0;
 
+	private byte[] output;
+	
+	private int availableSize;
+
 	public HashBaseSecureRandom(byte[] seed) {
-		seed = hash(seed);
-		byte[] initState = new byte[seed.length + 8];
-		BytesUtils.toBytes(i, initState, 0);
-		System.arraycopy(seed, 0, initState, 8, seed.length);
+		HASH_SIZE = getHashSize();
+		OUTPUT_OFFSET = HASH_SIZE;
+		COUNTER_OFFSET = OUTPUT_OFFSET * 2;
+		
+		// 定义状态数据的空间：种子 + 上一次输出 + 轮次；
+		byte[] initState = new byte[COUNTER_OFFSET + 8];
+		// 将原始的种子数据计算哈希摘要，作为后续随机数计算的种子；
+		hash(seed, initState, 0);
+		// 复制哈希种子，初始化“上一次输出”状态；
+		System.arraycopy(initState, 0, initState, OUTPUT_OFFSET, HASH_SIZE);
+		// 初始化轮次；
+		i = 0;
+		BytesUtils.toBytes(i, initState, COUNTER_OFFSET);
+
+		// 初始化输出缓存；
+		this.output = new byte[HASH_SIZE];
+		this.availableSize = 0;
+
 		this.state = initState;
 	}
 
+	private void nextState() {
+		BytesUtils.toBytes(++i, state, COUNTER_OFFSET);
+		hash(state, output, 0);
+		System.arraycopy(output, 0, state, OUTPUT_OFFSET, HASH_SIZE);
+		availableSize = HASH_SIZE;
+	}
+
 	@Override
-	public void nextBytes(byte[] bytes) {
-		// 更新状态；
-		BytesUtils.toBytes(++i, state, 0);
-
-		// 计算哈希值作为随机数输出；
-		byte[] randomOutput = hash(state);
-
+	public synchronized void nextBytes(byte[] bytes) {
 		// 用随机数填充数组；
 		int left = bytes.length;
 		int offset = 0;
 		while (left > 0) {
-			int copySize = Math.min(left, randomOutput.length);
-			System.arraycopy(randomOutput, 0, bytes, offset, copySize);
+			if (availableSize == 0) {
+				nextState();
+			}
+			int copySize = Math.min(left, availableSize);
+			System.arraycopy(output, HASH_SIZE - availableSize, bytes, offset, copySize);
 			offset += copySize;
 			left -= copySize;
+			availableSize -= copySize;
 		}
 	}
-	
-	protected abstract byte[] hash(byte[] bytes);
+
+	protected abstract int getHashSize();
+
+	protected abstract void hash(byte[] bytes, byte[] output, int offset);
 }

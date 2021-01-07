@@ -193,4 +193,38 @@ public abstract class ArrayUtils {
 			array[j] = t;
 		}
 	}
+
+	/**
+	 * 判断两个数组是否一致；
+	 * <p>
+	 * 
+	 * 如果两个数组都为 null，则返回 true；
+	 * <p>
+	 * 如果两个数组只有其中之一为 null，则返回 false；
+	 * <p>
+	 * 如果两个数组的长度不一致，则返回 false；
+	 * <p>
+	 * 如果两个数组在相同的位置上的元素都相同，则返回 true，否则返回 false；
+	 * 
+	 * @param array0
+	 * @param array1
+	 * @return true 表示两个数组内容一致； 
+	 */
+	public static boolean equals(int[] array0, int[] array1) {
+		if (array0 == array1) {
+			return true;
+		}
+		if (array0 == null || array1 == null) {
+			return false;
+		}
+		if (array0.length != array1.length) {
+			return false;
+		}
+		for (int i = 0; i < array0.length; i++) {
+			if (array0[i] != array1[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

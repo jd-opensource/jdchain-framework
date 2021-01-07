@@ -254,6 +254,14 @@ public abstract class PropertiesUtils {
 		String value = getRequiredProperty(props, key);
 		return Integer.parseInt(value);
 	}
+	
+	public static int getIntOptional(Properties props, String key, int defaultValue) {
+		String value = getProperty(props, key, false);
+		if (value == null) {
+			return defaultValue;
+		}
+		return Integer.parseInt(value);
+	}
 
 	public static boolean getBoolean(Properties props, String key) {
 		String value = getRequiredProperty(props, key);

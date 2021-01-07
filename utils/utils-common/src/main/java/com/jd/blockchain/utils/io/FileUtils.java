@@ -219,6 +219,24 @@ public class FileUtils {
 			throw new RuntimeIOException(e.getMessage(), e);
 		}
 	}
+	
+	public static void writeProperties(Properties props, File file) {
+		try (FileOutputStream out = new FileOutputStream(file, false)) {
+			writeProperties(props, out, DEFAULT_CHARSET);
+			out.flush();
+		} catch (IOException e) {
+			throw new RuntimeIOException(e.getMessage(), e);
+		}
+	}
+	
+	public static void writeProperties(Properties props, File file, String charset) {
+		try (FileOutputStream out = new FileOutputStream(file, false)) {
+			writeProperties(props, out, charset);
+			out.flush();
+		} catch (IOException e) {
+			throw new RuntimeIOException(e.getMessage(), e);
+		}
+	}
 
 	public static void writeProperties(Properties props, OutputStream out) {
 		writeProperties(props, out, DEFAULT_CHARSET);

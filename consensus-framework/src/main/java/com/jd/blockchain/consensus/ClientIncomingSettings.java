@@ -36,6 +36,13 @@ public interface ClientIncomingSettings {
 	 * @return
 	 */
 	@DataField(order = 2, refContract = true, genericContract = true)
-	ConsensusViewSettings getConsensusSettings();
+	ConsensusViewSettings getViewSettings();
 
+	/**
+	 * 回复的凭证信息；
+	 * 
+	 * @return
+	 */
+	@DataField(order = 3, refContract = true, genericContract = true)
+	SessionCredential getCredential();
 }

@@ -10,8 +10,9 @@ import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.CryptoSetting;
 import com.jd.blockchain.sdk.*;
 import com.jd.blockchain.sdk.proxy.HttpBlockchainQueryService;
-import com.jd.blockchain.setting.GatewayIncomingSetting;
-import com.jd.blockchain.setting.LedgerIncomingSetting;
+import com.jd.blockchain.sdk.service.ConsensusClientManager.ConsensusClientFactory;
+import com.jd.blockchain.setting.GatewayAuthResponse;
+import com.jd.blockchain.setting.LedgerIncomingSettings;
 import com.jd.blockchain.transaction.BlockchainQueryService;
 import com.jd.blockchain.transaction.TransactionService;
 import com.jd.blockchain.utils.http.agent.HttpServiceAgent;
@@ -27,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, Closeable {
@@ -35,7 +37,7 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 
 	private static final Map<NetworkAddress, PeerBlockchainServiceFactory> peerBlockchainServiceFactories = new ConcurrentHashMap<>();
 
-	private static final Map<NetworkAddress, PeerManageService> peerManageServices = new ConcurrentHashMap<>();
+	private static final Map<NetworkAddress, PeerBlockchainQueryService> peerManageServices = new ConcurrentHashMap<>();
 
 	private static final Map<NetworkAddress, Set<HashDigest>> peerLedgers = new ConcurrentHashMap<>();
 
@@ -47,21 +49,33 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 
 	private PeerServiceProxy peerServiceProxy;
 
-
 	/**
-	 * @param httpConnectionManager
-	 *            Http请求管理器；
-	 * @param accessAbleLedgers
-	 *            可用账本列表；
+	 * 创建共识节点的区块链服务工厂；
+	 * 
+	 * @param credential            经过认证的客户端凭证；
+	 * @param httpConnectionManager Http请求管理器；
+	 * @param accessableLedgers     可用账本列表；
 	 */
 	protected PeerBlockchainServiceFactory(ServiceConnectionManager httpConnectionManager,
-			LedgerAccessContextImpl[] accessAbleLedgers) {
+			LedgerAccessContextImpl[] accessableLedgers) {
 		this.httpConnectionManager = httpConnectionManager;
-		this.peerServiceProxy = new PeerServiceProxy(accessAbleLedgers);
+		this.peerServiceProxy = new PeerServiceProxy(accessableLedgers);
 	}
 
 	public void addLedgerAccessContexts(LedgerAccessContextImpl[] accessContexts) {
 		this.peerServiceProxy.addLedgerAccessContexts(accessContexts);
+	}
+
+	public HashDigest[] getLedgerHashs() {
+		return accessContextMap.keySet().toArray(new HashDigest[accessContextMap.size()]);
+	}
+
+	public SessionCredential getCredential(HashDigest ledgerHash) {
+		LedgerAccessContextImpl ledgerAccessContext = accessContextMap.get(ledgerHash);
+		if (ledgerAccessContext == null) {
+			return null;
+		}
+		return ledgerAccessContext.getCredential();
 	}
 
 	@Override
@@ -85,27 +99,19 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 	/**
 	 * 连接到指定的共识节点；
 	 *
-	 * @param peerAddr
-	 *            提供对网关接入认证的节点的认证地址列表； <br>
-	 *            按列表的先后顺序连接节点进行认证，从第一个成功通过的节点请求整个区块链网络的拓扑配置，并建立起和整个区块链网络的连接；<br>
-	 *            此参数指定的节点列表可以是整个区块链网络的全部节点的子集，而不必包含所有节点；
+	 * @param peerAddr 提供对网关接入认证的节点的认证地址列表； <br>
+	 *                 按列表的先后顺序连接节点进行认证，从第一个成功通过的节点请求整个区块链网络的拓扑配置，并建立起和整个区块链网络的连接；<br>
+	 *                 此参数指定的节点列表可以是整个区块链网络的全部节点的子集，而不必包含所有节点；
 	 *
 	 * @return 区块链服务工厂实例；
 	 */
-	public static PeerBlockchainServiceFactory connect(AsymmetricKeypair gatewayKey, NetworkAddress peerAddr, List<String> peerProviders) {
-
-		if (peerProviders == null || peerProviders.isEmpty()) {
-			throw new AuthenticationException("No peer Provider was set!");
-		}
-		ClientIdentificationsProvider authIdProvider = authIdProvider(gatewayKey, peerProviders);
-		GatewayIncomingSetting incomingSetting = auth(peerAddr, authIdProvider);
-		if (incomingSetting == null) {
-			throw new AuthenticationException("No peer was succeed authenticating from!");
-		}
+	public static PeerBlockchainServiceFactory connect(AsymmetricKeypair gatewayKey, NetworkAddress peerAddr,
+			SessionCredentialProvider credentialProvider, ConsensusClientManager clientManager) {
+		GatewayAuthResponse gatewayAuthResponse = auth(gatewayKey, peerAddr, credentialProvider);
 
 		PeerBlockchainServiceFactory factory = null;
 		ServiceConnectionManager httpConnectionManager;
-		PeerManageService peerManageService;
+		PeerBlockchainQueryService peerManageService;
 
 		if (peerBlockchainServiceFactories.containsKey(peerAddr)) {
 			factory = peerBlockchainServiceFactories.get(peerAddr);
@@ -118,21 +124,20 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 			peerManageService = peerManageServices.get(peerAddr);
 		} else {
 			ServiceConnection httpConnection = httpConnectionManager.create(new ServiceEndpoint(peerAddr));
-			peerManageService = new PeerManageService(httpConnection,
-					HttpServiceAgent.createService(HttpBlockchainQueryService.class,
-							httpConnection, null));
+			peerManageService = new PeerBlockchainQueryService(httpConnection,
+					HttpServiceAgent.createService(HttpBlockchainQueryService.class, httpConnection, null));
 			peerManageServices.put(peerAddr, peerManageService);
 		}
 
-		LedgerIncomingSetting[] ledgerSettings = incomingSetting.getLedgers();
+		LedgerIncomingSettings[] ledgerSettingsArray = gatewayAuthResponse.getLedgers();
 		// 判断当前节点对应账本是否一致
-		List<LedgerIncomingSetting> needInitSettings = new ArrayList<>();
+		List<LedgerIncomingSettings> needInitSettings = new ArrayList<>();
 		Set<HashDigest> currentPeerLedgers = peerLedgers.computeIfAbsent(peerAddr, k -> new HashSet<>());
-		for (LedgerIncomingSetting setting : ledgerSettings) {
-			HashDigest currLedgerHash = setting.getLedgerHash();
+		for (LedgerIncomingSettings ledgerIncomingSetting : ledgerSettingsArray) {
+			HashDigest currLedgerHash = ledgerIncomingSetting.getLedgerHash();
 			if (!currentPeerLedgers.contains(currLedgerHash)) {
 				LOGGER.info("Peer[{}] find new ledger [{}]", peerAddr, currLedgerHash.toBase58());
-				needInitSettings.add(setting);
+				needInitSettings.add(ledgerIncomingSetting);
 			}
 		}
 		if (!needInitSettings.isEmpty()) {
@@ -142,15 +147,30 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 			Map<HashDigest, LedgerAccessContextImpl> tempAccessCtxs = new HashMap<>();
 			Map<HashDigest, MonitorService> tempMonitors = new HashMap<>();
 			for (int i = 0; i < needInitSettings.size(); i++) {
-				LedgerIncomingSetting ledgerSetting = needInitSettings.get(i);
+
+				LedgerIncomingSettings ledgerSetting = needInitSettings.get(i);
 				String providerName = ledgerSetting.getProviderName();
 				ConsensusProvider provider = ConsensusProviders.getProvider(providerName);
-				byte[] clientSettingBytes = ByteArray.fromBase64(ledgerSetting.getClientSetting());
+				byte[] clientSettingBytes = ByteArray.fromBase64(ledgerSetting.getConsensusClientSettings());
 
-				ClientIncomingSettings clientIncomingSettings = provider.getSettingsFactory().getIncomingSettingsEncoder().decode(clientSettingBytes);
-				ClientFactory clientFactory = provider.getClientFactory();
-				ClientSettings clientSettings = clientFactory.buildClientSettings(clientIncomingSettings);
-				ConsensusClient consensusClient = clientFactory.setupClient(clientSettings);
+				ClientIncomingSettings clientIncomingSettings = provider.getSettingsFactory()
+						.getIncomingSettingsEncoder().decode(clientSettingBytes);
+
+				SessionCredential sessionCredential = clientIncomingSettings.getCredential();
+				ConsensusClient consensusClient = clientManager.getConsensusClient(ledgerSetting.getLedgerHash(),
+						sessionCredential, new ConsensusClientFactory() {
+							@Override
+							public ConsensusClient create() {
+								ClientFactory clientFactory = provider.getClientFactory();
+								ClientSettings clientSettings = clientFactory
+										.buildClientSettings(clientIncomingSettings);
+								return clientFactory.setupClient(clientSettings);
+							}
+						});
+
+//				ClientFactory clientFactory = provider.getClientFactory();
+//				ClientSettings clientSettings = clientFactory.buildClientSettings(clientIncomingSettings);
+//				consensusClient= clientFactory.setupClient(clientSettings);
 
 				MonitorService monitorService = null;
 
@@ -160,7 +180,7 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 					monitorService = new PeerMonitorHandler((((NodeSigningAppender) autoSigningTxProcService)));
 				}
 
-				LedgerAccessContextImpl accCtx = new LedgerAccessContextImpl();
+				LedgerAccessContextImpl accCtx = new LedgerAccessContextImpl(sessionCredential);
 				accCtx.ledgerHash = ledgerSetting.getLedgerHash();
 				accCtx.cryptoSetting = ledgerSetting.getCryptoSetting();
 				accCtx.queryService = queryService;
@@ -173,11 +193,13 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 				if (monitorService != null) {
 					tempMonitors.put(accCtx.ledgerHash, monitorService);
 				}
+
+				// 保存会话凭证；如果出错不影响后续执行；
+				updateSessionCredential(ledgerSetting.getLedgerHash(), sessionCredential, credentialProvider);
 			}
 			if (factory == null) {
 				// 第一次连接成功
-				factory = new PeerBlockchainServiceFactory(httpConnectionManager,
-						accessAbleLedgers);
+				factory = new PeerBlockchainServiceFactory(httpConnectionManager, accessAbleLedgers);
 				factory.accessContextMap.putAll(tempAccessCtxs);
 				factory.monitorServiceMap.putAll(tempMonitors);
 				peerBlockchainServiceFactories.put(peerAddr, factory);
@@ -196,9 +218,8 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 					}
 				}
 			}
-		}
-
-
+		} // End of: if (!needInitSettings.isEmpty());
+		return factory;
 
 //		ServiceConnectionManager httpConnectionManager = new ServiceConnectionManager();
 //		ServiceConnection httpConnection = httpConnectionManager.create(new ServiceEndpoint(peerAddr));
@@ -237,29 +258,59 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 //
 //		PeerBlockchainServiceFactory factory = new PeerBlockchainServiceFactory(httpConnectionManager,
 //				accessAbleLedgers);
-		return factory;
+//		return factory;
 	}
 
-	private static GatewayIncomingSetting auth(NetworkAddress peerAuthAddr, ClientIdentifications authIds) {
+	private static void updateSessionCredential(HashDigest ledgerHash, SessionCredential sessionCredential,
+			SessionCredentialProvider credentialProvider) {
 		try {
-			ManagementHttpService gatewayMngService = getGatewayManageService(peerAuthAddr);
-
-			// 接入认证，获得接入配置；
-			// 传递网关账户地址及签名；
-			GatewayIncomingSetting incomingSetting = gatewayMngService.authenticateGateway(authIds);
-			return incomingSetting;
+			// 保存会话凭证；
+			credentialProvider.setCredential(ledgerHash.toBase58(), sessionCredential);
 		} catch (Exception e) {
-			LOGGER.warn("Cann't authenticate gateway incoming from peer[" + peerAuthAddr.toString() + "]!--"
-					+ e.getMessage(), e);
-			return null;
+			// 如果出错不影响后续执行；
+			LOGGER.warn("Error occurred while update consensus session credential of ledger[" + ledgerHash.toBase58()
+					+ "]! ", e);
 		}
 	}
 
-	private static ManagementHttpService getGatewayManageService(NetworkAddress peer) {
+	private static GatewayAuthResponse auth(AsymmetricKeypair gatewayKey, NetworkAddress peerAddr,
+			SessionCredentialProvider sessionCredentials) {
+		try {
+			ManagementHttpService gatewayMngService = getManageService(peerAddr);
+
+			// 获得节点的信息；
+			AccessSpecification accSpec = gatewayMngService.getAccessSpecification();
+			Map<HashDigest, String> ledgerProviderMap = accSpec.asMap();
+
+			GatewayAuthRequestConfig authRequest = new GatewayAuthRequestConfig();
+			for (Entry<HashDigest, String> ledgerProvider : ledgerProviderMap.entrySet()) {
+				ConsensusProvider provider = ConsensusProviders.getProvider(ledgerProvider.getValue());
+				ClientFactory clientFactory = provider.getClientFactory();
+
+				// 加载本地的历史凭证；
+				SessionCredential sessionCredential = sessionCredentials
+						.getCredential(ledgerProvider.getKey().toBase58());
+
+				ClientCredential authId = clientFactory.buildCredential(sessionCredential, gatewayKey);
+				authRequest.add(ledgerProvider.getKey(), authId);
+			}
+
+			// 接入认证，获得接入配置；
+			// 传递网关账户地址及签名；
+			GatewayAuthResponse gatewayAuthResponse = gatewayMngService.authenticateGateway(authRequest);
+			return gatewayAuthResponse;
+		} catch (Exception e) {
+			String errorMessage = String.format("Gateway authentication fail! --[peer=%s] %s", peerAddr.toString(),
+					e.getMessage());
+			LOGGER.warn(errorMessage, e);
+			throw new AuthenticationException(errorMessage);
+		}
+	}
+
+	private static ManagementHttpService getManageService(NetworkAddress peer) {
 		ServiceEndpoint peerServer = new ServiceEndpoint(peer.getHost(), peer.getPort(), false);
-		ManagementHttpService gatewayMngService = HttpServiceAgent.createService(ManagementHttpService.class,
-				peerServer);
-		return gatewayMngService;
+		ManagementHttpService manageService = HttpServiceAgent.createService(ManagementHttpService.class, peerServer);
+		return manageService;
 	}
 
 	/**
@@ -269,10 +320,10 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 	 * @param cryptoSetting
 	 * @return
 	 */
-	private static TransactionService enableGatewayAutoSigning(AsymmetricKeypair nodeKeyPair, CryptoSetting cryptoSetting,
-			ConsensusClient consensusClient) {
-		NodeSigningAppender signingAppender = new NodeSigningAppender(cryptoSetting.getHashAlgorithm(),
-				nodeKeyPair, consensusClient);
+	private static TransactionService enableGatewayAutoSigning(AsymmetricKeypair nodeKeyPair,
+			CryptoSetting cryptoSetting, ConsensusClient consensusClient) {
+		NodeSigningAppender signingAppender = new NodeSigningAppender(cryptoSetting.getHashAlgorithm(), nodeKeyPair,
+				consensusClient);
 		return signingAppender.init();
 	}
 
@@ -300,17 +351,6 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 		return monitorServiceMap;
 	}
 
-	private static ClientIdentificationsProvider authIdProvider(AsymmetricKeypair gatewayKey, List<String> peerProviders) {
-		ClientIdentificationsProvider authIdProvider = new ClientIdentificationsProvider();
-		for (String peerProvider : peerProviders) {
-			ConsensusProvider provider = ConsensusProviders.getProvider(peerProvider);
-			ClientFactory clientFactory = provider.getClientFactory();
-			ClientIdentification authId = clientFactory.buildAuthId(gatewayKey);
-			authIdProvider.add(authId);
-		}
-		return authIdProvider;
-	}
-
 	private static class LedgerAccessContextImpl implements LedgerAccessContext {
 
 		private HashDigest ledgerHash;
@@ -322,6 +362,21 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 		private BlockchainQueryService queryService;
 
 		private ConsensusClient consensusClient;
+
+		private final SessionCredential credential;
+
+		public LedgerAccessContextImpl(SessionCredential credential) {
+			this.credential = credential;
+		}
+
+		/**
+		 * 经过认证的客户端凭证；
+		 * 
+		 * @return
+		 */
+		public SessionCredential getCredential() {
+			return credential;
+		}
 
 		@Override
 		public HashDigest getLedgerHash() {
@@ -344,9 +399,9 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 		}
 	}
 
-	private static final class PeerManageService {
+	private static final class PeerBlockchainQueryService {
 
-		public PeerManageService(ServiceConnection httpConnection, BlockchainQueryService queryService) {
+		public PeerBlockchainQueryService(ServiceConnection httpConnection, BlockchainQueryService queryService) {
 			this.httpConnection = httpConnection;
 			this.queryService = queryService;
 		}

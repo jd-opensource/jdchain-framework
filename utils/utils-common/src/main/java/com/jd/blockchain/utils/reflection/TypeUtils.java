@@ -1,10 +1,13 @@
 package com.jd.blockchain.utils.reflection;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.net.URL;
 
 public class TypeUtils {
 
@@ -77,13 +80,36 @@ public class TypeUtils {
 				throw new IllegalStateException(
 						"Cannot find the type of the generic type '" + genericTypeName + "': " + instanceClass);
 			}
-			
+
 			clazz = clazz.getSuperclass();
 			if (clazz == null) {
 				throw new IllegalStateException(
 						"Cannot find the type of the generic type '" + genericTypeName + "': " + instanceClass);
 			}
-		}// End of while;
+		} // End of while;
+	}
+
+	/**
+	 * 返回指定类型的代码所在的磁盘目录；
+	 * 
+	 * @param clazz
+	 * @return
+	 */
+	public static String getCodeDirOf(Class<?> clazz) {
+		try {
+			URL url = clazz.getProtectionDomain().getCodeSource().getLocation();
+			String currPath = java.net.URLDecoder.decode(url.getPath(), "UTF-8");
+			// 处理打包至SpringBoot问题
+			if (currPath.contains("!/")) {
+				currPath = currPath.substring(5, currPath.indexOf("!/"));
+			}
+			if (currPath.endsWith(".jar")) {
+				currPath = currPath.substring(0, currPath.lastIndexOf("/") + 1);
+			}
+			return new File(currPath).getParent() + File.separator;
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalStateException(e.getMessage(), e);
+		}
 	}
 
 }

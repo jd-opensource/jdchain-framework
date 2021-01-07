@@ -1,4 +1,4 @@
-package com.jd.blockchain.crypto.binaryproto;
+package com.jd.blockchain.crypto.binaryproto.adapter;
 
 import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.HashDigest;

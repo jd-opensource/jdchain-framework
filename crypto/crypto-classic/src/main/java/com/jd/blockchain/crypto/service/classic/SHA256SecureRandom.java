@@ -14,16 +14,21 @@ public class SHA256SecureRandom extends HashBaseSecureRandom {
 
 	private static final long serialVersionUID = 5750528439654395936L;
 
+	public static final int DIGEST_LENGTH = 32;
+
 	public SHA256SecureRandom(byte[] seed) {
 		super(seed);
 	}
 
 	@Override
-	protected byte[] hash(byte[] bytes) {
+	protected int getHashSize() {
+		return DIGEST_LENGTH;
+	}
+
+	@Override
+	protected void hash(byte[] bytes, byte[] output, int offset) {
 		SHA256Digest sha256Digest = new SHA256Digest();
-		byte[] result = new byte[sha256Digest.getDigestSize()];
 		sha256Digest.update(bytes, 0, bytes.length);
-		sha256Digest.doFinal(result, 0);
-		return result;
+		sha256Digest.doFinal(output, offset);
 	}
 }

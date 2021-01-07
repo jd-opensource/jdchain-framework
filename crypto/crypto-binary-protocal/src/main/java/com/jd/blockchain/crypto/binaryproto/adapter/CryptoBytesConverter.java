@@ -1,4 +1,4 @@
-package com.jd.blockchain.crypto.binaryproto;
+package com.jd.blockchain.crypto.binaryproto.adapter;
 
 import com.jd.blockchain.binaryproto.BytesConverter;
 import com.jd.blockchain.crypto.CryptoBytes;

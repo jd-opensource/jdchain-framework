@@ -1,4 +1,4 @@
-package com.jd.blockchain.crypto.binaryproto;
+package com.jd.blockchain.crypto.binaryproto.adapter;
 
 import com.jd.blockchain.binaryproto.DataContractAutoRegistrar;
 import com.jd.blockchain.binaryproto.DataContractRegistry;
@@ -9,8 +9,9 @@ import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.crypto.SymmetricCiphertext;
 import com.jd.blockchain.crypto.SymmetricKey;
+import com.jd.blockchain.crypto.binaryproto.CryptoDataContractAutoRegistrar;
 
-public class CryptoDataContractAutoRegistrar implements DataContractAutoRegistrar{
+public class CryptoBytesConverterAutoRegistrar implements DataContractAutoRegistrar{
 	
 	
 	public static void configure() {
@@ -28,7 +29,7 @@ public class CryptoDataContractAutoRegistrar implements DataContractAutoRegistra
 	 */
 	@Override
 	public int order() {
-		return 10;
+		return CryptoDataContractAutoRegistrar.ORDER + 1;
 	}
 
 

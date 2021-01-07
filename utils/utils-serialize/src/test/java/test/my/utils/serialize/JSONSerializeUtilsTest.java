@@ -10,10 +10,6 @@ import java.lang.reflect.Proxy;
 import java.util.Date;
 import java.util.UUID;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.alibaba.fastjson.JSON;
@@ -26,25 +22,13 @@ import com.jd.blockchain.utils.serialize.json.JSONString;
 
 public class JSONSerializeUtilsTest {
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-	
-
+	/**
+	 * 测试基于接口类型的序列化和反序列化；<p>
+	 * 
+	 */
 	@Test
 	public void testInterface() {
+		// 测试基于接口的动态代理对象可以通过 JSONObject 对象实现属性解析；
 		Car car = new Car();
 		car.setCost(10);
 		car.setWeight(1000);
@@ -53,17 +37,58 @@ public class JSONSerializeUtilsTest {
 		car.setWheel(wheel);
 
 		String json = JSONSerializeUtils.serializeToJSON(car);
-		
+
 		ParserConfig.global.setAutoTypeSupport(true);
 
 		JSONObject jsonObj = JSONSerializeUtils.deserializeAs(json, JSONObject.class);
-		ICar decar = (ICar) Proxy.newProxyInstance(ICar.class.getClassLoader(), new Class[] {ICar.class}, jsonObj);
+		ICar decar = (ICar) Proxy.newProxyInstance(ICar.class.getClassLoader(), new Class[] { ICar.class }, jsonObj);
 		System.out.println("Class of decar :" + decar.getClass().getName());
 		assertNotNull(decar);
 		assertEquals(car.getCost(), decar.getCost());
 		assertEquals(car.getWeight(), decar.getWeight());
 		Wheel deWheel = decar.getWheel();
 		assertEquals(wheel.getBlack(), deWheel.getBlack());
+
+		// 测试对象的属性声明为接口类型也能够正常地序列化与反序列化；
+		People people = new People();
+		people.setAsset(decar);
+
+		// 基于 JSONSerializeUtils 配置针对接口类型的序列化和反序列化；
+		// 验证是否最终能够得到一致的接口类型的结果；
+		JSONSerializeUtils.configProxyInterfaces(ICar.class);
+
+		json = JSONSerializeUtils.serializeToJSON(people, true);
+		System.out.println("----------- people -----------");
+		System.out.println(json);
+
+		People people_des = JSONSerializeUtils.deserializeAs(json, People.class);
+		assertNotNull(people_des.getAsset());
+
+		ICommodity c0 = people.getAsset();
+		ICommodity c1 = decar;
+		ICommodity c2 = people_des.getAsset();
+
+		assertEquals(c0.getCost(), c1.getCost());
+		assertTrue(c2 instanceof ICar);
+		assertEquals(c0.getCost(), c2.getCost());
+
+		// 采用原生的 JSON 对象针对接口类型的序列化和反序列化；
+		// 验证是否与 JSONSerializeUtils 得到一致的结果，验证 JSONSerializeUtils 对原生 fastJSON 的无入侵性；
+		json = JSON.toJSONString(people, true);
+		System.out.println("----------- people -----------");
+		System.out.println(json);
+
+		people_des = JSON.parseObject(json, People.class);
+		assertNotNull(people_des.getAsset());
+
+		c0 = people.getAsset();
+		c1 = decar;
+		c2 = people_des.getAsset();
+
+		assertEquals(c0.getCost(), c1.getCost());
+		assertTrue(c2 instanceof ICar);
+		assertEquals(c0.getCost(), c2.getCost());
+
 	}
 
 	@Test
@@ -204,59 +229,60 @@ public class JSONSerializeUtilsTest {
 	public void testSerializeString() {
 		String origString = "test string";
 		String json = JSONSerializeUtils.serializeToJSON(origString, String.class);
-		
+
 		String desString = JSON.parseObject(json, String.class);
 		assertEquals(origString, desString);
-		
+
 		String desString1 = JSONSerializeUtils.deserializeAs(json, String.class);
 		assertEquals(origString, desString1);
-		
+
 		String desString2 = JSONSerializeUtils.deserializeAs(origString, String.class);
 		assertEquals(origString, desString2);
-		
+
 		Car car = new Car();
 		car.setCost(10);
 		car.setWeight(1000);
-		
+
 		String carJSON = JSONSerializeUtils.serializeToJSON(car);
 		String carJSON1 = JSON.toJSONString(car, false);
 		assertEquals(carJSON, carJSON1);
-		
+
 		String carString = JSON.parseObject(carJSON, String.class);
 		assertEquals(carJSON, carString);
 		String carString2 = JSONSerializeUtils.deserializeAs(carJSON, String.class);
 		assertEquals(carJSON, carString2);
 	}
-	
+
 	@Test
-	public void testJSONString(){
+	public void testJSONString() {
 		Car car = new Car();
 		car.setCost(10);
 		car.setWeight(1000);
-		
+
 		String carJSON = JSONSerializeUtils.serializeToJSON(car);
 		JSONString jsonString = new JSONString(carJSON);
-		System.out.println("1:--\r\n" + carJSON );
-		
+		System.out.println("1:--\r\n" + carJSON);
+
 		String newJSONString = JSONSerializeUtils.serializeToJSON(jsonString);
 		assertEquals(carJSON, newJSONString);
-		System.out.println("2:--\r\n" + newJSONString );
-		
+		System.out.println("2:--\r\n" + newJSONString);
+
 		JSONString newJSONString2 = JSONSerializeUtils.deserializeAs(newJSONString, JSONString.class);
 		assertEquals(carJSON, newJSONString2.toString());
-		
+
 		String address = UUID.randomUUID().toString();
 		JSONString jsonAddress = new JSONString(JSONSerializeUtils.serializeToJSON(address));
 		String desAddress = JSONSerializeUtils.deserializeAs(jsonAddress, String.class);
 		assertEquals(address, desAddress);
-		
+
 		String emptyStr = "";
 		JSONString emptyJsonStr = new JSONString(JSONSerializeUtils.serializeToJSON(emptyStr));
 		String desEmptyStr = JSONSerializeUtils.deserializeAs(emptyJsonStr, String.class);
 		assertEquals(emptyStr, desEmptyStr);
-		
+
 		String nullStr = null;
 		String nullJson = JSONSerializeUtils.serializeToJSON(nullStr);
 		assertNull(nullJson);
 	}
+
 }

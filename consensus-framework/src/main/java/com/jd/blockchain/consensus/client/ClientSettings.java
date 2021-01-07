@@ -1,6 +1,7 @@
 package com.jd.blockchain.consensus.client;
 
 import com.jd.blockchain.consensus.ConsensusViewSettings;
+import com.jd.blockchain.consensus.SessionCredential;
 import com.jd.blockchain.crypto.PubKey;
 
 /**
@@ -30,6 +31,12 @@ public interface ClientSettings {
 	 * 
 	 * @return
 	 */
-	ConsensusViewSettings getConsensusSettings();
+	ConsensusViewSettings getViewSettings();
 
+	/**
+	 * 凭证信息；
+	 * 
+	 * @return
+	 */
+	SessionCredential getSessionCredential();
 }

@@ -178,6 +178,11 @@ public class TxBuilder implements TransactionBuilder {
 	}
 
 	@Override
+	public ContractEventSendOperationBuilder contract() {
+		return opFactory.contract();
+	}
+
+	@Override
 	public EventAccountRegisterOperationBuilder eventAccounts() {
 		return opFactory.eventAccounts();
 	}

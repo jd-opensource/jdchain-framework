@@ -1,10 +1,8 @@
 package com.jd.blockchain.consensus.service;
 
-import com.jd.blockchain.consensus.NodeNetworkAddresses;
-import com.jd.blockchain.utils.net.NetworkAddress;
-
 import java.nio.charset.StandardCharsets;
-import java.util.List;
+
+import com.jd.blockchain.consensus.NodeNetworkAddresses;
 
 public interface MonitorService {
 

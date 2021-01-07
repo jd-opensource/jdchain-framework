@@ -1,6 +1,10 @@
 package com.jd.blockchain.maven.plugins.contract.analysis;
 
-import com.jd.blockchain.contract.*;
+import com.jd.blockchain.contract.Contract;
+import com.jd.blockchain.contract.ContractEntrance;
+import com.jd.blockchain.contract.ContractJarUtils;
+import com.jd.blockchain.contract.ContractProcessor;
+import com.jd.blockchain.contract.ContractType;
 import com.jd.blockchain.maven.plugins.contract.analysis.asm.ASMClassVisitor;
 import com.jd.blockchain.maven.plugins.contract.analysis.contract.AbstractContract;
 import com.jd.blockchain.maven.plugins.contract.analysis.contract.ContractClass;
@@ -18,7 +22,12 @@ import org.objectweb.asm.ClassReader;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.jd.blockchain.contract.ContractJarUtils.BLACK_CONF;
@@ -222,16 +231,17 @@ public class MavenPluginContractProcessor implements ContractProcessor {
     private void verify(URLClassLoader urlClassLoader, Map<String, ContractClass> allContractClasses, String contractClass) throws MojoExecutionException {
         // 获取MainClass
         String mainClassKey = classNameToSeparator(contractClass);
-        ContractClass mainContractClass = allContractClasses.get(mainClassKey);
-        if (mainContractClass == null) {
+        if (!allContractClasses.containsKey(mainClassKey)) {
             throw new MojoExecutionException(String.format("Load contract class = [%s] null !!!", contractClass));
         }
-        // 校验该Class中所有方法
-        Map<String, ContractMethod> methods = mainContractClass.getMethods();
-        if (!methods.isEmpty()) {
-            for (Map.Entry<String, ContractMethod> entry : methods.entrySet()) {
-                ContractMethod method = entry.getValue();
-                verify(urlClassLoader, allContractClasses, method);
+        for (ContractClass clazz : allContractClasses.values()) {
+            // 校验该Class中所有方法
+            Map<String, ContractMethod> methods = clazz.getMethods();
+            if (!methods.isEmpty()) {
+                for (Map.Entry<String, ContractMethod> entry : methods.entrySet()) {
+                    ContractMethod method = entry.getValue();
+                    verify(urlClassLoader, allContractClasses, method);
+                }
             }
         }
     }
