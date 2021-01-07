@@ -33,14 +33,6 @@ public interface CryptoAlgorithm {
 	static final int ENCRYPTION_ALGORITHM = 0x8000;
 
 	/**
-	 * 扩展密码算法标识； <br>
-	 * 表示除了
-	 * {@link #RANDOM_ALGORITHM}、{@link #HASH_ALGORITHM}、{@link #SIGNATURE_ALGORITHM}、{@link #ENCRYPTION_ALGORITHM}
-	 * 之外的其它非标准分类的密码算法，诸如加法同态算法、多方求和算法等；
-	 */
-	static final int EXT_ALGORITHM = 0x0000;
-
-	/**
 	 * 非对称密钥标识；
 	 */
 	static final int ASYMMETRIC_KEY = 0x0100;
@@ -49,6 +41,14 @@ public interface CryptoAlgorithm {
 	 * 对称密钥标识；
 	 */
 	static final int SYMMETRIC_KEY = 0x0200;
+	
+	/**
+	 * 扩展密码算法标识，高 8 位均为 0 ； <p>
+	 * 
+	 * 此作为保留标记暂不启用，保留用于今后把算法长度扩展到大于 2 字节的情况，应对需要引入更多的密码提供者，需要定义更多的算法种类；
+	 */
+	static final int EXT_ALGORITHM = 0x0000;
+
 
 	/**
 	 * 算法编码的字节长度；等同于 {@link #getCodeBytes(CryptoAlgorithm)} 返回的字节数组的长度；
@@ -73,7 +73,6 @@ public interface CryptoAlgorithm {
 	 */
 	@DataField(order = 1, primitiveType = PrimitiveType.TEXT)
 	String name();
-	
 
 	public static String getString(CryptoAlgorithm algorithm) {
 		return String.format("%s[%s]", algorithm.name(), (algorithm.code() & 0xFFFF));
@@ -224,7 +223,7 @@ public interface CryptoAlgorithm {
 	static boolean isSymmetricEncryptionAlgorithm(CryptoAlgorithm algorithm) {
 		return isEncryptionAlgorithm(algorithm) && hasSymmetricKey(algorithm);
 	}
-	
+
 	/**
 	 * 是否属于对称加密算法；
 	 * 
