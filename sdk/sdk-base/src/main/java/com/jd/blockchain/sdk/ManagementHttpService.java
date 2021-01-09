@@ -2,11 +2,11 @@ package com.jd.blockchain.sdk;
 
 import com.jd.blockchain.sdk.converters.BinarySerializeRequestConverter;
 import com.jd.blockchain.setting.GatewayAuthResponse;
-import com.jd.blockchain.utils.web.client.WebResponseConverterFactory;
 import com.jd.httpservice.HttpAction;
 import com.jd.httpservice.HttpMethod;
 import com.jd.httpservice.HttpService;
 import com.jd.httpservice.RequestBody;
+import com.jd.httpservice.utils.agent.WebResponseConverterFactory;
 
 
 @HttpService(path="/management", defaultRequestBodyConverter = BinarySerializeRequestConverter.class, responseConverterFactory=WebResponseConverterFactory.class)

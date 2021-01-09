@@ -9,12 +9,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.utils.codec.Base58Utils;
-import com.jd.blockchain.utils.web.client.WebServiceException;
-import com.jd.blockchain.utils.web.model.WebResponse;
 import com.jd.httpservice.HttpServiceContext;
 import com.jd.httpservice.ResponseConverter;
 import com.jd.httpservice.agent.ServiceRequest;
 import com.jd.httpservice.converters.JsonResponseConverter;
+import com.jd.httpservice.utils.agent.WebServiceException;
+import com.jd.httpservice.utils.web.WebResponse;
 
 /**
  * Created by zhangshuang3 on 2018/10/17.
