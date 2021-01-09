@@ -16,14 +16,14 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>com.jd.blockchain</groupId>
-			<artifactId>utils-http</artifactId>
+			<groupId>com.jd.httpservice</groupId>
+			<artifactId>httpservice-agent</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
-			<groupId>com.jd.blockchain</groupId>
-			<artifactId>utils-web</artifactId>
+			<groupId>com.jd.httpservice</groupId>
+			<artifactId>httpservice-utils</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

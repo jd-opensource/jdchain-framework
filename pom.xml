@@ -17,6 +17,7 @@
 	<modules>
 		<module>../libs/utils</module>
 		<module>../libs/binary-proto/binary-proto-java</module>
+		<module>../libs/httpservice</module>
 		<module>base</module>
 		<module>crypto</module>
 		<module>ledger-model</module>
