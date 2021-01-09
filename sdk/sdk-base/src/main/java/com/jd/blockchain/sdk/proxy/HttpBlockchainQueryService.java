@@ -20,13 +20,13 @@ import com.jd.blockchain.ledger.UserPrivilegeSet;
 import com.jd.blockchain.sdk.BlockchainExtendQueryService;
 import com.jd.blockchain.sdk.converters.HashDigestToStringConverter;
 import com.jd.blockchain.sdk.converters.HashDigestsResponseConverter;
-import com.jd.blockchain.utils.http.HttpAction;
-import com.jd.blockchain.utils.http.HttpMethod;
-import com.jd.blockchain.utils.http.HttpService;
-import com.jd.blockchain.utils.http.PathParam;
-import com.jd.blockchain.utils.http.RequestBody;
-import com.jd.blockchain.utils.http.RequestParam;
 import com.jd.blockchain.utils.web.client.WebResponseConverterFactory;
+import com.jd.httpservice.HttpAction;
+import com.jd.httpservice.HttpMethod;
+import com.jd.httpservice.HttpService;
+import com.jd.httpservice.PathParam;
+import com.jd.httpservice.RequestBody;
+import com.jd.httpservice.RequestParam;
 
 /**
  * 作为内部使用的适配接口，用于声明 HTTP 协议的服务请求；

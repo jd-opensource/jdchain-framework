@@ -5,10 +5,10 @@ import com.jd.blockchain.ledger.TransactionResponse;
 import com.jd.blockchain.sdk.converters.BinarySerializeRequestConverter;
 import com.jd.blockchain.sdk.converters.BinarySerializeResponseConverter;
 import com.jd.blockchain.transaction.TransactionService;
-import com.jd.blockchain.utils.http.HttpAction;
-import com.jd.blockchain.utils.http.HttpMethod;
-import com.jd.blockchain.utils.http.HttpService;
-import com.jd.blockchain.utils.http.RequestBody;
+import com.jd.httpservice.HttpAction;
+import com.jd.httpservice.HttpMethod;
+import com.jd.httpservice.HttpService;
+import com.jd.httpservice.RequestBody;
 
 @HttpService(defaultRequestBodyConverter = BinarySerializeRequestConverter.class, defaultResponseConverter = BinarySerializeResponseConverter.class)
 public interface HttpConsensusService extends TransactionService {
