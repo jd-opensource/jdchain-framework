@@ -1,6 +1,6 @@
 package com.jd.blockchain.storage.service.utils;
 
-import com.jd.blockchain.utils.DataEntry;
+import utils.DataEntry;
 
 public class VersioningKVData<K, V> implements DataEntry<K, V> {
 

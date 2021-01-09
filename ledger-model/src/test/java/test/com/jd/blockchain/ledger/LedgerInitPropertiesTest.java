@@ -24,12 +24,14 @@ import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.ledger.LedgerInitOperation;
 import com.jd.blockchain.ledger.LedgerInitProperties;
 import com.jd.blockchain.ledger.LedgerInitProperties.ParticipantProperties;
+
+import utils.codec.HexUtils;
+
 import com.jd.blockchain.ledger.LedgerPermission;
 import com.jd.blockchain.ledger.RoleInitData;
 import com.jd.blockchain.ledger.RolesPolicy;
 import com.jd.blockchain.ledger.TransactionPermission;
 import com.jd.blockchain.ledger.UserRegisterOperation;
-import com.jd.blockchain.utils.codec.HexUtils;
 
 public class LedgerInitPropertiesTest {
 	

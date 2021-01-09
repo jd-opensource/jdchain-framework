@@ -10,7 +10,8 @@ import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.TransactionBuilder;
 import com.jd.blockchain.ledger.TransactionContent;
 import com.jd.blockchain.ledger.TransactionRequestBuilder;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 public class TxBuilder implements TransactionBuilder {
 

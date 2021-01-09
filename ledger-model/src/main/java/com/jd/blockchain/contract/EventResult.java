@@ -1,9 +1,9 @@
 package com.jd.blockchain.contract;
 
-import com.jd.blockchain.utils.IllegalDataException;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+
+import utils.IllegalDataException;
 
 public class EventResult<T> {
 

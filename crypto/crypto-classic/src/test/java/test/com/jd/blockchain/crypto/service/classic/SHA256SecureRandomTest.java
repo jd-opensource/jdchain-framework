@@ -9,7 +9,8 @@ import java.security.SecureRandom;
 import org.junit.Test;
 
 import com.jd.blockchain.crypto.service.classic.SHA256SecureRandom;
-import com.jd.blockchain.utils.io.BytesUtils;
+
+import utils.io.BytesUtils;
 
 public class SHA256SecureRandomTest {
 

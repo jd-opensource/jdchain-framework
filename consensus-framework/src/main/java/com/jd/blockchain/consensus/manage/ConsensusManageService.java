@@ -1,7 +1,8 @@
 package com.jd.blockchain.consensus.manage;
 
 import com.jd.blockchain.consensus.Replica;
-import com.jd.blockchain.utils.concurrent.AsyncFuture;
+
+import utils.concurrent.AsyncFuture;
 
 /**
  * 共识管理服务；

@@ -4,7 +4,8 @@ import com.jd.binaryproto.EnumContract;
 import com.jd.binaryproto.EnumField;
 import com.jd.binaryproto.PrimitiveType;
 import com.jd.blockchain.consts.DataCodes;
-import com.jd.blockchain.utils.Int8Code;
+
+import utils.Int8Code;
 
 /**
  * 账本相关的权限，这些权限属于全局性的；

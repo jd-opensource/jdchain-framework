@@ -12,7 +12,8 @@ import com.jd.blockchain.ledger.DigitalSignature;
 import com.jd.blockchain.ledger.MagicNumber;
 import com.jd.blockchain.ledger.TransactionContent;
 import com.jd.blockchain.ledger.TransactionRequest;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 /**
  * TxRequestMessage 交易消息；

@@ -8,8 +8,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jd.blockchain.utils.provider.Provider;
-import com.jd.blockchain.utils.provider.ProviderManager;
+import utils.provider.Provider;
+import utils.provider.ProviderManager;
 
 /**
  * 密码服务提供者的管理器；

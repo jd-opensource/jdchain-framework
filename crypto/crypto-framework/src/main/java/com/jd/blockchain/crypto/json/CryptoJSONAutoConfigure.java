@@ -7,8 +7,9 @@ import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.crypto.SymmetricCiphertext;
 import com.jd.blockchain.crypto.SymmetricKey;
-import com.jd.blockchain.utils.serialize.json.JSONAutoConfigure;
-import com.jd.blockchain.utils.serialize.json.JSONConfigurator;
+
+import utils.serialize.json.JSONAutoConfigure;
+import utils.serialize.json.JSONConfigurator;
 
 public class CryptoJSONAutoConfigure implements JSONAutoConfigure {
 

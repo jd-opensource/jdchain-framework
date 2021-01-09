@@ -1,6 +1,5 @@
 package com.jd.blockchain.sdk.service;
 
-import com.jd.blockchain.utils.exception.ViewObsoleteException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +17,9 @@ import com.jd.blockchain.ledger.TransactionState;
 import com.jd.blockchain.transaction.SignatureUtils;
 import com.jd.blockchain.transaction.TransactionService;
 import com.jd.blockchain.transaction.TxRequestMessage;
-import com.jd.blockchain.utils.concurrent.AsyncFuture;
+
+import utils.concurrent.AsyncFuture;
+import utils.exception.ViewObsoleteException;
 
 /**
  * {@link NodeSigningAppender} 以装饰者模式实现，为交易请求附加上节点签名；

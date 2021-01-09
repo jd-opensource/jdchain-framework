@@ -22,7 +22,8 @@ import com.jd.blockchain.ledger.BytesValueList;
 import com.jd.blockchain.ledger.ContractEventSendOperation;
 import com.jd.blockchain.ledger.Operation;
 import com.jd.blockchain.transaction.ContractEventSendOpTemplate;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 /**
  *

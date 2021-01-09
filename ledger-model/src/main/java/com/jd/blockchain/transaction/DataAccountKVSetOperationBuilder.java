@@ -1,7 +1,8 @@
 package com.jd.blockchain.transaction;
 
 import com.jd.blockchain.ledger.DataAccountKVSetOperation;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 /**
  * @author huanghaiquan

@@ -2,8 +2,10 @@ package com.jd.blockchain.transaction;
 
 import com.jd.blockchain.ledger.BytesValue;
 import com.jd.blockchain.ledger.TypedValue;
+
+import utils.Bytes;
+
 import com.jd.blockchain.ledger.DataAccountKVSetOperation;
-import com.jd.blockchain.utils.Bytes;
 
 public class DataAccountKVSetOperationBuilderImpl implements DataAccountKVSetOperationBuilder {
 

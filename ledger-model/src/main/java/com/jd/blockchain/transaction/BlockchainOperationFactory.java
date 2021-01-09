@@ -17,8 +17,9 @@ import com.jd.blockchain.ledger.ParticipantNodeState;
 import com.jd.blockchain.ledger.ParticipantRegisterOperation;
 import com.jd.blockchain.ledger.ParticipantStateUpdateOperation;
 import com.jd.blockchain.ledger.UserRegisterOperation;
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.Property;
+
+import utils.Bytes;
+import utils.Property;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -4,10 +4,11 @@ import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.codec.Base58Utils;
-import com.jd.blockchain.utils.io.BytesSlice;
 import com.jd.blockchain.web.serializes.ExtendJsonSerializer;
+
+import utils.Bytes;
+import utils.codec.Base58Utils;
+import utils.io.BytesSlice;
 
 import java.lang.reflect.Type;
 

@@ -5,12 +5,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.io.BytesEncoding;
-import com.jd.blockchain.utils.io.BytesUtils;
-import com.jd.blockchain.utils.io.NumberMask;
-import com.jd.blockchain.utils.security.RipeMD160Utils;
-import com.jd.blockchain.utils.security.ShaUtils;
+import utils.Bytes;
+import utils.io.BytesEncoding;
+import utils.io.BytesUtils;
+import utils.io.NumberMask;
+import utils.security.RipeMD160Utils;
+import utils.security.ShaUtils;
 
 public class AddressEncoding {
 

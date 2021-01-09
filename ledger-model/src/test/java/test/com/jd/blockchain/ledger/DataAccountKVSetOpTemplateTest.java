@@ -21,7 +21,8 @@ import com.jd.blockchain.ledger.DataAccountKVSetOperation;
 import com.jd.blockchain.ledger.Operation;
 import com.jd.blockchain.transaction.DataAccountKVSetOpTemplate;
 import com.jd.blockchain.transaction.KVData;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 /**
  *

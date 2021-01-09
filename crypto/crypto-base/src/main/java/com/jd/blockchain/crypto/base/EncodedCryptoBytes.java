@@ -1,7 +1,8 @@
 package com.jd.blockchain.crypto.base;
 
 import com.jd.blockchain.crypto.CryptoBytes;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 public class EncodedCryptoBytes extends Bytes implements CryptoBytes{
 

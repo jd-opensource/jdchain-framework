@@ -9,9 +9,10 @@ import java.util.concurrent.RecursiveTask;
 import com.jd.blockchain.storage.service.ExPolicy;
 import com.jd.blockchain.storage.service.ExPolicyKVStorage;
 import com.jd.blockchain.storage.service.VersioningKVStorage;
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.DataEntry;
-import com.jd.blockchain.utils.Transactional;
+
+import utils.Bytes;
+import utils.DataEntry;
+import utils.Transactional;
 
 /**
  * {@link BufferedKVStorage} 缓冲写入的KV存储；<br>

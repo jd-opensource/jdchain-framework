@@ -11,8 +11,9 @@ import com.jd.blockchain.ledger.RolesPolicy;
 import com.jd.blockchain.ledger.SecurityUtils;
 import com.jd.blockchain.ledger.UserAuthorizeOperation;
 import com.jd.blockchain.ledger.UserRegisterOperation;
-import com.jd.blockchain.utils.ArrayUtils;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.ArrayUtils;
+import utils.Bytes;
 
 public class UserAuthorizeOpTemplate implements UserAuthorizer, UserAuthorizeOperation {
 

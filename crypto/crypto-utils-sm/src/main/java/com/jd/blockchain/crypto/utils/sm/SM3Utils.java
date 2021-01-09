@@ -2,7 +2,7 @@ package com.jd.blockchain.crypto.utils.sm;
 
 import org.bouncycastle.crypto.digests.SM3Digest;
 
-import com.jd.blockchain.utils.security.Hasher;
+import utils.security.Hasher;
 
 public class SM3Utils {
 

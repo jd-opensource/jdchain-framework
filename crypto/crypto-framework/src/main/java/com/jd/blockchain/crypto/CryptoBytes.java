@@ -1,7 +1,7 @@
 package com.jd.blockchain.crypto;
 
-import com.jd.blockchain.utils.ByteSequence;
-import com.jd.blockchain.utils.io.BytesSerializable;
+import utils.ByteSequence;
+import utils.io.BytesSerializable;
 
 /**
  * {@link CryptoBytes} 表示与特定密码算法相关的编码数据；

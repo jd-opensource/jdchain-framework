@@ -6,7 +6,8 @@ import java.util.Map;
 import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.ledger.BytesValue;
 import com.jd.blockchain.ledger.DataAccountKVSetOperation;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 public class DataAccountKVSetOpTemplate implements DataAccountKVSetOperation {
 	static {

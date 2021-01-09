@@ -2,7 +2,7 @@ package com.jd.blockchain.crypto.base;
 
 import java.security.SecureRandom;
 
-import com.jd.blockchain.utils.io.BytesUtils;
+import utils.io.BytesUtils;
 
 /**
  * 采用“哈希法”生成伪随机数；

@@ -1,7 +1,8 @@
 package com.jd.blockchain.transaction;
 
 import com.jd.blockchain.ledger.EventPublishOperation;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 public interface EventPublishOperationBuilder {
 

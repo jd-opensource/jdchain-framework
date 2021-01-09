@@ -1,6 +1,6 @@
 package com.jd.blockchain.consensus.service;
 
-import com.jd.blockchain.utils.concurrent.AsyncFuture;
+import utils.concurrent.AsyncFuture;
 
 /**
  * 消息处理器；

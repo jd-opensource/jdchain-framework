@@ -1,7 +1,8 @@
 package com.jd.blockchain.consensus.service;
 
 import com.jd.blockchain.consensus.ConsensusViewSettings;
-import com.jd.blockchain.utils.io.Storage;
+
+import utils.io.Storage;
 
 /**
  * 共识节点服务器的工厂；

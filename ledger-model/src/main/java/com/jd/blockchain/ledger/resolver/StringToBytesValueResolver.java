@@ -3,9 +3,10 @@ package com.jd.blockchain.ledger.resolver;
 import com.jd.blockchain.ledger.TypedValue;
 import com.jd.blockchain.ledger.BytesValue;
 import com.jd.blockchain.ledger.DataType;
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.io.BytesUtils;
-import com.jd.blockchain.utils.serialize.json.JSONSerializeUtils;
+
+import utils.Bytes;
+import utils.io.BytesUtils;
+import utils.serialize.json.JSONSerializeUtils;
 
 import java.util.Set;
 

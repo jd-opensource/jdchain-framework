@@ -8,8 +8,9 @@ import com.jd.blockchain.contract.ContractException;
 import com.jd.blockchain.contract.ContractType;
 import com.jd.blockchain.ledger.BytesValueEncoding;
 import com.jd.blockchain.ledger.BytesValueList;
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.IllegalDataException;
+
+import utils.Bytes;
+import utils.IllegalDataException;
 
 public class ContractInvocationHandler implements InvocationHandler {
 

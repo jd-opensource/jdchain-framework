@@ -1,6 +1,6 @@
 package com.jd.blockchain.storage.service;
 
-import com.jd.blockchain.utils.Bytes;
+import utils.Bytes;
 
 /**
  * 支持存在性策略更新的 KV 存储；

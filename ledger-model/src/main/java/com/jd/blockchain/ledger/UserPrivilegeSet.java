@@ -1,8 +1,8 @@
 package com.jd.blockchain.ledger;
 
-import com.jd.blockchain.utils.Bytes;
-
 import java.util.Set;
+
+import utils.Bytes;
 
 /**
  * 表示赋予角色的特权码；

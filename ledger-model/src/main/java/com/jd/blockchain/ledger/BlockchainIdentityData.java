@@ -14,13 +14,14 @@ import java.util.List;
 import com.jd.blockchain.crypto.AddressEncoding;
 import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.PubKey;
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.io.ByteArray;
-import com.jd.blockchain.utils.io.BytesEncoding;
-import com.jd.blockchain.utils.io.BytesReader;
-import com.jd.blockchain.utils.io.BytesUtils;
-import com.jd.blockchain.utils.io.BytesWriter;
-import com.jd.blockchain.utils.io.RuntimeIOException;
+
+import utils.Bytes;
+import utils.io.ByteArray;
+import utils.io.BytesEncoding;
+import utils.io.BytesReader;
+import utils.io.BytesUtils;
+import utils.io.BytesWriter;
+import utils.io.RuntimeIOException;
 
 /**
  * 区块链身份；

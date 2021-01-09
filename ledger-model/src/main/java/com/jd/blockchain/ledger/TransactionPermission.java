@@ -4,7 +4,8 @@ import com.jd.binaryproto.EnumContract;
 import com.jd.binaryproto.EnumField;
 import com.jd.binaryproto.PrimitiveType;
 import com.jd.blockchain.consts.DataCodes;
-import com.jd.blockchain.utils.Int8Code;
+
+import utils.Int8Code;
 
 /**
  * TxPermission 交易权限表示一个用户可以发起的交易类型；

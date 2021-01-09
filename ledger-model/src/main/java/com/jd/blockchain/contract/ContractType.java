@@ -6,7 +6,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.jd.blockchain.ledger.BytesValueEncoding;
-import com.jd.blockchain.utils.IllegalDataException;
+
+import utils.IllegalDataException;
 
 public class ContractType {
 

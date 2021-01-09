@@ -2,7 +2,8 @@ package com.jd.blockchain.transaction;
 
 import com.jd.blockchain.ledger.BytesValueList;
 import com.jd.blockchain.ledger.ContractEventSendOperation;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 public interface ContractEventSendOperationBuilder {
 

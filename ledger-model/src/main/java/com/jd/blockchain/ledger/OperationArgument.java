@@ -1,6 +1,6 @@
 package com.jd.blockchain.ledger;
 
-import com.jd.blockchain.utils.io.ByteArray;
+import utils.io.ByteArray;
 
 /**
  * 操作参数；

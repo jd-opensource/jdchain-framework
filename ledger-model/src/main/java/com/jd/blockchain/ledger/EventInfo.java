@@ -2,7 +2,8 @@ package com.jd.blockchain.ledger;
 
 import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.crypto.HashDigest;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 public class EventInfo implements Event {
 

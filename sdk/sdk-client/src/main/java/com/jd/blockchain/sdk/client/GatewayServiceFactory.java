@@ -13,12 +13,13 @@ import com.jd.blockchain.sdk.BlockchainServiceFactory;
 import com.jd.blockchain.sdk.GatewayAuthRequest;
 import com.jd.blockchain.sdk.proxy.HttpBlockchainQueryService;
 import com.jd.blockchain.transaction.*;
-import com.jd.blockchain.utils.net.NetworkAddress;
 import com.jd.blockchain.web.serializes.ByteArrayObjectUtil;
 import com.jd.httpservice.agent.HttpServiceAgent;
 import com.jd.httpservice.agent.ServiceConnection;
 import com.jd.httpservice.agent.ServiceConnectionManager;
 import com.jd.httpservice.agent.ServiceEndpoint;
+
+import utils.net.NetworkAddress;
 
 public class GatewayServiceFactory implements BlockchainServiceFactory, Closeable {
 

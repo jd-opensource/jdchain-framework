@@ -11,7 +11,8 @@ import com.jd.blockchain.ledger.LedgerPermission;
 import com.jd.blockchain.ledger.SecurityInitData;
 import com.jd.blockchain.ledger.SecurityInitSettings;
 import com.jd.blockchain.ledger.TransactionPermission;
-import com.jd.blockchain.utils.serialize.json.JSONSerializeUtils;
+
+import utils.serialize.json.JSONSerializeUtils;
 
 public class SecurityInitDataTest {
 	

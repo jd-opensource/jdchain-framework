@@ -5,7 +5,8 @@ import com.jd.binaryproto.DataField;
 import com.jd.binaryproto.PrimitiveType;
 import com.jd.blockchain.consts.DataCodes;
 import com.jd.blockchain.crypto.PubKey;
-import com.jd.blockchain.utils.net.NetworkAddress;
+
+import utils.net.NetworkAddress;
 
 /**
  * 参与方状态更新信息；

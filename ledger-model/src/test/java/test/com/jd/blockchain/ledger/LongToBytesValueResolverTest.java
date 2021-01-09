@@ -4,7 +4,9 @@ import com.jd.blockchain.ledger.BytesValue;
 import com.jd.blockchain.ledger.DataType;
 import com.jd.blockchain.ledger.resolver.IntegerToBytesValueResolver;
 import com.jd.blockchain.ledger.resolver.LongToBytesValueResolver;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

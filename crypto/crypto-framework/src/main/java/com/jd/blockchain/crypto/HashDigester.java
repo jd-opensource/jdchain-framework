@@ -1,6 +1,6 @@
 package com.jd.blockchain.crypto;
 
-import com.jd.blockchain.utils.security.Hasher;
+import utils.security.Hasher;
 
 public interface HashDigester extends Hasher{
 

@@ -26,10 +26,10 @@ import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.math.ec.ECCurve;
 import org.bouncycastle.math.ec.ECPoint;
 
-import com.jd.blockchain.utils.io.BytesUtils;
-import com.jd.blockchain.utils.security.DecryptionException;
-import com.jd.blockchain.utils.security.EncryptionException;
-import com.jd.blockchain.utils.security.SignatureException;
+import utils.io.BytesUtils;
+import utils.security.DecryptionException;
+import utils.security.EncryptionException;
+import utils.security.SignatureException;
 
 public class SM2Utils {
 

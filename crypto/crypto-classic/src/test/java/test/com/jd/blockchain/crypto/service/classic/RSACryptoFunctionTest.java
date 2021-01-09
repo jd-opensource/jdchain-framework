@@ -28,8 +28,9 @@ import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.crypto.SignatureFunction;
 import com.jd.blockchain.crypto.service.classic.ClassicAlgorithm;
-import com.jd.blockchain.utils.io.BytesUtils;
-import com.jd.blockchain.utils.security.RandomUtils;
+
+import utils.io.BytesUtils;
+import utils.security.RandomUtils;
 
 /**
  * @author zhanglin33

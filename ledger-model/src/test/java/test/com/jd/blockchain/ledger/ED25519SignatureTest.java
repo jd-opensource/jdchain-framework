@@ -6,7 +6,8 @@ import com.jd.blockchain.crypto.AsymmetricKeypair;
 import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.SignatureFunction;
 import com.jd.blockchain.crypto.utils.classic.ED25519Utils;
-import com.jd.blockchain.utils.security.Ed25519Utils;
+
+import utils.security.Ed25519Utils;
 
 public class ED25519SignatureTest {
 

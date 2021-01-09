@@ -7,7 +7,8 @@ import com.jd.binaryproto.DataContract;
 import com.jd.binaryproto.DataField;
 import com.jd.binaryproto.PrimitiveType;
 import com.jd.blockchain.consts.DataCodes;
-import com.jd.blockchain.utils.io.BytesUtils;
+
+import utils.io.BytesUtils;
 
 @DataContract(code = DataCodes.CRYPTO_ALGORITHM)
 public interface CryptoAlgorithm {

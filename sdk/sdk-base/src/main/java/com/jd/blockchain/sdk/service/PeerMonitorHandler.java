@@ -4,7 +4,9 @@ import com.jd.binaryproto.BinaryProtocol;
 import com.jd.blockchain.consensus.MessageService;
 import com.jd.blockchain.consensus.NodeNetworkAddresses;
 import com.jd.blockchain.consensus.service.MonitorService;
-import com.jd.blockchain.utils.concurrent.AsyncFuture;
+
+import utils.concurrent.AsyncFuture;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

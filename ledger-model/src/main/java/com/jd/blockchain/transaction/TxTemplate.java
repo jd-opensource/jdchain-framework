@@ -8,7 +8,8 @@ import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.PreparedTransaction;
 import com.jd.blockchain.ledger.TransactionRequestBuilder;
 import com.jd.blockchain.ledger.TransactionTemplate;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 public class TxTemplate implements TransactionTemplate {
 

@@ -1,7 +1,8 @@
 package com.jd.blockchain.transaction;
 
 import com.jd.blockchain.ledger.BytesValue;
-import com.jd.blockchain.utils.event.EventMulticaster;
+
+import utils.event.EventMulticaster;
 
 abstract class OperationResultHolder implements OperationResultHandle {
 

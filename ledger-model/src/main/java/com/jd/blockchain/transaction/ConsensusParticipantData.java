@@ -2,9 +2,10 @@ package com.jd.blockchain.transaction;
 
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.ledger.ParticipantNode;
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.net.NetworkAddress;
 import com.jd.blockchain.ledger.ParticipantNodeState;
+
+import utils.Bytes;
+import utils.net.NetworkAddress;
 
 public class ConsensusParticipantData implements ParticipantNode {
 	

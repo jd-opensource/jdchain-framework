@@ -4,7 +4,8 @@ import com.jd.binaryproto.DataContract;
 import com.jd.binaryproto.DataField;
 import com.jd.binaryproto.PrimitiveType;
 import com.jd.blockchain.consts.DataCodes;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 @DataContract(code = DataCodes.SECURITY_USER_AUTH_INIT_SETTING)
 public interface UserAuthInitSettings {
