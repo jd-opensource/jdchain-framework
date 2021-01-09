@@ -15,9 +15,9 @@
 	<description>Root project of jdchain framewrok.</description>
 
 	<modules>
-		<module>utils</module>
+		<module>../libs/utils</module>
+		<module>../libs/binary-proto/binary-proto-java</module>
 		<module>base</module>
-		<module>binary-proto</module>
 		<module>crypto</module>
 		<module>ledger-model</module>
 		<module>contract</module>
