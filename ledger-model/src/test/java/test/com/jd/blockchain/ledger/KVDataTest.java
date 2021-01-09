@@ -14,9 +14,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jd.blockchain.binaryproto.BinaryProtocol;
-import com.jd.blockchain.binaryproto.DataContractRegistry;
 import com.jd.blockchain.ledger.TypedValue;
+import com.jd.binaryproto.BinaryProtocol;
+import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.ledger.DataAccountKVSetOperation;
 import com.jd.blockchain.transaction.DataAccountKVSetOpTemplate;
 import com.jd.blockchain.transaction.KVData;

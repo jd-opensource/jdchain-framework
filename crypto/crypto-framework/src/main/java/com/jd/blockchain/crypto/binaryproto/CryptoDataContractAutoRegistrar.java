@@ -1,7 +1,7 @@
 package com.jd.blockchain.crypto.binaryproto;
 
-import com.jd.blockchain.binaryproto.DataContractAutoRegistrar;
-import com.jd.blockchain.binaryproto.DataContractRegistry;
+import com.jd.binaryproto.DataContractAutoRegistrar;
+import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.crypto.CryptoAlgorithm;
 
 public class CryptoDataContractAutoRegistrar implements DataContractAutoRegistrar{

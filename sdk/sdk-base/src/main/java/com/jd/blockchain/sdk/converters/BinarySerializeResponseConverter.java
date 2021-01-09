@@ -8,7 +8,7 @@
  */
 package com.jd.blockchain.sdk.converters;
 
-import com.jd.blockchain.binaryproto.BinaryProtocol;
+import com.jd.binaryproto.BinaryProtocol;
 import com.jd.blockchain.transaction.TxResponseMessage;
 import com.jd.blockchain.utils.http.HttpServiceContext;
 import com.jd.blockchain.utils.http.ResponseConverter;

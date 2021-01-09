@@ -2,7 +2,7 @@ package com.jd.blockchain.web.serializes;
 
 import com.alibaba.fastjson.serializer.ObjectSerializer;
 import com.alibaba.fastjson.serializer.SerializeConfig;
-import com.jd.blockchain.binaryproto.impl.DataContractProxy;
+import com.jd.binaryproto.impl.DataContractProxy;
 
 public class DataContractAdaptableSerializeConfig extends SerializeConfig {
 

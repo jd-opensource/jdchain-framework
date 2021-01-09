@@ -1,6 +1,6 @@
 package com.jd.blockchain.sdk.service;
 
-import com.jd.blockchain.binaryproto.BinaryProtocol;
+import com.jd.binaryproto.BinaryProtocol;
 import com.jd.blockchain.consensus.BinaryMessageConverter;
 import com.jd.blockchain.ledger.TransactionRequest;
 

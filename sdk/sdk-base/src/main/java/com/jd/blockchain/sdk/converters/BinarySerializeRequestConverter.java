@@ -8,7 +8,7 @@
  */
 package com.jd.blockchain.sdk.converters;
 
-import com.jd.blockchain.binaryproto.BinaryProtocol;
+import com.jd.binaryproto.BinaryProtocol;
 import com.jd.blockchain.ledger.TransactionRequest;
 import com.jd.blockchain.sdk.GatewayAuthRequest;
 import com.jd.blockchain.transaction.TxRequestMessage;

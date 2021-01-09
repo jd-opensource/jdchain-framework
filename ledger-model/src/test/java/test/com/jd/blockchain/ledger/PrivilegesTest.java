@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.jd.blockchain.binaryproto.BinaryProtocol;
+import com.jd.binaryproto.BinaryProtocol;
 import com.jd.blockchain.ledger.LedgerPermission;
 import com.jd.blockchain.ledger.PrivilegeSet;
 import com.jd.blockchain.ledger.Privileges;

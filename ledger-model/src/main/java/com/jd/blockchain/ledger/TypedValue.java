@@ -3,7 +3,7 @@ package com.jd.blockchain.ledger;
 import java.math.BigInteger;
 import java.util.Date;
 
-import com.jd.blockchain.binaryproto.PrimitiveType;
+import com.jd.binaryproto.PrimitiveType;
 import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.crypto.PubKey;

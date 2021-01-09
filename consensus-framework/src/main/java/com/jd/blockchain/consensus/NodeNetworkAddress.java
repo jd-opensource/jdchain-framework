@@ -1,9 +1,9 @@
 package com.jd.blockchain.consensus;
 
 
-import com.jd.blockchain.binaryproto.DataContract;
-import com.jd.blockchain.binaryproto.DataField;
-import com.jd.blockchain.binaryproto.PrimitiveType;
+import com.jd.binaryproto.DataContract;
+import com.jd.binaryproto.DataField;
+import com.jd.binaryproto.PrimitiveType;
 import com.jd.blockchain.consts.DataCodes;
 
 @DataContract(code = DataCodes.CONSENSUS_NODE_NETWORK_ADDRESS)

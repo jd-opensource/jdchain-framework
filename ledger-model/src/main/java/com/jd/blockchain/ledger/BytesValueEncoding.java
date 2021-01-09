@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.jd.blockchain.binaryproto.BinaryProtocol;
-import com.jd.blockchain.binaryproto.DataContract;
+import com.jd.binaryproto.BinaryProtocol;
+import com.jd.binaryproto.DataContract;
 import com.jd.blockchain.ledger.resolver.BooleanToBytesValueResolver;
 import com.jd.blockchain.ledger.resolver.BytesToBytesValueResolver;
 import com.jd.blockchain.ledger.resolver.BytesValueResolver;
