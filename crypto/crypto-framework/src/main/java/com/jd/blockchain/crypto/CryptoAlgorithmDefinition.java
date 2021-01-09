@@ -16,8 +16,7 @@ public final class CryptoAlgorithmDefinition implements CryptoAlgorithm {
 	 * <p>
 	 * 
 	 * 长度16位，高4位标识算法类型,包括： {@link #RANDOM_ALGORITHM}, {@link #HASH_ALGORITHM},
-	 * {@link #SIGNATURE_ALGORITHM}, {@link #ENCRYPTION_ALGORITHM},
-	 * {@link #EXT_ALGORITHM}) 5 种; <br>
+	 * {@link #SIGNATURE_ALGORITHM}, {@link #ENCRYPTION_ALGORITHM} 4 种; <br>
 	 * 
 	 * 接下来4位标识密钥类型（包括：{@link #SYMMETRIC_KEY}, {@link #ASYMMETRIC_KEY}）； <br>
 	 * 
@@ -107,13 +106,16 @@ public final class CryptoAlgorithmDefinition implements CryptoAlgorithm {
 	/**
 	 * 声明一项扩展的密码算法；
 	 * 
-	 * @param name 算法名称；
-	 * @param uid  算法ID；需要在同类算法中保持唯一性；
+	 * @param name    算法名称；
+	 * @param feature 算法特征；
+	 * @param uid     算法ID；需要在同类算法中保持唯一性；
+	 * @param extId
 	 * @return
 	 */
-	public static CryptoAlgorithm definExt(String name, byte uid) {
-		short code = (short) (EXT_ALGORITHM | (uid & 0x00FF));
-		return new CryptoAlgorithmDefinition(name, code);
+	public static CryptoAlgorithm definExt(String name, byte feature, byte uid, short extId) {
+		throw new IllegalStateException("Not supported!");
+//		short code = (short) (EXT_ALGORITHM | (uid & 0x00FF));
+//		return new CryptoAlgorithmDefinition(name, code);
 	}
 
 }
