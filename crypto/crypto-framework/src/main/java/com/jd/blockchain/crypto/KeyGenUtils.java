@@ -4,13 +4,13 @@ import java.util.Arrays;
 
 import javax.crypto.SecretKey;
 
-import com.jd.blockchain.utils.ConsoleUtils;
-import com.jd.blockchain.utils.codec.Base58Utils;
-import com.jd.blockchain.utils.io.BytesUtils;
-import com.jd.blockchain.utils.io.FileUtils;
-import com.jd.blockchain.utils.security.AESUtils;
-import com.jd.blockchain.utils.security.DecryptionException;
-import com.jd.blockchain.utils.security.ShaUtils;
+import utils.ConsoleUtils;
+import utils.codec.Base58Utils;
+import utils.io.BytesUtils;
+import utils.io.FileUtils;
+import utils.security.AESUtils;
+import utils.security.DecryptionException;
+import utils.security.ShaUtils;
 
 public class KeyGenUtils {
 

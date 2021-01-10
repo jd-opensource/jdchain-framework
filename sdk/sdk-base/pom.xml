@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.jd.blockchain</groupId>
 		<artifactId>sdk</artifactId>
-		<version>1.4.1-SNAPSHOT</version>
+		<version>1.4.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>sdk-base</artifactId>
 
@@ -16,15 +16,13 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>com.jd.blockchain</groupId>
-			<artifactId>utils-http</artifactId>
-			<version>${project.version}</version>
+			<groupId>com.jd.httpservice</groupId>
+			<artifactId>httpservice-agent</artifactId>
 		</dependency>
 		
 		<dependency>
-			<groupId>com.jd.blockchain</groupId>
-			<artifactId>utils-web</artifactId>
-			<version>${project.version}</version>
+			<groupId>com.jd.httpservice</groupId>
+			<artifactId>httpservice-utils</artifactId>
 		</dependency>
 
 		<dependency>
@@ -33,36 +31,35 @@
 			<version>${project.version}</version>
 			<exclusions>
 				<exclusion>
+                    <groupId>com.jd.binaryproto</groupId>
 					<artifactId>binary-proto</artifactId>
-                    <groupId>com.jd.blockchain</groupId>
 				</exclusion>
 				<exclusion>
+					<groupId>com.jd.blockchain</groupId>
 					<artifactId>crypto-framework</artifactId>
-					<groupId>com.jd.blockchain</groupId>
 				</exclusion>
 				<exclusion>
+					<groupId>com.jd.utils</groupId>
 					<artifactId>utils-common</artifactId>
-					<groupId>com.jd.blockchain</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
 
 		<dependency>
-			<groupId>com.jd.blockchain</groupId>
+			<groupId>com.jd.utils</groupId>
 			<artifactId>utils-serialize</artifactId>
-			<version>${project.version}</version>
 			<exclusions>
 				<exclusion>
+					<groupId>com.jd.utils</groupId>
 					<artifactId>utils-common</artifactId>
-					<groupId>com.jd.blockchain</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-		</dependency>
+		</dependency> -->
 	</dependencies>
 
 	<!-- <build> <plugins> <plugin> <groupId>org.springframework.boot</groupId> 

@@ -1,6 +1,6 @@
 package com.jd.blockchain.consensus;
 
-import com.jd.blockchain.utils.concurrent.AsyncFuture;
+import utils.concurrent.AsyncFuture;
 
 public interface MessageService {
 	

@@ -14,7 +14,7 @@ import com.jd.blockchain.ledger.*;
 import com.jd.blockchain.transaction.ConsensusSettingsUpdateOpTemplate;
 import com.jd.blockchain.transaction.ParticipantRegisterOpTemplate;
 import com.jd.blockchain.transaction.ParticipantStateUpdateOpTemplate;
-import com.jd.blockchain.utils.Property;
+
 import org.apache.commons.codec.binary.Base64;
 
 import com.alibaba.fastjson.JSONArray;
@@ -30,10 +30,12 @@ import com.jd.blockchain.transaction.KVData;
 import com.jd.blockchain.transaction.LedgerInitData;
 import com.jd.blockchain.transaction.LedgerInitOpTemplate;
 import com.jd.blockchain.transaction.UserRegisterOpTemplate;
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.codec.Base58Utils;
-import com.jd.blockchain.utils.codec.HexUtils;
-import com.jd.blockchain.utils.io.BytesUtils;
+
+import utils.Bytes;
+import utils.Property;
+import utils.codec.Base58Utils;
+import utils.codec.HexUtils;
+import utils.io.BytesUtils;
 
 /**
  *

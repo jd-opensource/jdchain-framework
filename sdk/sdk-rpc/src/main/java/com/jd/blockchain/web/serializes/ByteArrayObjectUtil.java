@@ -11,11 +11,12 @@ package com.jd.blockchain.web.serializes;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.io.BytesSlice;
-import com.jd.blockchain.utils.serialize.json.JSONSerializeUtils;
 import com.jd.blockchain.web.serializes.json.ConsumerJsonDeserializer;
 import com.jd.blockchain.web.serializes.json.ValueJsonSerializer;
+
+import utils.Bytes;
+import utils.io.BytesSlice;
+import utils.serialize.json.JSONSerializeUtils;
 
 import java.util.Arrays;
 import java.util.List;

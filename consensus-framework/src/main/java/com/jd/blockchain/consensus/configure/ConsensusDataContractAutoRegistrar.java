@@ -1,7 +1,7 @@
 package com.jd.blockchain.consensus.configure;
 
-import com.jd.blockchain.binaryproto.DataContractAutoRegistrar;
-import com.jd.blockchain.binaryproto.DataContractRegistry;
+import com.jd.binaryproto.DataContractAutoRegistrar;
+import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.consensus.ClientCredential;
 import com.jd.blockchain.consensus.ClientIncomingSettings;
 import com.jd.blockchain.consensus.ConsensusViewSettings;

@@ -1,8 +1,8 @@
 package com.jd.blockchain.ledger;
 
-import com.jd.blockchain.binaryproto.EnumContract;
-import com.jd.blockchain.binaryproto.EnumField;
-import com.jd.blockchain.binaryproto.PrimitiveType;
+import com.jd.binaryproto.EnumContract;
+import com.jd.binaryproto.EnumField;
+import com.jd.binaryproto.PrimitiveType;
 import com.jd.blockchain.consts.DataCodes;
 
 /**

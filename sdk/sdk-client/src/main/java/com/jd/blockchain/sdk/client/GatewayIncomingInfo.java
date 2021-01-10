@@ -2,7 +2,7 @@ package com.jd.blockchain.sdk.client;
 
 import java.io.Serializable;
 
-import com.jd.blockchain.utils.net.NetworkAddress;
+import utils.net.NetworkAddress;
 
 /**
  * 网关接入信息；

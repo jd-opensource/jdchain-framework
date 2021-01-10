@@ -15,13 +15,14 @@ import com.jd.blockchain.setting.GatewayAuthResponse;
 import com.jd.blockchain.setting.LedgerIncomingSettings;
 import com.jd.blockchain.transaction.BlockchainQueryService;
 import com.jd.blockchain.transaction.TransactionService;
-import com.jd.blockchain.utils.http.agent.HttpServiceAgent;
-import com.jd.blockchain.utils.http.agent.ServiceConnection;
-import com.jd.blockchain.utils.http.agent.ServiceConnectionManager;
-import com.jd.blockchain.utils.http.agent.ServiceEndpoint;
-import com.jd.blockchain.utils.io.ByteArray;
-import com.jd.blockchain.utils.net.NetworkAddress;
-import com.jd.blockchain.utils.security.AuthenticationException;
+import com.jd.httpservice.agent.HttpServiceAgent;
+import com.jd.httpservice.agent.ServiceConnection;
+import com.jd.httpservice.agent.ServiceConnectionManager;
+import com.jd.httpservice.agent.ServiceEndpoint;
+
+import utils.io.ByteArray;
+import utils.net.NetworkAddress;
+import utils.security.AuthenticationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

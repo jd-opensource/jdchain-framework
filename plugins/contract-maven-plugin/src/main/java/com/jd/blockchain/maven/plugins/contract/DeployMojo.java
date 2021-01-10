@@ -5,8 +5,10 @@ import com.jd.blockchain.crypto.*;
 import com.jd.blockchain.ledger.*;
 import com.jd.blockchain.sdk.BlockchainService;
 import com.jd.blockchain.sdk.client.GatewayServiceFactory;
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.codec.Base58Utils;
+
+import utils.Bytes;
+import utils.codec.Base58Utils;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;

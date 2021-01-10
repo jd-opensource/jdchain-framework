@@ -1,6 +1,6 @@
 package com.jd.blockchain.consensus.manage;
 
-import com.jd.blockchain.utils.net.NetworkAddress;
+import utils.net.NetworkAddress;
 
 public interface ConsensusView {
 

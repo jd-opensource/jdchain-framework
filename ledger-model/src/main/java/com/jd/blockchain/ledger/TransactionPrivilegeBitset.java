@@ -1,9 +1,9 @@
 package com.jd.blockchain.ledger;
 
-import com.jd.blockchain.utils.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import utils.StringUtils;
 
 public class TransactionPrivilegeBitset extends PrivilegeBitset<TransactionPermission> implements TransactionPrivilege {
 

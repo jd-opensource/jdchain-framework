@@ -15,8 +15,9 @@ import com.jd.blockchain.ledger.RolesConfigureOperation;
 import com.jd.blockchain.ledger.UserAuthorizeOperation;
 import com.jd.blockchain.ledger.UserInfoSetOperation;
 import com.jd.blockchain.ledger.UserRegisterOperation;
-import com.jd.blockchain.utils.serialize.json.JSONAutoConfigure;
-import com.jd.blockchain.utils.serialize.json.JSONConfigurator;
+
+import utils.serialize.json.JSONAutoConfigure;
+import utils.serialize.json.JSONConfigurator;
 
 public class LedgerModelJSONConfigure implements JSONAutoConfigure {
 

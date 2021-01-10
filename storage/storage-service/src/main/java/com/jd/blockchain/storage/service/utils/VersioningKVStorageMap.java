@@ -6,9 +6,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.jd.blockchain.storage.service.VersioningKVStorage;
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.DataEntry;
-import com.jd.blockchain.utils.io.BytesMap;
+
+import utils.Bytes;
+import utils.DataEntry;
+import utils.io.BytesMap;
 
 public class VersioningKVStorageMap implements VersioningKVStorage, BytesMap<Bytes> {
 	

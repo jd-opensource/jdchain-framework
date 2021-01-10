@@ -9,8 +9,8 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jd.blockchain.binaryproto.BinaryProtocol;
-import com.jd.blockchain.binaryproto.DataContractRegistry;
+import com.jd.binaryproto.BinaryProtocol;
+import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.BlockchainKeyGenerator;

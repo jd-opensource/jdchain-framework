@@ -1,6 +1,5 @@
 package com.jd.blockchain.sdk.service.event;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.sdk.EventListenerHandle;
 import com.jd.blockchain.sdk.EventPoint;
@@ -14,6 +13,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 抽象事件监听处理器
@@ -121,8 +121,13 @@ public abstract class AbstractEventListenerHandle<E extends EventPoint> implemen
      * @return
      */
     protected ScheduledThreadPoolExecutor scheduledThreadPoolExecutor() {
-        ThreadFactory threadFactory = new ThreadFactoryBuilder()
-                .setNameFormat("event-pull-%d").build();
+        ThreadFactory threadFactory = new ThreadFactory() {
+			private AtomicInteger count = new AtomicInteger();
+			@Override
+			public Thread newThread(Runnable r) {
+				return new Thread(r, String.format("event-pull-%d", count.getAndIncrement()));
+			}
+		};
         return new ScheduledThreadPoolExecutor(THREAD_CORE,
                 threadFactory,
                 new ThreadPoolExecutor.AbortPolicy());

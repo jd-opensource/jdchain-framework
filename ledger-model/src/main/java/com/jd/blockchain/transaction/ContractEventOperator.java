@@ -1,6 +1,6 @@
 package com.jd.blockchain.transaction;
 
-import com.jd.blockchain.utils.Bytes;
+import utils.Bytes;
 
 /**
  * 合约调用操作

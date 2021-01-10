@@ -6,7 +6,9 @@ import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.crypto.HashFunction;
 import com.jd.blockchain.crypto.service.classic.ClassicAlgorithm;
-import com.jd.blockchain.utils.io.BytesUtils;
+
+import utils.io.BytesUtils;
+
 import org.junit.Test;
 
 import java.util.Random;

@@ -1,9 +1,9 @@
 package com.jd.blockchain.ledger;
 
-import com.jd.blockchain.utils.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import utils.StringUtils;
 
 /**
  * LedgerPrivilege 账本特权是授权给特定角色的权限代码序列；

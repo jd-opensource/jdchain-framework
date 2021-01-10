@@ -1,8 +1,9 @@
 package com.jd.blockchain.transaction;
 
-import com.jd.blockchain.binaryproto.DataContractRegistry;
+import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.ledger.ConsensusSettingsUpdateOperation;
-import com.jd.blockchain.utils.Property;
+
+import utils.Property;
 
 /**
  * @Author: zhangshuang

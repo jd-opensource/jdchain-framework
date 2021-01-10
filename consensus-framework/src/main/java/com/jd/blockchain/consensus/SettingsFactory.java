@@ -1,6 +1,6 @@
 package com.jd.blockchain.consensus;
 
-import com.jd.blockchain.utils.io.BytesEncoder;
+import utils.io.BytesEncoder;
 
 /**
  * 配置参数的编码器；

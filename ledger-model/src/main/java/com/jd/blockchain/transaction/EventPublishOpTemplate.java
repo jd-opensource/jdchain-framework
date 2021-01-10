@@ -1,9 +1,10 @@
 package com.jd.blockchain.transaction;
 
-import com.jd.blockchain.binaryproto.DataContractRegistry;
+import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.ledger.BytesValue;
 import com.jd.blockchain.ledger.EventPublishOperation;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

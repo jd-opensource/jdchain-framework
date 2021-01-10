@@ -6,8 +6,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.jd.blockchain.storage.service.ExPolicy;
 import com.jd.blockchain.storage.service.ExPolicyKVStorage;
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.io.BytesMap;
+
+import utils.Bytes;
+import utils.io.BytesMap;
 
 /**
  * 基于内存的 {@link ExPolicyKVStorage} 实现；

@@ -3,13 +3,14 @@ package com.jd.blockchain.ledger;
 import java.math.BigInteger;
 import java.util.Date;
 
-import com.jd.blockchain.binaryproto.PrimitiveType;
+import com.jd.binaryproto.PrimitiveType;
 import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.io.BytesUtils;
+
+import utils.Bytes;
+import utils.io.BytesUtils;
 
 /**
  * 类型化的值对象；

@@ -1,7 +1,8 @@
 package com.jd.blockchain.consensus.service;
 
 import com.jd.blockchain.consensus.ClientAuthencationService;
-import com.jd.blockchain.utils.concurrent.AsyncFuture;
+
+import utils.concurrent.AsyncFuture;
 
 /**
  * 共识节点服务器；

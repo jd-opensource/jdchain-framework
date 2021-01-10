@@ -1,7 +1,9 @@
 package test.com.jd.blockchain.ledger;
 
 import com.jd.blockchain.ledger.*;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
+
 import static org.junit.Assert.*;
 import org.junit.Test;
 

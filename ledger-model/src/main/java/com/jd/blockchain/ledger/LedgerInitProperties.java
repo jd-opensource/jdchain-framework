@@ -17,12 +17,13 @@ import com.jd.blockchain.consts.Global;
 import com.jd.blockchain.crypto.AddressEncoding;
 import com.jd.blockchain.crypto.KeyGenUtils;
 import com.jd.blockchain.crypto.PubKey;
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.PropertiesUtils;
-import com.jd.blockchain.utils.StringUtils;
-import com.jd.blockchain.utils.codec.HexUtils;
-import com.jd.blockchain.utils.io.FileUtils;
-import com.jd.blockchain.utils.net.NetworkAddress;
+
+import utils.Bytes;
+import utils.PropertiesUtils;
+import utils.StringUtils;
+import utils.codec.HexUtils;
+import utils.io.FileUtils;
+import utils.net.NetworkAddress;
 
 public class LedgerInitProperties implements Serializable {
 

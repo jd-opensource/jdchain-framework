@@ -9,8 +9,8 @@
 package com.jd.blockchain.sdk.converters;
 
 import com.jd.blockchain.crypto.HashDigest;
-import com.jd.blockchain.utils.http.RequestBodyConverter;
-import com.jd.blockchain.utils.http.StringConverter;
+import com.jd.httpservice.RequestBodyConverter;
+import com.jd.httpservice.StringConverter;
 
 import java.io.IOException;
 import java.io.OutputStream;

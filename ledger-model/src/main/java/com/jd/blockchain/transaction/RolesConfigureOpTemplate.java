@@ -7,13 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.jd.blockchain.binaryproto.DataContractRegistry;
+import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.ledger.LedgerPermission;
 import com.jd.blockchain.ledger.RolesConfigureOperation;
 import com.jd.blockchain.ledger.SecurityUtils;
 import com.jd.blockchain.ledger.TransactionPermission;
 import com.jd.blockchain.ledger.UserRegisterOperation;
-import com.jd.blockchain.utils.ArrayUtils;
+
+import utils.ArrayUtils;
 
 public class RolesConfigureOpTemplate implements RolesConfigurer, RolesConfigureOperation {
 

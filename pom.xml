@@ -10,14 +10,15 @@
 	</parent>
 
 	<artifactId>jdchain-framework</artifactId>
-	<version>1.4.1-SNAPSHOT</version>
+	<version>1.4.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<description>Root project of jdchain framewrok.</description>
 
 	<modules>
-		<module>utils</module>
+		<module>../libs/utils</module>
+		<module>../libs/binary-proto/binary-proto-java</module>
+		<module>../libs/httpservice</module>
 		<module>base</module>
-		<module>binary-proto</module>
 		<module>crypto</module>
 		<module>ledger-model</module>
 		<module>contract</module>
@@ -26,6 +27,42 @@
 		<module>storage</module>
 		<module>sdk</module>
 	</modules>
+
+	<properties>
+		<utils.version>2.0.0.RELEASE</utils.version>
+		<httpservice.version>2.0.0.RELEASE</httpservice.version>
+		<binaryproto.version>1.5.0.RELEASE</binaryproto.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.jd.utils</groupId>
+				<artifactId>utils-common</artifactId>
+				<version>${utils.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.jd.utils</groupId>
+				<artifactId>utils-serialize</artifactId>
+				<version>${utils.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.jd.binaryproto</groupId>
+				<artifactId>binary-proto</artifactId>
+				<version>${binaryproto.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.jd.httpservice</groupId>
+				<artifactId>httpservice-agent</artifactId>
+				<version>${httpservice.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.jd.httpservice</groupId>
+				<artifactId>httpservice-utils</artifactId>
+				<version>${httpservice.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 
 	<licenses>

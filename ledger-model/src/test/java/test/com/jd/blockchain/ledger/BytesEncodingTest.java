@@ -9,7 +9,7 @@ import java.io.ByteArrayOutputStream;
 
 import org.junit.Test;
 
-import com.jd.blockchain.utils.io.NumberMask;
+import utils.io.NumberMask;
 
 public class BytesEncodingTest {
 

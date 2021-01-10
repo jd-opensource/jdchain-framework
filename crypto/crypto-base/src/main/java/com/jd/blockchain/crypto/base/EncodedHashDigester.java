@@ -2,7 +2,8 @@ package com.jd.blockchain.crypto.base;
 
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.crypto.HashDigester;
-import com.jd.blockchain.utils.security.Hasher;
+
+import utils.security.Hasher;
 
 public abstract class EncodedHashDigester implements HashDigester {
 

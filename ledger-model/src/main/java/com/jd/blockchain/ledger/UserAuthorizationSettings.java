@@ -1,6 +1,6 @@
 package com.jd.blockchain.ledger;
 
-import com.jd.blockchain.utils.Bytes;
+import utils.Bytes;
 
 /**
  * 用户授权配置；

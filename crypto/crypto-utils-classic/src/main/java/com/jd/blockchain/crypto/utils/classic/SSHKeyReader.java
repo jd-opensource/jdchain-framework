@@ -1,6 +1,6 @@
 package com.jd.blockchain.crypto.utils.classic;
 
-import com.jd.blockchain.utils.security.SpecificationException;
+import utils.security.SpecificationException;
 
 /**
  * @author zhanglin33

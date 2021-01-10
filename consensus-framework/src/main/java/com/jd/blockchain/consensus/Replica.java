@@ -1,7 +1,8 @@
 package com.jd.blockchain.consensus;
 
 import com.jd.blockchain.crypto.PubKey;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 public interface Replica {
 

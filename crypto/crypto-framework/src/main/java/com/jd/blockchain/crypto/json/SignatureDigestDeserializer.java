@@ -7,7 +7,8 @@ import com.alibaba.fastjson.parser.JSONToken;
 import com.alibaba.fastjson.parser.deserializer.ObjectDeserializer;
 import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.SignatureDigest;
-import com.jd.blockchain.utils.codec.Base58Utils;
+
+import utils.codec.Base58Utils;
 
 public class SignatureDigestDeserializer implements ObjectDeserializer{
 	

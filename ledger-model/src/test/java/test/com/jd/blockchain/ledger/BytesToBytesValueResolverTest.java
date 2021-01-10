@@ -3,8 +3,10 @@ package test.com.jd.blockchain.ledger;
 import com.jd.blockchain.ledger.BytesValue;
 import com.jd.blockchain.ledger.DataType;
 import com.jd.blockchain.ledger.resolver.BytesToBytesValueResolver;
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.io.BytesUtils;
+
+import utils.Bytes;
+import utils.io.BytesUtils;
+
 import static org.junit.Assert.*;
 import org.junit.Test;
 

@@ -1,8 +1,9 @@
 package test.com.jd.blockchain.crypto.utils.classic;
 
 import com.jd.blockchain.crypto.utils.classic.SHA256Utils;
-import com.jd.blockchain.utils.io.BytesUtils;
-import com.jd.blockchain.utils.security.ShaUtils;
+
+import utils.io.BytesUtils;
+import utils.security.ShaUtils;
 
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;

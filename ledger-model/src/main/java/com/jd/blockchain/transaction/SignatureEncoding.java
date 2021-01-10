@@ -2,7 +2,7 @@ package com.jd.blockchain.transaction;
 
 import org.springframework.util.Base64Utils;
 
-import com.jd.blockchain.binaryproto.BinaryProtocol;
+import com.jd.binaryproto.BinaryProtocol;
 import com.jd.blockchain.ledger.DigitalSignature;
 
 public class SignatureEncoding {

@@ -2,7 +2,7 @@ package com.jd.blockchain.crypto.utils.classic;
 
 import org.bouncycastle.crypto.digests.RIPEMD160Digest;
 
-import com.jd.blockchain.utils.security.Hasher;
+import utils.security.Hasher;
 
 /**
  * @author zhanglin33

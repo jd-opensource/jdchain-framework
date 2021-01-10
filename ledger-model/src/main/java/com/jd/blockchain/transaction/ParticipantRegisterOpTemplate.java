@@ -1,10 +1,11 @@
 package com.jd.blockchain.transaction;
 
-import com.jd.blockchain.binaryproto.DataContractRegistry;
+import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.ParticipantRegisterOperation;
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.net.NetworkAddress;
+
+import utils.Bytes;
+import utils.net.NetworkAddress;
 
 public class ParticipantRegisterOpTemplate implements ParticipantRegisterOperation {
 

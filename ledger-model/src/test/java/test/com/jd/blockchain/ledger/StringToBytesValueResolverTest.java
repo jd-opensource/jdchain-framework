@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.jd.blockchain.ledger.BytesValue;
 import com.jd.blockchain.ledger.DataType;
 import com.jd.blockchain.ledger.resolver.StringToBytesValueResolver;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
+import utils.io.BytesUtils;
+
 import static org.junit.Assert.*;
 
-import com.jd.blockchain.utils.io.BytesUtils;
 import org.junit.Test;
 
 public class StringToBytesValueResolverTest {

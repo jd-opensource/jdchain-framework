@@ -8,12 +8,13 @@
  */
 package com.jd.blockchain.sdk.converters;
 
-import com.jd.blockchain.binaryproto.BinaryProtocol;
+import com.jd.binaryproto.BinaryProtocol;
 import com.jd.blockchain.transaction.TxResponseMessage;
-import com.jd.blockchain.utils.http.HttpServiceContext;
-import com.jd.blockchain.utils.http.ResponseConverter;
-import com.jd.blockchain.utils.http.agent.ServiceRequest;
-import com.jd.blockchain.utils.io.BytesUtils;
+import com.jd.httpservice.HttpServiceContext;
+import com.jd.httpservice.ResponseConverter;
+import com.jd.httpservice.agent.ServiceRequest;
+
+import utils.io.BytesUtils;
 
 import java.io.InputStream;
 

@@ -2,8 +2,8 @@ package com.jd.blockchain.ledger;
 
 import java.util.BitSet;
 
-import com.jd.blockchain.utils.Int8Code;
-import com.jd.blockchain.utils.io.BytesSerializable;
+import utils.Int8Code;
+import utils.io.BytesSerializable;
 
 /**
  * PrivilegeBitset 定义了用位表示的权限码；

@@ -2,7 +2,8 @@ package com.jd.blockchain.contract.engine;
 
 import com.jd.blockchain.contract.ContractEventContext;
 import com.jd.blockchain.ledger.BytesValue;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 /**
  * 合约代码

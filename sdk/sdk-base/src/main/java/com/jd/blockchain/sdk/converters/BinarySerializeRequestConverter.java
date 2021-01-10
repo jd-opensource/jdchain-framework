@@ -8,11 +8,11 @@
  */
 package com.jd.blockchain.sdk.converters;
 
-import com.jd.blockchain.binaryproto.BinaryProtocol;
+import com.jd.binaryproto.BinaryProtocol;
 import com.jd.blockchain.ledger.TransactionRequest;
 import com.jd.blockchain.sdk.GatewayAuthRequest;
 import com.jd.blockchain.transaction.TxRequestMessage;
-import com.jd.blockchain.utils.http.RequestBodyConverter;
+import com.jd.httpservice.RequestBodyConverter;
 
 import java.io.IOException;
 import java.io.OutputStream;

@@ -1,7 +1,7 @@
 package com.jd.blockchain.storage.service;
 
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.DataEntry;
+import utils.Bytes;
+import utils.DataEntry;
 
 /**
  * Versioning Key-Value Storage

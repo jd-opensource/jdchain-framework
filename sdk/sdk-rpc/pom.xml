@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.jd.blockchain</groupId>
 		<artifactId>sdk</artifactId>
-		<version>1.4.1-SNAPSHOT</version>
+		<version>1.4.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>sdk-rpc</artifactId>
 
@@ -21,14 +21,12 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.jd.blockchain</groupId>
+			<groupId>com.jd.binaryproto</groupId>
 			<artifactId>binary-proto</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.jd.blockchain</groupId>
+			<groupId>com.jd.utils</groupId>
 			<artifactId>utils-common</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>

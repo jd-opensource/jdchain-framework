@@ -5,7 +5,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.jd.blockchain.contract.ContractType;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 /**
  * 合约调用代理的构建器；

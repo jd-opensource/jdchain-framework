@@ -3,7 +3,9 @@ package com.jd.blockchain.contract;
 import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.crypto.HashFunction;
-import com.jd.blockchain.utils.io.BytesUtils;
+
+import utils.io.BytesUtils;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 

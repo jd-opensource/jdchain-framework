@@ -1,7 +1,8 @@
 package com.jd.blockchain.ledger;
 
 import com.jd.blockchain.crypto.PubKey;
-import com.jd.blockchain.utils.net.NetworkAddress;
+
+import utils.net.NetworkAddress;
 
 public class ParticipantStateUpdateInfoData implements ParticipantStateUpdateInfo {
     private PubKey pubKey;

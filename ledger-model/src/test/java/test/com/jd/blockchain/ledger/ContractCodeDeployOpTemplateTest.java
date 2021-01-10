@@ -15,8 +15,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jd.blockchain.binaryproto.BinaryProtocol;
-import com.jd.blockchain.binaryproto.DataContractRegistry;
+import com.jd.binaryproto.BinaryProtocol;
+import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureFunction;
@@ -25,7 +25,8 @@ import com.jd.blockchain.ledger.BlockchainIdentityData;
 import com.jd.blockchain.ledger.ContractCodeDeployOperation;
 import com.jd.blockchain.ledger.Operation;
 import com.jd.blockchain.transaction.ContractCodeDeployOpTemplate;
-import com.jd.blockchain.utils.io.BytesUtils;
+
+import utils.io.BytesUtils;
 
 /**
  *

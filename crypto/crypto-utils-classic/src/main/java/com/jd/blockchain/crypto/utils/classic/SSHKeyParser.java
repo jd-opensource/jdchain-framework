@@ -23,8 +23,8 @@ import org.bouncycastle.util.Strings;
 import org.bouncycastle.util.encoders.Base64;
 import org.bouncycastle.util.io.pem.PemReader;
 
-import com.jd.blockchain.utils.io.RuntimeIOException;
-import com.jd.blockchain.utils.security.SpecificationException;
+import utils.io.RuntimeIOException;
+import utils.security.SpecificationException;
 
 /**
  * @author zhanglin33

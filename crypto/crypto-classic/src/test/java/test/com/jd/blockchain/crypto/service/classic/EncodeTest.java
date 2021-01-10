@@ -1,9 +1,10 @@
 package test.com.jd.blockchain.crypto.service.classic;
 
-import com.jd.blockchain.utils.Bytes;
-import com.jd.blockchain.utils.codec.HexUtils;
 import org.junit.Assert;
 import org.junit.Test;
+
+import utils.Bytes;
+import utils.codec.HexUtils;
 
 public class EncodeTest {
 

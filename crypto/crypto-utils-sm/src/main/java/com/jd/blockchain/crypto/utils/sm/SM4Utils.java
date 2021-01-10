@@ -11,8 +11,8 @@ import org.bouncycastle.crypto.paddings.PKCS7Padding;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 
-import com.jd.blockchain.utils.security.DecryptionException;
-import com.jd.blockchain.utils.security.EncryptionException;
+import utils.security.DecryptionException;
+import utils.security.EncryptionException;
 
 public class SM4Utils {
 

@@ -1,6 +1,6 @@
 package com.jd.blockchain.ledger;
 
-import com.jd.blockchain.utils.SkippingIterator;
+import utils.SkippingIterator;
 
 /**
  * 角色权限配置；

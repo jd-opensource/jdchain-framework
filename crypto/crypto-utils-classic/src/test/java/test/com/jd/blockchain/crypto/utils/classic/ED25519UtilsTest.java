@@ -1,9 +1,10 @@
 package test.com.jd.blockchain.crypto.utils.classic;
 
 import com.jd.blockchain.crypto.utils.classic.ED25519Utils;
-import com.jd.blockchain.utils.io.BytesUtils;
-import com.jd.blockchain.utils.security.Ed25519Utils;
-import com.jd.blockchain.utils.security.RandomUtils;
+
+import utils.io.BytesUtils;
+import utils.security.Ed25519Utils;
+import utils.security.RandomUtils;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;

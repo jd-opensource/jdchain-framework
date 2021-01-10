@@ -4,7 +4,8 @@ import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.ConsensusSettingsUpdateOperation;
 import com.jd.blockchain.ledger.ParticipantNodeState;
 import com.jd.blockchain.ledger.ParticipantStateUpdateOperation;
-import com.jd.blockchain.utils.Property;
+
+import utils.Property;
 
 /**
  * @Author: zhangshuang

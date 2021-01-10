@@ -3,11 +3,12 @@ package test.com.jd.blockchain.crypto.utils;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import com.jd.blockchain.utils.io.BytesUtils;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 
 import com.jd.blockchain.crypto.utils.sm.SM3Utils;
+
+import utils.io.BytesUtils;
 
 public class SM3UtilsTest {
 

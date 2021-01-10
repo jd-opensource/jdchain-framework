@@ -2,15 +2,16 @@ package com.jd.blockchain.transaction;
 
 import java.util.Collection;
 
-import com.jd.blockchain.binaryproto.BinaryProtocol;
-import com.jd.blockchain.binaryproto.DataContractRegistry;
+import com.jd.binaryproto.BinaryProtocol;
+import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.CryptoAlgorithm;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.TransactionBuilder;
 import com.jd.blockchain.ledger.TransactionContent;
 import com.jd.blockchain.ledger.TransactionRequestBuilder;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 public class TxBuilder implements TransactionBuilder {
 

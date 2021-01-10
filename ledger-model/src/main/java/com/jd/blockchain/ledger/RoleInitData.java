@@ -2,7 +2,7 @@ package com.jd.blockchain.ledger;
 
 import java.io.Serializable;
 
-import com.jd.blockchain.binaryproto.DataContractRegistry;
+import com.jd.binaryproto.DataContractRegistry;
 
 public class RoleInitData implements RoleInitSettings, Serializable {
 

@@ -3,8 +3,9 @@ package com.jd.blockchain.ledger;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.jd.blockchain.binaryproto.DataContractRegistry;
-import com.jd.blockchain.utils.Bytes;
+import com.jd.binaryproto.DataContractRegistry;
+
+import utils.Bytes;
 
 public class SecurityInitData implements SecurityInitSettings {
 

@@ -2,7 +2,8 @@ package com.jd.blockchain.ledger.resolver;
 
 import com.jd.blockchain.ledger.BytesValue;
 import com.jd.blockchain.ledger.DataType;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 public abstract class AbstractBytesValueResolver implements BytesValueResolver {
 

@@ -7,7 +7,8 @@ import java.util.List;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.Operation;
 import com.jd.blockchain.ledger.TransactionContent;
-import com.jd.blockchain.utils.io.NumberMask;
+
+import utils.io.NumberMask;
 
 /**
  * 交易内容的数据块；

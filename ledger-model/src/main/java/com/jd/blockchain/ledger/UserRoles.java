@@ -5,8 +5,9 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.jd.blockchain.binaryproto.DataContractRegistry;
-import com.jd.blockchain.utils.Bytes;
+import com.jd.binaryproto.DataContractRegistry;
+
+import utils.Bytes;
 
 public class UserRoles implements RoleSet {
 

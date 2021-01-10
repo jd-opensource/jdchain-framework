@@ -3,7 +3,8 @@ package com.jd.blockchain.transaction;
 import com.jd.blockchain.ledger.BytesValue;
 import com.jd.blockchain.ledger.EventPublishOperation;
 import com.jd.blockchain.ledger.TypedValue;
-import com.jd.blockchain.utils.Bytes;
+
+import utils.Bytes;
 
 public class EventPublishOperationBuilderImpl implements EventPublishOperationBuilder {
 
