@@ -48,7 +48,6 @@
 		<dependency>
 			<groupId>com.jd.blockchain</groupId>
 			<artifactId>utils-serialize</artifactId>
-			<version>${project.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>utils-common</artifactId>
@@ -57,10 +56,10 @@
 			</exclusions>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-		</dependency>
+		</dependency> -->
 	</dependencies>
 
 	<!-- <build> <plugins> <plugin> <groupId>org.springframework.boot</groupId> 
