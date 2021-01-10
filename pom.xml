@@ -30,7 +30,7 @@
 
 	<properties>
 		<binaryproto.version>1.4.1.RELEASE</binaryproto.version>
-		<httpservice.version>1.4.1.RELEASE</httpservice.version>
+		<httpservice.version>2.0.0.RELEASE</httpservice.version>
 	</properties>
 
 	<dependencyManagement>
