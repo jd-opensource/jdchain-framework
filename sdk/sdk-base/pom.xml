@@ -31,27 +31,27 @@
 			<version>${project.version}</version>
 			<exclusions>
 				<exclusion>
-					<artifactId>binary-proto</artifactId>
                     <groupId>com.jd.blockchain</groupId>
+					<artifactId>binary-proto</artifactId>
 				</exclusion>
 				<exclusion>
+					<groupId>com.jd.blockchain</groupId>
 					<artifactId>crypto-framework</artifactId>
-					<groupId>com.jd.blockchain</groupId>
 				</exclusion>
 				<exclusion>
+					<groupId>com.jd.utils</groupId>
 					<artifactId>utils-common</artifactId>
-					<groupId>com.jd.blockchain</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
 
 		<dependency>
-			<groupId>com.jd.blockchain</groupId>
+			<groupId>com.jd.utils</groupId>
 			<artifactId>utils-serialize</artifactId>
 			<exclusions>
 				<exclusion>
+					<groupId>com.jd.utils</groupId>
 					<artifactId>utils-common</artifactId>
-					<groupId>com.jd.blockchain</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
