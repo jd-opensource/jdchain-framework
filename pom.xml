@@ -43,6 +43,21 @@
 			</dependency>
 			<dependency>
 				<groupId>com.jd.utils</groupId>
+				<artifactId>utils-crypto-base</artifactId>
+				<version>${utils.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.jd.utils</groupId>
+				<artifactId>utils-crypto-classic</artifactId>
+				<version>${utils.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.jd.utils</groupId>
+				<artifactId>utils-crypto-sm</artifactId>
+				<version>${utils.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.jd.utils</groupId>
 				<artifactId>utils-serialize</artifactId>
 				<version>${utils.version}</version>
 			</dependency>

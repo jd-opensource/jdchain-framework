@@ -16,9 +16,8 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.jd.blockchain</groupId>
-			<artifactId>crypto-utils-sm</artifactId>
-			<version>${project.version}</version>
+			<groupId>com.jd.utils</groupId>
+			<artifactId>utils-crypto-sm</artifactId>
 		</dependency>
 
 	</dependencies>
