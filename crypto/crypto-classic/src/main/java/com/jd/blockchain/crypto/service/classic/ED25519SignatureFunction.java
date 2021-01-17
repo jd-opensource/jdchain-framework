@@ -21,6 +21,7 @@ import com.jd.blockchain.crypto.SignatureFunction;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 
 import utils.crypto.classic.ED25519Utils;
+import utils.crypto.classic.SHA256SecureRandom;
 
 public class ED25519SignatureFunction implements SignatureFunction {
 

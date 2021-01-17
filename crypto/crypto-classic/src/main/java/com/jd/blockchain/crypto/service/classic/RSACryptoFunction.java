@@ -23,6 +23,7 @@ import com.jd.blockchain.crypto.SignatureFunction;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 
 import utils.crypto.classic.RSAUtils;
+import utils.crypto.classic.SHA256SecureRandom;
 
 /**
  * @author zhanglin33

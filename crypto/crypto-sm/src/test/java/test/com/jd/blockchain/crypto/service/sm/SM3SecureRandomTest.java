@@ -8,8 +8,7 @@ import java.security.SecureRandom;
 
 import org.junit.Test;
 
-import com.jd.blockchain.crypto.service.sm.SM3SecureRandom;
-
+import utils.crypto.sm.SM3SecureRandom;
 import utils.io.BytesUtils;
 
 public class SM3SecureRandomTest {

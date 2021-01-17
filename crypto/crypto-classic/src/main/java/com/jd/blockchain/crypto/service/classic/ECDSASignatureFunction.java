@@ -21,6 +21,7 @@ import com.jd.blockchain.crypto.SignatureFunction;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 
 import utils.crypto.classic.ECDSAUtils;
+import utils.crypto.classic.SHA256SecureRandom;
 
 public class ECDSASignatureFunction implements SignatureFunction {
 

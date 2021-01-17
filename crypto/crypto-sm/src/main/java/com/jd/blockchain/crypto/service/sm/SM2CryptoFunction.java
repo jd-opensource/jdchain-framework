@@ -23,6 +23,7 @@ import com.jd.blockchain.crypto.SignatureFunction;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 
 import utils.crypto.sm.SM2Utils;
+import utils.crypto.sm.SM3SecureRandom;
 
 public class SM2CryptoFunction implements AsymmetricEncryptionFunction, SignatureFunction {
 
