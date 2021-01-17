@@ -14,7 +14,8 @@ import com.jd.blockchain.crypto.SymmetricCiphertext;
 import com.jd.blockchain.crypto.SymmetricEncryptionFunction;
 import com.jd.blockchain.crypto.SymmetricKey;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
-import com.jd.blockchain.crypto.utils.sm.SM4Utils;
+
+import utils.crypto.sm.SM4Utils;
 
 public class SM4EncryptionFunction implements SymmetricEncryptionFunction {
 

@@ -10,8 +10,8 @@ import com.jd.blockchain.crypto.HashDigester;
 import com.jd.blockchain.crypto.HashFunction;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 import com.jd.blockchain.crypto.base.EncodedHashDigester;
-import com.jd.blockchain.crypto.utils.classic.RIPEMD160Utils;
 
+import utils.crypto.classic.RIPEMD160Utils;
 import utils.security.Hasher;
 
 public class RIPEMD160HashFunction implements HashFunction {

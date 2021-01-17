@@ -25,8 +25,8 @@ import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.crypto.SignatureFunction;
 import com.jd.blockchain.crypto.service.classic.ClassicAlgorithm;
 import com.jd.blockchain.crypto.service.classic.ED25519SignatureFunction;
-import com.jd.blockchain.crypto.utils.classic.ED25519Utils;
 
+import utils.crypto.classic.ED25519Utils;
 import utils.io.BytesUtils;
 import utils.security.RandomUtils;
 

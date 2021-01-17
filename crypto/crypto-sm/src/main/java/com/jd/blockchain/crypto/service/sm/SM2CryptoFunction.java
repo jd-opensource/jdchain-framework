@@ -21,7 +21,8 @@ import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.crypto.SignatureFunction;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
-import com.jd.blockchain.crypto.utils.sm.SM2Utils;
+
+import utils.crypto.sm.SM2Utils;
 
 public class SM2CryptoFunction implements AsymmetricEncryptionFunction, SignatureFunction {
 

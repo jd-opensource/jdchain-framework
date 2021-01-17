@@ -23,8 +23,8 @@ import com.jd.blockchain.crypto.SymmetricCiphertext;
 import com.jd.blockchain.crypto.SymmetricEncryptionFunction;
 import com.jd.blockchain.crypto.SymmetricKey;
 import com.jd.blockchain.crypto.service.classic.ClassicAlgorithm;
-import com.jd.blockchain.crypto.utils.classic.AESUtils;
 
+import utils.crypto.classic.AESUtils;
 import utils.io.BytesUtils;
 
 /**

@@ -10,8 +10,8 @@ import com.jd.blockchain.crypto.HashDigester;
 import com.jd.blockchain.crypto.HashFunction;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 import com.jd.blockchain.crypto.base.EncodedHashDigester;
-import com.jd.blockchain.crypto.utils.sm.SM3Utils;
 
+import utils.crypto.sm.SM3Utils;
 import utils.security.Hasher;
 
 public class SM3HashFunction implements HashFunction {

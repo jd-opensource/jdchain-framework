@@ -19,7 +19,8 @@ import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.crypto.SignatureFunction;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
-import com.jd.blockchain.crypto.utils.classic.ECDSAUtils;
+
+import utils.crypto.classic.ECDSAUtils;
 
 public class ECDSASignatureFunction implements SignatureFunction {
 
