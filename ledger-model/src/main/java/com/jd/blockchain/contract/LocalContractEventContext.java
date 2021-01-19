@@ -6,6 +6,7 @@ import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.BytesValueList;
 import com.jd.blockchain.ledger.TransactionRequest;
+import com.jd.blockchain.ledger.LedgerQueryService;
 
 /**
  * @Author zhaogw
@@ -19,6 +20,8 @@ public class LocalContractEventContext implements ContractEventContext,Cloneable
     private Set<BlockchainIdentity> txSigners;
     private LedgerContext ledgerContext;
     private long version;
+    // 包含未提交区块数据账本查询
+    private LedgerQueryService uncommittedLedgerQuery;
 
     public LocalContractEventContext(HashDigest ledgeHash, String event){
         this.ledgeHash = ledgeHash;
@@ -56,11 +59,11 @@ public class LocalContractEventContext implements ContractEventContext,Cloneable
     }
 
     @Override
-    public Set<BlockchainIdentity> getContracOwners() {
+    public Set<BlockchainIdentity> getContractOwners() {
         return null;
     }
 
-    public LocalContractEventContext setLedgeHash(HashDigest ledgeHash) {
+    public LocalContractEventContext setLedgerHash(HashDigest ledgeHash) {
         this.ledgeHash = ledgeHash;
         return this;
     }
@@ -85,14 +88,10 @@ public class LocalContractEventContext implements ContractEventContext,Cloneable
         return this;
     }
 
-//    public byte[] getChainCode() {
-//        return chainCode;
-//    }
-//
-//    public LocalContractEventContext setChainCode(byte[] chainCode) {
-//        this.chainCode = chainCode;
-//        return this;
-//    }
+    public LocalContractEventContext setUncommittedLedgerContext(LedgerQueryService uncommittedLedger) {
+        this.uncommittedLedgerQuery = uncommittedLedger;
+        return this;
+    }
 
     public LocalContractEventContext setArgs(BytesValueList args) {
         this.args = args;
@@ -106,6 +105,11 @@ public class LocalContractEventContext implements ContractEventContext,Cloneable
 
     public long getVersion() {
         return version;
+    }
+
+    @Override
+    public LedgerQueryService getUncommittedLedger() {
+        return uncommittedLedgerQuery;
     }
 
 }
