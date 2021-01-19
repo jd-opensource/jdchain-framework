@@ -28,7 +28,6 @@ import com.jd.blockchain.sdk.SystemEventListener;
 import com.jd.blockchain.sdk.SystemEventPoint;
 import com.jd.blockchain.sdk.UserEventListener;
 import com.jd.blockchain.sdk.UserEventPoint;
-import com.jd.blockchain.sdk.converters.ClientResolveUtil;
 import com.jd.blockchain.sdk.service.event.SystemEventListenerHandle;
 import com.jd.blockchain.sdk.service.event.UserEventListenerHandle;
 import com.jd.blockchain.transaction.BlockchainQueryService;
@@ -222,21 +221,17 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 
 	@Override
 	public TypedKVEntry[] getDataEntries(HashDigest ledgerHash, String address, String... keys) {
-		TypedKVEntry[] kvDataEntries = getQueryService(ledgerHash).getDataEntries(ledgerHash, address, keys);
-		return ClientResolveUtil.read(kvDataEntries);
+		return getQueryService(ledgerHash).getDataEntries(ledgerHash, address, keys);
 	}
 
 	@Override
 	public TypedKVEntry[] getDataEntries(HashDigest ledgerHash, String address, KVInfoVO kvInfoVO) {
-		TypedKVEntry[] kvDataEntries = getQueryService(ledgerHash).getDataEntries(ledgerHash, address, kvInfoVO);
-		return ClientResolveUtil.read(kvDataEntries);
+		return getQueryService(ledgerHash).getDataEntries(ledgerHash, address, kvInfoVO);
 	}
 
 	@Override
 	public TypedKVEntry[] getDataEntries(HashDigest ledgerHash, String address, int fromIndex, int count) {
-		TypedKVEntry[] kvDataEntries = getQueryService(ledgerHash).getDataEntries(ledgerHash, address, fromIndex,
-				count);
-		return ClientResolveUtil.read(kvDataEntries);
+		return getQueryService(ledgerHash).getDataEntries(ledgerHash, address, fromIndex, count);
 	}
 
 	@Override
