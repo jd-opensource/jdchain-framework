@@ -2,6 +2,7 @@ package com.jd.blockchain.crypto.base;
 
 import com.jd.blockchain.crypto.AsymmetricCiphertext;
 
+@Deprecated
 public class AsymmetricCipherBytes extends EncodedCiphertext implements AsymmetricCiphertext {
 
 

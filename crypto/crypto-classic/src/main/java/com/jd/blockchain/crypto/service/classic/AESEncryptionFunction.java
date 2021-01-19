@@ -35,7 +35,11 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 
 	@Override
 	public SymmetricCiphertext encrypt(SymmetricKey key, byte[] data) {
+		throw new UnsupportedOperationException("Unsupported!");
+	}
 
+	@Override
+	public byte[] encrypt(byte[] data, SymmetricKey key) {
 		byte[] rawKeyBytes = key.getRawKeyBytes();
 
 		// 验证原始密钥长度为128比特，即16字节
@@ -50,7 +54,7 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 
 		// 调用底层AES128算法并计算密文数据
 		byte[] rawCipherBytes = AESUtils.encrypt(data, rawKeyBytes);
-		return DefaultCryptoEncoding.encodeSymmetricCiphertext(AES, rawCipherBytes);
+		return rawCipherBytes;
 	}
 
 	@Override
@@ -101,9 +105,12 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 
 	@Override
 	public byte[] decrypt(SymmetricKey key, SymmetricCiphertext ciphertext) {
+		throw new UnsupportedOperationException("Unsupported!");
+	}
+	
+	@Override
+	public byte[] decrypt(byte[] ciphertext, SymmetricKey key) {
 		byte[] rawKeyBytes = key.getRawKeyBytes();
-		byte[] rawCiphertextBytes = ciphertext.getRawCiphertext();
-
 		// 验证原始密钥长度为128比特，即16字节
 		if (rawKeyBytes.length != KEY_SIZE) {
 			throw new CryptoException("This key has wrong format!");
@@ -115,17 +122,12 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 		}
 
 		// 验证原始密文长度为分组长度的整数倍
-		if (rawCiphertextBytes.length % BLOCK_SIZE != 0) {
+		if (ciphertext.length % BLOCK_SIZE != 0) {
 			throw new CryptoException("This ciphertext has wrong format!");
 		}
 
-		// 验证密文数据算法标识对应AES算法
-		if (ciphertext.getAlgorithm() != AES.code()) {
-			throw new CryptoException("This is not AES ciphertext!");
-		}
-
 		// 调用底层AES128算法解密，得到明文
-		return AESUtils.decrypt(rawCiphertextBytes, rawKeyBytes);
+		return AESUtils.decrypt(ciphertext, rawKeyBytes);
 	}
 
 	@Override
@@ -167,18 +169,6 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 				System.arraycopy(plaintextWithPadding, 0, plaintext, 0, plaintext.length);
 				out.write(plaintext);
 			}
-
-//			// TODO: 错误地使用 available 方法；
-//			byte[] aesData = new byte[in.available()];
-//			in.read(aesData);
-//			in.close();
-//
-//			if (!supportCiphertext(aesData)) {
-//				throw new CryptoException("InputStream is not valid AES ciphertext!");
-//			}
-//
-//			out.write(decrypt(key, resolveCiphertext(aesData)));
-//			out.close();
 		} catch (IOException e) {
 			throw new CryptoException(e.getMessage(), e);
 		}
@@ -200,20 +190,16 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 		}
 	}
 
+	@Deprecated
 	@Override
 	public boolean supportCiphertext(byte[] ciphertextBytes) {
-		// 验证(输入字节数组长度-算法标识长度)是分组长度的整数倍，字节数组的算法标识对应AES算法
-		return (ciphertextBytes.length - CryptoAlgorithm.CODE_SIZE) % BLOCK_SIZE == 0
-				&& CryptoAlgorithm.match(AES, ciphertextBytes);
+		throw new UnsupportedOperationException("Unsupported!");
 	}
 
+	@Deprecated
 	@Override
 	public SymmetricCiphertext resolveCiphertext(byte[] ciphertextBytes) {
-		if (supportCiphertext(ciphertextBytes)) {
-			return DefaultCryptoEncoding.createSymmetricCiphertext(AES.code(), ciphertextBytes);
-		} else {
-			throw new CryptoException("ciphertextBytes is invalid!");
-		}
+		throw new UnsupportedOperationException("Unsupported!");
 	}
 
 	@Override
@@ -230,7 +216,6 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 
 	@Override
 	public <T extends CryptoBytes> boolean support(Class<T> cryptoDataType, byte[] encodedCryptoBytes) {
-		return (SymmetricKey.class == cryptoDataType && supportSymmetricKey(encodedCryptoBytes))
-				|| (SymmetricCiphertext.class == cryptoDataType && supportCiphertext(encodedCryptoBytes));
+		return SymmetricKey.class == cryptoDataType && supportSymmetricKey(encodedCryptoBytes);
 	}
 }

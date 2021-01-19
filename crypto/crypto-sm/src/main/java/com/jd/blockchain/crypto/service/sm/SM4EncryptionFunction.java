@@ -35,7 +35,11 @@ public class SM4EncryptionFunction implements SymmetricEncryptionFunction {
 
 	@Override
 	public SymmetricCiphertext encrypt(SymmetricKey key, byte[] data) {
-
+		throw new UnsupportedOperationException("Unsupported!");
+	}
+	
+	@Override
+	public byte[] encrypt(byte[] data, SymmetricKey key) {
 		byte[] rawKeyBytes = key.getRawKeyBytes();
 
 		// 验证原始密钥长度为128比特，即16字节
@@ -50,7 +54,7 @@ public class SM4EncryptionFunction implements SymmetricEncryptionFunction {
 
 		// 调用底层SM4算法并计算密文数据
 		byte[] rawCipherBytes = SM4Utils.encrypt(data, rawKeyBytes);
-		return DefaultCryptoEncoding.encodeSymmetricCiphertext(SM4, rawCipherBytes);
+		return rawCipherBytes;
 	}
 
 	@Override
@@ -92,9 +96,12 @@ public class SM4EncryptionFunction implements SymmetricEncryptionFunction {
 
 	@Override
 	public byte[] decrypt(SymmetricKey key, SymmetricCiphertext ciphertext) {
-
+		throw new UnsupportedOperationException("Unsupported!");
+	}
+	
+	@Override
+	public byte[] decrypt(byte[] ciphertext, SymmetricKey key) {
 		byte[] rawKeyBytes = key.getRawKeyBytes();
-		byte[] rawCiphertextBytes = ciphertext.getRawCiphertext();
 
 		// 验证原始密钥长度为128比特，即16字节
 		if (rawKeyBytes.length != KEY_SIZE) {
@@ -107,17 +114,12 @@ public class SM4EncryptionFunction implements SymmetricEncryptionFunction {
 		}
 
 		// 验证原始密文长度为分组长度的整数倍
-		if (rawCiphertextBytes.length % BLOCK_SIZE != 0) {
+		if (ciphertext.length % BLOCK_SIZE != 0) {
 			throw new CryptoException("This ciphertext has wrong format!");
 		}
 
-		// 验证密文数据算法标识对应SM4算法
-		if (ciphertext.getAlgorithm() != SM4.code()) {
-			throw new CryptoException("This is not SM4 ciphertext!");
-		}
-
 		// 调用底层SM4算法解密，得到明文
-		return SM4Utils.decrypt(rawCiphertextBytes, rawKeyBytes);
+		return SM4Utils.decrypt(ciphertext, rawKeyBytes);
 	}
 
 	@Override
@@ -190,20 +192,16 @@ public class SM4EncryptionFunction implements SymmetricEncryptionFunction {
 		}
 	}
 
+	@Deprecated
 	@Override
 	public boolean supportCiphertext(byte[] ciphertextBytes) {
-		// 验证(输入字节数组长度-算法标识长度)是分组长度的整数倍，字节数组的算法标识对应SM4算法
-		return (ciphertextBytes.length - CryptoAlgorithm.CODE_SIZE) % BLOCK_SIZE == 0
-				&& CryptoAlgorithm.match(SM4, ciphertextBytes);
+		throw new UnsupportedOperationException("Unsupported!");
 	}
 
+	@Deprecated
 	@Override
 	public SymmetricCiphertext resolveCiphertext(byte[] ciphertextBytes) {
-		if (supportCiphertext(ciphertextBytes)) {
-			return DefaultCryptoEncoding.createSymmetricCiphertext(SM4.code(), ciphertextBytes);
-		} else {
-			throw new CryptoException("ciphertextBytes is invalid!");
-		}
+		throw new UnsupportedOperationException("Unsupported!");
 	}
 
 	@Override

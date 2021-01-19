@@ -2,6 +2,7 @@ package com.jd.blockchain.crypto.base;
 
 import com.jd.blockchain.crypto.SymmetricCiphertext;
 
+@Deprecated
 public class SymmetricCipherBytes extends EncodedCiphertext implements SymmetricCiphertext {
 
 	private static final long serialVersionUID = -3809138336982119503L;

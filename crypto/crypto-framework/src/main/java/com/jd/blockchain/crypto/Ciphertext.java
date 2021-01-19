@@ -6,6 +6,7 @@ package com.jd.blockchain.crypto;
  * @author huanghaiquan
  *
  */
+@Deprecated
 public interface Ciphertext extends CryptoBytes {
 
 	/**
