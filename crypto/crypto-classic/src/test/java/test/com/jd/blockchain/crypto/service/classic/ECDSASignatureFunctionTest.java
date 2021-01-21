@@ -23,6 +23,7 @@ import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.crypto.SignatureFunction;
+import com.jd.blockchain.crypto.base.AlgorithmUtils;
 import com.jd.blockchain.crypto.service.classic.ClassicAlgorithm;
 
 import utils.io.BytesUtils;
@@ -81,7 +82,7 @@ public class ECDSASignatureFunctionTest {
         assertEquals(2 + 1 + 65, pubKey.toBytes().length);
         assertEquals(2 + 1 + 32, privKey.toBytes().length);
 
-        byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+        byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
         byte[] pubKeyTypeBytes = new byte[] { PUBLIC.CODE };
         byte[] privKeyTypeBytes = new byte[] { PRIVATE.CODE };
         byte[] rawPubKeyBytes = pubKey.getRawKeyBytes();
@@ -177,7 +178,7 @@ public class ECDSASignatureFunctionTest {
 
         algorithm = Crypto.getAlgorithm("ripemd160");
         assertNotNull(algorithm);
-        byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+        byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
         byte[] pubKeyTypeBytes = new byte[] { PUBLIC.CODE };
         byte[] rawKeyBytes = privKey.getRawKeyBytes();
         byte[] ripemd160PubKeyBytes = BytesUtils.concat(algoBytes, pubKeyTypeBytes, rawKeyBytes);
@@ -209,7 +210,7 @@ public class ECDSASignatureFunctionTest {
 
         algorithm = Crypto.getAlgorithm("ripemd160");
         assertNotNull(algorithm);
-        byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+        byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
         byte[] pubKeyTypeBytes = new byte[] { PUBLIC.CODE };
         byte[] rawKeyBytes = privKey.getRawKeyBytes();
         byte[] ripemd160PubKeyBytes = BytesUtils.concat(algoBytes, pubKeyTypeBytes, rawKeyBytes);
@@ -242,7 +243,7 @@ public class ECDSASignatureFunctionTest {
 
         algorithm = Crypto.getAlgorithm("ripemd160");
         assertNotNull(algorithm);
-        byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+        byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
         byte[] privKeyTypeBytes = new byte[] { PRIVATE.CODE };
         byte[] rawKeyBytes = pubKey.getRawKeyBytes();
         byte[] ripemd160PrivKeyBytes = BytesUtils.concat(algoBytes, privKeyTypeBytes, rawKeyBytes);
@@ -274,7 +275,7 @@ public class ECDSASignatureFunctionTest {
 
         algorithm = Crypto.getAlgorithm("ripemd160");
         assertNotNull(algorithm);
-        byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+        byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
         byte[] privKeyTypeBytes = new byte[] { PRIVATE.CODE };
         byte[] rawKeyBytes = pubKey.getRawKeyBytes();
         byte[] ripemd160PrivKeyBytes = BytesUtils.concat(algoBytes, privKeyTypeBytes, rawKeyBytes);
@@ -313,7 +314,7 @@ public class ECDSASignatureFunctionTest {
 
         algorithm = Crypto.getAlgorithm("ripemd160");
         assertNotNull(algorithm);
-        byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+        byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
         byte[] rawDigestBytes = signatureDigest.toBytes();
         byte[] ripemd160SignatureBytes = BytesUtils.concat(algoBytes, rawDigestBytes);
 
@@ -350,7 +351,7 @@ public class ECDSASignatureFunctionTest {
 
         algorithm = Crypto.getAlgorithm("ripemd160");
         assertNotNull(algorithm);
-        byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+        byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
         byte[] rawDigestBytes = signatureDigest.getRawDigest();
         byte[] ripemd160SignatureDigestBytes = BytesUtils.concat(algoBytes, rawDigestBytes);
 

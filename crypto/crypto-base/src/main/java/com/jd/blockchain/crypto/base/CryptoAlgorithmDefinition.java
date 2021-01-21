@@ -1,4 +1,6 @@
-package com.jd.blockchain.crypto;
+package com.jd.blockchain.crypto.base;
+
+import com.jd.blockchain.crypto.CryptoAlgorithm;
 
 public final class CryptoAlgorithmDefinition implements CryptoAlgorithm {
 
@@ -35,7 +37,7 @@ public final class CryptoAlgorithmDefinition implements CryptoAlgorithm {
 
 	@Override
 	public String toString() {
-		return CryptoAlgorithm.getString(this);
+		return AlgorithmUtils.getString(this);
 	}
 
 	/**

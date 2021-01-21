@@ -23,8 +23,8 @@ public abstract class DefaultCryptoEncoding implements CryptoEncoding {
 			byte[] encodedBytes);
 
 	@Override
-	public HashDigest decodeHashDigest(byte[] encodedBytes) {
-		short algorithmCode = CryptoAlgorithm.resolveCode(encodedBytes);
+	public HashDigest tryDecodeHashDigest(byte[] encodedBytes) {
+		short algorithmCode = AlgorithmUtils.resolveCode(encodedBytes);
 		if (!supportCryptoBytes(algorithmCode, HashDigest.class, encodedBytes)) {
 			return null;
 		}
@@ -34,7 +34,7 @@ public abstract class DefaultCryptoEncoding implements CryptoEncoding {
 
 	@Override
 	public SignatureDigest decodeSignatureDigest(byte[] encodedBytes) {
-		short algorithmCode = CryptoAlgorithm.resolveCode(encodedBytes);
+		short algorithmCode = AlgorithmUtils.resolveCode(encodedBytes);
 		if (!supportCryptoBytes(algorithmCode, SignatureDigest.class, encodedBytes)) {
 			return null;
 		}
@@ -44,7 +44,7 @@ public abstract class DefaultCryptoEncoding implements CryptoEncoding {
 
 	@Override
 	public PrivKey decodePrivKey(byte[] encodedCryptoBytes) {
-		short algorithmCode = CryptoAlgorithm.resolveCode(encodedCryptoBytes);
+		short algorithmCode = AlgorithmUtils.resolveCode(encodedCryptoBytes);
 		if (!supportCryptoBytes(algorithmCode, PrivKey.class, encodedCryptoBytes)) {
 			return null;
 		}
@@ -54,7 +54,7 @@ public abstract class DefaultCryptoEncoding implements CryptoEncoding {
 
 	@Override
 	public PubKey decodePubKey(byte[] encodedCryptoBytes) {
-		short algorithmCode = CryptoAlgorithm.resolveCode(encodedCryptoBytes);
+		short algorithmCode = AlgorithmUtils.resolveCode(encodedCryptoBytes);
 		if (!supportCryptoBytes(algorithmCode, PubKey.class, encodedCryptoBytes)) {
 			return null;
 		}
@@ -64,7 +64,7 @@ public abstract class DefaultCryptoEncoding implements CryptoEncoding {
 
 	@Override
 	public SymmetricKey decodeSymmetricKey(byte[] encodedCryptoBytes) {
-		short algorithmCode = CryptoAlgorithm.resolveCode(encodedCryptoBytes);
+		short algorithmCode = AlgorithmUtils.resolveCode(encodedCryptoBytes);
 		if (!supportCryptoBytes(algorithmCode, SymmetricKey.class, encodedCryptoBytes)) {
 			return null;
 		}
@@ -74,7 +74,7 @@ public abstract class DefaultCryptoEncoding implements CryptoEncoding {
 
 	@Override
 	public SymmetricCiphertext decodeSymmetricCiphertext(byte[] encodedCryptoBytes) {
-		short algorithmCode = CryptoAlgorithm.resolveCode(encodedCryptoBytes);
+		short algorithmCode = AlgorithmUtils.resolveCode(encodedCryptoBytes);
 		if (!supportCryptoBytes(algorithmCode, SymmetricCiphertext.class, encodedCryptoBytes)) {
 			return null;
 		}
@@ -84,7 +84,7 @@ public abstract class DefaultCryptoEncoding implements CryptoEncoding {
 
 	@Override
 	public AsymmetricCiphertext decodeAsymmetricCiphertext(byte[] encodedCryptoBytes) {
-		short algorithmCode = CryptoAlgorithm.resolveCode(encodedCryptoBytes);
+		short algorithmCode = AlgorithmUtils.resolveCode(encodedCryptoBytes);
 		if (!supportCryptoBytes(algorithmCode, AsymmetricCiphertext.class, encodedCryptoBytes)) {
 			return null;
 		}
@@ -103,7 +103,7 @@ public abstract class DefaultCryptoEncoding implements CryptoEncoding {
 	}
 
 	public static HashDigest createHashDigest(short algorithmCode, byte[] encodedCryptoBytes) {
-		if (!CryptoAlgorithm.isHashAlgorithm(algorithmCode)) {
+		if (!AlgorithmUtils.isHashAlgorithm(algorithmCode)) {
 			throw new CryptoException("The algorithm of the specifed encoded crypto bytes is not a hash algorithm!");
 		}
 
@@ -111,7 +111,7 @@ public abstract class DefaultCryptoEncoding implements CryptoEncoding {
 	}
 
 	public static SignatureDigest createSignatureDigest(short algorithmCode, byte[] encodedCryptoBytes) {
-		if (!CryptoAlgorithm.isSignatureAlgorithm(algorithmCode)) {
+		if (!AlgorithmUtils.isSignatureAlgorithm(algorithmCode)) {
 			throw new CryptoException(
 					"The algorithm of the specifed encoded crypto bytes is not a signature algorithm!");
 		}
@@ -125,7 +125,7 @@ public abstract class DefaultCryptoEncoding implements CryptoEncoding {
 	}
 
 	public static AsymmetricCiphertext createAsymmetricCiphertext(short algorithmCode, byte[] encodedCipherBytes) {
-		if (!CryptoAlgorithm.isAsymmetricEncryptionAlgorithm(algorithmCode)) {
+		if (!AlgorithmUtils.isAsymmetricEncryptionAlgorithm(algorithmCode)) {
 			throw new CryptoException(
 					"The algorithm of the specifed encoded crypto bytes is not a asymmetric encryption algorithm!");
 		}
@@ -139,7 +139,7 @@ public abstract class DefaultCryptoEncoding implements CryptoEncoding {
 	}
 
 	public static SymmetricCiphertext createSymmetricCiphertext(short algorithmCode, byte[] encodedCipherBytes) {
-		if (!CryptoAlgorithm.isSymmetricEncryptionAlgorithm(algorithmCode)) {
+		if (!AlgorithmUtils.isSymmetricEncryptionAlgorithm(algorithmCode)) {
 			throw new CryptoException(
 					"The algorithm of the specifed encoded crypto bytes is not a symmetric encryption algorithm!");
 		}
@@ -153,7 +153,7 @@ public abstract class DefaultCryptoEncoding implements CryptoEncoding {
 	}
 
 	public static SymmetricKey createSymmetricKey(short algorithmCode, byte[] encodedSymmetricKeyBytes) {
-		if (!CryptoAlgorithm.isSymmetricEncryptionAlgorithm(algorithmCode)) {
+		if (!AlgorithmUtils.isSymmetricEncryptionAlgorithm(algorithmCode)) {
 			throw new CryptoException(
 					"The algorithm of the specifed encoded crypto bytes is not a symmetric encryption algorithm!");
 		}
@@ -167,7 +167,7 @@ public abstract class DefaultCryptoEncoding implements CryptoEncoding {
 	}
 
 	public static PubKey createPubKey(short algorithmCode, byte[] encodedPubKeyBytes) {
-		if (!CryptoAlgorithm.hasAsymmetricKey(algorithmCode)) {
+		if (!AlgorithmUtils.hasAsymmetricKey(algorithmCode)) {
 			throw new CryptoException(
 					"The algorithm of the specifed encoded crypto bytes is not a asymmetric cryptographic algorithm!");
 		}
@@ -181,7 +181,7 @@ public abstract class DefaultCryptoEncoding implements CryptoEncoding {
 	}
 
 	public static PrivKey createPrivKey(short algorithmCode, byte[] encodedPrivKeyBytes) {
-		if (!CryptoAlgorithm.hasAsymmetricKey(algorithmCode)) {
+		if (!AlgorithmUtils.hasAsymmetricKey(algorithmCode)) {
 			throw new CryptoException(
 					"The algorithm of the specifed encoded crypto bytes is not a asymmetric cryptographic algorithm!");
 		}
@@ -190,11 +190,11 @@ public abstract class DefaultCryptoEncoding implements CryptoEncoding {
 	}
 
 	static byte[] encodeBytes(CryptoAlgorithm algorithm, byte[] rawCryptoBytes) {
-		return BytesUtils.concat(CryptoAlgorithm.getCodeBytes(algorithm), rawCryptoBytes);
+		return BytesUtils.concat(AlgorithmUtils.getCodeBytes(algorithm), rawCryptoBytes);
 	}
 
 	static byte[] encodeBytes(CryptoAlgorithm algorithm, CryptoKeyType keyType, byte[] rawKeyBytes) {
-		return BytesUtils.concat(CryptoAlgorithm.getCodeBytes(algorithm), new byte[] { keyType.CODE }, rawKeyBytes);
+		return BytesUtils.concat(AlgorithmUtils.getCodeBytes(algorithm), new byte[] { keyType.CODE }, rawKeyBytes);
 	}
 	
 	static byte[] decodeRawBytes(byte[] cryptoBytes) {
@@ -206,7 +206,7 @@ public abstract class DefaultCryptoEncoding implements CryptoEncoding {
 	}
 	
 	public static short decodeAlgorithm(byte[] cryptoBytes) {
-		return CryptoAlgorithm.resolveCode(cryptoBytes);
+		return AlgorithmUtils.resolveCode(cryptoBytes);
 	}
 
 }

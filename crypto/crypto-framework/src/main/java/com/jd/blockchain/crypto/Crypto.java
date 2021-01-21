@@ -2,7 +2,10 @@ package com.jd.blockchain.crypto;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
@@ -46,45 +49,43 @@ public final class Crypto {
 	}
 
 	private static void register(Provider<CryptoService> provider) {
-		boolean available = false;
+		CryptoEncoding providedEncoding = provider.getService().getEncoding();
+		Set<CryptoAlgorithm> providedAlgorithms = new HashSet<>();
 		for (CryptoFunction cryptoFunction : provider.getService().getFunctions()) {
-
-			String name = cryptoFunction.getAlgorithm().name().toUpperCase();
-			short code = cryptoFunction.getAlgorithm().code();
-			CryptoAlgorithm algorithm = new CryptoAlgorithmDefinition(name, code);
-			if (CryptoAlgorithm.isRandomAlgorithm(algorithm) && !(cryptoFunction instanceof RandomFunction)) {
+			CryptoAlgorithm algorithm = cryptoFunction.getAlgorithm();
+			if (providedEncoding.isRandomAlgorithm(algorithm) && !(cryptoFunction instanceof RandomFunction)) {
 				LOGGER.error(String.format(
 						"The random algorithm \"%s\" declared by provider[%s] does not implement the interface \"%s\"!",
 						algorithm.toString(), provider.getFullName(), RandomFunction.class.getName()));
 				continue;
 			}
-			if (CryptoAlgorithm.isAsymmetricEncryptionAlgorithm(algorithm)
+			if (providedEncoding.isAsymmetricEncryptionAlgorithm(algorithm)
 					&& !(cryptoFunction instanceof AsymmetricEncryptionFunction)) {
 				LOGGER.error(String.format(
 						"The asymmetric encryption algorithm \"%s\" declared by the provider[%s] does not implement the interface \"%s\"!",
 						algorithm.toString(), provider.getFullName(), AsymmetricEncryptionFunction.class.getName()));
 				continue;
 			}
-			if (CryptoAlgorithm.isSignatureAlgorithm(algorithm) && !(cryptoFunction instanceof SignatureFunction)) {
+			if (providedEncoding.isSignatureAlgorithm(algorithm) && !(cryptoFunction instanceof SignatureFunction)) {
 				LOGGER.error(String.format(
 						"The signature algorithm \"%s\" declared by the provider[%s] does not implement the interface \"%s\"!",
 						algorithm.toString(), provider.getFullName(), SignatureFunction.class.getName()));
 				continue;
 			}
-			if (CryptoAlgorithm.isSymmetricEncryptionAlgorithm(algorithm)
+			if (providedEncoding.isSymmetricEncryptionAlgorithm(algorithm)
 					&& !(cryptoFunction instanceof SymmetricEncryptionFunction)) {
 				LOGGER.error(String.format(
 						"The symmetric encryption algorithm \"%s\" declared by the provider[%s] does not implement the interface \"%s\"!",
 						algorithm.toString(), provider.getFullName(), SymmetricEncryptionFunction.class.getName()));
 				continue;
 			}
-			if (CryptoAlgorithm.isHashAlgorithm(algorithm) && !(cryptoFunction instanceof HashFunction)) {
+			if (providedEncoding.isHashAlgorithm(algorithm) && !(cryptoFunction instanceof HashFunction)) {
 				LOGGER.error(String.format(
 						"The hash encryption algorithm \"%s\" declared by the provider[%s] does not implement the interface \"%s\"!",
 						algorithm.toString(), provider.getFullName(), HashFunction.class.getName()));
 				continue;
 			}
-			if (CryptoAlgorithm.isExtAlgorithm(algorithm) && (cryptoFunction instanceof RandomFunction
+			if (providedEncoding.isExtAlgorithm(algorithm) && (cryptoFunction instanceof RandomFunction
 					|| cryptoFunction instanceof AsymmetricEncryptionFunction
 					|| cryptoFunction instanceof SignatureFunction
 					|| cryptoFunction instanceof SymmetricEncryptionFunction
@@ -101,14 +102,27 @@ public final class Crypto {
 				continue;
 			}
 
+			if ((!providedEncoding.isRandomAlgorithm(algorithm))//
+					&& (!providedEncoding.isHashAlgorithm(algorithm))//
+					&& (!providedEncoding.isAsymmetricEncryptionAlgorithm(algorithm))//
+					&& (!providedEncoding.isSignatureAlgorithm(algorithm))//
+					&& (!providedEncoding.isSymmetricEncryptionAlgorithm(algorithm))//
+					&& (!providedEncoding.isExtAlgorithm(algorithm))) {
+				// 算法类型不属于任何预设的分类，算法定义无效；
+				LOGGER.error(String.format("The algorithm \"%s\" declared by the provider[%s] is out of range!",
+						algorithm.toString(), provider.getFullName()));
+				continue;
+			}
+
 			functions.put(algorithm.code(), cryptoFunction);
 			algorithms.put(algorithm.code(), algorithm);
-			names.put(algorithm.name(), algorithm.code());
+			String nameIndex = algorithm.name().toUpperCase();
+			names.put(nameIndex, algorithm.code());
 
-			available = true;
+			providedAlgorithms.add(algorithm);
 		}
-		if (available) {
-			encoding.register(provider.getService().getEncoding());
+		if (providedAlgorithms.size() > 0) {
+			encoding.register(providedAlgorithms, providedEncoding);
 		}
 	}
 
@@ -196,7 +210,7 @@ public final class Crypto {
 	}
 
 	public static RandomFunction getRandomFunction(CryptoAlgorithm algorithm) {
-		if (!CryptoAlgorithm.isRandomAlgorithm(algorithm)) {
+		if (!encoding.isRandomAlgorithm(algorithm)) {
 			throw new CryptoException("The specified algorithm " + algorithm.name() + "[" + algorithm.code()
 					+ "] is not a random function!");
 		}
@@ -226,7 +240,7 @@ public final class Crypto {
 	}
 
 	public static HashFunction getHashFunction(CryptoAlgorithm algorithm) {
-		if (!CryptoAlgorithm.isHashAlgorithm(algorithm)) {
+		if (!encoding.isHashAlgorithm(algorithm)) {
 			throw new CryptoException("The specified algorithm " + algorithm.name() + "[" + algorithm.code()
 					+ "] is not a hash function!");
 		}
@@ -256,7 +270,7 @@ public final class Crypto {
 	}
 
 	public static AsymmetricEncryptionFunction getAsymmetricEncryptionFunction(CryptoAlgorithm algorithm) {
-		if (!CryptoAlgorithm.isAsymmetricEncryptionAlgorithm(algorithm)) {
+		if (!encoding.isAsymmetricEncryptionAlgorithm(algorithm)) {
 			throw new CryptoException("The specified algorithm " + algorithm.name() + "[" + algorithm.code()
 					+ "] is not a asymmetric encryption function!");
 		}
@@ -286,7 +300,7 @@ public final class Crypto {
 	}
 
 	public static SignatureFunction getSignatureFunction(CryptoAlgorithm algorithm) {
-		if (!CryptoAlgorithm.isSignatureAlgorithm(algorithm)) {
+		if (!encoding.isSignatureAlgorithm(algorithm)) {
 			throw new CryptoException("The specified algorithm " + algorithm.name() + "[" + algorithm.code()
 					+ "] is not a signature function!");
 		}
@@ -316,7 +330,7 @@ public final class Crypto {
 	}
 
 	public static SymmetricEncryptionFunction getSymmetricEncryptionFunction(CryptoAlgorithm algorithm) {
-		if (!CryptoAlgorithm.isSymmetricEncryptionAlgorithm(algorithm)) {
+		if (!encoding.isSymmetricEncryptionAlgorithm(algorithm)) {
 			throw new CryptoException("The specified algorithm " + algorithm.name() + "[" + algorithm.code()
 					+ "] is not a symmetric encryption function!");
 		}
@@ -356,7 +370,7 @@ public final class Crypto {
 	}
 
 	public static HashDigest resolveAsHashDigest(byte[] encodedCryptoBytes) {
-		return encoding.decodeHashDigest(encodedCryptoBytes);
+		return encoding.tryDecodeHashDigest(encodedCryptoBytes);
 	}
 
 	public static SignatureDigest resolveAsSignatureDigest(byte[] encodedCryptoBytes) {
@@ -370,15 +384,15 @@ public final class Crypto {
 	public static PubKey resolveAsPubKey(byte[] encodedCryptoBytes) {
 		return encoding.decodePubKey(encodedCryptoBytes);
 	}
-	
+
 	public static SymmetricKey resolveAsSymmetricKey(byte[] encodedCryptoBytes) {
 		return encoding.decodeSymmetricKey(encodedCryptoBytes);
 	}
-	
+
 	public static SymmetricCiphertext resolveAsSymmetricCiphertext(byte[] encodedCryptoBytes) {
 		return encoding.decodeSymmetricCiphertext(encodedCryptoBytes);
 	}
-	
+
 	public static AsymmetricCiphertext resolveAsAsymmetricCiphertext(byte[] encodedCryptoBytes) {
 		return encoding.decodeAsymmetricCiphertext(encodedCryptoBytes);
 	}
@@ -387,7 +401,12 @@ public final class Crypto {
 
 		private ArrayList<CryptoEncoding> encodings = new ArrayList<>();
 
-		public void register(CryptoEncoding encoding) {
+		private Map<Short, CryptoEncoding> algorithmEncoding = new HashMap<>();
+
+		public void register(Set<CryptoAlgorithm> algorithms, CryptoEncoding encoding) {
+			for (CryptoAlgorithm algorithm : algorithms) {
+				algorithmEncoding.put(algorithm.code(), encoding);
+			}
 			encodings.add(encoding);
 		}
 
@@ -396,7 +415,7 @@ public final class Crypto {
 			SymmetricCiphertext cryptoBytes = null;
 			for (CryptoEncoding encoding : encodings) {
 				cryptoBytes = encoding.decodeSymmetricCiphertext(encodedCryptoBytes);
-				if (cryptoBytes !=null) {
+				if (cryptoBytes != null) {
 					return cryptoBytes;
 				}
 			}
@@ -408,7 +427,7 @@ public final class Crypto {
 			AsymmetricCiphertext cryptoBytes = null;
 			for (CryptoEncoding encoding : encodings) {
 				cryptoBytes = encoding.decodeAsymmetricCiphertext(encodedCryptoBytes);
-				if (cryptoBytes !=null) {
+				if (cryptoBytes != null) {
 					return cryptoBytes;
 				}
 			}
@@ -420,7 +439,7 @@ public final class Crypto {
 			SymmetricKey cryptoBytes = null;
 			for (CryptoEncoding encoding : encodings) {
 				cryptoBytes = encoding.decodeSymmetricKey(encodedCryptoBytes);
-				if (cryptoBytes !=null) {
+				if (cryptoBytes != null) {
 					return cryptoBytes;
 				}
 			}
@@ -432,7 +451,7 @@ public final class Crypto {
 			PubKey cryptoBytes = null;
 			for (CryptoEncoding encoding : encodings) {
 				cryptoBytes = encoding.decodePubKey(encodedCryptoBytes);
-				if (cryptoBytes !=null) {
+				if (cryptoBytes != null) {
 					return cryptoBytes;
 				}
 			}
@@ -444,7 +463,7 @@ public final class Crypto {
 			PrivKey cryptoBytes = null;
 			for (CryptoEncoding encoding : encodings) {
 				cryptoBytes = encoding.decodePrivKey(encodedCryptoBytes);
-				if (cryptoBytes !=null) {
+				if (cryptoBytes != null) {
 					return cryptoBytes;
 				}
 			}
@@ -452,11 +471,11 @@ public final class Crypto {
 		}
 
 		@Override
-		public HashDigest decodeHashDigest(byte[] encodedBytes) {
+		public HashDigest tryDecodeHashDigest(byte[] encodedBytes) {
 			HashDigest cryptoBytes = null;
 			for (CryptoEncoding encoding : encodings) {
-				cryptoBytes = encoding.decodeHashDigest(encodedBytes);
-				if (cryptoBytes !=null) {
+				cryptoBytes = encoding.tryDecodeHashDigest(encodedBytes);
+				if (cryptoBytes != null) {
 					return cryptoBytes;
 				}
 			}
@@ -468,11 +487,119 @@ public final class Crypto {
 			SignatureDigest cryptoBytes = null;
 			for (CryptoEncoding encoding : encodings) {
 				cryptoBytes = encoding.decodeSignatureDigest(encodedBytes);
-				if (cryptoBytes !=null) {
+				if (cryptoBytes != null) {
 					return cryptoBytes;
 				}
 			}
 			throw new CryptoException("Unsupport the specified encoded signature digest bytes!");
+		}
+
+		@Override
+		public boolean isRandomAlgorithm(CryptoAlgorithm algorithm) {
+			CryptoEncoding codec = algorithmEncoding.get(algorithm.code());
+			if (codec != null) {
+				return codec.isRandomAlgorithm(algorithm);
+			}
+			return false;
+		}
+
+		@Override
+		public boolean isHashAlgorithm(CryptoAlgorithm algorithm) {
+			CryptoEncoding codec = algorithmEncoding.get(algorithm.code());
+			if (codec != null) {
+				return codec.isHashAlgorithm(algorithm);
+			}
+			return false;
+		}
+
+		@Override
+		public boolean isHashAlgorithm(short algorithmCode) {
+			CryptoEncoding codec = algorithmEncoding.get(algorithmCode);
+			if (codec != null) {
+				return codec.isHashAlgorithm(algorithmCode);
+			}
+			return false;
+		}
+
+		@Override
+		public boolean isSignatureAlgorithm(short algorithmCode) {
+			CryptoEncoding codec = algorithmEncoding.get(algorithmCode);
+			if (codec != null) {
+				return codec.isSignatureAlgorithm(algorithmCode);
+			}
+			return false;
+		}
+
+		@Override
+		public boolean isSignatureAlgorithm(CryptoAlgorithm algorithm) {
+			CryptoEncoding codec = algorithmEncoding.get(algorithm.code());
+			if (codec != null) {
+				return codec.isSignatureAlgorithm(algorithm);
+			}
+			return false;
+		}
+
+		@Override
+		public boolean isEncryptionAlgorithm(short algorithmCode) {
+			CryptoEncoding codec = algorithmEncoding.get(algorithmCode);
+			if (codec != null) {
+				return codec.isEncryptionAlgorithm(algorithmCode);
+			}
+			return false;
+		}
+
+		@Override
+		public boolean isEncryptionAlgorithm(CryptoAlgorithm algorithm) {
+			CryptoEncoding codec = algorithmEncoding.get(algorithm.code());
+			if (codec != null) {
+				return codec.isEncryptionAlgorithm(algorithm);
+			}
+			return false;
+		}
+
+		@Override
+		public boolean isExtAlgorithm(CryptoAlgorithm algorithm) {
+			CryptoEncoding codec = algorithmEncoding.get(algorithm.code());
+			if (codec != null) {
+				return codec.isExtAlgorithm(algorithm);
+			}
+			return false;
+		}
+
+		@Override
+		public boolean hasAsymmetricKey(CryptoAlgorithm algorithm) {
+			CryptoEncoding codec = algorithmEncoding.get(algorithm.code());
+			if (codec != null) {
+				return codec.hasAsymmetricKey(algorithm);
+			}
+			return false;
+		}
+
+		@Override
+		public boolean hasSymmetricKey(CryptoAlgorithm algorithm) {
+			CryptoEncoding codec = algorithmEncoding.get(algorithm.code());
+			if (codec != null) {
+				return codec.hasSymmetricKey(algorithm);
+			}
+			return false;
+		}
+
+		@Override
+		public boolean isSymmetricEncryptionAlgorithm(CryptoAlgorithm algorithm) {
+			CryptoEncoding codec = algorithmEncoding.get(algorithm.code());
+			if (codec != null) {
+				return codec.isSymmetricEncryptionAlgorithm(algorithm);
+			}
+			return false;
+		}
+
+		@Override
+		public boolean isAsymmetricEncryptionAlgorithm(CryptoAlgorithm algorithm) {
+			CryptoEncoding codec = algorithmEncoding.get(algorithm.code());
+			if (codec != null) {
+				return codec.isAsymmetricEncryptionAlgorithm(algorithm);
+			}
+			return false;
 		}
 
 	}

@@ -20,6 +20,7 @@ import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.crypto.SignatureFunction;
+import com.jd.blockchain.crypto.base.AlgorithmUtils;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 
 import utils.crypto.classic.RSAUtils;
@@ -151,7 +152,7 @@ public class RSACryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	@Override
 	public boolean supportPrivKey(byte[] privKeyBytes) {
 		// 验证输入字节数组长度=算法标识长度+密钥类型长度+密钥长度，密钥数据的算法标识对应RSA算法，并且密钥类型是私钥
-		return privKeyBytes.length == PRIVKEY_LENGTH && CryptoAlgorithm.match(ALGORITHM, privKeyBytes)
+		return privKeyBytes.length == PRIVKEY_LENGTH && AlgorithmUtils.match(ALGORITHM, privKeyBytes)
 				&& privKeyBytes[CryptoAlgorithm.CODE_SIZE] == PRIVATE.CODE;
 	}
 
@@ -167,7 +168,7 @@ public class RSACryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	@Override
 	public boolean supportPubKey(byte[] pubKeyBytes) {
 		// 验证输入字节数组长度=算法标识长度+密钥类型长度+椭圆曲线点长度，密钥数据的算法标识对应RSA算法，并且密钥类型是公钥
-		return pubKeyBytes.length == PUBKEY_LENGTH && CryptoAlgorithm.match(ALGORITHM, pubKeyBytes)
+		return pubKeyBytes.length == PUBKEY_LENGTH && AlgorithmUtils.match(ALGORITHM, pubKeyBytes)
 				&& pubKeyBytes[CryptoAlgorithm.CODE_SIZE] == PUBLIC.CODE;
 	}
 
@@ -183,7 +184,7 @@ public class RSACryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	@Override
 	public boolean supportDigest(byte[] digestBytes) {
 		// 验证输入字节数组长度=算法标识长度+签名长度，字节数组的算法标识对应RSA算法
-		return digestBytes.length == SIGNATUREDIGEST_LENGTH && CryptoAlgorithm.match(ALGORITHM, digestBytes);
+		return digestBytes.length == SIGNATUREDIGEST_LENGTH && AlgorithmUtils.match(ALGORITHM, digestBytes);
 	}
 
 	@Override
@@ -199,7 +200,7 @@ public class RSACryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	public boolean supportCiphertext(byte[] ciphertextBytes) {
 		// 验证输入字节数组长度=密文分组的整数倍，字节数组的算法标识对应RSA算法
 		return (ciphertextBytes.length % CIPHERTEXTBLOCK_SIZE == CryptoAlgorithm.CODE_SIZE)
-				&& CryptoAlgorithm.match(ALGORITHM, ciphertextBytes);
+				&& AlgorithmUtils.match(ALGORITHM, ciphertextBytes);
 	}
 
 	@Override

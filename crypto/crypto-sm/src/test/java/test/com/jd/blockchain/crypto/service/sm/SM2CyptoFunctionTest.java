@@ -27,6 +27,7 @@ import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.crypto.SignatureFunction;
+import com.jd.blockchain.crypto.base.AlgorithmUtils;
 import com.jd.blockchain.crypto.service.sm.SMAlgorithm;
 
 import utils.io.BytesUtils;
@@ -85,7 +86,7 @@ public class SM2CyptoFunctionTest {
 		assertEquals(2 + 1 + 65, pubKey.toBytes().length);
 		assertEquals(2 + 1 + 32, privKey.toBytes().length);
 
-		byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
 		byte[] pubKeyTypeBytes = new byte[] { PUBLIC.CODE };
 		byte[] privKeyTypeBytes = new byte[] { PRIVATE.CODE };
 		byte[] rawPubKeyBytes = pubKey.getRawKeyBytes();
@@ -239,7 +240,7 @@ public class SM2CyptoFunctionTest {
 
 		algorithm = Crypto.getAlgorithm("sm3");
 		assertNotNull(algorithm);
-		byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
 		byte[] pubKeyTypeBytes = new byte[] { PUBLIC.CODE };
 		byte[] rawKeyBytes = privKey.getRawKeyBytes();
 		byte[] sm3PubKeyBytes = BytesUtils.concat(algoBytes, pubKeyTypeBytes, rawKeyBytes);
@@ -271,7 +272,7 @@ public class SM2CyptoFunctionTest {
 
 		algorithm = Crypto.getAlgorithm("sm3");
 		assertNotNull(algorithm);
-		byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
 		byte[] pubKeyTypeBytes = new byte[] { PUBLIC.CODE };
 		byte[] rawKeyBytes = privKey.getRawKeyBytes();
 		byte[] sm3PubKeyBytes = BytesUtils.concat(algoBytes, pubKeyTypeBytes, rawKeyBytes);
@@ -304,7 +305,7 @@ public class SM2CyptoFunctionTest {
 
 		algorithm = Crypto.getAlgorithm("sm3");
 		assertNotNull(algorithm);
-		byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
 		byte[] privKeyTypeBytes = new byte[] { PRIVATE.CODE };
 		byte[] rawKeyBytes = pubKey.getRawKeyBytes();
 		byte[] sm3PrivKeyBytes = BytesUtils.concat(algoBytes, privKeyTypeBytes, rawKeyBytes);
@@ -336,7 +337,7 @@ public class SM2CyptoFunctionTest {
 
 		algorithm = Crypto.getAlgorithm("sm3");
 		assertNotNull(algorithm);
-		byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
 		byte[] privKeyTypeBytes = new byte[] { PRIVATE.CODE };
 		byte[] rawKeyBytes = pubKey.getRawKeyBytes();
 		byte[] sm3PrivKeyBytes = BytesUtils.concat(algoBytes, privKeyTypeBytes, rawKeyBytes);
@@ -375,7 +376,7 @@ public class SM2CyptoFunctionTest {
 
 		algorithm = Crypto.getAlgorithm("sm3");
 		assertNotNull(algorithm);
-		byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
 		byte[] rawDigestBytes = signatureDigest.toBytes();
 		byte[] sm3SignatureBytes = BytesUtils.concat(algoBytes, rawDigestBytes);
 
@@ -412,7 +413,7 @@ public class SM2CyptoFunctionTest {
 
 		algorithm = Crypto.getAlgorithm("sm3");
 		assertNotNull(algorithm);
-		byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
 		byte[] rawDigestBytes = signatureDigest.getRawDigest();
 		byte[] sm3SignatureDigestBytes = BytesUtils.concat(algoBytes, rawDigestBytes);
 
@@ -452,7 +453,7 @@ public class SM2CyptoFunctionTest {
 
 		algorithm = Crypto.getAlgorithm("sm3");
 		assertNotNull(algorithm);
-		byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
 		byte[] rawCiphertextBytes = ciphertext.toBytes();
 		byte[] sm3CiphertextBytes = BytesUtils.concat(algoBytes, rawCiphertextBytes);
 
@@ -490,7 +491,7 @@ public class SM2CyptoFunctionTest {
 
 		algorithm = Crypto.getAlgorithm("sm3");
 		assertNotNull(algorithm);
-		byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
 		byte[] rawCiphertextBytes = ciphertext.getRawCiphertext();
 		byte[] sm3CiphertextBytes = BytesUtils.concat(algoBytes, rawCiphertextBytes);
 

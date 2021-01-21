@@ -9,10 +9,10 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.jd.blockchain.crypto.CryptoAlgorithm;
-import com.jd.blockchain.crypto.CryptoAlgorithmDefinition;
 import com.jd.blockchain.crypto.CryptoKeyType;
 import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.crypto.PubKey;
+import com.jd.blockchain.crypto.base.CryptoAlgorithmDefinition;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 import com.jd.blockchain.crypto.base.PrivKeyBytes;
 

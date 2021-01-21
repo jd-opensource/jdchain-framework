@@ -13,6 +13,7 @@ import com.jd.blockchain.crypto.CryptoKeyType;
 import com.jd.blockchain.crypto.SymmetricCiphertext;
 import com.jd.blockchain.crypto.SymmetricEncryptionFunction;
 import com.jd.blockchain.crypto.SymmetricKey;
+import com.jd.blockchain.crypto.base.AlgorithmUtils;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 
 import utils.crypto.classic.AESUtils;
@@ -177,7 +178,7 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 	@Override
 	public boolean supportSymmetricKey(byte[] symmetricKeyBytes) {
 		// 验证输入字节数组长度=算法标识长度+密钥类型长度+密钥长度，字节数组的算法标识对应AES算法且密钥密钥类型是对称密钥
-		return symmetricKeyBytes.length == SYMMETRICKEY_LENGTH && CryptoAlgorithm.match(AES, symmetricKeyBytes)
+		return symmetricKeyBytes.length == SYMMETRICKEY_LENGTH && AlgorithmUtils.match(AES, symmetricKeyBytes)
 				&& symmetricKeyBytes[CryptoAlgorithm.CODE_SIZE] == SYMMETRIC.CODE;
 	}
 

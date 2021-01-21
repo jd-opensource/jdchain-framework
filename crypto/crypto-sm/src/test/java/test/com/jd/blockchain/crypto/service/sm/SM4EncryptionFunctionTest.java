@@ -22,6 +22,7 @@ import com.jd.blockchain.crypto.CryptoException;
 import com.jd.blockchain.crypto.SymmetricCiphertext;
 import com.jd.blockchain.crypto.SymmetricEncryptionFunction;
 import com.jd.blockchain.crypto.SymmetricKey;
+import com.jd.blockchain.crypto.base.AlgorithmUtils;
 import com.jd.blockchain.crypto.service.sm.SMAlgorithm;
 
 import utils.io.BytesUtils;
@@ -70,7 +71,7 @@ public class SM4EncryptionFunctionTest {
 		assertEquals(algorithm.code(), symmetricKey.getAlgorithm());
 
 		assertEquals(2 + 1 + 128 / 8, symmetricKey.toBytes().length);
-		byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
 		byte[] keyTypeBytes = new byte[] { SYMMETRIC.CODE };
 		byte[] rawKeyBytes = symmetricKey.getRawKeyBytes();
 		assertArrayEquals(BytesUtils.concat(algoBytes, keyTypeBytes, rawKeyBytes), symmetricKey.toBytes());
@@ -167,7 +168,7 @@ public class SM4EncryptionFunctionTest {
 
 		algorithm = Crypto.getAlgorithm("sm3");
 		assertNotNull(algorithm);
-		byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
 		byte[] pubKeyTypeBytes = new byte[] { PUBLIC.CODE };
 		byte[] rawKeyBytes = symmetricKey.getRawKeyBytes();
 		byte[] ripemd160KeyBytes = BytesUtils.concat(algoBytes, pubKeyTypeBytes, rawKeyBytes);
@@ -196,7 +197,7 @@ public class SM4EncryptionFunctionTest {
 
 		algorithm = Crypto.getAlgorithm("sm3");
 		assertNotNull(algorithm);
-		byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
 		byte[] pubKeyTypeBytes = new byte[] { PUBLIC.CODE };
 		byte[] rawKeyBytes = symmetricKey.getRawKeyBytes();
 		byte[] ripemd160KeyBytes = BytesUtils.concat(algoBytes, pubKeyTypeBytes, rawKeyBytes);
@@ -234,7 +235,7 @@ public class SM4EncryptionFunctionTest {
 
 		algorithm = Crypto.getAlgorithm("sm3");
 		assertNotNull(algorithm);
-		byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
 		byte[] rawCiphertextBytes = ciphertext.toBytes();
 		byte[] sm3CiphertextBytes = BytesUtils.concat(algoBytes, rawCiphertextBytes);
 
@@ -270,7 +271,7 @@ public class SM4EncryptionFunctionTest {
 
 		algorithm = Crypto.getAlgorithm("sm3");
 		assertNotNull(algorithm);
-		byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
 		byte[] rawCiphertextBytes = ciphertext.getRawCiphertext();
 		byte[] sm3CiphertextBytes = BytesUtils.concat(algoBytes, rawCiphertextBytes);
 

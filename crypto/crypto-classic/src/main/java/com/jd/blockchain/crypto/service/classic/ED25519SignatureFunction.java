@@ -18,6 +18,7 @@ import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.crypto.SignatureFunction;
+import com.jd.blockchain.crypto.base.AlgorithmUtils;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 
 import utils.crypto.classic.ED25519Utils;
@@ -93,7 +94,7 @@ public class ED25519SignatureFunction implements SignatureFunction {
 	@Override
 	public boolean supportPrivKey(byte[] privKeyBytes) {
 		// 验证输入字节数组长度=算法标识长度+密钥类型长度+密钥长度，密钥数据的算法标识对应ED25519签名算法，并且密钥类型是私钥
-		return privKeyBytes.length == PRIVKEY_LENGTH && CryptoAlgorithm.match(ED25519, privKeyBytes)
+		return privKeyBytes.length == PRIVKEY_LENGTH && AlgorithmUtils.match(ED25519, privKeyBytes)
 				&& privKeyBytes[CryptoAlgorithm.CODE_SIZE] == PRIVATE.CODE;
 	}
 
@@ -109,7 +110,7 @@ public class ED25519SignatureFunction implements SignatureFunction {
 	@Override
 	public boolean supportPubKey(byte[] pubKeyBytes) {
 		// 验证输入字节数组长度=算法标识长度+密钥类型长度+密钥长度，密钥数据的算法标识对应ED25519签名算法，并且密钥类型是公钥
-		return pubKeyBytes.length == PUBKEY_LENGTH && CryptoAlgorithm.match(ED25519, pubKeyBytes)
+		return pubKeyBytes.length == PUBKEY_LENGTH && AlgorithmUtils.match(ED25519, pubKeyBytes)
 				&& pubKeyBytes[CryptoAlgorithm.CODE_SIZE] == PUBLIC.CODE;
 	}
 
@@ -125,7 +126,7 @@ public class ED25519SignatureFunction implements SignatureFunction {
 	@Override
 	public boolean supportDigest(byte[] digestBytes) {
 		// 验证输入字节数组长度=算法标识长度+摘要长度，字节数组的算法标识对应ED25519算法
-		return digestBytes.length == SIGNATUREDIGEST_LENGTH && CryptoAlgorithm.match(ED25519, digestBytes);
+		return digestBytes.length == SIGNATUREDIGEST_LENGTH && AlgorithmUtils.match(ED25519, digestBytes);
 	}
 
 	@Override

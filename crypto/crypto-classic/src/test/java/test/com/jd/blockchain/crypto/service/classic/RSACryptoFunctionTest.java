@@ -27,6 +27,7 @@ import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.crypto.SignatureFunction;
+import com.jd.blockchain.crypto.base.AlgorithmUtils;
 import com.jd.blockchain.crypto.service.classic.ClassicAlgorithm;
 
 import utils.io.BytesUtils;
@@ -136,7 +137,7 @@ public class RSACryptoFunctionTest {
         assertEquals(2 + 1 + 259, pubKey.toBytes().length);
         assertEquals(2 + 1 + 1155, privKey.toBytes().length);
 
-        byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+        byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
         byte[] pubKeyTypeBytes = new byte[] { PUBLIC.CODE };
         byte[] privKeyTypeBytes = new byte[] { PRIVATE.CODE };
         byte[] rawPubKeyBytes = pubKey.getRawKeyBytes();
@@ -286,7 +287,7 @@ public class RSACryptoFunctionTest {
         assertTrue(asymmetricEncryptionFunction.supportCiphertext(ciphertextBytes));
         algorithm = Crypto.getAlgorithm("ripemd160");
         assertNotNull(algorithm);
-        algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+        algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
         byte[] ripemd160CiphertextBytes = BytesUtils.concat(algoBytes, rawCiphertextBytes);
         assertFalse(asymmetricEncryptionFunction.supportCiphertext(ripemd160CiphertextBytes));
 

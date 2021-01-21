@@ -8,6 +8,7 @@ import com.jd.blockchain.crypto.CryptoException;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.crypto.HashDigester;
 import com.jd.blockchain.crypto.HashFunction;
+import com.jd.blockchain.crypto.base.AlgorithmUtils;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 import com.jd.blockchain.crypto.base.EncodedHashDigester;
 
@@ -79,7 +80,7 @@ public class RIPEMD160HashFunction implements HashFunction {
 	@Override
 	public boolean supportHashDigest(byte[] digestBytes) {
 		// 验证输入字节数组长度=算法标识长度+摘要长度，以及算法标识；
-		return DIGEST_LENGTH == digestBytes.length && CryptoAlgorithm.match(RIPEMD160, digestBytes);
+		return DIGEST_LENGTH == digestBytes.length && AlgorithmUtils.match(RIPEMD160, digestBytes);
 	}
 
 	@Override
