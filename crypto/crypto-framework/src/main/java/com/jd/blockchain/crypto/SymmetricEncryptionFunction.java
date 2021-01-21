@@ -6,12 +6,6 @@ import java.io.OutputStream;
 public interface SymmetricEncryptionFunction extends SymmetricKeyGenerator, CryptoFunction {
 
 	/**
-	 * 已不支持的方法；
-	 */
-	@Deprecated
-	SymmetricCiphertext encrypt(SymmetricKey key, byte[] data);
-
-	/**
 	 * 加密；
 	 *
 	 * @param key  密钥；
@@ -28,12 +22,6 @@ public interface SymmetricEncryptionFunction extends SymmetricKeyGenerator, Cryp
 	 * @param out 密文的输出流；
 	 */
 	void encrypt(SymmetricKey key, InputStream in, OutputStream out);
-
-	/**
-	 * 已不支持的方法；
-	 */
-	@Deprecated
-	byte[] decrypt(SymmetricKey key, SymmetricCiphertext ciphertext);
 
 	/**
 	 * 解密；
@@ -70,18 +58,5 @@ public interface SymmetricEncryptionFunction extends SymmetricKeyGenerator, Cryp
 	 * @return SymmetricKey形式的对称密钥
 	 */
 	SymmetricKey resolveSymmetricKey(byte[] symmetricKeyBytes);
-
-	/**
-	 * 已不支持的方法；
-	 */
-	@Deprecated
-	boolean supportCiphertext(byte[] ciphertextBytes);
-
-	/**
-	 * 已不支持的方法；
-	 *
-	 */
-	@Deprecated
-	SymmetricCiphertext resolveCiphertext(byte[] ciphertextBytes);
 
 }

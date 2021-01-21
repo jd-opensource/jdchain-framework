@@ -15,11 +15,9 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import com.jd.blockchain.crypto.Ciphertext;
 import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.CryptoAlgorithm;
 import com.jd.blockchain.crypto.CryptoException;
-import com.jd.blockchain.crypto.SymmetricCiphertext;
 import com.jd.blockchain.crypto.SymmetricEncryptionFunction;
 import com.jd.blockchain.crypto.SymmetricKey;
 import com.jd.blockchain.crypto.base.AlgorithmUtils;

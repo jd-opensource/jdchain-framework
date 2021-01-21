@@ -389,14 +389,6 @@ public final class Crypto {
 		return encoding.decodeSymmetricKey(encodedCryptoBytes);
 	}
 
-	public static SymmetricCiphertext resolveAsSymmetricCiphertext(byte[] encodedCryptoBytes) {
-		return encoding.decodeSymmetricCiphertext(encodedCryptoBytes);
-	}
-
-	public static AsymmetricCiphertext resolveAsAsymmetricCiphertext(byte[] encodedCryptoBytes) {
-		return encoding.decodeAsymmetricCiphertext(encodedCryptoBytes);
-	}
-
 	private static class CompositeCryptoEncoding implements CryptoEncoding {
 
 		private ArrayList<CryptoEncoding> encodings = new ArrayList<>();
@@ -410,29 +402,6 @@ public final class Crypto {
 			encodings.add(encoding);
 		}
 
-		@Override
-		public SymmetricCiphertext decodeSymmetricCiphertext(byte[] encodedCryptoBytes) {
-			SymmetricCiphertext cryptoBytes = null;
-			for (CryptoEncoding encoding : encodings) {
-				cryptoBytes = encoding.decodeSymmetricCiphertext(encodedCryptoBytes);
-				if (cryptoBytes != null) {
-					return cryptoBytes;
-				}
-			}
-			throw new CryptoException("Unsupport the specified encoded symmetric cipher bytes!");
-		}
-
-		@Override
-		public AsymmetricCiphertext decodeAsymmetricCiphertext(byte[] encodedCryptoBytes) {
-			AsymmetricCiphertext cryptoBytes = null;
-			for (CryptoEncoding encoding : encodings) {
-				cryptoBytes = encoding.decodeAsymmetricCiphertext(encodedCryptoBytes);
-				if (cryptoBytes != null) {
-					return cryptoBytes;
-				}
-			}
-			throw new CryptoException("Unsupport the specified encoded asymmetric cipher bytes!");
-		}
 
 		@Override
 		public SymmetricKey decodeSymmetricKey(byte[] encodedCryptoBytes) {

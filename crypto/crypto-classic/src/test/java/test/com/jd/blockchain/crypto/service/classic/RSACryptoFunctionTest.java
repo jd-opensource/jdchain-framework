@@ -16,10 +16,8 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import com.jd.blockchain.crypto.AsymmetricCiphertext;
 import com.jd.blockchain.crypto.AsymmetricEncryptionFunction;
 import com.jd.blockchain.crypto.AsymmetricKeypair;
-import com.jd.blockchain.crypto.Ciphertext;
 import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.CryptoAlgorithm;
 import com.jd.blockchain.crypto.CryptoException;
@@ -179,20 +177,10 @@ public class RSACryptoFunctionTest {
         AsymmetricEncryptionFunction asymmetricEncryptionFunction = Crypto
                 .getAsymmetricEncryptionFunction(algorithm);
 
-        AsymmetricCiphertext ciphertext = asymmetricEncryptionFunction.encrypt(pubKey, data);
-
-        byte[] ciphertextBytes = ciphertext.toBytes();
-        assertEquals(2 + 256, ciphertextBytes.length);
-        assertEquals(ClassicAlgorithm.RSA.code(), ciphertext.getAlgorithm());
-
-        assertEquals((short) (SIGNATURE_ALGORITHM | ENCRYPTION_ALGORITHM | ASYMMETRIC_KEY | ((byte) 23 & 0x00FF)),
-                ciphertext.getAlgorithm());
-
-        byte[] rawCiphertextBytes = ciphertext.getRawCiphertext();
-        assertArrayEquals(BytesUtils.concat(algoBytes, rawCiphertextBytes), ciphertextBytes);
-
-
-        byte[] decryptedPlaintext = asymmetricEncryptionFunction.decrypt(privKey, ciphertext);
+        byte[] cipherBytes = asymmetricEncryptionFunction.encrypt(pubKey, data);
+        assertEquals(256, cipherBytes.length);
+        
+        byte[] decryptedPlaintext = asymmetricEncryptionFunction.decrypt(privKey, cipherBytes);
         assertArrayEquals(data, decryptedPlaintext);
 
 
@@ -284,28 +272,5 @@ public class RSACryptoFunctionTest {
         assertTrue(expectedException.isAssignableFrom(actualEx.getClass()));
 
 
-        assertTrue(asymmetricEncryptionFunction.supportCiphertext(ciphertextBytes));
-        algorithm = Crypto.getAlgorithm("ripemd160");
-        assertNotNull(algorithm);
-        algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
-        byte[] ripemd160CiphertextBytes = BytesUtils.concat(algoBytes, rawCiphertextBytes);
-        assertFalse(asymmetricEncryptionFunction.supportCiphertext(ripemd160CiphertextBytes));
-
-
-        Ciphertext resolvedCiphertext = asymmetricEncryptionFunction.resolveCiphertext(ciphertextBytes);
-        assertEquals(256, resolvedCiphertext.getRawCiphertext().length);
-        assertEquals(ClassicAlgorithm.RSA.code(), resolvedCiphertext.getAlgorithm());
-        assertEquals((short) (SIGNATURE_ALGORITHM | ENCRYPTION_ALGORITHM | ASYMMETRIC_KEY | ((byte) 23 & 0x00FF)),
-                resolvedCiphertext.getAlgorithm());
-        assertArrayEquals(ciphertextBytes, resolvedCiphertext.toBytes());
-        algorithm = Crypto.getAlgorithm("ripemd160");
-        assertNotNull(algorithm);
-        try {
-            asymmetricEncryptionFunction.resolveCiphertext(ripemd160CiphertextBytes);
-        } catch (Exception e) {
-            actualEx = e;
-        }
-        assertNotNull(actualEx);
-        assertTrue(expectedException.isAssignableFrom(actualEx.getClass()));
     }
 }

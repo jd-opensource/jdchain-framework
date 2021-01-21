@@ -2,12 +2,10 @@ package com.jd.blockchain.crypto.binaryproto.adapter;
 
 import com.jd.binaryproto.DataContractAutoRegistrar;
 import com.jd.binaryproto.DataContractRegistry;
-import com.jd.blockchain.crypto.AsymmetricCiphertext;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
-import com.jd.blockchain.crypto.SymmetricCiphertext;
 import com.jd.blockchain.crypto.SymmetricKey;
 import com.jd.blockchain.crypto.binaryproto.CryptoDataContractAutoRegistrar;
 
@@ -20,8 +18,6 @@ public class CryptoBytesConverterAutoRegistrar implements DataContractAutoRegist
 		DataContractRegistry.registerBytesConverter(PubKey.class, new PubKeyConverter());
 		DataContractRegistry.registerBytesConverter(PrivKey.class, new PrivKeyConverter());
 		DataContractRegistry.registerBytesConverter(SymmetricKey.class, new SymmetricKeyConverter());
-		DataContractRegistry.registerBytesConverter(SymmetricCiphertext.class, new SymmetricCiphertextConverter());
-		DataContractRegistry.registerBytesConverter(AsymmetricCiphertext.class, new AsymmetricCiphertextConverter());
 	}
 	
 	/**

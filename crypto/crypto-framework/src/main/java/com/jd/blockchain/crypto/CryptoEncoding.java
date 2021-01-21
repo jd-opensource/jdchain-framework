@@ -114,10 +114,6 @@ public interface CryptoEncoding {
 	 */
 	SignatureDigest decodeSignatureDigest(byte[] encodedBytes);
 
-	SymmetricCiphertext decodeSymmetricCiphertext(byte[] encodedCryptoBytes);
-
-	AsymmetricCiphertext decodeAsymmetricCiphertext(byte[] encodedCryptoBytes);
-
 	SymmetricKey decodeSymmetricKey(byte[] encodedCryptoBytes);
 
 	PubKey decodePubKey(byte[] encodedCryptoBytes);

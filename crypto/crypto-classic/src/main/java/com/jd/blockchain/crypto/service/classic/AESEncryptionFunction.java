@@ -10,7 +10,6 @@ import com.jd.blockchain.crypto.CryptoAlgorithm;
 import com.jd.blockchain.crypto.CryptoBytes;
 import com.jd.blockchain.crypto.CryptoException;
 import com.jd.blockchain.crypto.CryptoKeyType;
-import com.jd.blockchain.crypto.SymmetricCiphertext;
 import com.jd.blockchain.crypto.SymmetricEncryptionFunction;
 import com.jd.blockchain.crypto.SymmetricKey;
 import com.jd.blockchain.crypto.base.AlgorithmUtils;
@@ -32,11 +31,6 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 	private static final int SYMMETRICKEY_LENGTH = CryptoAlgorithm.CODE_SIZE + CryptoKeyType.TYPE_CODE_SIZE + KEY_SIZE;
 
 	AESEncryptionFunction() {
-	}
-
-	@Override
-	public SymmetricCiphertext encrypt(SymmetricKey key, byte[] data) {
-		throw new UnsupportedOperationException("Unsupported!");
 	}
 
 	@Override
@@ -82,7 +76,7 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 					plaintextWithPadding[i] = padding;
 					i++;
 				}
-				out.write(encrypt(key, plaintextWithPadding).toBytes());
+				out.write(encrypt(plaintextWithPadding, key));
 			}
 //			// TODO: 错误地使用 available 方法；
 //			int size = in.available();
@@ -102,11 +96,6 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 		} catch (IOException e) {
 			throw new CryptoException(e.getMessage(), e);
 		}
-	}
-
-	@Override
-	public byte[] decrypt(SymmetricKey key, SymmetricCiphertext ciphertext) {
-		throw new UnsupportedOperationException("Unsupported!");
 	}
 	
 	@Override
@@ -146,11 +135,8 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 				if (len != CIPHERTEXT_BUFFER_LENGTH) {
 					throw new CryptoException("inputStream's length is wrong!");
 				}
-				if (!supportCiphertext(buffBytes)) {
-					throw new CryptoException("InputStream is not valid AES ciphertext!");
-				}
-
-				plaintextWithPadding = decrypt(key, resolveCiphertext(buffBytes));
+				
+				plaintextWithPadding = decrypt(buffBytes, key);
 
 				if (plaintextWithPadding.length != (PLAINTEXT_BUFFER_LENGTH + 1)) {
 					throw new CryptoException("The decrypted plaintext is invalid");
@@ -189,18 +175,6 @@ public class AESEncryptionFunction implements SymmetricEncryptionFunction {
 		} else {
 			throw new CryptoException("symmetricKeyBytes is invalid!");
 		}
-	}
-
-	@Deprecated
-	@Override
-	public boolean supportCiphertext(byte[] ciphertextBytes) {
-		throw new UnsupportedOperationException("Unsupported!");
-	}
-
-	@Deprecated
-	@Override
-	public SymmetricCiphertext resolveCiphertext(byte[] ciphertextBytes) {
-		throw new UnsupportedOperationException("Unsupported!");
 	}
 
 	@Override

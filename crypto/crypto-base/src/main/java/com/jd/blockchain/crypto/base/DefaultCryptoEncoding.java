@@ -2,7 +2,6 @@ package com.jd.blockchain.crypto.base;
 
 import java.util.Arrays;
 
-import com.jd.blockchain.crypto.AsymmetricCiphertext;
 import com.jd.blockchain.crypto.CryptoAlgorithm;
 import com.jd.blockchain.crypto.CryptoBytes;
 import com.jd.blockchain.crypto.CryptoEncoding;
@@ -12,7 +11,6 @@ import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
-import com.jd.blockchain.crypto.SymmetricCiphertext;
 import com.jd.blockchain.crypto.SymmetricKey;
 
 import utils.io.BytesUtils;
@@ -72,25 +70,6 @@ public abstract class DefaultCryptoEncoding implements CryptoEncoding {
 		return createSymmetricKey(algorithmCode, encodedCryptoBytes);
 	}
 
-	@Override
-	public SymmetricCiphertext decodeSymmetricCiphertext(byte[] encodedCryptoBytes) {
-		short algorithmCode = AlgorithmUtils.resolveCode(encodedCryptoBytes);
-		if (!supportCryptoBytes(algorithmCode, SymmetricCiphertext.class, encodedCryptoBytes)) {
-			return null;
-		}
-
-		return createSymmetricCiphertext(algorithmCode, encodedCryptoBytes);
-	}
-
-	@Override
-	public AsymmetricCiphertext decodeAsymmetricCiphertext(byte[] encodedCryptoBytes) {
-		short algorithmCode = AlgorithmUtils.resolveCode(encodedCryptoBytes);
-		if (!supportCryptoBytes(algorithmCode, AsymmetricCiphertext.class, encodedCryptoBytes)) {
-			return null;
-		}
-
-		return createAsymmetricCiphertext(algorithmCode, encodedCryptoBytes);
-	}
 
 	public static HashDigest encodeHashDigest(CryptoAlgorithm algorithm, byte[] rawCryptoBytes) {
 		byte[] encodedBytes = encodeBytes(algorithm, rawCryptoBytes);
@@ -117,34 +96,6 @@ public abstract class DefaultCryptoEncoding implements CryptoEncoding {
 		}
 
 		return new SignatureDigestBytes(algorithmCode, encodedCryptoBytes);
-	}
-
-	public static AsymmetricCiphertext encodeAsymmetricCiphertext(CryptoAlgorithm algorithm, byte[] rawCipherbytes) {
-		byte[] encodedBytes = encodeBytes(algorithm, rawCipherbytes);
-		return new AsymmetricCipherBytes(algorithm.code(), encodedBytes);
-	}
-
-	public static AsymmetricCiphertext createAsymmetricCiphertext(short algorithmCode, byte[] encodedCipherBytes) {
-		if (!AlgorithmUtils.isAsymmetricEncryptionAlgorithm(algorithmCode)) {
-			throw new CryptoException(
-					"The algorithm of the specifed encoded crypto bytes is not a asymmetric encryption algorithm!");
-		}
-
-		return new AsymmetricCipherBytes(algorithmCode, encodedCipherBytes);
-	}
-
-	public static SymmetricCiphertext encodeSymmetricCiphertext(CryptoAlgorithm algorithm, byte[] rawCipherBytes) {
-		byte[] encodedBytes = encodeBytes(algorithm, rawCipherBytes);
-		return new SymmetricCipherBytes(algorithm.code(), encodedBytes);
-	}
-
-	public static SymmetricCiphertext createSymmetricCiphertext(short algorithmCode, byte[] encodedCipherBytes) {
-		if (!AlgorithmUtils.isSymmetricEncryptionAlgorithm(algorithmCode)) {
-			throw new CryptoException(
-					"The algorithm of the specifed encoded crypto bytes is not a symmetric encryption algorithm!");
-		}
-
-		return new SymmetricCipherBytes(algorithmCode, encodedCipherBytes);
 	}
 
 	public static SymmetricKey encodeSymmetricKey(CryptoAlgorithm algorithm, byte[] rawKeyBytes) {

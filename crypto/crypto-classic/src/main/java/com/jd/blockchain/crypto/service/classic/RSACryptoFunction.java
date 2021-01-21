@@ -9,7 +9,6 @@ import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.RSAKeyParameters;
 import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;
 
-import com.jd.blockchain.crypto.AsymmetricCiphertext;
 import com.jd.blockchain.crypto.AsymmetricEncryptionFunction;
 import com.jd.blockchain.crypto.AsymmetricKeypair;
 import com.jd.blockchain.crypto.CryptoAlgorithm;
@@ -52,7 +51,7 @@ public class RSACryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	private static final int SIGNATUREDIGEST_LENGTH = CryptoAlgorithm.CODE_SIZE + SIGNATUREDIGEST_SIZE;
 
 	@Override
-	public AsymmetricCiphertext encrypt(PubKey pubKey, byte[] data) {
+	public byte[] encrypt(PubKey pubKey, byte[] data) {
 
 		byte[] rawPubKeyBytes = pubKey.getRawKeyBytes();
 
@@ -68,14 +67,12 @@ public class RSACryptoFunction implements AsymmetricEncryptionFunction, Signatur
 
 		// 调用RSA加密算法计算密文
 		byte[] cipherbytes = RSAUtils.encrypt(data, rawPubKeyBytes);
-		return DefaultCryptoEncoding.encodeAsymmetricCiphertext(ALGORITHM, cipherbytes);
+		return cipherbytes;
 	}
 
 	@Override
-	public byte[] decrypt(PrivKey privKey, AsymmetricCiphertext ciphertext) {
-
+	public byte[] decrypt(PrivKey privKey, byte[] cipherBytes) {
 		byte[] rawPrivKeyBytes = privKey.getRawKeyBytes();
-		byte[] rawCiphertextBytes = ciphertext.getRawCiphertext();
 
 		// 验证原始私钥长度为1153字节
 		if (rawPrivKeyBytes.length != PRIVKEY_SIZE) {
@@ -88,12 +85,12 @@ public class RSACryptoFunction implements AsymmetricEncryptionFunction, Signatur
 		}
 
 		// 验证密文数据的算法标识对应RSA算法，并且密文是分组长度的整数倍
-		if (ciphertext.getAlgorithm() != ALGORITHM.code() || rawCiphertextBytes.length % CIPHERTEXTBLOCK_SIZE != 0) {
+		if (cipherBytes.length % CIPHERTEXTBLOCK_SIZE != 0) {
 			throw new CryptoException("This is not RSA ciphertext!");
 		}
 
 		// 调用RSA解密算法得到明文结果
-		return RSAUtils.decrypt(rawCiphertextBytes, rawPrivKeyBytes);
+		return RSAUtils.decrypt(cipherBytes, rawPrivKeyBytes);
 	}
 
 	@Override
@@ -197,22 +194,6 @@ public class RSACryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	}
 
 	@Override
-	public boolean supportCiphertext(byte[] ciphertextBytes) {
-		// 验证输入字节数组长度=密文分组的整数倍，字节数组的算法标识对应RSA算法
-		return (ciphertextBytes.length % CIPHERTEXTBLOCK_SIZE == CryptoAlgorithm.CODE_SIZE)
-				&& AlgorithmUtils.match(ALGORITHM, ciphertextBytes);
-	}
-
-	@Override
-	public AsymmetricCiphertext resolveCiphertext(byte[] ciphertextBytes) {
-		if (supportCiphertext(ciphertextBytes)) {
-			return DefaultCryptoEncoding.createAsymmetricCiphertext(ALGORITHM.code(), ciphertextBytes);
-		} else {
-			throw new CryptoException("ciphertextBytes are invalid!");
-		}
-	}
-
-	@Override
 	public CryptoAlgorithm getAlgorithm() {
 		return ALGORITHM;
 	}
@@ -245,8 +226,7 @@ public class RSACryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	public <T extends CryptoBytes> boolean support(Class<T> cryptoDataType, byte[] encodedCryptoBytes) {
 		return (SignatureDigest.class == cryptoDataType && supportDigest(encodedCryptoBytes))
 				|| (PubKey.class == cryptoDataType && supportPubKey(encodedCryptoBytes))
-				|| (PrivKey.class == cryptoDataType && supportPrivKey(encodedCryptoBytes))
-				|| (AsymmetricCiphertext.class == cryptoDataType && supportCiphertext(encodedCryptoBytes));
+				|| (PrivKey.class == cryptoDataType && supportPrivKey(encodedCryptoBytes));
 	}
 
 	
