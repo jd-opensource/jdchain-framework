@@ -25,6 +25,7 @@ import com.jd.blockchain.crypto.SymmetricKey;
 import com.jd.blockchain.crypto.base.AlgorithmUtils;
 import com.jd.blockchain.crypto.service.sm.SMAlgorithm;
 
+import utils.crypto.sm.SM4Utils;
 import utils.io.BytesUtils;
 
 /**
@@ -79,7 +80,6 @@ public class SM4EncryptionFunctionTest {
 
 	@Test
 	public void encryptTest() {
-
 		byte[] data = new byte[1024];
 		Random random = new Random();
 		random.nextBytes(data);
@@ -92,38 +92,11 @@ public class SM4EncryptionFunctionTest {
 
 		SymmetricKey symmetricKey = (SymmetricKey) symmetricEncryptionFunction.generateSymmetricKey();
 
-		Ciphertext ciphertext = symmetricEncryptionFunction.encrypt(symmetricKey, data);
+		byte[] cipherBytes = symmetricEncryptionFunction.encrypt(data, symmetricKey);
+		assertEquals( SM4Utils.IV_SIZE + SM4Utils.BLOCK_SIZE + data.length, cipherBytes.length);
 
-		byte[] ciphertextBytes = ciphertext.toBytes();
-		assertEquals(2 + 16 + 16 + 1024, ciphertextBytes.length);
-		assertEquals(SMAlgorithm.SM4.code(), ciphertext.getAlgorithm());
-		assertEquals((short) (ENCRYPTION_ALGORITHM | SYMMETRIC_KEY | ((byte) 4 & 0x00FF)), ciphertext.getAlgorithm());
-
-		byte[] algoBytes = BytesUtils.toBytes(ciphertext.getAlgorithm());
-		byte[] rawCiphertextBytes = ciphertext.getRawCiphertext();
-		assertArrayEquals(BytesUtils.concat(algoBytes, rawCiphertextBytes), ciphertextBytes);
-	}
-
-	@Test
-	public void decryptTest() {
-
-		byte[] data = new byte[1024];
-		Random random = new Random();
-		random.nextBytes(data);
-
-		CryptoAlgorithm algorithm = Crypto.getAlgorithm("sm4");
-		assertNotNull(algorithm);
-
-		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto
-				.getSymmetricEncryptionFunction(algorithm);
-
-		SymmetricKey symmetricKey = (SymmetricKey) symmetricEncryptionFunction.generateSymmetricKey();
-
-		SymmetricCiphertext ciphertext = symmetricEncryptionFunction.encrypt(symmetricKey, data);
-
-		byte[] decryptedPlaintext = symmetricEncryptionFunction.decrypt(symmetricKey, ciphertext);
-
-		assertArrayEquals(data, decryptedPlaintext);
+		byte[] decryptedPlainBytes = symmetricEncryptionFunction.decrypt(cipherBytes, symmetricKey);
+		assertArrayEquals(data, decryptedPlainBytes);
 	}
 
 	// @Test
@@ -213,76 +186,4 @@ public class SM4EncryptionFunctionTest {
 		assertTrue(expectedException.isAssignableFrom(actualEx.getClass()));
 	}
 
-	@Test
-	public void supportCiphertextTest() {
-
-		byte[] data = new byte[1024];
-		Random random = new Random();
-		random.nextBytes(data);
-
-		CryptoAlgorithm algorithm = Crypto.getAlgorithm("sm4");
-		assertNotNull(algorithm);
-
-		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto
-				.getSymmetricEncryptionFunction(algorithm);
-
-		SymmetricKey symmetricKey = (SymmetricKey) symmetricEncryptionFunction.generateSymmetricKey();
-
-		Ciphertext ciphertext = symmetricEncryptionFunction.encrypt(symmetricKey, data);
-
-		byte[] ciphertextBytes = ciphertext.toBytes();
-		assertTrue(symmetricEncryptionFunction.supportCiphertext(ciphertextBytes));
-
-		algorithm = Crypto.getAlgorithm("sm3");
-		assertNotNull(algorithm);
-		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
-		byte[] rawCiphertextBytes = ciphertext.toBytes();
-		byte[] sm3CiphertextBytes = BytesUtils.concat(algoBytes, rawCiphertextBytes);
-
-		assertFalse(symmetricEncryptionFunction.supportCiphertext(sm3CiphertextBytes));
-	}
-
-	@Test
-	public void resolveCiphertextTest() {
-
-		byte[] data = new byte[1024];
-		Random random = new Random();
-		random.nextBytes(data);
-
-		CryptoAlgorithm algorithm = Crypto.getAlgorithm("sm4");
-		assertNotNull(algorithm);
-
-		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto
-				.getSymmetricEncryptionFunction(algorithm);
-
-		SymmetricKey symmetricKey = (SymmetricKey) symmetricEncryptionFunction.generateSymmetricKey();
-
-		Ciphertext ciphertext = symmetricEncryptionFunction.encrypt(symmetricKey, data);
-
-		byte[] ciphertextBytes = ciphertext.toBytes();
-
-		Ciphertext resolvedCiphertext = symmetricEncryptionFunction.resolveCiphertext(ciphertextBytes);
-
-		assertEquals(1024 + 16 + 16, resolvedCiphertext.getRawCiphertext().length);
-		assertEquals(SMAlgorithm.SM4.code(), resolvedCiphertext.getAlgorithm());
-		assertEquals((short) (ENCRYPTION_ALGORITHM | SYMMETRIC_KEY | ((byte) 4 & 0x00FF)),
-				resolvedCiphertext.getAlgorithm());
-		assertArrayEquals(ciphertextBytes, resolvedCiphertext.toBytes());
-
-		algorithm = Crypto.getAlgorithm("sm3");
-		assertNotNull(algorithm);
-		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
-		byte[] rawCiphertextBytes = ciphertext.getRawCiphertext();
-		byte[] sm3CiphertextBytes = BytesUtils.concat(algoBytes, rawCiphertextBytes);
-
-		Class<?> expectedException = CryptoException.class;
-		Exception actualEx = null;
-		try {
-			symmetricEncryptionFunction.resolveCiphertext(sm3CiphertextBytes);
-		} catch (Exception e) {
-			actualEx = e;
-		}
-		assertNotNull(actualEx);
-		assertTrue(expectedException.isAssignableFrom(actualEx.getClass()));
-	}
 }

@@ -78,7 +78,7 @@ public class AESEncryptionFunctionTest {
 	}
 
 	@Test
-	public void encryptTest() {
+	public void testEncryptionAndDecryption() {
 
 		byte[] data = new byte[1024];
 		Random random = new Random();
@@ -91,39 +91,13 @@ public class AESEncryptionFunctionTest {
 
 		SymmetricKey symmetricKey = (SymmetricKey) symmetricEncryptionFunction.generateSymmetricKey();
 
-		Ciphertext ciphertext = symmetricEncryptionFunction.encrypt(symmetricKey, data);
+		// 验证加密和解密是可正确还原；
+		// AES 采用 CBC 模式加密，采用随机生成的初始化向量；
+		byte[] ciphertextBytes = symmetricEncryptionFunction.encrypt(data, symmetricKey);
+		assertEquals(AESUtils.getCiphertextSizeWithPadding_IV(data.length), ciphertextBytes.length);
 
-		byte[] ciphertextBytes = ciphertext.toBytes();
-
-		assertEquals(CryptoAlgorithm.CODE_SIZE + AESUtils.getCiphertextSizeWithPadding_IV(data.length),
-				ciphertextBytes.length);
-		assertEquals(ClassicAlgorithm.AES.code(), ciphertext.getAlgorithm());
-		assertEquals((short) (ENCRYPTION_ALGORITHM | SYMMETRIC_KEY | ((byte) 26 & 0x00FF)), ciphertext.getAlgorithm());
-
-		byte[] algoBytes = BytesUtils.toBytes(ciphertext.getAlgorithm());
-		byte[] rawCiphertextBytes = ciphertext.getRawCiphertext();
-		assertArrayEquals(BytesUtils.concat(algoBytes, rawCiphertextBytes), ciphertextBytes);
-	}
-
-	@Test
-	public void decryptTest() {
-
-		byte[] data = new byte[1024];
-		Random random = new Random();
-		random.nextBytes(data);
-
-		CryptoAlgorithm algorithm = Crypto.getAlgorithm("aes");
-		assertNotNull(algorithm);
-
-		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto.getSymmetricEncryptionFunction(algorithm);
-
-		SymmetricKey symmetricKey = (SymmetricKey) symmetricEncryptionFunction.generateSymmetricKey();
-
-		SymmetricCiphertext ciphertext = symmetricEncryptionFunction.encrypt(symmetricKey, data);
-
-		byte[] decryptedPlaintext = symmetricEncryptionFunction.decrypt(symmetricKey, ciphertext);
-
-		assertArrayEquals(data, decryptedPlaintext);
+		byte[] plainBytes = symmetricEncryptionFunction.decrypt(ciphertextBytes, symmetricKey);
+		assertArrayEquals(data, plainBytes);
 	}
 
 	// @Test
@@ -213,83 +187,4 @@ public class AESEncryptionFunctionTest {
 		assertTrue(expectedException.isAssignableFrom(actualEx.getClass()));
 	}
 
-	@Test
-	public void supportCiphertextTest() {
-
-		byte[] data = new byte[1024];
-		Random random = new Random();
-		random.nextBytes(data);
-
-		CryptoAlgorithm algorithm = Crypto.getAlgorithm("aes");
-		assertNotNull(algorithm);
-
-		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto.getSymmetricEncryptionFunction(algorithm);
-
-		SymmetricKey symmetricKey = (SymmetricKey) symmetricEncryptionFunction.generateSymmetricKey();
-
-		Ciphertext ciphertext = symmetricEncryptionFunction.encrypt(symmetricKey, data);
-
-		byte[] ciphertextBytes = ciphertext.toBytes();
-		assertTrue(symmetricEncryptionFunction.supportCiphertext(ciphertextBytes));
-
-		algorithm = Crypto.getAlgorithm("ripemd160");
-		assertNotNull(algorithm);
-		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
-		byte[] rawCiphertextBytes = ciphertext.toBytes();
-		byte[] ripemd160CiphertextBytes = BytesUtils.concat(algoBytes, rawCiphertextBytes);
-
-		assertFalse(symmetricEncryptionFunction.supportCiphertext(ripemd160CiphertextBytes));
-	}
-
-	@Test
-	public void resolveCiphertextTest() {
-
-		byte[] data = new byte[1024];
-		Random random = new Random();
-		random.nextBytes(data);
-
-		CryptoAlgorithm algorithm = Crypto.getAlgorithm("aes");
-		assertNotNull(algorithm);
-
-		SymmetricEncryptionFunction symmetricEncryptionFunction = Crypto.getSymmetricEncryptionFunction(algorithm);
-
-		SymmetricKey symmetricKey = (SymmetricKey) symmetricEncryptionFunction.generateSymmetricKey();
-
-		Ciphertext ciphertext = symmetricEncryptionFunction.encrypt(symmetricKey, data);
-
-		byte[] rawCipherBytes = AESUtils.encrypt(data, symmetricKey.getRawKeyBytes());
-
-		byte[] ciphertextBytes = ciphertext.toBytes();
-		Ciphertext resolvedCiphertext = symmetricEncryptionFunction.resolveCiphertext(ciphertextBytes);
-
-		byte[] resolvedRawCipherBytes = resolvedCiphertext.getRawCiphertext();
-		assertEquals(rawCipherBytes.length, resolvedRawCipherBytes.length);
-		// 密文的预期长度；
-		int expectedCiphertextSize = AESUtils.getCiphertextSizeWithPadding_IV(data.length);
-		assertEquals(expectedCiphertextSize, resolvedRawCipherBytes.length);
-		assertEquals(ClassicAlgorithm.AES.code(), resolvedCiphertext.getAlgorithm());
-		assertEquals((short) (ENCRYPTION_ALGORITHM | SYMMETRIC_KEY | ((byte) 26 & 0x00FF)),
-				resolvedCiphertext.getAlgorithm());
-		assertArrayEquals(ciphertextBytes, resolvedCiphertext.toBytes());
-
-		assertArrayEquals(ciphertext.toBytes(), resolvedCiphertext.toBytes());
-		assertArrayEquals(ciphertext.getRawCiphertext(), resolvedCiphertext.getRawCiphertext());
-		assertEquals(ciphertext.getAlgorithm(), resolvedCiphertext.getAlgorithm());
-
-		algorithm = Crypto.getAlgorithm("ripemd160");
-		assertNotNull(algorithm);
-		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
-		byte[] rawCiphertextBytes = ciphertext.getRawCiphertext();
-		byte[] ripemd160CiphertextBytes = BytesUtils.concat(algoBytes, rawCiphertextBytes);
-
-		Class<?> expectedException = CryptoException.class;
-		Exception actualEx = null;
-		try {
-			symmetricEncryptionFunction.resolveCiphertext(ripemd160CiphertextBytes);
-		} catch (Exception e) {
-			actualEx = e;
-		}
-		assertNotNull(actualEx);
-		assertTrue(expectedException.isAssignableFrom(actualEx.getClass()));
-	}
 }
