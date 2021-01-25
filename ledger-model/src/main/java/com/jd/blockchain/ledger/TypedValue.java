@@ -26,17 +26,25 @@ public class TypedValue implements BytesValue {
 	private Bytes value;
 
 	private TypedValue(DataType type, byte[] bytes) {
-		this.type = type;
-		this.value = new Bytes(bytes);
+		if(null != bytes && bytes.length > 0) {
+			this.type = type;
+			this.value = new Bytes(bytes);
+		} else {
+			this.type = DataType.NIL;
+		}
 	}
 
 	private TypedValue(DataType type, Bytes bytes) {
-		this.type = type;
-		this.value = bytes;
+		if(null != bytes && bytes.size() > 0) {
+			this.type = type;
+			this.value = bytes;
+		} else {
+			this.type = DataType.NIL;
+		}
 	}
 
 	private TypedValue(BytesValue bytesValue) {
-		if (bytesValue == null) {
+		if (bytesValue == null || DataType.NIL == bytesValue.getType() || bytesValue.getBytes().size() == 0) {
 			this.type = DataType.NIL;
 		} else {
 			this.type = bytesValue.getType();
