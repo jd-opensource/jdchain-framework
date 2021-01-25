@@ -68,7 +68,7 @@ public class ContractDeployTest_ {
         int port = 11000;
         Gateway gateway = new Gateway(host, port);
         String ledger = "j5vaUZRMeqgtKLs4sQFnxuYKq1HXtSfKT64TtoopX5t7Pv";
-        String pubKeyText = "3snPdw7i7PjVKiTH2VnXZu5H8QmNaSXpnk4ei533jFpuifyjS5zzH9";
+        String pubKeyText = "7VeRLdGtSz1Y91gjLTqEdnkotzUfaAqdap3xw6fQ1yKHkvVq";
         ContractAddress contractAddress = new ContractAddress();
         contractAddress.setPubKey(pubKeyText);
 
