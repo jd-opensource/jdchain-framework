@@ -6,7 +6,6 @@ import com.jd.blockchain.ledger.TransactionRequest;
 import com.jd.blockchain.ledger.TransactionResponse;
 import com.jd.blockchain.sdk.BlockchainException;
 import com.jd.blockchain.sdk.LedgerAccessContext;
-import com.jd.blockchain.sdk.PeerBlockchainService;
 import com.jd.blockchain.sdk.proxy.BlockchainServiceProxy;
 import com.jd.blockchain.transaction.BlockchainQueryService;
 import com.jd.blockchain.transaction.TransactionService;
@@ -21,7 +20,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author huanghaiquan
  *
  */
-public class PeerServiceProxy extends BlockchainServiceProxy implements TransactionService, PeerBlockchainService {
+public class PeerServiceProxy extends BlockchainServiceProxy implements TransactionService {
 
 	private final Lock accessLock = new ReentrantLock();
 
@@ -92,26 +91,5 @@ public class PeerServiceProxy extends BlockchainServiceProxy implements Transact
 	public TransactionResponse process(TransactionRequest txRequest) {
 		TransactionService targetTxService = getTransactionService(txRequest.getTransactionContent().getLedgerHash());
 		return targetTxService.process(txRequest);
-	}
-
-	/**
-	 * 发送请求查询，不通过缓存
-	 *
-	 * @return
-	 */
-	@Override
-	public HashDigest[] getLedgerHashsDirect() {
-		Set<HashDigest> ledgerHashs = new HashSet<>();
-		if (ledgerAccessContexts != null && !ledgerAccessContexts.isEmpty()) {
-			Collection<LedgerAccessContext> ctxs = ledgerAccessContexts.values();
-			for (LedgerAccessContext ctx : ctxs) {
-				HashDigest[] hashs = ctx.getQueryService().getLedgerHashs();
-				ledgerHashs.addAll(Arrays.asList(hashs));
-			}
-		}
-		if (ledgerHashs.isEmpty()) {
-			return new HashDigest[0];
-		}
-		return ledgerHashs.toArray(new HashDigest[ledgerHashs.size()]);
 	}
 }

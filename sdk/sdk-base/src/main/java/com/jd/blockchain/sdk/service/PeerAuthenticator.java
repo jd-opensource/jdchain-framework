@@ -17,10 +17,14 @@ import com.jd.blockchain.setting.GatewayAuthResponse;
 import com.jd.httpservice.agent.HttpServiceAgent;
 import com.jd.httpservice.agent.ServiceEndpoint;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.net.NetworkAddress;
 import utils.security.AuthenticationException;
 
 public class PeerAuthenticator {
+
+	private static Logger LOGGER = LoggerFactory.getLogger(PeerAuthenticator.class);
 
 	private AsymmetricKeypair gatewayKey;
 	private NetworkAddress peerAddr;
@@ -61,7 +65,7 @@ public class PeerAuthenticator {
 		} catch (Exception e) {
 			String errorMessage = String.format("Gateway authentication fail! --[peer=%s] %s", peerAddr.toString(),
 					e.getMessage());
-			PeerBlockchainServiceFactory.LOGGER.warn(errorMessage, e);
+			LOGGER.warn(errorMessage, e);
 			throw new AuthenticationException(errorMessage);
 		}
 	}
