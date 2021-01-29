@@ -43,10 +43,10 @@ public class LedgerInitPropertiesTest {
 
 	public static final String PASSWORD = "abc";
 
-	public static final String[] PUB_KEYS = { "3snPdw7i7PjVKiTH2VnXZu5H8QmNaSXpnk4ei533jFpuifyjS5zzH9",
-			"3snPdw7i7PajLB35tEau1kmixc6ZrjLXgxwKbkv5bHhP7nT5dhD9eX",
-			"3snPdw7i7PZi6TStiyc6mzjprnNhgs2atSGNS8wPYzhbKaUWGFJt7x",
-			"3snPdw7i7PifPuRX7fu3jBjsb3rJRfDe9GtbDfvFJaJ4V4hHXQfhwk" };
+	public static final String[] PUB_KEYS = { "7VeRLdGtSz1Y91gjLTqEdnkotzUfaAqdap3xw6fQ1yKHkvVq",
+			"7VeRBsHM2nsGwP8b2ufRxz36hhNtSqjKTquzoa4WVKWty5sD",
+			"7VeRAr3dSbi1xatq11ZcF7sEPkaMmtZhV9shonGJWk9T4pLe",
+			"7VeRKoM5RE6iFXr214Hsiic2aoqCQ7MEU1dHQFRnjXQcReAS" };
 
 	public static final String[] PRIV_KEYS = {
 			"177gjzHTznYdPgWqZrH43W3yp37onm74wYXT4v9FukpCHBrhRysBBZh7Pzdo5AMRyQGJD7x",
@@ -157,7 +157,7 @@ public class LedgerInitPropertiesTest {
 
 			ParticipantProperties part0 = initProps.getConsensusParticipant(0);
 			assertEquals("jd.com", part0.getName());
-			PubKey pubKey0 = KeyGenUtils.decodePubKey("3snPdw7i7PjVKiTH2VnXZu5H8QmNaSXpnk4ei533jFpuifyjS5zzH9");
+			PubKey pubKey0 = KeyGenUtils.decodePubKey("7VeRLdGtSz1Y91gjLTqEdnkotzUfaAqdap3xw6fQ1yKHkvVq");
 			assertEquals(pubKey0, part0.getPubKey());
 			assertEquals("127.0.0.1", part0.getInitializerAddress().getHost());
 			assertEquals(8800, part0.getInitializerAddress().getPort());
@@ -167,7 +167,7 @@ public class LedgerInitPropertiesTest {
 
 			ParticipantProperties part1 = initProps.getConsensusParticipant(1);
 			assertEquals(false, part1.getInitializerAddress().isSecure());
-			PubKey pubKey1 = KeyGenUtils.decodePubKey("3snPdw7i7PajLB35tEau1kmixc6ZrjLXgxwKbkv5bHhP7nT5dhD9eX");
+			PubKey pubKey1 = KeyGenUtils.decodePubKey("7VeRBsHM2nsGwP8b2ufRxz36hhNtSqjKTquzoa4WVKWty5sD");
 			assertEquals(pubKey1, part1.getPubKey());
 			assertArrayEquals(new String[] { "MANAGER" }, part1.getRoles());
 			assertEquals(RolesPolicy.UNION, part1.getRolesPolicy());
@@ -178,7 +178,7 @@ public class LedgerInitPropertiesTest {
 			assertEquals(RolesPolicy.UNION, part2.getRolesPolicy());
 
 			ParticipantProperties part3 = initProps.getConsensusParticipant(3);
-			PubKey pubKey3 = KeyGenUtils.decodePubKey("3snPdw7i7PifPuRX7fu3jBjsb3rJRfDe9GtbDfvFJaJ4V4hHXQfhwk");
+			PubKey pubKey3 = KeyGenUtils.decodePubKey("7VeRKoM5RE6iFXr214Hsiic2aoqCQ7MEU1dHQFRnjXQcReAS");
 			assertEquals(pubKey3, part3.getPubKey());
 			assertArrayEquals(new String[] { "GUEST" }, part3.getRoles());
 			assertEquals(RolesPolicy.INTERSECT, part3.getRolesPolicy());

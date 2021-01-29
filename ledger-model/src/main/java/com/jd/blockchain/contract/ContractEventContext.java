@@ -6,10 +6,11 @@ import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.BytesValueList;
 import com.jd.blockchain.ledger.TransactionRequest;
+import com.jd.blockchain.ledger.LedgerQueryService;
 
 /**
  * 合约事件上下文；
- * 
+ *
  * @author huanghaiquan
  *
  */
@@ -65,12 +66,19 @@ public interface ContractEventContext {
 	 *
 	 * @return
 	 */
-	Set<BlockchainIdentity> getContracOwners();
+	Set<BlockchainIdentity> getContractOwners();
 
 	/**
 	 * get contract's version;
 	 * @return
 	 */
 	long getVersion();
+
+	/**
+	 * 当前包含未提交区块数据账本操作上下文；
+	 *
+	 * @return
+	 */
+	LedgerQueryService getUncommittedLedger();
 
 }

@@ -10,11 +10,12 @@ import com.jd.blockchain.crypto.CryptoAlgorithm;
 import com.jd.blockchain.crypto.CryptoBytes;
 import com.jd.blockchain.crypto.CryptoException;
 import com.jd.blockchain.crypto.CryptoKeyType;
-import com.jd.blockchain.crypto.SymmetricCiphertext;
 import com.jd.blockchain.crypto.SymmetricEncryptionFunction;
 import com.jd.blockchain.crypto.SymmetricKey;
+import com.jd.blockchain.crypto.base.AlgorithmUtils;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
-import com.jd.blockchain.crypto.utils.sm.SM4Utils;
+
+import utils.crypto.sm.SM4Utils;
 
 public class SM4EncryptionFunction implements SymmetricEncryptionFunction {
 
@@ -31,10 +32,9 @@ public class SM4EncryptionFunction implements SymmetricEncryptionFunction {
 
 	SM4EncryptionFunction() {
 	}
-
+	
 	@Override
-	public SymmetricCiphertext encrypt(SymmetricKey key, byte[] data) {
-
+	public byte[] encrypt(byte[] data, SymmetricKey key) {
 		byte[] rawKeyBytes = key.getRawKeyBytes();
 
 		// 验证原始密钥长度为128比特，即16字节
@@ -49,7 +49,7 @@ public class SM4EncryptionFunction implements SymmetricEncryptionFunction {
 
 		// 调用底层SM4算法并计算密文数据
 		byte[] rawCipherBytes = SM4Utils.encrypt(data, rawKeyBytes);
-		return DefaultCryptoEncoding.encodeSymmetricCiphertext(SM4, rawCipherBytes);
+		return rawCipherBytes;
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class SM4EncryptionFunction implements SymmetricEncryptionFunction {
 					plaintextWithPadding[i] = padding;
 					i++;
 				}
-				out.write(encrypt(key, plaintextWithPadding).toBytes());
+				out.write(encrypt(plaintextWithPadding, key));
 			}
 			// byte[] sm4Data = new byte[in.available()];
 			// in.read(sm4Data);
@@ -88,12 +88,10 @@ public class SM4EncryptionFunction implements SymmetricEncryptionFunction {
 			throw new CryptoException(e.getMessage(), e);
 		}
 	}
-
+	
 	@Override
-	public byte[] decrypt(SymmetricKey key, SymmetricCiphertext ciphertext) {
-
+	public byte[] decrypt(byte[] ciphertext, SymmetricKey key) {
 		byte[] rawKeyBytes = key.getRawKeyBytes();
-		byte[] rawCiphertextBytes = ciphertext.getRawCiphertext();
 
 		// 验证原始密钥长度为128比特，即16字节
 		if (rawKeyBytes.length != KEY_SIZE) {
@@ -106,17 +104,12 @@ public class SM4EncryptionFunction implements SymmetricEncryptionFunction {
 		}
 
 		// 验证原始密文长度为分组长度的整数倍
-		if (rawCiphertextBytes.length % BLOCK_SIZE != 0) {
+		if (ciphertext.length % BLOCK_SIZE != 0) {
 			throw new CryptoException("This ciphertext has wrong format!");
 		}
 
-		// 验证密文数据算法标识对应SM4算法
-		if (ciphertext.getAlgorithm() != SM4.code()) {
-			throw new CryptoException("This is not SM4 ciphertext!");
-		}
-
 		// 调用底层SM4算法解密，得到明文
-		return SM4Utils.decrypt(rawCiphertextBytes, rawKeyBytes);
+		return SM4Utils.decrypt(ciphertext, rawKeyBytes);
 	}
 
 	@Override
@@ -134,11 +127,8 @@ public class SM4EncryptionFunction implements SymmetricEncryptionFunction {
 				if (len != CIPHERTEXT_BUFFER_LENGTH) {
 					throw new CryptoException("inputStream's length is wrong!");
 				}
-				if (!supportCiphertext(buffBytes)) {
-					throw new CryptoException("InputStream is not valid SM4 ciphertext!");
-				}
 
-				plaintextWithPadding = decrypt(key, resolveCiphertext(buffBytes));
+				plaintextWithPadding = decrypt(buffBytes, key);
 
 				if (plaintextWithPadding.length != (PLAINTEXT_BUFFER_LENGTH + 1)) {
 					throw new CryptoException("The decrypted plaintext is invalid");
@@ -176,7 +166,7 @@ public class SM4EncryptionFunction implements SymmetricEncryptionFunction {
 	@Override
 	public boolean supportSymmetricKey(byte[] symmetricKeyBytes) {
 		// 验证输入字节数组长度=算法标识长度+密钥类型长度+密钥长度，字节数组的算法标识对应SM4算法且密钥密钥类型是对称密钥
-		return symmetricKeyBytes.length == SYMMETRICKEY_LENGTH && CryptoAlgorithm.match(SM4, symmetricKeyBytes)
+		return symmetricKeyBytes.length == SYMMETRICKEY_LENGTH && AlgorithmUtils.match(SM4, symmetricKeyBytes)
 				&& symmetricKeyBytes[CryptoAlgorithm.CODE_SIZE] == SYMMETRIC.CODE;
 	}
 
@@ -186,22 +176,6 @@ public class SM4EncryptionFunction implements SymmetricEncryptionFunction {
 			return DefaultCryptoEncoding.createSymmetricKey(SM4.code(), symmetricKeyBytes);
 		} else {
 			throw new CryptoException("symmetricKeyBytes is invalid!");
-		}
-	}
-
-	@Override
-	public boolean supportCiphertext(byte[] ciphertextBytes) {
-		// 验证(输入字节数组长度-算法标识长度)是分组长度的整数倍，字节数组的算法标识对应SM4算法
-		return (ciphertextBytes.length - CryptoAlgorithm.CODE_SIZE) % BLOCK_SIZE == 0
-				&& CryptoAlgorithm.match(SM4, ciphertextBytes);
-	}
-
-	@Override
-	public SymmetricCiphertext resolveCiphertext(byte[] ciphertextBytes) {
-		if (supportCiphertext(ciphertextBytes)) {
-			return DefaultCryptoEncoding.createSymmetricCiphertext(SM4.code(), ciphertextBytes);
-		} else {
-			throw new CryptoException("ciphertextBytes is invalid!");
 		}
 	}
 
@@ -219,7 +193,6 @@ public class SM4EncryptionFunction implements SymmetricEncryptionFunction {
 
 	@Override
 	public <T extends CryptoBytes> boolean support(Class<T> cryptoDataType, byte[] encodedCryptoBytes) {
-		return (SymmetricKey.class == cryptoDataType && supportSymmetricKey(encodedCryptoBytes))
-				|| (SymmetricCiphertext.class == cryptoDataType && supportCiphertext(encodedCryptoBytes));
+		return (SymmetricKey.class == cryptoDataType && supportSymmetricKey(encodedCryptoBytes));
 	}
 }

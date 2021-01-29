@@ -1,21 +1,26 @@
 package test.com.jd.blockchain.crypto.service.classic;
 
-import com.jd.blockchain.crypto.CryptoAlgorithm;
-import com.jd.blockchain.crypto.CryptoException;
-import com.jd.blockchain.crypto.Crypto;
-import com.jd.blockchain.crypto.HashDigest;
-import com.jd.blockchain.crypto.HashFunction;
-import com.jd.blockchain.crypto.service.classic.ClassicAlgorithm;
-
-import utils.io.BytesUtils;
-
-import org.junit.Test;
+import static com.jd.blockchain.crypto.CryptoAlgorithm.HASH_ALGORITHM;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
 
-import static com.jd.blockchain.crypto.CryptoAlgorithm.HASH_ALGORITHM;
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+import com.jd.blockchain.crypto.Crypto;
+import com.jd.blockchain.crypto.CryptoAlgorithm;
+import com.jd.blockchain.crypto.CryptoException;
+import com.jd.blockchain.crypto.HashDigest;
+import com.jd.blockchain.crypto.HashFunction;
+import com.jd.blockchain.crypto.base.AlgorithmUtils;
+import com.jd.blockchain.crypto.service.classic.ClassicAlgorithm;
+
+import utils.io.BytesUtils;
 
 /**
  * @author zhanglin33
@@ -59,7 +64,7 @@ public class RIPEMD160HashFunctionTest {
 
 		HashDigest digest = hashFunction.hash(data);
 		byte[] rawDigestBytes = digest.getRawDigest();
-		byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
 
 		byte[] digestBytes = digest.toBytes();
 		assertEquals(160 / 8 + 2, digestBytes.length);
@@ -113,7 +118,7 @@ public class RIPEMD160HashFunctionTest {
 
 		algorithm = Crypto.getAlgorithm("aes");
 		assertNotNull(algorithm);
-		byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
 		System.arraycopy(algoBytes, 0, digestBytes, 0, algoBytes.length);
 		assertFalse(hashFunction.supportHashDigest(digestBytes));
 	}
@@ -142,7 +147,7 @@ public class RIPEMD160HashFunctionTest {
 
 		algorithm = Crypto.getAlgorithm("aes");
 		assertNotNull(algorithm);
-		byte[] algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+		byte[] algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
 		byte[] rawDigestBytes = digest.getRawDigest();
 		byte[] aesDigestBytes = BytesUtils.concat(algoBytes, rawDigestBytes);
 
@@ -158,7 +163,7 @@ public class RIPEMD160HashFunctionTest {
 
 		algorithm = Crypto.getAlgorithm("sha256");
 		assertNotNull(algorithm);
-		algoBytes = CryptoAlgorithm.getCodeBytes(algorithm);
+		algoBytes = AlgorithmUtils.getCodeBytes(algorithm);
 		rawDigestBytes = digest.getRawDigest();
 		byte[] ripemd160DigestBytes = BytesUtils.concat(algoBytes, rawDigestBytes);
 

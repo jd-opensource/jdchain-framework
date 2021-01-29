@@ -8,16 +8,16 @@ public interface AsymmetricEncryptionFunction extends AsymmetricKeypairGenerator
 	 * @param data
 	 * @return
 	 */
-	AsymmetricCiphertext encrypt(PubKey pubKey, byte[] data);
+	byte[] encrypt(PubKey pubKey, byte[] data);
 
 	/**
 	 * 解密；
 	 * 
 	 * @param privKey
-	 * @param ciphertext
+	 * @param cipherBytes
 	 * @return
 	 */
-	byte[] decrypt(PrivKey privKey, AsymmetricCiphertext ciphertext);
+	byte[] decrypt(PrivKey privKey, byte[] cipherBytes);
 
 	/**
 	 * 使用私钥恢复公钥；
@@ -58,21 +58,5 @@ public interface AsymmetricEncryptionFunction extends AsymmetricKeypairGenerator
 	 * @return PubKey形式的公钥
 	 */
 	PubKey resolvePubKey(byte[] pubKeyBytes);
-
-	/**
-	 * 校验密文格式是否满足要求；
-	 *
-	 * @param ciphertextBytes 包含算法标识和密文的字节数组
-	 * @return 是否满足指定算法的密文格式
-	 */
-	boolean supportCiphertext(byte[] ciphertextBytes);
-
-	/**
-	 * 将字节数组形式的密文转换成AsymmetricCiphertext格式；
-	 *
-	 * @param ciphertextBytes 包含算法标识和密文的字节数组
-	 * @return AsymmetricCiphertext形式的签名摘要
-	 */
-	AsymmetricCiphertext resolveCiphertext(byte[] ciphertextBytes);
 
 }

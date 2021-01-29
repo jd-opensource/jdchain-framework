@@ -8,10 +8,11 @@ import com.jd.blockchain.crypto.CryptoException;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.crypto.HashDigester;
 import com.jd.blockchain.crypto.HashFunction;
+import com.jd.blockchain.crypto.base.AlgorithmUtils;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 import com.jd.blockchain.crypto.base.EncodedHashDigester;
-import com.jd.blockchain.crypto.utils.sm.SM3Utils;
 
+import utils.crypto.sm.SM3Utils;
 import utils.security.Hasher;
 
 public class SM3HashFunction implements HashFunction {
@@ -79,7 +80,7 @@ public class SM3HashFunction implements HashFunction {
 	@Override
 	public boolean supportHashDigest(byte[] digestBytes) {
 		// 验证输入字节数组长度=算法标识长度+摘要长度，以及算法标识；
-		return CryptoAlgorithm.match(SM3, digestBytes) && DIGEST_LENGTH == digestBytes.length;
+		return AlgorithmUtils.match(SM3, digestBytes) && DIGEST_LENGTH == digestBytes.length;
 	}
 
 	@Override

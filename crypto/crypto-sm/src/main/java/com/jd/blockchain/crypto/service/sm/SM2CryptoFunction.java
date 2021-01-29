@@ -9,7 +9,6 @@ import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 
-import com.jd.blockchain.crypto.AsymmetricCiphertext;
 import com.jd.blockchain.crypto.AsymmetricEncryptionFunction;
 import com.jd.blockchain.crypto.AsymmetricKeypair;
 import com.jd.blockchain.crypto.CryptoAlgorithm;
@@ -20,8 +19,11 @@ import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.crypto.SignatureFunction;
+import com.jd.blockchain.crypto.base.AlgorithmUtils;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
-import com.jd.blockchain.crypto.utils.sm.SM2Utils;
+
+import utils.crypto.sm.SM2Utils;
+import utils.crypto.sm.SM3SecureRandom;
 
 public class SM2CryptoFunction implements AsymmetricEncryptionFunction, SignatureFunction {
 
@@ -43,8 +45,7 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	}
 
 	@Override
-	public AsymmetricCiphertext encrypt(PubKey pubKey, byte[] data) {
-
+	public byte[] encrypt(PubKey pubKey, byte[] data) {
 		byte[] rawPubKeyBytes = pubKey.getRawKeyBytes();
 
 		// 验证原始公钥长度为65字节
@@ -59,14 +60,13 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 
 		// 调用SM2加密算法计算密文
 		byte[] rawCipherBytes = SM2Utils.encrypt(data, rawPubKeyBytes);
-		return DefaultCryptoEncoding.encodeAsymmetricCiphertext(SM2, rawCipherBytes);
+		return rawCipherBytes;
 	}
 
 	@Override
-	public byte[] decrypt(PrivKey privKey, AsymmetricCiphertext ciphertext) {
+	public byte[] decrypt(PrivKey privKey, byte[] cipherBytes) {
 
 		byte[] rawPrivKeyBytes = privKey.getRawKeyBytes();
-		byte[] rawCiphertextBytes = ciphertext.getRawCiphertext();
 
 		// 验证原始私钥长度为32字节
 		if (rawPrivKeyBytes.length != PRIVKEY_SIZE) {
@@ -79,12 +79,12 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 		}
 
 		// 验证密文数据的算法标识对应SM2算法，并且密文符合长度要求
-		if (ciphertext.getAlgorithm() != SM2.code() || rawCiphertextBytes.length < ECPOINT_SIZE + HASHDIGEST_SIZE) {
+		if (cipherBytes.length < ECPOINT_SIZE + HASHDIGEST_SIZE) {
 			throw new CryptoException("This is not SM2 ciphertext!");
 		}
 
 		// 调用SM2解密算法得到明文结果
-		return SM2Utils.decrypt(rawCiphertextBytes, rawPrivKeyBytes);
+		return SM2Utils.decrypt(cipherBytes, rawPrivKeyBytes);
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	@Override
 	public boolean supportPrivKey(byte[] privKeyBytes) {
 		// 验证输入字节数组长度=算法标识长度+密钥类型长度+密钥长度，密钥数据的算法标识对应SM2算法，并且密钥类型是私钥
-		return privKeyBytes.length == PRIVKEY_LENGTH && CryptoAlgorithm.match(SM2, privKeyBytes)
+		return privKeyBytes.length == PRIVKEY_LENGTH && AlgorithmUtils.match(SM2, privKeyBytes)
 				&& privKeyBytes[CryptoAlgorithm.CODE_SIZE] == PRIVATE.CODE;
 	}
 
@@ -113,7 +113,7 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	@Override
 	public boolean supportPubKey(byte[] pubKeyBytes) {
 		// 验证输入字节数组长度=算法标识长度+密钥类型长度+椭圆曲线点长度，密钥数据的算法标识对应SM2算法，并且密钥类型是公钥
-		return pubKeyBytes.length == PUBKEY_LENGTH && CryptoAlgorithm.match(SM2, pubKeyBytes)
+		return pubKeyBytes.length == PUBKEY_LENGTH && AlgorithmUtils.match(SM2, pubKeyBytes)
 				&& pubKeyBytes[CryptoAlgorithm.CODE_SIZE] == PUBLIC.CODE;
 	}
 
@@ -123,22 +123,6 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 			return DefaultCryptoEncoding.createPubKey(SM2.code(), pubKeyBytes);
 		} else {
 			throw new CryptoException("pubKeyBytes are invalid!");
-		}
-	}
-
-	@Override
-	public boolean supportCiphertext(byte[] ciphertextBytes) {
-		// 验证输入字节数组长度>=算法标识长度+椭圆曲线点长度+哈希长度，字节数组的算法标识对应SM2算法
-		return ciphertextBytes.length >= CryptoAlgorithm.CODE_SIZE + ECPOINT_SIZE + HASHDIGEST_SIZE
-				&& CryptoAlgorithm.match(SM2, ciphertextBytes);
-	}
-
-	@Override
-	public AsymmetricCiphertext resolveCiphertext(byte[] ciphertextBytes) {
-		if (supportCiphertext(ciphertextBytes)) {
-			return DefaultCryptoEncoding.createAsymmetricCiphertext(SM2.code(), ciphertextBytes);
-		} else {
-			throw new CryptoException("ciphertextBytes are invalid!");
 		}
 	}
 
@@ -190,7 +174,7 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	@Override
 	public boolean supportDigest(byte[] digestBytes) {
 		// 验证输入字节数组长度=算法标识长度+签名长度，字节数组的算法标识对应SM2算法
-		return digestBytes.length == SIGNATUREDIGEST_LENGTH && CryptoAlgorithm.match(SM2, digestBytes);
+		return digestBytes.length == SIGNATUREDIGEST_LENGTH && AlgorithmUtils.match(SM2, digestBytes);
 	}
 
 	@Override
@@ -243,7 +227,6 @@ public class SM2CryptoFunction implements AsymmetricEncryptionFunction, Signatur
 	public <T extends CryptoBytes> boolean support(Class<T> cryptoDataType, byte[] encodedCryptoBytes) {
 		return (SignatureDigest.class == cryptoDataType && supportDigest(encodedCryptoBytes))
 				|| (PubKey.class == cryptoDataType && supportPubKey(encodedCryptoBytes))
-				|| (PrivKey.class == cryptoDataType && supportPrivKey(encodedCryptoBytes))
-				|| (AsymmetricCiphertext.class == cryptoDataType && supportCiphertext(encodedCryptoBytes));
+				|| (PrivKey.class == cryptoDataType && supportPrivKey(encodedCryptoBytes));
 	}
 }
