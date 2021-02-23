@@ -7,6 +7,7 @@ import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.crypto.Crypto;
 import com.jd.blockchain.crypto.CryptoAlgorithm;
 import com.jd.blockchain.crypto.HashDigest;
+import com.jd.blockchain.ledger.Operation;
 import com.jd.blockchain.ledger.TransactionBuilder;
 import com.jd.blockchain.ledger.TransactionContent;
 import com.jd.blockchain.ledger.TransactionRequestBuilder;
@@ -61,6 +62,15 @@ public class TxBuilder implements TransactionBuilder {
 	@Override
 	public HashDigest getLedgerHash() {
 		return ledgerHash;
+	}
+
+	/**
+	 * 返回已经定义的操作列表；
+	 *
+	 * @return
+	 */
+	public Collection<Operation> getOperations() {
+		return opFactory.getOperations();
 	}
 
 	@Override
