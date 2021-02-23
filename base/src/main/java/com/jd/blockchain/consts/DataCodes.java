@@ -201,6 +201,8 @@ public interface DataCodes {
 
 	public static final int CLIENT_IDENTIFICATIONS = 0xC10;
 
+	public static final int LEDGER_PEERS_TOPOLOGY = 0xC20;
+
 //	public static final int REQUEST_NODE = 0xD10;
 //
 //	public static final int REQUEST_ENDPOINT = 0xD20;
