@@ -28,6 +28,69 @@ import com.jd.blockchain.ledger.UserPrivilegeSet;
  */
 public interface BlockchainQueryService {
 
+	public static final String URL_GET_LEGDER_HASHS = "ledgers";
+	public static final String URL_GET_LEDGER = "ledgers/{ledgerHash}";
+	public static final String GET_BLOCK_WITH_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}";
+	public static final String GET_BLOCK_WITH_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}";
+	
+	public static final String GET_LEDGER_ADMIN_INFO = "ledgers/{ledgerHash}/admininfo";
+	public static final String GET_LEDGER_METADATA = "ledgers/{ledgerHash}/metadata";
+	public static final String GET_CONSENSUS_PARTICIPANTS = "ledgers/{ledgerHash}/participants";
+	
+	public static final String GET_TRANSACTION_COUNT_ON_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/txs/count";
+	public static final String GET_TRANSACTION_COUNT_ON_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/txs/count";
+	public static final String GET_TOTAL_TRANSACTION_COUNT = "ledgers/{ledgerHash}/txs/count";
+	public static final String GET_DATA_ACCOUNT_COUNT_ON_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/accounts/count";
+	public static final String GET_DATA_ACCOUNT_COUNT_ON_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/accounts/count";
+	public static final String GET_TOTAL_DATA_ACCOUNT_COUNT = "ledgers/{ledgerHash}/accounts/count";
+	public static final String GET_USER_COUNT_ON_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/users/count";
+	public static final String GET_USER_COUNT_ON_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/users/count";
+	public static final String GET_TOTAL_USER_COUNT = "ledgers/{ledgerHash}/users/count";
+	public static final String GET_CONTRACT_COUNT_ON_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/contracts/count";
+	public static final String GET_CONTRACT_COUNT_ON_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/contracts/count";
+	public static final String GET_TOTAL_CONTRACT_COUNT = "ledgers/{ledgerHash}/contracts/count";
+	
+	public static final String GET_TRANSACTIONS_ON_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/txs";
+	public static final String GET_TRANSACTIONS_ON_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/txs";
+	public static final String GET_TRANSACTION = "ledgers/{ledgerHash}/txs/hash/{contentHash}";
+	public static final String GET_TRANSACTION_STATE = "ledgers/{ledgerHash}/txs/state/{contentHash}";
+	
+	public static final String GET_TRANSACTIONS_IN_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/txs/additional-txs";
+	public static final String GET_TRANSACTIONS_IN_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/txs/additional-txs";
+	public static final String POST_GET_TRANSACTIONS_IN_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/txs/additional-txs/binary";
+	
+	public static final String GET_USER = "ledgers/{ledgerHash}/users/address/{address}";
+	public static final String GET_USER_SEQUENCE =  "ledgers/{ledgerHash}/users";
+	
+	public static final String GET_DATA_ACCOUNT = "ledgers/{ledgerHash}/accounts/address/{address}";
+	public static final String GET_DATA_ACCOUNT_SEQUENCE =  "ledgers/{ledgerHash}/accounts";
+	public static final String GET_LATEST_KV_LIST = "ledgers/{ledgerHash}/accounts/{address}/entries";
+	public static final String GET_KV_VERSION_LIST = "ledgers/{ledgerHash}/accounts/{address}/entries-version";
+	public static final String GET_LATEST_KV_SEQUENCE = "ledgers/{ledgerHash}/accounts/address/{address}/entries";
+	public static final String GET_KV_COUNT = "ledgers/{ledgerHash}/accounts/address/{address}/entries/count";
+	
+	public static final String GET_LATEST_CONTRACT = "ledgers/{ledgerHash}/contracts/address/{address}";
+	public static final String GET_CONTRACT = "ledgers/{ledgerHash}/contracts/address/{address}/version/{version}";
+	public static final String GET_CONTRACT_ACCOUNT_SEQUENCE = "ledgers/{ledgerHash}/contracts";
+	
+	public static final String GET_ROLE_PRIVILEGES =   "ledgers/{ledgerHash}/authorization/role/{roleName}";
+	public static final String GET_USER_PRIVILEGES = "ledgers/{ledgerHash}/authorization/user/{userAddress}";
+	
+	public static final String GET_SYSTEM_EVENT_SEQUENCE = "ledgers/{ledgerHash}/events/system/names/{eventName}";
+	public static final String GET_SYSTEM_EVENT_SUBJECT_COUNT = "ledgers/{ledgerHash}/events/system/names/count";
+	public static final String GET_SYSTEM_EVENT_SUBJECTS = "ledgers/{ledgerHash}/events/system/names";
+	public static final String GET_LATEST_SYSTEM_EVENT = "ledgers/{ledgerHash}/events/system/names/{eventName}/latest";
+	public static final String GET_SYSTEM_EVENT_COUNT = "ledgers/{ledgerHash}/events/system/names/{eventName}/count";
+	
+	public static final String GET_EVENT_ACCOUNT_SEQUENCE = "ledgers/{ledgerHash}/events/user/accounts";
+	public static final String GET_EVENT_ACCOUNT = "ledgers/{ledgerHash}/events/user/accounts/{address}";
+	public static final String GET_TOTAL_EVENT_ACCOUNT_COUNT =  "ledgers/{ledgerHash}/events/user/accounts/count";
+	public static final String GET_EVENT_SUBJECT_COUNT = "ledgers/{ledgerHash}/events/user/accounts/{address}/names/count";
+	public static final String GET_EVENT_SUBJECTS =  "ledgers/{ledgerHash}/events/user/accounts/{address}/names";
+	public static final String GET_LATEST_EVENT =  "ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}/latest";
+	public static final String GET_EVENT_COUNT =  "ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}/count";
+	public static final String GET_EVENT_SEQUENCE =  "ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}";
+
 	/**
 	 * 返回所有的账本的 hash 列表；<br>
 	 *
@@ -245,7 +308,8 @@ public interface BlockchainQueryService {
 	 *                   方法获得的区块信息中可以得到区块的总交易数 {@link Block#getTxCount()}；
 	 * @return
 	 */
-	LedgerTransaction[] getAdditionalTransactions(HashDigest ledgerHash, HashDigest blockHash, int fromIndex, int count);
+	LedgerTransaction[] getAdditionalTransactions(HashDigest ledgerHash, HashDigest blockHash, int fromIndex,
+			int count);
 
 	/**
 	 * 根据交易内容的哈希获取对应的交易记录；
@@ -365,7 +429,7 @@ public interface BlockchainQueryService {
 	 * @param eventName
 	 * @return
 	 */
-	Event getLatestEvent(HashDigest ledgerHash, String eventName);
+	Event getLatestSystemEvent(HashDigest ledgerHash, String eventName);
 
 	/**
 	 * 返回指定系统事件名称下事件总数； <br>
@@ -378,6 +442,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * 返回自定义事件账户；
+	 * 
 	 * @param ledgerHash
 	 * @param fromIndex
 	 * @param count
@@ -494,6 +559,7 @@ public interface BlockchainQueryService {
 
 	/**
 	 * return role's privileges;
+	 * 
 	 * @param ledgerHash
 	 * @param roleName
 	 * @return

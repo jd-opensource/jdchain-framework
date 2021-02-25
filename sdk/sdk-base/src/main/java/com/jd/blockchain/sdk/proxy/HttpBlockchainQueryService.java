@@ -770,7 +770,7 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 
 	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names/{eventName}/latest")
 	@Override
-	Event getLatestEvent(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+	Event getLatestSystemEvent(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 						 @PathParam(name="eventName") String eventName);
 
 	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}/latest")
