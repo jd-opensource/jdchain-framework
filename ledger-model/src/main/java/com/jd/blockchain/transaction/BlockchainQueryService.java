@@ -21,15 +21,15 @@ import com.jd.blockchain.ledger.UserInfo;
 import com.jd.blockchain.ledger.UserPrivilegeSet;
 
 /**
- * 区块链查询器；
+ * 区块链查询服务；
  *
  * @author huanghaiquan
  *
  */
 public interface BlockchainQueryService {
 
-	public static final String URL_GET_LEGDER_HASHS = "ledgers";
-	public static final String URL_GET_LEDGER = "ledgers/{ledgerHash}";
+	public static final String GET_TOTAL_LEGDER_HASHS = "ledgers";
+	public static final String GET_LEDGER = "ledgers/{ledgerHash}";
 	public static final String GET_BLOCK_WITH_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}";
 	public static final String GET_BLOCK_WITH_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}";
 	

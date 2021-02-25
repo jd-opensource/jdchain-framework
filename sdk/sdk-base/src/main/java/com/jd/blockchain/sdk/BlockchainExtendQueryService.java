@@ -9,7 +9,6 @@
 package com.jd.blockchain.sdk;
 
 import com.jd.blockchain.crypto.HashDigest;
-import com.jd.blockchain.ledger.CryptoSetting;
 import com.jd.blockchain.ledger.LedgerBlock;
 import com.jd.blockchain.transaction.BlockchainQueryService;
 
