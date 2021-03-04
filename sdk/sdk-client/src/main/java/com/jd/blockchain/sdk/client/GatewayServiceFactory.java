@@ -2,17 +2,18 @@ package com.jd.blockchain.sdk.client;
 
 import java.io.Closeable;
 
-import com.jd.binaryproto.DataContractRegistry;
-import com.jd.blockchain.consensus.ClientCredential;
-import com.jd.blockchain.consensus.action.ActionRequest;
-import com.jd.blockchain.consensus.action.ActionResponse;
 import com.jd.blockchain.crypto.HashDigest;
-import com.jd.blockchain.ledger.*;
+import com.jd.blockchain.ledger.BlockchainKeypair;
+import com.jd.blockchain.ledger.CryptoSetting;
+import com.jd.blockchain.ledger.DigitalSignature;
+import com.jd.blockchain.ledger.TransactionRequest;
+import com.jd.blockchain.ledger.TransactionResponse;
 import com.jd.blockchain.sdk.BlockchainService;
 import com.jd.blockchain.sdk.BlockchainServiceFactory;
-import com.jd.blockchain.sdk.GatewayAuthRequest;
-import com.jd.blockchain.sdk.proxy.HttpBlockchainQueryService;
-import com.jd.blockchain.transaction.*;
+import com.jd.blockchain.sdk.proxy.HttpBlockchainBrowserService;
+import com.jd.blockchain.transaction.SignatureUtils;
+import com.jd.blockchain.transaction.TransactionService;
+import com.jd.blockchain.transaction.TxRequestMessage;
 import com.jd.blockchain.web.serializes.ByteArrayObjectUtil;
 import com.jd.httpservice.agent.HttpServiceAgent;
 import com.jd.httpservice.agent.ServiceConnection;
@@ -30,40 +31,6 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
 	private BlockchainService blockchainService;
 
 	static {
-		DataContractRegistry.register(TransactionContent.class);
-		DataContractRegistry.register(TransactionRequest.class);
-		DataContractRegistry.register(TransactionResponse.class);
-		DataContractRegistry.register(DataAccountKVSetOperation.class);
-		DataContractRegistry.register(DataAccountKVSetOperation.KVWriteEntry.class);
-
-		DataContractRegistry.register(Operation.class);
-		DataContractRegistry.register(ContractCodeDeployOperation.class);
-		DataContractRegistry.register(ContractEventSendOperation.class);
-		DataContractRegistry.register(DataAccountRegisterOperation.class);
-		DataContractRegistry.register(UserRegisterOperation.class);
-		DataContractRegistry.register(ParticipantRegisterOperation.class);
-		DataContractRegistry.register(ParticipantStateUpdateOperation.class);
-		DataContractRegistry.register(ConsensusSettingsUpdateOperation.class);
-		DataContractRegistry.register(EventAccountRegisterOperation.class);
-		DataContractRegistry.register(EventPublishOperation.class);
-
-		DataContractRegistry.register(ActionRequest.class);
-		DataContractRegistry.register(ActionResponse.class);
-		DataContractRegistry.register(ClientCredential.class);
-		DataContractRegistry.register(BytesValueList.class);
-
-		// 注册角色/权限相关接口
-		DataContractRegistry.register(RolesConfigureOperation.class);
-		DataContractRegistry.register(RolesConfigureOperation.RolePrivilegeEntry.class);
-		DataContractRegistry.register(UserAuthorizeOperation.class);
-		DataContractRegistry.register(UserAuthorizeOperation.UserRolesEntry.class);
-		DataContractRegistry.register(PrivilegeSet.class);
-		DataContractRegistry.register(RoleSet.class);
-		DataContractRegistry.register(SecurityInitSettings.class);
-		DataContractRegistry.register(RoleInitSettings.class);
-		DataContractRegistry.register(UserAuthInitSettings.class);
-		DataContractRegistry.register(LedgerMetadata_V2.class);
-
 		ByteArrayObjectUtil.init();
 	}
 
@@ -71,7 +38,7 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
 		httpConnectionManager = new ServiceConnectionManager();
 		this.userKey = userKey;
 
-		HttpBlockchainQueryService queryService = createQueryService(gatewayEndpoint);
+		HttpBlockchainBrowserService queryService = createQueryService(gatewayEndpoint);
 		TransactionService txProcSrv = createConsensusService(gatewayEndpoint);
 
 		HashDigest[] ledgerHashs = queryService.getLedgerHashs();
@@ -176,9 +143,9 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
 		return gatewayConsensusService;
 	}
 
-	private HttpBlockchainQueryService createQueryService(ServiceEndpoint gatewayEndpoint) {
+	private HttpBlockchainBrowserService createQueryService(ServiceEndpoint gatewayEndpoint) {
 		ServiceConnection conn = httpConnectionManager.create(gatewayEndpoint);
-		return HttpServiceAgent.createService(HttpBlockchainQueryService.class, conn, null);
+		return HttpServiceAgent.createService(HttpBlockchainBrowserService.class, conn, null);
 	}
 
 	@Override

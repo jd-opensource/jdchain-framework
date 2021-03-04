@@ -13,12 +13,32 @@ import com.jd.blockchain.ledger.LedgerBlock;
 import com.jd.blockchain.transaction.BlockchainQueryService;
 
 /**
+ * 面向区块链数据浏览器的服务接口；
+ * 
+ * @author huanghaiquan
  *
- * @author shaozhuguang
- * @create 2018/10/19
- * @since 1.0.0
  */
-public interface BlockchainExtendQueryService extends BlockchainQueryService {
+public interface BlockchainBrowserService extends BlockchainQueryService {
+
+	public static final String GET_LEDGER_INIT_SETTINGS = "ledgers/{ledgerHash}/settings";
+	public static final String GET_LATEST_BLOCK = "ledgers/{ledgerHash}/blocks/latest";
+	public static final String GET_LATEST_BLOCK_LIST = "ledgers/{ledgerHash}/blocks";
+	public static final String GET_LATEST_DECOMPILED_CONTRACT = "ledgers/{ledgerHash}/contracts/address/{address}";
+	public static final String GET_DECOMPILED_CONTRACT = "ledgers/{ledgerHash}/contracts/address/{address}/version/{version}";
+	public static final String GET_TRANSACTION_COUNT_IN_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/txs/additional-count";
+	public static final String GET_TRANSACTION_COUNT_IN_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/txs/additional-count";
+	public static final String GET_ADDITIONAL_TRANSACTION_COUNT = "ledgers/{ledgerHash}/txs/additional-count";
+	public static final String GET_ADDITIONAL_DATA_ACCOUNT_COUNT_IN_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/accounts/additional-count";
+	public static final String GET_ADDITIONAL_DATA_ACCOUNT_COUNT_IN_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/accounts/additional-count";
+	public static final String GET_ADDITIONAL_DATA_ACCOUNT_COUNT = "ledgers/{ledgerHash}/accounts/additional-count";
+	public static final String GET_ADDITIONAL_USER_COUNT_IN_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/users/additional-count";
+	public static final String GET_ADDITIONAL_USER_COUNT_IN_BLOCK_HASH =  "ledgers/{ledgerHash}/blocks/hash/{blockHash}/users/additional-count";
+	public static final String GET_ADDITIONAL_USER_COUNT = "ledgers/{ledgerHash}/users/additional-count";
+	public static final String GET_ADDITIONAL_CONTRACT_COUNT_IN_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/contracts/additional-count";
+	public static final String GET_ADDITIONAL_CONTRACT_COUNT_IN_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/contracts/additional-count";
+	public static final String GET_ADDITIONAL_CONTRACT_COUNT = "ledgers/{ledgerHash}/contracts/additional-count";
+	public static final String GET_LEGDER_COUNT = "ledgers/count";
+	public static final String GET_CONSENSUS_PARTICIPANT_COUNT = "ledgers/{ledgerHash}/participants/count";
 
 	/**
 	 * 获取最新区块
@@ -144,4 +164,44 @@ public interface BlockchainExtendQueryService extends BlockchainQueryService {
 	 * get all ledgers count;
 	 */
 	int getLedgersCount();
+
+	/**
+	 * 获取账本初始化设置的属性；
+	 * 
+	 * @param ledgerHash
+	 * @return
+	 */
+	LedgerInitAttributes getLedgerInitSettings(HashDigest ledgerHash);
+
+	/**
+	 * 获取账本最新的 N 个区块列表；
+	 * <p>
+	 * 
+	 * @param ledgerHash
+	 * @param numOfBlocks
+	 * @return
+	 */
+	LedgerBlock[] getLatestBlocks(HashDigest ledgerHash, int numOfBlocks);
+
+	/**
+	 * 返回源码经反编译的合约信息；
+	 * 
+	 * @param ledgerHash
+	 * @param address
+	 * @return
+	 */
+	DecompliedContractInfo getDecompiledContract(HashDigest ledgerHash, String address);
+
+	/**
+	 * 返回源码经反编译的合约信息；
+	 * 
+	 * @param ledgerHash
+	 * @param address
+	 * @param version
+	 * @return
+	 */
+	DecompliedContractInfo getDecompiledContractByVersion(HashDigest ledgerHash, String address, long version);
+
+	int getConsensusParticipantCount(HashDigest ledgerHash);
+	
 }

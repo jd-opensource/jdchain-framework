@@ -28,7 +28,7 @@ import com.jd.blockchain.ledger.UserPrivilegeSet;
  */
 public interface BlockchainQueryService {
 
-	public static final String GET_TOTAL_LEGDER_HASHS = "ledgers";
+	public static final String GET_LEGDER_HASH_LIST = "ledgers";
 	public static final String GET_LEDGER = "ledgers/{ledgerHash}";
 	public static final String GET_BLOCK_WITH_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}";
 	public static final String GET_BLOCK_WITH_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}";
@@ -69,8 +69,8 @@ public interface BlockchainQueryService {
 	public static final String GET_LATEST_KV_SEQUENCE = "ledgers/{ledgerHash}/accounts/address/{address}/entries";
 	public static final String GET_KV_COUNT = "ledgers/{ledgerHash}/accounts/address/{address}/entries/count";
 	
-	public static final String GET_LATEST_CONTRACT = "ledgers/{ledgerHash}/contracts/address/{address}";
-	public static final String GET_CONTRACT = "ledgers/{ledgerHash}/contracts/address/{address}/version/{version}";
+	public static final String GET_LATEST_COMPILED_CONTRACT = "ledgers/{ledgerHash}/contracts/address/{address}/compiled";
+	public static final String GET_COMPILED_CONTRACT = "ledgers/{ledgerHash}/contracts/address/{address}/version/{version}/compiled";
 	public static final String GET_CONTRACT_ACCOUNT_SEQUENCE = "ledgers/{ledgerHash}/contracts";
 	
 	public static final String GET_ROLE_PRIVILEGES =   "ledgers/{ledgerHash}/authorization/role/{roleName}";

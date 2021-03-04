@@ -9,7 +9,7 @@ import com.jd.blockchain.crypto.AsymmetricKeypair;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.CryptoSetting;
 import com.jd.blockchain.sdk.*;
-import com.jd.blockchain.sdk.proxy.HttpBlockchainQueryService;
+import com.jd.blockchain.sdk.proxy.HttpBlockchainBrowserService;
 import com.jd.blockchain.sdk.service.ConsensusClientManager.ConsensusClientFactory;
 import com.jd.blockchain.setting.GatewayAuthResponse;
 import com.jd.blockchain.setting.LedgerIncomingSettings;
@@ -126,7 +126,7 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 		} else {
 			ServiceConnection httpConnection = httpConnectionManager.create(new ServiceEndpoint(peerAddr));
 			peerManageService = new PeerBlockchainQueryService(httpConnection,
-					HttpServiceAgent.createService(HttpBlockchainQueryService.class, httpConnection, null));
+					HttpServiceAgent.createService(HttpBlockchainBrowserService.class, httpConnection, null));
 			peerManageServices.put(peerAddr, peerManageService);
 		}
 
