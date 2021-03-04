@@ -44,7 +44,7 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	 *
 	 * @return Base64编码的账本 hash 的集合；
 	 */
-    @HttpAction(method=HttpMethod.GET, path="ledgers", responseConverter = HashDigestsResponseConverter.class)
+    @HttpAction(method=HttpMethod.GET, path=GET_TOTAL_LEGDER_HASHS , responseConverter = HashDigestsResponseConverter.class)
 	@Override
 	HashDigest[] getLedgerHashs();
 
@@ -54,7 +54,7 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 	 * @param ledgerHash
 	 * @return 账本对象；如果不存在，则返回 null；
 	 */
-	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}")
+	@HttpAction(method=HttpMethod.GET, path=GET_LEDGER)
 	@Override
 	LedgerInfo getLedger(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash);
 
@@ -770,7 +770,7 @@ public interface HttpBlockchainQueryService extends BlockchainExtendQueryService
 
 	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/system/names/{eventName}/latest")
 	@Override
-	Event getLatestEvent(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
+	Event getLatestSystemEvent(@PathParam(name="ledgerHash", converter=HashDigestToStringConverter.class) HashDigest ledgerHash,
 						 @PathParam(name="eventName") String eventName);
 
 	@HttpAction(method=HttpMethod.GET, path="ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}/latest")

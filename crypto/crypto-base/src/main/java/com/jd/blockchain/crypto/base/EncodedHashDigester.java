@@ -25,7 +25,7 @@ public abstract class EncodedHashDigester implements HashDigester {
 
 	@Override
 	public byte[] complete() {
-		return hasher.complete();
+		return completeDigest().toBytes();
 	}
 
 	@Override

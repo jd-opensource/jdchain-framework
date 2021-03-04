@@ -21,7 +21,7 @@ public interface HashDigester extends Hasher{
 	void update(byte[] bytes, int offset, int len);
 
 	/**
-	 * 完成哈希计算并返回原始的哈希摘要结果；
+	 * 完成哈希计算并返回字节形式的哈希摘要结果；
 	 * 
 	 * @return
 	 */

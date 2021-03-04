@@ -51,25 +51,25 @@ public class RIPEMD160HashFunction implements HashFunction {
 		return DefaultCryptoEncoding.encodeHashDigest(RIPEMD160, digestBytes);
 	}
 	
-	@Override
-	public byte[] rawHash(byte[] data) {
-		if (data == null) {
-			throw new CryptoException("data is null!");
-		}
-
-		byte[] digestBytes = RIPEMD160Utils.hash(data);
-		return digestBytes;
-	}
-	
-	@Override
-	public byte[] rawHash(byte[] data, int offset, int len) {
-		if (data == null) {
-			throw new CryptoException("data is null!");
-		}
-
-		byte[] digestBytes = RIPEMD160Utils.hash(data, offset, len);
-		return digestBytes;
-	}
+//	@Override
+//	public byte[] rawHash(byte[] data) {
+//		if (data == null) {
+//			throw new CryptoException("data is null!");
+//		}
+//
+//		byte[] digestBytes = RIPEMD160Utils.hash(data);
+//		return digestBytes;
+//	}
+//	
+//	@Override
+//	public byte[] rawHash(byte[] data, int offset, int len) {
+//		if (data == null) {
+//			throw new CryptoException("data is null!");
+//		}
+//
+//		byte[] digestBytes = RIPEMD160Utils.hash(data, offset, len);
+//		return digestBytes;
+//	}
 
 	@Override
 	public boolean verify(HashDigest digest, byte[] data) {
