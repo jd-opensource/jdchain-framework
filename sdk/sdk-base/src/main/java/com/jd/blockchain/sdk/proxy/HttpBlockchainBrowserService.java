@@ -887,11 +887,22 @@ public interface HttpBlockchainBrowserService extends BlockchainBrowserService {
 	Event getLatestSystemEvent(
 			@PathParam(name = "ledgerHash", converter = HashDigestToStringConverter.class) HashDigest ledgerHash,
 			@PathParam(name = "eventName") String eventName);
+	
+	/**
+	 * 注：此方法已被替换为 {@link #getLatestUserEvent(HashDigest, String, String)}；
+	 */
+//	@HttpAction(method = HttpMethod.GET, path = "ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}/latest")
+	@HttpAction(method = HttpMethod.GET, path = GET_LATEST_EVENT)
+	@Override
+	@Deprecated
+	Event getLatestEvent(
+			@PathParam(name = "ledgerHash", converter = HashDigestToStringConverter.class) HashDigest ledgerHash,
+			@PathParam(name = "address") String address, @PathParam(name = "eventName") String eventName);
 
 //	@HttpAction(method = HttpMethod.GET, path = "ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}/latest")
 	@HttpAction(method = HttpMethod.GET, path = GET_LATEST_EVENT)
 	@Override
-	Event getLatestEvent(
+	Event getLatestUserEvent(
 			@PathParam(name = "ledgerHash", converter = HashDigestToStringConverter.class) HashDigest ledgerHash,
 			@PathParam(name = "address") String address, @PathParam(name = "eventName") String eventName);
 

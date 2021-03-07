@@ -484,6 +484,19 @@ public interface BlockchainQueryService {
 	 * @return
 	 */
 	String[] getUserEventNames(HashDigest ledgerHash, String address, int fromIndex, int count);
+	
+	/**
+	 * 返回最新用户自定义事件； <br>
+	 *
+	 *
+	 * 注：此方法已被替换为 {@link #getLatestUserEvent(HashDigest, String, String)}；
+	 * @param ledgerHash
+	 * @param address
+	 * @param eventName
+	 * @return
+	 */
+	@Deprecated
+	Event getLatestEvent(HashDigest ledgerHash, String address, String eventName);
 
 	/**
 	 * 返回最新用户自定义事件； <br>
@@ -493,7 +506,7 @@ public interface BlockchainQueryService {
 	 * @param eventName
 	 * @return
 	 */
-	Event getLatestEvent(HashDigest ledgerHash, String address, String eventName);
+	Event getLatestUserEvent(HashDigest ledgerHash, String address, String eventName);
 
 	/**
 	 * 返回指定事件账户，指定事件名称下事件总数； <br>
