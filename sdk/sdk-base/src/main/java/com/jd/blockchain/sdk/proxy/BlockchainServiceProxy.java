@@ -324,6 +324,12 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	public Event getLatestUserEvent(HashDigest ledgerHash, String address, String eventName) {
 		return getQueryService(ledgerHash).getLatestUserEvent(ledgerHash, address, eventName);
 	}
+	
+	@Deprecated
+	@Override
+	public Event getLatestEvent(HashDigest ledgerHash, String address, String eventName) {
+		return getLatestUserEvent(ledgerHash, address, eventName);
+	}
 
 	@Override
 	public PrivilegeSet getRolePrivileges(HashDigest ledgerHash, String roleName) {
