@@ -137,6 +137,7 @@ public final class Crypto {
 		for (Provider<CryptoService> pd : providers) {
 			CryptoProviderInfo info = getProviderInfo(pd);
 			infos[i] = info;
+			i++;
 		}
 
 		return infos;
