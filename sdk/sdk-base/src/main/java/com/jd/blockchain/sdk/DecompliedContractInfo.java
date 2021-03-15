@@ -5,7 +5,13 @@ import com.jd.blockchain.crypto.PubKey;
 
 import utils.Bytes;
 
-public class ContractSettings {
+/**
+ * 带反编译源码的合约信息；
+ * 
+ * @author huanghaiquan
+ *
+ */
+public class DecompliedContractInfo {
 
 	private Bytes address;
 
@@ -18,17 +24,17 @@ public class ContractSettings {
 	private String chainCode;
 	private long chainCodeVersion;
 
-	public ContractSettings() {
+	public DecompliedContractInfo() {
 	}
 
-	public ContractSettings(Bytes address, PubKey pubKey, HashDigest headerRootHash, HashDigest dataRootHash) {
+	public DecompliedContractInfo(Bytes address, PubKey pubKey, HashDigest headerRootHash, HashDigest dataRootHash) {
 		this.address = address;
 		this.pubKey = pubKey;
 		this.headerRootHash = headerRootHash;
 		this.dataRootHash = dataRootHash;
 	}
 
-	public ContractSettings(Bytes address, PubKey pubKey, HashDigest headerRootHash, HashDigest dataRootHash,
+	public DecompliedContractInfo(Bytes address, PubKey pubKey, HashDigest headerRootHash, HashDigest dataRootHash,
 			String chainCode) {
 		this.address = address;
 		this.pubKey = pubKey;
@@ -37,6 +43,11 @@ public class ContractSettings {
 		this.chainCode = chainCode;
 	}
 
+	/**
+	 * 合约账户地址；
+	 * 
+	 * @return
+	 */
 	public Bytes getAddress() {
 		return address;
 	}
@@ -45,6 +56,11 @@ public class ContractSettings {
 		this.address = address;
 	}
 
+	/**
+	 * 合约账户公钥；
+	 * 
+	 * @return
+	 */
 	public PubKey getPubKey() {
 		return pubKey;
 	}
@@ -69,6 +85,11 @@ public class ContractSettings {
 		this.dataRootHash = rootHash;
 	}
 
+	/**
+	 * 反编译的合约源码；
+	 * 
+	 * @return
+	 */
 	public String getChainCode() {
 		return chainCode;
 	}
