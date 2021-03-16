@@ -8,8 +8,10 @@ import com.jd.httpservice.HttpService;
 import com.jd.httpservice.RequestBody;
 import com.jd.httpservice.utils.agent.WebResponseConverterFactory;
 
-@HttpService(path = "/management", defaultRequestBodyConverter = BinarySerializeRequestConverter.class, responseConverterFactory = WebResponseConverterFactory.class)
+@HttpService(path = ManagementHttpService.URL_MANAGEMENT, defaultRequestBodyConverter = BinarySerializeRequestConverter.class, responseConverterFactory = WebResponseConverterFactory.class)
 public interface ManagementHttpService {
+	
+	public static final String URL_MANAGEMENT = "/management";
 
 	public static final String URL_GET_ACCESS_SPEC = "/access-spec";
 
