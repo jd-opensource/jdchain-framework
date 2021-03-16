@@ -6,7 +6,7 @@ import java.util.Map;
 import com.jd.blockchain.crypto.HashDigest;
 
 /**
- * 区块链节点的接入要求；
+ * 区块链节点的访问规范；
  * <p>
  * 
  * 描述了一个区块链节点可以提供进行认证接入的账本信息清单；
