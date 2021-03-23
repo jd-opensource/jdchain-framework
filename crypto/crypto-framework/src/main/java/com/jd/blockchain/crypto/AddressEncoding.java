@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.ServiceLoader;
 
 import utils.Bytes;
 import utils.io.BytesEncoding;
@@ -14,6 +15,36 @@ import utils.security.ShaUtils;
 
 public class AddressEncoding {
 
+	private static AddressGenerator addressGenerator;
+
+	static {
+		initAddresssGenerator();
+	}
+
+	private static void initAddresssGenerator() {
+		AddressGenerator addressGenerator = loadAddressGenerator(AddressGenerator.class.getClassLoader());
+		if (addressGenerator == null) {
+			addressGenerator = loadAddressGenerator(Thread.currentThread().getContextClassLoader());
+		}
+		if (addressGenerator == null) {
+			addressGenerator = new DefaultAddressGenerator();
+		}
+	}
+
+	private static AddressGenerator loadAddressGenerator(ClassLoader classLoader) {
+		ServiceLoader<AddressGenerator> loader = ServiceLoader.load(AddressGenerator.class,
+				classLoader);
+		AddressGenerator addrGen = null;
+		for (AddressGenerator addressGenerator : loader) {
+			if (addrGen != null) {
+				throw new IllegalStateException("Registered more than one AddressGenerator instances! --["
+						+ addrGen.getClass().getName() + "] and [" + addressGenerator.getClass().getName() + "]");
+			}
+			addrGen = addressGenerator;
+		}
+		return addrGen;
+	}
+
 	/**
 	 * 将区块链地址写入到输出流；<br>
 	 * 
@@ -21,10 +52,8 @@ public class AddressEncoding {
 	 * 
 	 * 如果指定的地址为 null，则仅写入空字节数组；注：此种情况下，输出流并不是完全没有写入，而是实际上会被写入一个表示内容长度为 0 的头部字节；<br>
 	 * 
-	 * @param address
-	 *            要写入的区块链地址；
-	 * @param out
-	 *            输出流；
+	 * @param address 要写入的区块链地址；
+	 * @param out     输出流；
 	 * @return 写入的地址的字节数；如果指定地址为 null，则返回值为写入的头部字节数；；
 	 */
 	public static int writeAddress(Bytes address, OutputStream out) {
@@ -53,13 +82,7 @@ public class AddressEncoding {
 	 * @return
 	 */
 	public static Bytes generateAddress(PubKey pubKey) {
-		byte[] h1Bytes = ShaUtils.hash_256(pubKey.getRawKeyBytes());
-		byte[] h2Bytes = RipeMD160Utils.hash(h1Bytes);
-		byte[] xBytes = BytesUtils.concat(new byte[] { AddressVersion.V1.CODE}, BytesUtils.toBytes(pubKey.getAlgorithm()), h2Bytes);
-		byte[] checksum = Arrays.copyOf(ShaUtils.hash_256(ShaUtils.hash_256(xBytes)), 4);
-		byte[] addressBytes = BytesUtils.concat(xBytes, checksum);
-
-		return new Bytes(addressBytes);
+		return addressGenerator.generate(pubKey);
 	}
 
 }
