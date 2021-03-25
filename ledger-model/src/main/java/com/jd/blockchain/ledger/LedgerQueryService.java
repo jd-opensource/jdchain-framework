@@ -1,7 +1,6 @@
 package com.jd.blockchain.ledger;
 
 import com.jd.blockchain.crypto.HashDigest;
-import com.jd.blockchain.ledger.*;
 
 /**
  * 运行时环境账本查询
