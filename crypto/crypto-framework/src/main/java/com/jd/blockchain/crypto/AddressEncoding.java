@@ -15,7 +15,7 @@ import utils.security.ShaUtils;
 
 public class AddressEncoding {
 
-	private static AddressGenerator addressGenerator;
+	private static volatile AddressGenerator addressGenerator;
 
 	static {
 		initAddresssGenerator();
@@ -29,6 +29,7 @@ public class AddressEncoding {
 		if (addressGenerator == null) {
 			addressGenerator = new DefaultAddressGenerator();
 		}
+		AddressEncoding.addressGenerator = addressGenerator;
 	}
 
 	private static AddressGenerator loadAddressGenerator(ClassLoader classLoader) {
