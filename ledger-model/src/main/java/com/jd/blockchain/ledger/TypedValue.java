@@ -26,7 +26,7 @@ public class TypedValue implements BytesValue {
 	private Bytes value;
 
 	private TypedValue(DataType type, byte[] bytes) {
-		if(null != bytes && bytes.length > 0) {
+		if (null != bytes && bytes.length > 0) {
 			this.type = type;
 			this.value = new Bytes(bytes);
 		} else {
@@ -35,7 +35,7 @@ public class TypedValue implements BytesValue {
 	}
 
 	private TypedValue(DataType type, Bytes bytes) {
-		if(null != bytes && bytes.size() > 0) {
+		if (null != bytes && bytes.size() > 0) {
 			this.type = type;
 			this.value = bytes;
 		} else {
@@ -145,7 +145,20 @@ public class TypedValue implements BytesValue {
 		throw new IllegalStateException(String.format("Type [%s] cannot be convert to Int8!", type));
 	}
 
+	/**
+	 * 转为字节值；
+	 * <p>
+	 * 注: 需要兼容处理历史遗留的缺陷——错误地把 INT8 按照 short 类型序列化为 2 个字节的数组，<br>
+	 * 参考方法 {@link #fromInt8(byte)} 的实现和说明；
+	 * 
+	 * @return
+	 */
 	private byte toInt8() {
+		if (value.size() == 2) {
+			//兼容处理历史遗留的缺陷——错误地把 INT8 按照 short 类型序列化为 2 个字节的数组;
+			short shortValue = BytesUtils.toShort(value.toBytes());
+			return (byte)shortValue;
+		}
 		return value.toBytes()[0];
 	}
 
@@ -448,7 +461,9 @@ public class TypedValue implements BytesValue {
 	}
 
 	public static TypedValue fromInt8(byte value) {
-		return new TypedValue(DataType.INT8, BytesUtils.toBytes(value));
+		// 修复缺陷：错误地将 byte 值通过 BytesUtils.toBytes(short) 重载方法转为 2 个字节长度的结果； at 2021-03-27
+		// return new TypedValue(DataType.INT8, BytesUtils.toBytes(value));
+		return new TypedValue(DataType.INT8, new byte[] { value });
 	}
 
 	public static TypedValue fromTimestamp(long value) {
