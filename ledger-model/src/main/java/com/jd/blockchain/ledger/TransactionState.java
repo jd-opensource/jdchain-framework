@@ -20,7 +20,7 @@ public enum TransactionState {
 	SUCCESS((byte) 0),
 
 	/**
-	 * 账本错误；
+	 * 账本的未知错误；
 	 */
 	LEDGER_ERROR((byte) 0x01),
 
@@ -70,7 +70,7 @@ public enum TransactionState {
 	CONTRACT_EXECUTE_ERROR((byte) 0x10),
 
 	/**
-	 * 合约写入时版本冲突；
+	 * 合约部署时版本冲突；
 	 */
 	CONTRACT_VERSION_CONFLICT((byte) 0x08),
 
