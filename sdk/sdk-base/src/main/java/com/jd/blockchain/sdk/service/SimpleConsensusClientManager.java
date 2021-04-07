@@ -32,5 +32,14 @@ public class SimpleConsensusClientManager implements ConsensusClientManager {
 		}
 	}
 
+	@Override
+	public synchronized void remove(HashDigest ledger) {
+		ConsensusClient client = ledgerConsensusClients.get(ledger);
+		ledgerConsensusClients.remove(ledger);
+		if(null != client) {
+			client.close();
+		}
+	}
+
 
 }
