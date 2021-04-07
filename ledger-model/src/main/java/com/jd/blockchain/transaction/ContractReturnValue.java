@@ -1,7 +1,7 @@
 package com.jd.blockchain.transaction;
 
 public class ContractReturnValue {
-	
+
 	private ContractReturnValue() {
 	}
 
@@ -24,10 +24,13 @@ public class ContractReturnValue {
 	 * 
 	 * @param <T>
 	 * @param call
-	 * @return
+	 * @return 返回值代理对象；如果上下文的调用没有返回值，则返回 null；
 	 */
 	public static <T> GenericValueHolder<T> decode(T call) {
 		ContractInvocation invocation = ContractInvocationStub.take();
+		if (invocation == null) {
+			return null;
+		}
 		return new GenericValueHolder<T>(invocation);
 	}
 
@@ -49,10 +52,13 @@ public class ContractReturnValue {
 	 * </code>
 	 * 
 	 * @param call
-	 * @return
+	 * @return 返回值代理对象；如果上下文的调用没有返回值，则返回 null；
 	 */
 	public static LongValueHolder decode(long call) {
 		ContractInvocation invocation = ContractInvocationStub.take();
+		if (invocation == null) {
+			return null;
+		}
 		return new LongValueHolder(invocation);
 	}
 
@@ -74,10 +80,13 @@ public class ContractReturnValue {
 	 * </code>
 	 * 
 	 * @param call
-	 * @return
+	 * @return 返回值代理对象；如果上下文的调用没有返回值，则返回 null；
 	 */
 	public static IntValueHolder decode(int call) {
 		ContractInvocation invocation = ContractInvocationStub.take();
+		if (invocation == null) {
+			return null;
+		}
 		return new IntValueHolder(invocation);
 	}
 
@@ -99,10 +108,13 @@ public class ContractReturnValue {
 	 * </code>
 	 * 
 	 * @param call
-	 * @return
+	 * @return 返回值代理对象；如果上下文的调用没有返回值，则返回 null；
 	 */
 	public static ShortValueHolder decode(short call) {
 		ContractInvocation invocation = ContractInvocationStub.take();
+		if (invocation == null) {
+			return null;
+		}
 		return new ShortValueHolder(invocation);
 	}
 
@@ -124,13 +136,16 @@ public class ContractReturnValue {
 	 * </code>
 	 * 
 	 * @param call
-	 * @return
+	 * @return 返回值代理对象；如果上下文的调用没有返回值，则返回 null；
 	 */
 	public static ByteValueHolder decode(byte call) {
 		ContractInvocation invocation = ContractInvocationStub.take();
+		if (invocation == null) {
+			return null;
+		}
 		return new ByteValueHolder(invocation);
 	}
-	
+
 	/**
 	 * 解析合约方法调用的返回值；
 	 * <p>
@@ -149,16 +164,16 @@ public class ContractReturnValue {
 	 * </code>
 	 * 
 	 * @param call
-	 * @return
+	 * @return 返回值代理对象；如果上下文的调用没有返回值，则返回 null；
 	 */
 	public static BooleanValueHolder decode(boolean call) {
 		ContractInvocation invocation = ContractInvocationStub.take();
+		if (invocation == null) {
+			return null;
+		}
 		return new BooleanValueHolder(invocation);
 	}
 
-	
-	//----------------------- 内部类型 -----------------------
-	
-
+	// ----------------------- 内部类型 -----------------------
 
 }

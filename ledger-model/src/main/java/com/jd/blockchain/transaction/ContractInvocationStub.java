@@ -23,8 +23,9 @@ class ContractInvocationStub {
 	public static ContractInvocation take() {
 		ContractInvocation subValue = stub.get();
 		if (subValue == null) {
-			throw new IllegalStateException(
-					"The latest invocation of contract has not been stubbed! It may be caused by the wrong call sequence from the upper layer!");
+//			throw new IllegalStateException(
+//					"The latest invocation of contract has not been stubbed! It may be caused by the wrong call sequence from the upper layer!");
+			return null;
 		}
 		stub.remove();
 		return subValue;

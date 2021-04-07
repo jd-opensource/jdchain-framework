@@ -17,6 +17,7 @@ import com.jd.blockchain.consts.Global;
 import com.jd.blockchain.crypto.AddressEncoding;
 import com.jd.blockchain.crypto.KeyGenUtils;
 import com.jd.blockchain.crypto.PubKey;
+import com.jd.blockchain.ledger.LedgerInitProperties.CryptoProperties;
 
 import utils.Bytes;
 import utils.PropertiesUtils;
@@ -183,17 +184,13 @@ public class LedgerInitProperties implements Serializable {
 	}
 
 	public static LedgerInitProperties createDefault(byte[] ledgerSeed, String ledgerName, Date createdTime,
-			Properties consensusConfig) {
+			Properties consensusConfig, CryptoProperties cryptoProperties) {
 		LedgerInitProperties initProps = new LedgerInitProperties(ledgerSeed);
 		initProps.ledgerName = ledgerName;
 		initProps.createdTime = createdTime.getTime();
 		initProps.consensusProvider = "com.jd.blockchain.consensus.bftsmart.BftsmartConsensusProvider";
 		initProps.consensusConfig = consensusConfig;
-		initProps.cryptoProperties.providers = new String[] {
-				"com.jd.blockchain.crypto.service.classic.ClassicCryptoService",
-				"com.jd.blockchain.crypto.service.sm.SMCryptoService" };
-		initProps.cryptoProperties.verifyHash = true;
-		initProps.cryptoProperties.hashAlgorithm = "SHA256";
+		initProps.cryptoProperties = cryptoProperties.clone();
 		return initProps;
 	}
 
@@ -284,7 +281,6 @@ public class LedgerInitProperties implements Serializable {
 		// 哈希算法；
 		String hashAlgorithm = PropertiesUtils.getOptionalProperty(props, CRYPTO_HASH_ALGORITHM);
 		initProps.cryptoProperties.setHashAlgorithm(hashAlgorithm);
-		
 
 		// 解析参与方节点列表；
 		int partCount = getInt(PropertiesUtils.getRequiredProperty(props, PART_COUNT));
@@ -432,6 +428,14 @@ public class LedgerInitProperties implements Serializable {
 			this.hashAlgorithm = hashAlgorithm;
 		}
 
+		@Override
+		protected CryptoProperties clone() {
+			CryptoProperties cryptoProperties = new CryptoProperties();
+			cryptoProperties.hashAlgorithm = hashAlgorithm;
+			cryptoProperties.providers = providers.clone();
+			cryptoProperties.verifyHash = verifyHash;
+			return cryptoProperties;
+		}
 	}
 
 	/**
