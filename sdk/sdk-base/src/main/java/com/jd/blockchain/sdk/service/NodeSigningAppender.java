@@ -81,7 +81,7 @@ public class NodeSigningAppender implements TransactionService {
 			return BinaryProtocol.decode(result);
 		} catch (ViewObsoleteException voe) {
 			throw voe;
-		} catch (IllegalStateException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			LOGGER.error("Gateway send tx [{}] error {} !", txRequest.getTransactionHash(), e);
 			return new ErrorTransactionResponse(txRequest.getTransactionHash());
