@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.jd.blockchain</groupId>
 		<artifactId>jdchain-framework</artifactId>
-		<version>1.4.3-SNAPSHOT</version>
+		<version>1.4.3.RELEASE</version>
 	</parent>
 	<artifactId>crypto</artifactId>
 	<packaging>pom</packaging>
@@ -15,8 +15,6 @@
 		<module>crypto-base</module>
 		<module>crypto-classic</module>
 		<module>crypto-sm</module>
-		<module>crypto-utils-classic</module>
-		<module>crypto-utils-sm</module>
 		<module>crypto-binary-protocal</module>
 	</modules>
 
