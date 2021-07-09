@@ -14,7 +14,6 @@ import com.jd.blockchain.sdk.proxy.HttpBlockchainBrowserService;
 import com.jd.blockchain.transaction.SignatureUtils;
 import com.jd.blockchain.transaction.TransactionService;
 import com.jd.blockchain.transaction.TxRequestMessage;
-import com.jd.blockchain.web.serializes.ByteArrayObjectUtil;
 import com.jd.httpservice.agent.HttpServiceAgent;
 import com.jd.httpservice.agent.ServiceConnection;
 import com.jd.httpservice.agent.ServiceConnectionManager;
@@ -29,10 +28,6 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
 	private BlockchainKeypair userKey;
 
 	private BlockchainService blockchainService;
-
-	static {
-		ByteArrayObjectUtil.init();
-	}
 
 	protected GatewayServiceFactory(ServiceEndpoint gatewayEndpoint, BlockchainKeypair userKey) {
 		httpConnectionManager = new ServiceConnectionManager();
