@@ -1,5 +1,7 @@
 package com.jd.blockchain.ledger.json;
 
+import com.jd.blockchain.ledger.AccountModeBits;
+import com.jd.blockchain.ledger.AccountPermissionSetOperation;
 import com.jd.blockchain.ledger.BytesValue;
 import com.jd.blockchain.ledger.ConsensusSettingsUpdateOperation;
 import com.jd.blockchain.ledger.ContractCodeDeployOperation;
@@ -47,6 +49,7 @@ public class LedgerModelJSONConfigure implements JSONAutoConfigure {
 		configurator.configProxyInterfaces(UserCAUpdateOperation.class);
 		configurator.configProxyInterfaces(UserStateUpdateOperation.class);
 		configurator.configProxyInterfaces(RootCAUpdateOperation.class);
+		configurator.configProxyInterfaces(AccountPermissionSetOperation.class);
 
 		// BytesValue
 		configurator.configSuperSerializer(BytesValue.class, BytesValueSerializer.INSTANCE);
@@ -61,6 +64,9 @@ public class LedgerModelJSONConfigure implements JSONAutoConfigure {
 		configurator.configDeserializer(LedgerPrivilegeBitset.class, LedgerPrivilegeBitsetDeserializer.INSTANCE);
 		// TransactionPrivilegeBitset
 		configurator.configDeserializer(TransactionPrivilegeBitset.class, TransactionPrivilegeBitsetDeserializer.INSTANCE);
+		// BytesSlice
+		configurator.configSuperSerializer(AccountModeBits.class, AccountModeBitsSerializer.INSTANCE);
+		configurator.configDeserializer(AccountModeBits.class, AccountModeBitsDeserializer.INSTANCE);
 	}
 
 }

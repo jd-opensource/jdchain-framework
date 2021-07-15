@@ -4,6 +4,7 @@ import com.jd.binaryproto.DataContractAutoRegistrar;
 import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.crypto.CryptoAlgorithm;
 import com.jd.blockchain.crypto.CryptoProvider;
+import com.jd.blockchain.ledger.AccountPermissionSetOperation;
 import com.jd.blockchain.ledger.AccountSnapshot;
 import com.jd.blockchain.ledger.BlockBody;
 import com.jd.blockchain.ledger.BlockchainIdentity;
@@ -135,5 +136,6 @@ public class LedgerModelDataContractAutoRegistrar implements DataContractAutoReg
 		DataContractRegistry.register(UserStateUpdateOperation.class);
 		DataContractRegistry.register(GenesisUser.class);
 		DataContractRegistry.register(ContractStateUpdateOperation.class);
+		DataContractRegistry.register(AccountPermissionSetOperation.class);
 	}
 }

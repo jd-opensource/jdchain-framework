@@ -12,18 +12,34 @@ public interface ContractOperator {
     ContractCodeDeployOperationBuilder contracts();
 
     /**
-     * 合约状态，权限等信息更新；
+     * 创建调用合约的代理实例；
      *
      * @param address
+     * @param contractIntf
      * @return
      */
-    ContractUpdateOperationBuilder contract(String address);
+    <T> T contract(String address, Class<T> contractIntf);
 
     /**
-     * 合约状态，权限等信息更新；
+     * 创建调用合约的代理实例；
      *
      * @param address
+     * @param contractIntf
      * @return
      */
-    ContractUpdateOperationBuilder contract(Bytes address);
+    <T> T contract(Bytes address, Class<T> contractIntf);
+
+    /**
+     * 合约权限修改，状态修改等更新操作
+     *
+     * @return
+     */
+    ContractOperationBuilder contract(Bytes address);
+
+    /**
+     * 合约权限修改，状态修改等更新操作
+     *
+     * @return
+     */
+    ContractOperationBuilder contract(String address);
 }

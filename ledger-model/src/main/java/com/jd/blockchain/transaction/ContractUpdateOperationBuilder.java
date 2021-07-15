@@ -36,4 +36,11 @@ public interface ContractUpdateOperationBuilder {
      */
     ContractStateUpdateOperation state(AccountState state);
 
+    /**
+     * 权限更新
+     *
+     * @return
+     */
+    AccountPermissionSetOperationBuilder permission();
+
 }

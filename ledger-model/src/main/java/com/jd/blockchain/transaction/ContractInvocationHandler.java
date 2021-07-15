@@ -59,8 +59,7 @@ public class ContractInvocationHandler implements InvocationHandler {
 		BytesValueList argBytes = BytesValueEncoding.encodeArray(args, argTypes);
 
 		// 定义合约调用操作；
-		ContractEventSendOpTemplate opTemplate = (ContractEventSendOpTemplate) sendOpBuilder.send(contractAddress,
-				event, argBytes);
+		ContractEventSendOpTemplate opTemplate = (ContractEventSendOpTemplate) sendOpBuilder.invoke(event, argBytes);
 
 		// 加入合约调用的额外信息；
 		ContractInvocation invocation = new ContractInvocation(contractType, method);

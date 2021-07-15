@@ -74,13 +74,13 @@ public class TxTemplate implements TransactionTemplate {
 	}
 
 	@Override
-	public DataAccountKVSetOperationBuilder dataAccount(String accountAddress) {
+	public DataAccountOperationBuilder dataAccount(String accountAddress) {
 		stateManager.operate();
 		return txBuilder.dataAccount(accountAddress);
 	}
 
 	@Override
-	public DataAccountKVSetOperationBuilder dataAccount(Bytes accountAddress) {
+	public DataAccountOperationBuilder dataAccount(Bytes accountAddress) {
 		stateManager.operate();
 		return txBuilder.dataAccount(accountAddress);
 	}
@@ -89,18 +89,6 @@ public class TxTemplate implements TransactionTemplate {
 	public ContractCodeDeployOperationBuilder contracts() {
 		stateManager.operate();
 		return txBuilder.contracts();
-	}
-
-	@Override
-	public ContractUpdateOperationBuilder contract(String address) {
-		stateManager.operate();
-		return txBuilder.contract(address);
-	}
-
-	@Override
-	public ContractUpdateOperationBuilder contract(Bytes address) {
-		stateManager.operate();
-		return txBuilder.contract(address);
 	}
 
 	@Override
@@ -128,9 +116,14 @@ public class TxTemplate implements TransactionTemplate {
 	}
 
 	@Override
-	public ContractEventSendOperationBuilder contract() {
+	public ContractOperationBuilder contract(Bytes address) {
 		stateManager.operate();
-		return txBuilder.contract();
+		return txBuilder.contract(address);
+	}
+
+	@Override
+	public ContractOperationBuilder contract(String address) {
+		return contract(Bytes.fromBase58(address));
 	}
 
 	@Override
@@ -140,13 +133,13 @@ public class TxTemplate implements TransactionTemplate {
 	}
 
 	@Override
-	public EventPublishOperationBuilder eventAccount(String accountAddress) {
+	public EventOperationBuilder eventAccount(String accountAddress) {
 		stateManager.operate();
 		return txBuilder.eventAccount(accountAddress);
 	}
 
 	@Override
-	public EventPublishOperationBuilder eventAccount(Bytes accountAddress) {
+	public EventOperationBuilder eventAccount(Bytes accountAddress) {
 		stateManager.operate();
 		return txBuilder.eventAccount(accountAddress);
 	}
