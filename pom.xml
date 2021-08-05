@@ -30,7 +30,7 @@
 
 	<properties>
 		<utils.version>2.0.3.RELEASE</utils.version>
-		<httpservice.version>2.0.2.RELEASE</httpservice.version>
+		<httpservice.version>2.0.3.RELEASE</httpservice.version>
 		<binaryproto.version>1.6.1.RELEASE</binaryproto.version>
 	</properties>
 
