@@ -41,4 +41,20 @@ public interface LedgerMetadata_V2 extends LedgerMetadata {
 	@DataField(order = 6, primitiveType = PrimitiveType.INT64)
 	long getLedgerStructureVersion();
 
+	/**
+	 * 是否为证书模式
+	 *
+	 * @return
+	 */
+	@DataField(order = 7, primitiveType = PrimitiveType.BOOLEAN)
+	boolean isCaMode();
+
+	/**
+	 * 根证书
+	 *
+	 * @return
+	 */
+	@DataField(order = 8, primitiveType = PrimitiveType.TEXT)
+	String getRootCa();
+
 }

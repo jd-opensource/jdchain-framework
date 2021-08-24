@@ -17,7 +17,6 @@ import com.jd.blockchain.consts.Global;
 import com.jd.blockchain.crypto.AddressEncoding;
 import com.jd.blockchain.crypto.KeyGenUtils;
 import com.jd.blockchain.crypto.PubKey;
-import com.jd.blockchain.ledger.LedgerInitProperties.CryptoProperties;
 
 import utils.Bytes;
 import utils.PropertiesUtils;
@@ -32,6 +31,12 @@ public class LedgerInitProperties implements Serializable {
 
 	// 账本种子；
 	public static final String LEDGER_SEED = "ledger.seed";
+
+	// 证书模式，默认 false
+	public static final String CA_MODE = "ca-mode";
+
+	// 根证书路径，CA_MODE 为 true 时，此选项不能为空
+	public static final String CA_PATH = "ca-path";
 
 	// 账本名称
 	public static final String LEDGER_NAME = "ledger.name";
@@ -87,6 +92,10 @@ public class LedgerInitProperties implements Serializable {
 
 	private byte[] ledgerSeed;
 
+	private boolean caMode;
+
+	private String caPath;
+
 	private String ledgerName;
 
 	private RoleInitData[] roles;
@@ -105,6 +114,14 @@ public class LedgerInitProperties implements Serializable {
 
 	public byte[] getLedgerSeed() {
 		return ledgerSeed.clone();
+	}
+
+	public boolean isCaMode() {
+		return caMode;
+	}
+
+	public String getCaPath() {
+		return caPath;
 	}
 
 	public String getLedgerName() {
@@ -220,6 +237,13 @@ public class LedgerInitProperties implements Serializable {
 		String hexLedgerSeed = PropertiesUtils.getRequiredProperty(props, LEDGER_SEED).replace("-", "");
 		byte[] ledgerSeed = HexUtils.decode(hexLedgerSeed);
 		LedgerInitProperties initProps = new LedgerInitProperties(ledgerSeed);
+
+		// 证书配置
+		boolean caMode = PropertiesUtils.getBooleanOptional(props, CA_MODE, false);
+		initProps.caMode = caMode;
+		if(caMode) {
+			initProps.caPath = PropertiesUtils.getRequiredProperty(props, CA_PATH);
+		}
 
 		// 解析账本信息；
 		// 账本名称
