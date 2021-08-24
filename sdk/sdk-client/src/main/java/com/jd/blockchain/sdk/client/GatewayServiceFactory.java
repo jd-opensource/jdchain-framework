@@ -1,8 +1,12 @@
 package com.jd.blockchain.sdk.client;
 
 import java.io.Closeable;
+import java.security.cert.X509Certificate;
 
+import com.jd.blockchain.ca.X509Utils;
 import com.jd.blockchain.crypto.HashDigest;
+import com.jd.blockchain.crypto.PrivKey;
+import com.jd.blockchain.ledger.BlockchainIdentityData;
 import com.jd.blockchain.ledger.BlockchainKeypair;
 import com.jd.blockchain.ledger.CryptoSetting;
 import com.jd.blockchain.ledger.DigitalSignature;
@@ -27,12 +31,18 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
 
 	private BlockchainKeypair userKey;
 
+	private X509Certificate certificate;
+
 	private BlockchainService blockchainService;
 
 	protected GatewayServiceFactory(ServiceEndpoint gatewayEndpoint, BlockchainKeypair userKey) {
+		this(gatewayEndpoint, userKey, null);
+	}
+
+	protected GatewayServiceFactory(ServiceEndpoint gatewayEndpoint, BlockchainKeypair userKey, X509Certificate certificate) {
 		httpConnectionManager = new ServiceConnectionManager();
 		this.userKey = userKey;
-
+		this.certificate = certificate;
 		HttpBlockchainBrowserService queryService = createQueryService(gatewayEndpoint);
 		TransactionService txProcSrv = createConsensusService(gatewayEndpoint);
 
@@ -116,11 +126,19 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
 	 */
 	public static GatewayServiceFactory connect(String gatewayHost, int gatewayPort, boolean secure,
 			BlockchainKeypair userKey) {
+		return connect(gatewayHost, gatewayPort, secure, userKey, null);
+	}
+
+	public static GatewayServiceFactory connect(String gatewayHost, int gatewayPort, boolean secure,
+												PrivKey privKey, X509Certificate certificate) {
+		return connect(gatewayHost, gatewayPort, secure, new BlockchainKeypair(X509Utils.resolvePubKey(certificate), privKey), certificate);
+	}
+
+	public static GatewayServiceFactory connect(String gatewayHost, int gatewayPort, boolean secure,
+												BlockchainKeypair userKey, X509Certificate certificate) {
 		ServiceEndpoint gatewayEndpoint = new ServiceEndpoint(gatewayHost, gatewayPort, secure);
-		GatewayServiceFactory factory = new GatewayServiceFactory(gatewayEndpoint, userKey);
+		GatewayServiceFactory factory = new GatewayServiceFactory(gatewayEndpoint, userKey, certificate);
 		factory.setMaxConnections(100);
-		// TODO: 未实现网关对用户的认证；
-		// TODO: 未实现加载不同账本的密码算法配置；
 		return factory;
 	}
 
@@ -133,7 +151,7 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
 		TransactionService gatewayConsensusService = HttpServiceAgent.createService(HttpConsensusService.class,
 				connection, null);
 		if (userKey != null) {
-			gatewayConsensusService = new EndpointAutoSigner(gatewayConsensusService, userKey);
+			gatewayConsensusService = new EndpointAutoSigner(gatewayConsensusService, userKey, certificate);
 		}
 		return gatewayConsensusService;
 	}
@@ -151,12 +169,13 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
 	private static class EndpointAutoSigner implements TransactionService {
 
 		private TransactionService innerService;
-
 		private BlockchainKeypair userKey;
+		private X509Certificate certificate;
 
-		public EndpointAutoSigner(TransactionService innerService, BlockchainKeypair userKey) {
+		public EndpointAutoSigner(TransactionService innerService, BlockchainKeypair userKey, X509Certificate certificate) {
 			this.innerService = innerService;
 			this.userKey = userKey;
+			this.certificate = certificate;
 		}
 
 		@Override
@@ -165,8 +184,11 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
 			// TODO: 未实现按不同的账本的密码参数配置，采用不同的哈希算法和签名算法；
 			if (!reqMsg.containsEndpointSignature(userKey.getAddress())) {
 				// TODO: 优化上下文对此 TransactionContent 的多次序列化带来的额外性能开销；
-				DigitalSignature signature = SignatureUtils.sign(txRequest.getTransactionHash(), userKey);
-				reqMsg.addEndpointSignatures(signature);
+				if(null == certificate) {
+					reqMsg.addEndpointSignatures(SignatureUtils.sign(txRequest.getTransactionHash(), userKey));
+				} else {
+					reqMsg.addEndpointSignatures(SignatureUtils.sign(txRequest.getTransactionHash(), certificate, userKey.getPrivKey()));
+				}
 			}
 			return innerService.process(txRequest);
 		}

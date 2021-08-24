@@ -1,9 +1,11 @@
 package com.jd.blockchain.transaction;
 
 import java.io.IOException;
+import java.security.cert.X509Certificate;
 
 import com.jd.blockchain.crypto.AsymmetricKeypair;
 import com.jd.blockchain.crypto.HashDigest;
+import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.ledger.DigitalSignature;
 import com.jd.blockchain.ledger.PreparedTransaction;
 import com.jd.blockchain.ledger.TransactionContent;
@@ -41,6 +43,13 @@ public class PreparedTx implements PreparedTransaction {
 	@Override
 	public DigitalSignature sign(AsymmetricKeypair keyPair) {
 		DigitalSignature signature = SignatureUtils.sign(txReqBuilder.getTransactionHash(), keyPair);
+		addSignature(signature);
+		return signature;
+	}
+
+	@Override
+	public DigitalSignature sign(X509Certificate certificate, PrivKey privKey) {
+		DigitalSignature signature = SignatureUtils.sign(txReqBuilder.getTransactionHash(), certificate, privKey);
 		addSignature(signature);
 		return signature;
 	}

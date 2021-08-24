@@ -1,6 +1,7 @@
 package com.jd.blockchain.transaction;
 
 import com.jd.blockchain.crypto.AsymmetricKeypair;
+import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.ledger.DigitalSignature;
 import com.jd.blockchain.ledger.OperationResult;
 import com.jd.blockchain.ledger.TransactionRequestBuilder;
@@ -8,6 +9,7 @@ import com.jd.blockchain.ledger.TransactionResponse;
 import org.springframework.cglib.proxy.UndeclaredThrowableException;
 
 import java.io.IOException;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -44,6 +46,13 @@ class StatefulPreparedTx extends PreparedTx {
     @Override
     public DigitalSignature sign(AsymmetricKeypair keyPair) {
         DigitalSignature signature = SignatureUtils.sign(getTransactionHash(), keyPair);
+        addSignature(signature);
+        return signature;
+    }
+
+    @Override
+    public DigitalSignature sign(X509Certificate certificate, PrivKey privKey) {
+        DigitalSignature signature = SignatureUtils.sign(getTransactionHash(), certificate, privKey);
         addSignature(signature);
         return signature;
     }
