@@ -73,6 +73,7 @@ public interface DataCodes {
 	public static final int TX_OP_USER_REG = 0x310;
 	public static final int TX_OP_USER_INFO_SET = 0x311;
 	public static final int TX_OP_USER_INFO_SET_KV = 0x312;
+	public static final int TX_OP_USER_REVOKE = 0x313;
 
 	public static final int TX_OP_DATA_ACC_REG = 0x320;
 	public static final int TX_OP_DATA_ACC_SET = 0x321;
@@ -103,6 +104,7 @@ public interface DataCodes {
 	public static final int TX_OP_EVENT_PUBLISH_ENTITY = 0x382;
 
 	public static final int TX_OP_CONSENSUS_SETTINGS_UPDATE = 0x390;
+	public static final int TX_OP_META_CA_UPDATE = 0x391;
 
 	// enum types of permissions;
 	public static final int ENUM_TX_PERMISSION = 0x401;

@@ -8,5 +8,6 @@ import com.jd.blockchain.crypto.PubKey;
 public interface UserAccountHeader extends BlockchainIdentity {
 	
 	PubKey getDataPubKey();
-	
+
+	boolean revoked();
 }

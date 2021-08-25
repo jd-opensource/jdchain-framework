@@ -1,6 +1,8 @@
 package com.jd.blockchain.transaction;
 
+import com.jd.blockchain.ca.X509Utils;
 import com.jd.blockchain.ledger.BlockchainIdentity;
+import com.jd.blockchain.ledger.BlockchainIdentityData;
 import com.jd.blockchain.ledger.BytesValue;
 import com.jd.blockchain.ledger.BytesValueList;
 import com.jd.blockchain.ledger.ConsensusSettingsUpdateOperation;
@@ -16,11 +18,16 @@ import com.jd.blockchain.ledger.Operation;
 import com.jd.blockchain.ledger.ParticipantNodeState;
 import com.jd.blockchain.ledger.ParticipantRegisterOperation;
 import com.jd.blockchain.ledger.ParticipantStateUpdateOperation;
+import com.jd.blockchain.ledger.RootCaUpdateOperation;
 import com.jd.blockchain.ledger.UserRegisterOperation;
 
+import com.jd.blockchain.ledger.UserRevokeOperation;
+import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 import utils.Bytes;
 import utils.Property;
+import utils.codec.Base58Utils;
 
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,8 +49,6 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	private static final ContractCodeDeployOperationBuilderImpl CONTRACT_CODE_DEPLOY_OP_BUILDER = new ContractCodeDeployOperationBuilderImpl();
 
-//	private static final ContractEventSendOperationBuilderImpl CONTRACT_EVENT_SEND_OP_BUILDER = new ContractEventSendOperationBuilderImpl();
-
 	private SecurityOperationBuilderFilter securityOpBuilder = new SecurityOperationBuilderFilter();
 
 	private static final ParticipantRegisterOperationBuilderImpl PARTICIPANT_REG_OP_BUILDER = new ParticipantRegisterOperationBuilderImpl();
@@ -53,6 +58,8 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 	private static final ConsensusSettingsUpdateOperationBuilderImpl CONSENSUS_SETTINGS_UPDATE_OPERATION_BUILDER = new ConsensusSettingsUpdateOperationBuilderImpl();
 
 	private static final EventAccountRegisterOperationBuilderImpl EVENT_ACC_REG_OP_BUILDER = new EventAccountRegisterOperationBuilderImpl();
+
+	private static final MetaInfoUpdateOperationBuilderImpl META_INFO_UPDATE_OPERATION_BUILDER = new MetaInfoUpdateOperationBuilderImpl();
 
 	private LedgerInitOperationBuilder ledgerInitOpBuilder = new LedgerInitOperationBuilderFilter();
 
@@ -74,6 +81,8 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	private EventAccountRegisterOperationBuilder eventAccRegOpBuilder = new EventAccountRegisterOperationBuilderFilter();
 
+	private MetaInfoUpdateOperationBuilder metaInfoUpdateOpBuilder = new MetaInfoUpdateOperationBuilderFilter();
+
 	// TODO: 暂时只支持单线程情形，未考虑多线程；
 	private List<Operation> operationList = Collections.synchronizedList(new ArrayList<>());
 
@@ -90,6 +99,16 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 	@Override
 	public UserRegisterOperationBuilder users() {
 		return userRegOpBuilder;
+	}
+
+	@Override
+	public UserUpdateOperationBuilder user(String address) {
+		return user(Bytes.fromBase58(address));
+	}
+
+	@Override
+	public UserUpdateOperationBuilder user(Bytes address) {
+		return new UserUpdateOperationBuilderFilter(address);
 	}
 
 	@Override
@@ -197,6 +216,11 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		operationList.clear();
 	}
 
+	@Override
+	public MetaInfoUpdateOperationBuilder metaInfo() {
+		return metaInfoUpdateOpBuilder;
+	}
+
 	// --------------------------------- 内部类型 -----------------------------------
 
 	private class LedgerInitOperationBuilderFilter implements LedgerInitOperationBuilder {
@@ -219,6 +243,27 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 			return op;
 		}
 
+		@Override
+		public UserRegisterOperation register(X509Certificate certificate) {
+			return register(new BlockchainIdentityData(X509Utils.resolvePubKey(certificate)));
+		}
+
+	}
+
+	private class UserUpdateOperationBuilderFilter implements UserUpdateOperationBuilder {
+
+		private Bytes address;
+
+		public UserUpdateOperationBuilderFilter(Bytes address) {
+			this.address = address;
+		}
+
+		@Override
+		public UserRevokeOperation revoke() {
+			UserRevokeOperation op = new UserRevokeOpTemplate(address);
+			operationList.add(op);
+			return op;
+		}
 	}
 
 	private class SecurityOperationBuilderFilter implements SecurityOperationBuilder {
@@ -358,6 +403,11 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 			operationList.add(op);
 			return op;
 		}
+
+		@Override
+		public ParticipantRegisterOperation register(String participantName, X509Certificate certificate) {
+			return register(participantName, new BlockchainIdentityData(X509Utils.resolvePubKey(certificate)));
+		}
 	}
 
 	private class ParticipantStateUpdateOperationBuilderFilter implements ParticipantStateUpdateOperationBuilder {
@@ -399,6 +449,16 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		@Override
 		public EventAccountRegisterOperation register(BlockchainIdentity accountID) {
 			EventAccountRegisterOperation op = EVENT_ACC_REG_OP_BUILDER.register(accountID);
+			operationList.add(op);
+			return op;
+		}
+	}
+
+	private class MetaInfoUpdateOperationBuilderFilter implements MetaInfoUpdateOperationBuilder {
+
+		@Override
+		public RootCaUpdateOperation ca(String cert) {
+			RootCaUpdateOperation op = META_INFO_UPDATE_OPERATION_BUILDER.ca(cert);
 			operationList.add(op);
 			return op;
 		}
