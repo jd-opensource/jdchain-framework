@@ -1,5 +1,6 @@
 package com.jd.blockchain.sdk.service;
 
+import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -27,13 +28,15 @@ public class PeerAuthenticator {
 	private static Logger LOGGER = LoggerFactory.getLogger(PeerAuthenticator.class);
 
 	private AsymmetricKeypair gatewayKey;
+	private X509Certificate certificate;
 	private NetworkAddress peerAddr;
 	private SessionCredentialProvider credentialProvider;
 
 	public PeerAuthenticator(NetworkAddress peerAddr, AsymmetricKeypair gatewayKey,
-			SessionCredentialProvider credentialProvider) {
+							 X509Certificate certificate, SessionCredentialProvider credentialProvider) {
 		this.peerAddr = peerAddr;
 		this.gatewayKey = gatewayKey;
+		this.certificate = certificate;
 		this.credentialProvider = credentialProvider;
 	}
 
@@ -54,7 +57,7 @@ public class PeerAuthenticator {
 				SessionCredential sessionCredential = credentialProvider
 						.getCredential(ledgerProvider.getKey().toBase58());
 
-				ClientCredential authId = clientFactory.buildCredential(sessionCredential, gatewayKey);
+				ClientCredential authId = clientFactory.buildCredential(sessionCredential, gatewayKey, certificate);
 				authRequest.add(ledgerProvider.getKey(), authId);
 			}
 

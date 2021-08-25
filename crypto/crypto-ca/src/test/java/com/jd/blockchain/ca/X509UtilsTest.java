@@ -56,6 +56,14 @@ public class X509UtilsTest {
         X509Utils.checkValidity(certificate);
         Set<String> ou = X509Utils.getSubject(certificate, BCStyle.EmailAddress);
         Assert.assertTrue(ou.contains("jdchain@jd.com"));
+        System.out.println(X509Utils.toPEMString(certificate));
+    }
+
+    @Test
+    public void testToPEMString() {
+        X509Certificate certificate1 = X509Utils.resolveCertificate(ledgerCertificate);
+        X509Certificate certificate2 = X509Utils.resolveCertificate(X509Utils.toPEMString(certificate1));
+        Assert.assertEquals(certificate1, certificate2);
     }
 
     @Test

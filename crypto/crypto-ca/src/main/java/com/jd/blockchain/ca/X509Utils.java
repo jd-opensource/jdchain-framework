@@ -26,6 +26,8 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import sun.misc.BASE64Encoder;
+import sun.security.provider.X509Factory;
 import utils.crypto.classic.ECDSAUtils;
 import utils.crypto.classic.RSAUtils;
 import utils.io.FileUtils;
@@ -62,6 +64,21 @@ public class X509Utils {
 
     static {
         Security.addProvider(new BouncyCastleProvider());
+    }
+
+    public static String toPEMString(X509Certificate certificate) {
+        try {
+            StringBuilder builder = new StringBuilder();
+            BASE64Encoder encoder = new BASE64Encoder();
+            builder.append(X509Factory.BEGIN_CERT);
+            builder.append("\n");
+            builder.append(encoder.encodeBuffer(certificate.getEncoded()));
+            builder.append(X509Factory.END_CERT);
+
+            return builder.toString();
+        } catch (CertificateEncodingException e) {
+            throw new CryptoException(e.getMessage(), e);
+        }
     }
 
     /**
@@ -116,6 +133,44 @@ public class X509Utils {
     public static void checkCaType(X509Certificate certificate, CaType caType) {
         if (!getSubject(certificate, BCStyle.OU).contains(caType.name())) {
             throw new CryptoException(caType.name() + " ca invalid!");
+        }
+    }
+
+    /**
+     * Checks that any type is valid
+     *
+     * @param certificate
+     * @param caTypes
+     */
+    public static void checkCaTypesAny(X509Certificate certificate, CaType... caTypes) {
+        boolean contains = false;
+        for(CaType caType : caTypes) {
+            if (getSubject(certificate, BCStyle.OU).contains(caType.name())) {
+                contains = true;
+                break;
+            }
+        }
+        if(!contains) {
+            throw new CryptoException(caTypes.toString() + " ca invalid!");
+        }
+    }
+
+    /**
+     * Checks that the types are valid
+     *
+     * @param certificate
+     * @param caTypes
+     */
+    public static void checkCaTypesAll(X509Certificate certificate, CaType... caTypes) {
+        boolean contains = true;
+        for(CaType caType : caTypes) {
+            if (!getSubject(certificate, BCStyle.OU).contains(caType.name())) {
+                contains = false;
+                break;
+            }
+        }
+        if(!contains) {
+            throw new CryptoException(caTypes.toString() + " ca invalid!");
         }
     }
 
