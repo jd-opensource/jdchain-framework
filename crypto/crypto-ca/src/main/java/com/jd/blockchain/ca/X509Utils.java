@@ -7,6 +7,7 @@ import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 import com.jd.blockchain.crypto.service.classic.ClassicAlgorithm;
+import com.jd.blockchain.crypto.service.sm.SMAlgorithm;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x500.RDN;
@@ -62,8 +63,19 @@ import java.util.Set;
  **/
 public class X509Utils {
 
+    // EC 相关算法参数
+    static final String EC_ALGORITHM = "EC";
+    static final String SIGALG_SM3WITHSM2 = "SM3WITHSM2";
+    static final String SECP256K1 = "BgUrgQQACg==";
+    static final String SM2ECC = "BggqgRzPVQGCLQ==";
+    static final String BEGIN_PARAMS = "-----BEGIN EC PARAMETERS-----";
+    static final String END_PARAMS = "-----END EC PARAMETERS-----";
+
+    static JcaPEMKeyConverter converter;
+
     static {
         Security.addProvider(new BouncyCastleProvider());
+        converter = new JcaPEMKeyConverter();
     }
 
     public static String toPEMString(X509Certificate certificate) {
@@ -144,13 +156,13 @@ public class X509Utils {
      */
     public static void checkCaTypesAny(X509Certificate certificate, CaType... caTypes) {
         boolean contains = false;
-        for(CaType caType : caTypes) {
+        for (CaType caType : caTypes) {
             if (getSubject(certificate, BCStyle.OU).contains(caType.name())) {
                 contains = true;
                 break;
             }
         }
-        if(!contains) {
+        if (!contains) {
             throw new CryptoException(caTypes.toString() + " ca invalid!");
         }
     }
@@ -163,13 +175,13 @@ public class X509Utils {
      */
     public static void checkCaTypesAll(X509Certificate certificate, CaType... caTypes) {
         boolean contains = true;
-        for(CaType caType : caTypes) {
+        for (CaType caType : caTypes) {
             if (!getSubject(certificate, BCStyle.OU).contains(caType.name())) {
                 contains = false;
                 break;
             }
         }
-        if(!contains) {
+        if (!contains) {
             throw new CryptoException(caTypes.toString() + " ca invalid!");
         }
     }
@@ -219,7 +231,10 @@ public class X509Utils {
         try {
             PublicKey publicKey = certificate.getPublicKey();
             AsymmetricKeyParameter pubkeyParam = PublicKeyFactory.createKey(publicKey.getEncoded());
-            CryptoAlgorithm algorithm = Crypto.getAlgorithm(publicKey.getAlgorithm().toUpperCase());
+            String algorithmName = publicKey.getAlgorithm();
+            String sigAlgName = certificate.getSigAlgName();
+            CryptoAlgorithm algorithm = !algorithmName.equals(EC_ALGORITHM) ? Crypto.getAlgorithm(algorithmName.toUpperCase()) :
+                    (sigAlgName.equals(SIGALG_SM3WITHSM2) ? SMAlgorithm.SM2 : ClassicAlgorithm.ECDSA);
             byte[] encoded;
             if (algorithm.equals(ClassicAlgorithm.ED25519)) {
                 encoded = ((Ed25519PublicKeyParameters) pubkeyParam).getEncoded();
@@ -227,11 +242,13 @@ public class X509Utils {
                 encoded = RSAUtils.pubKey2Bytes_RawKey(((RSAKeyParameters) pubkeyParam));
             } else if (algorithm.equals(ClassicAlgorithm.ECDSA)) {
                 encoded = ((ECPublicKeyParameters) pubkeyParam).getQ().getEncoded(false);
+            } else if (algorithm.equals(SMAlgorithm.SM2)) {
+                encoded = ((ECPublicKeyParameters) pubkeyParam).getQ().getEncoded(false);
             } else {
                 throw new CryptoException("Unsupported crypto algorithm : " + algorithm.name());
             }
 
-            return DefaultCryptoEncoding.encodePubKey(Crypto.getAlgorithm(publicKey.getAlgorithm().toUpperCase()), encoded);
+            return DefaultCryptoEncoding.encodePubKey(algorithm, encoded);
         } catch (IOException e) {
             throw new CryptoException(e.getMessage(), e);
         }
@@ -245,8 +262,21 @@ public class X509Utils {
      */
     public static PrivKey resolvePrivKey(String privkey) {
         try {
+            CryptoAlgorithm algorithm = null;
+
+            // EC 相关算法
+            if (privkey.startsWith(BEGIN_PARAMS)) {
+                // 解析具体算法
+                if (privkey.contains(SECP256K1)) {
+                    algorithm = ClassicAlgorithm.ECDSA;
+                } else if (privkey.contains(SM2ECC)) {
+                    algorithm = SMAlgorithm.SM2;
+                } else {
+                    throw new CryptoException("Unsupported ec algorithm");
+                }
+                privkey = privkey.substring(privkey.indexOf(END_PARAMS) + END_PARAMS.length());
+            }
             PEMParser pemParser = new PEMParser(new StringReader(privkey));
-            JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
             Object object = pemParser.readObject();
             PrivateKeyInfo pemKeyPair;
             if (object instanceof PrivateKeyInfo) {
@@ -256,13 +286,15 @@ public class X509Utils {
             }
             PrivateKey aPrivate = converter.getPrivateKey(pemKeyPair);
             AsymmetricKeyParameter privkeyParam = PrivateKeyFactory.createKey(pemKeyPair);
-            CryptoAlgorithm algorithm = Crypto.getAlgorithm(aPrivate.getAlgorithm().toUpperCase());
+            algorithm = null == algorithm ? Crypto.getAlgorithm(aPrivate.getAlgorithm().toUpperCase()) : algorithm;
             byte[] encoded;
             if (algorithm.equals(ClassicAlgorithm.ED25519)) {
                 encoded = ((Ed25519PrivateKeyParameters) privkeyParam).getEncoded();
             } else if (algorithm.equals(ClassicAlgorithm.RSA)) {
                 encoded = RSAUtils.privKey2Bytes_RawKey((RSAPrivateCrtKeyParameters) privkeyParam);
             } else if (algorithm.equals(ClassicAlgorithm.ECDSA)) {
+                encoded = ECDSAUtils.trimBigIntegerTo32Bytes(((ECPrivateKeyParameters) privkeyParam).getD());
+            } else if (algorithm.equals(SMAlgorithm.SM2)) {
                 encoded = ECDSAUtils.trimBigIntegerTo32Bytes(((ECPrivateKeyParameters) privkeyParam).getD());
             } else {
                 throw new CryptoException("Unsupported crypto algorithm : " + algorithm.name());

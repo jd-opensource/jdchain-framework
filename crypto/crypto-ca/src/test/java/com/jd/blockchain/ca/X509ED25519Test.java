@@ -16,38 +16,34 @@ import java.util.Set;
  * @author: imuge
  * @date: 2021/8/23
  **/
-public class X509UtilsTest {
+public class X509ED25519Test {
 
     private static String ledgerCertificate = "-----BEGIN CERTIFICATE-----\n" +
-            "MIICGzCCAc2gAwIBAgIUd7h5uBW+Ajn5iEVujYE6zyRQaXkwBQYDK2VwMIGCMQsw\n" +
-            "CQYDVQQGEwJDTjELMAkGA1UECAwCQkoxCzAJBgNVBAcMAkJKMRYwFAYDVQQKDA1s\n" +
-            "ZWRnZXIuamQuY29tMQ8wDQYDVQQLDAZMRURHRVIxETAPBgNVBAMMCEpEIENoYWlu\n" +
-            "MR0wGwYJKoZIhvcNAQkBFg5qZGNoYWluQGpkLmNvbTAeFw0yMTA4MjMxMjIxNDZa\n" +
-            "Fw0zMTA4MjExMjIxNDZaMIGCMQswCQYDVQQGEwJDTjELMAkGA1UECAwCQkoxCzAJ\n" +
-            "BgNVBAcMAkJKMRYwFAYDVQQKDA1sZWRnZXIuamQuY29tMQ8wDQYDVQQLDAZMRURH\n" +
-            "RVIxETAPBgNVBAMMCEpEIENoYWluMR0wGwYJKoZIhvcNAQkBFg5qZGNoYWluQGpk\n" +
-            "LmNvbTAqMAUGAytlcAMhAH0phZdhAjWlOAwisHMNkKFf3iHU5GKY5ZIR8hsQN+Fb\n" +
-            "o1MwUTAdBgNVHQ4EFgQUFebpFFLv8C6iJYG2eEhVK1Plul0wHwYDVR0jBBgwFoAU\n" +
-            "FebpFFLv8C6iJYG2eEhVK1Plul0wDwYDVR0TAQH/BAUwAwEB/zAFBgMrZXADQQCA\n" +
-            "GlFOnbbq+owV/KeXwY9kCRpJKUSHqgArDRM1fS/fLYxnonCzAh3pblYVHbUMpKnv\n" +
-            "tQTyjpjamehH99uq8W4O\n" +
+            "MIICBTCCAbegAwIBAgIUMyVWkBGnqT3SLC0cMBpcaBKHDKMwBQYDK2VwMHgxCzAJ\n" +
+            "BgNVBAYTAkNOMQswCQYDVQQIDAJCSjELMAkGA1UEBwwCQkoxDDAKBgNVBAoMA0pE\n" +
+            "VDEPMA0GA1UECwwGTEVER0VSMREwDwYDVQQDDAhKRCBDaGFpbjEdMBsGCSqGSIb3\n" +
+            "DQEJARYOamRjaGFpbkBqZC5jb20wHhcNMjEwODI2MDcxNDI5WhcNMzEwODI0MDcx\n" +
+            "NDI5WjB4MQswCQYDVQQGEwJDTjELMAkGA1UECAwCQkoxCzAJBgNVBAcMAkJKMQww\n" +
+            "CgYDVQQKDANKRFQxDzANBgNVBAsMBkxFREdFUjERMA8GA1UEAwwISkQgQ2hhaW4x\n" +
+            "HTAbBgkqhkiG9w0BCQEWDmpkY2hhaW5AamQuY29tMCowBQYDK2VwAyEA3icLOTB6\n" +
+            "QuzWOP30zo4Swf0LBnf9whjkXLN7h8H6+LCjUzBRMB0GA1UdDgQWBBR9L3r1/QB9\n" +
+            "du8C951x549ikVAOTjAfBgNVHSMEGDAWgBR9L3r1/QB9du8C951x549ikVAOTjAP\n" +
+            "BgNVHRMBAf8EBTADAQH/MAUGAytlcANBAPaQ8QcYOqK1zLnurA/1L7U5o1HVB1wb\n" +
+            "XylSHIWm09xNLDmRyRHSXq128iAbFU+2Xlyz44YqDvu8GbENTpfX8gQ=\n" +
             "-----END CERTIFICATE-----";
     private static String peerCertificate = "-----BEGIN CERTIFICATE-----\n" +
-            "MIIBvzCCAXECFAgJx7cZtTX/0QBvSIh29P7TiqgQMAUGAytlcDCBgjELMAkGA1UE\n" +
-            "BhMCQ04xCzAJBgNVBAgMAkJKMQswCQYDVQQHDAJCSjEWMBQGA1UECgwNbGVkZ2Vy\n" +
-            "LmpkLmNvbTEPMA0GA1UECwwGTEVER0VSMREwDwYDVQQDDAhKRCBDaGFpbjEdMBsG\n" +
-            "CSqGSIb3DQEJARYOamRjaGFpbkBqZC5jb20wHhcNMjEwODIzMTIyNDEyWhcNMzEw\n" +
-            "ODIxMTIyNDEyWjCBgDELMAkGA1UEBhMCQ04xCzAJBgNVBAgMAkJKMQswCQYDVQQH\n" +
-            "DAJCSjEWMBQGA1UECgwNbGVkZ2VyLmpkLmNvbTENMAsGA1UECwwEUEVFUjERMA8G\n" +
-            "A1UEAwwISkQgQ2hhaW4xHTAbBgkqhkiG9w0BCQEWDmpkY2hhaW5AamQuY29tMCow\n" +
-            "BQYDK2VwAyEAMg3G7Iei7IrC+XZtioGk6n/xzYr92oBwE5xTlW5ljE8wBQYDK2Vw\n" +
-            "A0EAMRkV+QWv0ORPD66VovqkHjmznuaGCb9js7Z4gYoE7EgRGFrIFGZaglGBJbDe\n" +
-            "zi7DuYZo5oxHwuL33RZ8doh0Dg==\n" +
+            "MIIBqTCCAVsCFGvY2xXUEDNWuagjU1FeYSyGUIN6MAUGAytlcDB4MQswCQYDVQQG\n" +
+            "EwJDTjELMAkGA1UECAwCQkoxCzAJBgNVBAcMAkJKMQwwCgYDVQQKDANKRFQxDzAN\n" +
+            "BgNVBAsMBkxFREdFUjERMA8GA1UEAwwISkQgQ2hhaW4xHTAbBgkqhkiG9w0BCQEW\n" +
+            "DmpkY2hhaW5AamQuY29tMB4XDTIxMDgyNjA3MTQzN1oXDTMxMDgyNDA3MTQzN1ow\n" +
+            "djELMAkGA1UEBhMCQ04xCzAJBgNVBAgMAkJKMQswCQYDVQQHDAJCSjEMMAoGA1UE\n" +
+            "CgwDSkRUMQ0wCwYDVQQLDARQRUVSMREwDwYDVQQDDAhKRCBDaGFpbjEdMBsGCSqG\n" +
+            "SIb3DQEJARYOamRjaGFpbkBqZC5jb20wKjAFBgMrZXADIQCfOtyEHkHJB60dCn2D\n" +
+            "6MJvQGDXKsGC+rn9/xs2IgsFDTAFBgMrZXADQQAkQC5A83rApwrMvW+YSpL0+2Yo\n" +
+            "uXDhZLj0zTK0X3U/5I+4UtkyD89LSwbV+mINWIfXFOid5j0MQ64LR9fHlicB\n" +
             "-----END CERTIFICATE-----";
     private static String peerPrivateKey = "-----BEGIN PRIVATE KEY-----\n" +
-            "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgMJO46X+a2RwRPutF\n" +
-            "OuOQA7XNcTzknEznrCNYvNbi8cShRANCAAQanaPFujz5WH8nG3yod76DuAZPcpy1\n" +
-            "x8q31lhEa5m9MDGnW6tzxKo+Hh+i1OnQ11Mc6fnJMuCBj1Z5An2jdJ9g\n" +
+            "MC4CAQAwBQYDK2VwBCIEICaFqIYdUN9r3BgrgBaLiSXYlvyVfsLLQ0Bn8e6SmBot\n" +
             "-----END PRIVATE KEY-----";
 
     @Test
