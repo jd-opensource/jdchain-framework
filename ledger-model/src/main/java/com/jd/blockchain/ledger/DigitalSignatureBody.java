@@ -34,11 +34,4 @@ public interface DigitalSignatureBody {
 	@DataField(order=2, primitiveType = PrimitiveType.BYTES )
 	SignatureDigest getDigest();
 
-	/**
-	 * X509 证书文本；
-	 *
-	 * @return
-	 */
-	@DataField(order=3, primitiveType = PrimitiveType.TEXT)
-	String getCertificate();
 }

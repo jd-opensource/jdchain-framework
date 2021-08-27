@@ -21,8 +21,6 @@ import com.jd.blockchain.transaction.TxRequestMessage;
 import utils.concurrent.AsyncFuture;
 import utils.exception.ViewObsoleteException;
 
-import java.security.cert.X509Certificate;
-
 /**
  * {@link NodeSigningAppender} 以装饰者模式实现，为交易请求附加上节点签名；
  *
@@ -45,15 +43,12 @@ public class NodeSigningAppender implements TransactionService {
 
 	private AsymmetricKeypair nodeKeyPair;
 
-	private X509Certificate certificate;
-
 	private short hashAlgorithm;
 
-	public NodeSigningAppender(short hashAlgorithm, AsymmetricKeypair nodeKeyPair, X509Certificate certificate, ConsensusClient consensusClient) {
+	public NodeSigningAppender(short hashAlgorithm, AsymmetricKeypair nodeKeyPair, ConsensusClient consensusClient) {
 		this.hashAlgorithm = hashAlgorithm;
 		this.nodeKeyPair = nodeKeyPair;
 		this.consensusClient = consensusClient;
-		this.certificate = certificate;
 	}
 
 //	public NodeSigningAppender(CryptoAlgorithm hashAlgorithm, TransactionService reallyService, CryptoKeyPair nodeKeyPair) {
@@ -73,7 +68,7 @@ public class NodeSigningAppender implements TransactionService {
 		TxRequestMessage txMessage = new TxRequestMessage(txRequest);
 
 		// 生成网关签名；
-		DigitalSignature nodeSign = SignatureUtils.sign(txRequest.getTransactionHash(), certificate, nodeKeyPair.getPrivKey());
+		DigitalSignature nodeSign = SignatureUtils.sign(txRequest.getTransactionHash(), nodeKeyPair);
 		txMessage.addNodeSignatures(nodeSign);
 
 		try {

@@ -2,6 +2,7 @@ package com.jd.blockchain.transaction;
 
 import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.ledger.CryptoSetting;
+import com.jd.blockchain.ledger.IdentityMode;
 import com.jd.blockchain.ledger.LedgerInitSetting;
 import com.jd.blockchain.ledger.ParticipantNode;
 
@@ -15,9 +16,9 @@ public class LedgerInitData implements LedgerInitSetting {
 
 	private byte[] ledgerSeed;
 
-	private boolean caMode;
+	private IdentityMode identityMode;
 
-	private String rootCa;
+	private String[] ledgerCAs;
 
 	private ParticipantNode[] consensusParticipants;
 
@@ -90,22 +91,22 @@ public class LedgerInitData implements LedgerInitSetting {
 		return this.ledgerStructureVersion;
 	}
 
-	public void setCaMode(boolean caMode) {
-		this.caMode = caMode;
+	public void setIdentityMode(IdentityMode identityMode) {
+		this.identityMode = identityMode;
 	}
 
-	public void setRootCa(String rootCa) {
-		this.rootCa = rootCa;
-	}
-
-	@Override
-	public boolean isCaMode() {
-		return caMode;
+	public void setLedgerCAs(String... ledgerCAs) {
+		this.ledgerCAs = ledgerCAs;
 	}
 
 	@Override
-	public String getRootCa() {
-		return rootCa;
+	public IdentityMode getIdentityMode() {
+		return identityMode;
+	}
+
+	@Override
+	public String[] getLedgerCAs() {
+		return ledgerCAs;
 	}
 
 	public void setLedgerStructureVersion(long ledgerStructureVersion) {

@@ -20,9 +20,9 @@ public interface ParticipantRegisterOperationBuilder {
      * 注册参与方
      *
      * @param participantName 参与方
-     * @param certificate     参与方证书信息
+     * @param cert     参与方证书信息
      * @return
      */
-    ParticipantRegisterOperation register(String participantName, X509Certificate certificate);
+    ParticipantRegisterOperation register(String participantName, X509Certificate cert);
 
 }

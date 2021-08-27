@@ -71,18 +71,18 @@ public interface LedgerInitSetting {
     long getLedgerStructureVersion();
 
     /**
-     * 是否为证书模式
+     * 身份认证模式
      *
      * @return
      */
-    @DataField(order = 8, primitiveType = PrimitiveType.BOOLEAN)
-    boolean isCaMode();
+    @DataField(order = 8, refEnum = true)
+    IdentityMode getIdentityMode();
 
     /**
      * 根证书
      *
      * @return
      */
-    @DataField(order = 9, primitiveType = PrimitiveType.TEXT)
-    String getRootCa();
+    @DataField(order = 9, list = true, primitiveType = PrimitiveType.TEXT)
+    String[] getLedgerCAs();
 }

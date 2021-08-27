@@ -52,8 +52,10 @@ import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -109,6 +111,25 @@ public class X509Utils {
     }
 
     /**
+     * 解析 X509 证书
+     *
+     * @param certificates
+     * @return
+     */
+    public static X509Certificate[] resolveCertificates(String[] certificates) {
+        try {
+            CertificateFactory certificateFactory = CertificateFactory.getInstance("X509", BouncyCastleProvider.PROVIDER_NAME);
+            X509Certificate[] certs = new X509Certificate[certificates.length];
+            for (int i = 0; i < certificates.length; i++) {
+                certs[i] = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(certificates[i].getBytes()));
+            }
+            return certs;
+        } catch (CertificateException | NoSuchProviderException e) {
+            throw new CryptoException(e.getMessage(), e);
+        }
+    }
+
+    /**
      * 加载 X509 证书
      *
      * @param certificate
@@ -137,6 +158,26 @@ public class X509Utils {
     }
 
     /**
+     * Checks that any certificates is currently valid
+     *
+     * @param certificates
+     */
+    public static void checkValidityAny(X509Certificate... certificates) {
+        boolean valid = false;
+        for (X509Certificate cert : certificates) {
+            try {
+                checkValidity(cert);
+                valid = true;
+                break;
+            } catch (Exception e) {
+            }
+        }
+        if (!valid) {
+            throw new CryptoException("Invalid CAs");
+        }
+    }
+
+    /**
      * Checks that the type is valid
      *
      * @param certificate
@@ -148,6 +189,17 @@ public class X509Utils {
         }
     }
 
+
+    /**
+     * Checks that the type is valid
+     *
+     * @param certificates
+     * @param caType
+     */
+    public static void checkCaType(X509Certificate[] certificates, CaType caType) {
+        Arrays.stream(certificates).forEach(cert -> checkCaType(cert, caType));
+    }
+
     /**
      * Checks that any type is valid
      *
@@ -155,9 +207,10 @@ public class X509Utils {
      * @param caTypes
      */
     public static void checkCaTypesAny(X509Certificate certificate, CaType... caTypes) {
+        Set<String> ous = getSubject(certificate, BCStyle.OU);
         boolean contains = false;
         for (CaType caType : caTypes) {
-            if (getSubject(certificate, BCStyle.OU).contains(caType.name())) {
+            if (ous.contains(caType.name())) {
                 contains = true;
                 break;
             }
@@ -168,21 +221,17 @@ public class X509Utils {
     }
 
     /**
-     * Checks that the types are valid
+     * Checks that all types are valid
      *
      * @param certificate
      * @param caTypes
      */
     public static void checkCaTypesAll(X509Certificate certificate, CaType... caTypes) {
-        boolean contains = true;
+        Set<String> ous = getSubject(certificate, BCStyle.OU);
         for (CaType caType : caTypes) {
-            if (!getSubject(certificate, BCStyle.OU).contains(caType.name())) {
-                contains = false;
-                break;
+            if (!ous.contains(caType.name())) {
+                throw new CryptoException(caTypes.toString() + " ca invalid!");
             }
-        }
-        if (!contains) {
-            throw new CryptoException(caTypes.toString() + " ca invalid!");
         }
     }
 
@@ -201,6 +250,27 @@ public class X509Utils {
     }
 
     /**
+     * Verifies that this certificate was signed using the private key that corresponds to the specified public key.
+     *
+     * @param certificate
+     * @param parents
+     */
+    public static void verifyAny(X509Certificate certificate, X509Certificate[] parents) {
+        boolean valid = false;
+        for (X509Certificate cert : parents) {
+            try {
+                verify(certificate, cert.getPublicKey());
+                valid = true;
+                break;
+            } catch (Exception e) {
+            }
+        }
+        if (!valid) {
+            throw new CryptoException("Invalid CA");
+        }
+    }
+
+    /**
      * Get the specified subject item.
      *
      * @param certificate
@@ -211,10 +281,7 @@ public class X509Utils {
         try {
             Set<String> values = new HashSet<>();
             RDN[] rdNs = new JcaX509CertificateHolder(certificate).getSubject().getRDNs(identifier);
-            Arrays.stream(rdNs).forEach(rdn -> {
-                // TODO imuge
-                values.add(IETFUtils.valueToString(rdn.getFirst().getValue()));
-            });
+            Arrays.stream(rdNs).forEach(rdn -> values.add(IETFUtils.valueToString(rdn.getFirst().getValue())));
             return values;
         } catch (CertificateEncodingException e) {
             throw new CryptoException(e.getMessage(), e);
@@ -315,4 +382,23 @@ public class X509Utils {
         return resolvePrivKey(FileUtils.readText(privkey));
     }
 
+    /**
+     * Find issuers
+     *
+     * @param certificate
+     * @param parents
+     * @return
+     */
+    public static X509Certificate[] findIssuers(X509Certificate certificate, X509Certificate[] parents) {
+        List<X509Certificate> certs = new ArrayList<>();
+        Arrays.stream(parents).forEach(cert -> {
+            try {
+                verify(certificate, cert.getPublicKey());
+                certs.add(cert);
+            } catch (Exception e) {
+            }
+        });
+
+        return certs.toArray(new X509Certificate[certs.size()]);
+    }
 }

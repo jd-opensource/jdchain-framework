@@ -45,6 +45,7 @@ import com.jd.blockchain.ledger.PrivilegeSet;
 import com.jd.blockchain.ledger.RoleInitSettings;
 import com.jd.blockchain.ledger.RoleSet;
 import com.jd.blockchain.ledger.RolesConfigureOperation;
+import com.jd.blockchain.ledger.RootCAUpdateOperation;
 import com.jd.blockchain.ledger.SecurityInitSettings;
 import com.jd.blockchain.ledger.TransactionContent;
 import com.jd.blockchain.ledger.TransactionRequest;
@@ -53,9 +54,11 @@ import com.jd.blockchain.ledger.TransactionResult;
 import com.jd.blockchain.ledger.UserAccountHeader;
 import com.jd.blockchain.ledger.UserAuthInitSettings;
 import com.jd.blockchain.ledger.UserAuthorizeOperation;
+import com.jd.blockchain.ledger.UserCAUpdateOperation;
 import com.jd.blockchain.ledger.UserInfo;
 import com.jd.blockchain.ledger.UserInfoSetOperation;
 import com.jd.blockchain.ledger.UserRegisterOperation;
+import com.jd.blockchain.ledger.UserRevokeOperation;
 
 public class LedgerModelDataContractAutoRegistrar implements DataContractAutoRegistrar{
 
@@ -123,5 +126,8 @@ public class LedgerModelDataContractAutoRegistrar implements DataContractAutoReg
 		DataContractRegistry.register(DigitalSignature.class);
 		DataContractRegistry.register(DigitalSignatureBody.class);
 		DataContractRegistry.register(LedgerTransactions.class);
+		DataContractRegistry.register(UserCAUpdateOperation.class);
+		DataContractRegistry.register(RootCAUpdateOperation.class);
+		DataContractRegistry.register(UserRevokeOperation.class);
 	}
 }

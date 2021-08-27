@@ -14,7 +14,7 @@ public class ParticipantRegisterOperationBuilderImpl implements ParticipantRegis
     }
 
     @Override
-    public ParticipantRegisterOperation register(String participantName, X509Certificate certificate) {
-        return register(participantName, new BlockchainIdentityData(X509Utils.resolvePubKey(certificate)));
+    public ParticipantRegisterOperation register(String participantName, X509Certificate cert) {
+        return new ParticipantRegisterOpTemplate(participantName, new BlockchainIdentityData(X509Utils.resolvePubKey(cert)), X509Utils.toPEMString(cert));
     }
 }

@@ -6,9 +6,9 @@ import com.jd.binaryproto.PrimitiveType;
 import com.jd.blockchain.consts.DataCodes;
 
 @DataContract(code = DataCodes.TX_OP_META_CA_UPDATE)
-public interface RootCaUpdateOperation extends Operation {
+public interface RootCAUpdateOperation extends Operation {
 
-    @DataField(order = 1, primitiveType = PrimitiveType.BYTES)
+    @DataField(order = 1, primitiveType = PrimitiveType.TEXT)
     String getCertificate();
 
 }

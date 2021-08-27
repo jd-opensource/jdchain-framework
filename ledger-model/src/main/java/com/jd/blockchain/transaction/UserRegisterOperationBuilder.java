@@ -18,9 +18,9 @@ public interface UserRegisterOperationBuilder {
     /**
      * 有用户注册
      *
-     * @param certificate 证书信息
+     * @param cert 证书信息
      * @return
      */
-    UserRegisterOperation register(X509Certificate certificate);
+    UserRegisterOperation register(X509Certificate cert);
 
 }

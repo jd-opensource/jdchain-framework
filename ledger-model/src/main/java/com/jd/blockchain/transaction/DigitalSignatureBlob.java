@@ -2,9 +2,7 @@ package com.jd.blockchain.transaction;
 
 
 import java.io.Serializable;
-import java.security.cert.X509Certificate;
 
-import com.jd.blockchain.ca.X509Utils;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.ledger.DigitalSignature;
@@ -35,8 +33,6 @@ public class DigitalSignatureBlob implements DigitalSignature, Serializable {
 
 	private SignatureDigest digest;
 
-	private String certificate;
-
 	@Override
 	public PubKey getPubKey() {
 		return pubKey;
@@ -47,11 +43,6 @@ public class DigitalSignatureBlob implements DigitalSignature, Serializable {
 		return digest;
 	}
 
-	@Override
-	public String getCertificate() {
-		return certificate;
-	}
-
 	public DigitalSignatureBlob() {
 	}
 	
@@ -60,10 +51,70 @@ public class DigitalSignatureBlob implements DigitalSignature, Serializable {
 		this.digest = digest;
 	}
 
-	public DigitalSignatureBlob(X509Certificate certificate, SignatureDigest digest) {
-		this.certificate = certificate.toString();
-		this.pubKey = X509Utils.resolvePubKey(certificate);
-		this.digest = digest;
-	}
 
+//	@Override
+//	public void resolvFrom(InputStream in) {
+//		try {
+//			byte[] buff = new byte[1];
+//			int len = in.read(buff);
+//			if (len < 1) {
+//				throw new IllegalArgumentException("No enough bytes was read for the magic number [SIGNATURE]!");
+//			}
+//			if (buff[0] != MagicNumber.SIGNATURE) {
+//				throw new IllegalArgumentException("Magic number [SIGNATURE] dismatch!");
+//			}
+//			PubKey pk = CryptoKeyEncoding.readPubKey(in);
+//			ByteArray dg = BytesEncoding.readAsByteArray(NumberMask.SHORT, in);
+//			this.pubKey = pk;
+//			this.digest = dg;
+//		} catch (IOException e) {
+//			throw new RuntimeIOException(e.getMessage(), e);
+//		}
+//	}
+//
+//	@Override
+//	public void writeTo(OutputStream out) {
+//		try {
+//			out.write(MagicNumber.SIGNATURE);
+//			CryptoKeyEncoding.writeKey(pubKey, out);
+//			BytesEncoding.write(digest, NumberMask.SHORT, out);
+//		} catch (IOException e) {
+//			throw new RuntimeIOException(e.getMessage(), e);
+//		}
+//	}
+//
+//	@Override
+//	public boolean equals(Object o) {
+//		if (this == o) return true;
+//		if (!(o instanceof DigitalSignatureBlob)) return false;
+//		DigitalSignatureBlob that = (DigitalSignatureBlob) o;
+//		return Objects.equals(getPubKey(), that.getPubKey()) &&
+//				Objects.equals(getDigest(), that.getDigest());
+//	}
+//
+//	public byte[] toBytes() {
+//		ByteArrayOutputStream out = new ByteArrayOutputStream();
+//		writeTo(out);
+//		return out.toByteArray();
+//	}
+//
+//	@Override
+//	public String toString() {
+//		return toBytes().toString();
+//	}
+//
+//	@Override
+//	public void writeExternal(ObjectOutput out) throws IOException {
+//		byte[] bts = toBytes();
+//		out.writeInt(bts.length);
+//		out.write(bts, 0, bts.length);
+//	}
+//
+//	@Override
+//	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+//		int size = in.readInt();
+//		byte[] bs = new byte[size];
+//		in.readFully(bs, 0, size);
+//		resolvFrom(new ByteArrayInputStream(bs));
+//	}
 }

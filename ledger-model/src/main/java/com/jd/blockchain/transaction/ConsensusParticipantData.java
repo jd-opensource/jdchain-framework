@@ -3,75 +3,85 @@ package com.jd.blockchain.transaction;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.ledger.ParticipantNode;
 import com.jd.blockchain.ledger.ParticipantNodeState;
-
 import utils.Bytes;
 import utils.net.NetworkAddress;
 
 public class ConsensusParticipantData implements ParticipantNode {
-	
-		private int id;
-		
-		private Bytes address;
 
-		private String name;
+    private int id;
 
-		private PubKey pubKey;
+    private Bytes address;
 
-		private NetworkAddress hostAddress;
+    private String name;
 
-	    private ParticipantNodeState participantNodeState;
+    private PubKey pubKey;
 
-        @Override
-		public int getId() {
-			return id;
-		}
+    private NetworkAddress hostAddress;
 
-		public void setId(int id) {
-			this.id = id;
-		}
+    private ParticipantNodeState participantNodeState;
 
-		@Override
-		public String getName() {
-			return name;
-		}
+    private String certificate;
 
-		public void setName(String name) {
-			this.name = name;
-		}
+    @Override
+    public int getId() {
+        return id;
+    }
 
-		public NetworkAddress getHostAddress() {
-			return hostAddress;
-		}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-		public void setHostAddress(NetworkAddress hostAddress) {
-			this.hostAddress = hostAddress;
-		}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-		@Override
-		public PubKey getPubKey() {
-			return pubKey;
-		}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-		public void setPubKey(PubKey pubKey) {
-			this.pubKey = pubKey;
-		}
+    public NetworkAddress getHostAddress() {
+        return hostAddress;
+    }
 
-		@Override
-		public Bytes getAddress() {
-			return address;
-		}
+    public void setHostAddress(NetworkAddress hostAddress) {
+        this.hostAddress = hostAddress;
+    }
 
-		public void setAddress(Bytes address) {
-			this.address = address;
-		}
+    @Override
+    public PubKey getPubKey() {
+        return pubKey;
+    }
 
-		@Override
-	    public ParticipantNodeState getParticipantNodeState() {
-		return participantNodeState;
+    public void setPubKey(PubKey pubKey) {
+        this.pubKey = pubKey;
+    }
+
+    @Override
+    public Bytes getAddress() {
+        return address;
+    }
+
+    public void setAddress(Bytes address) {
+        this.address = address;
+    }
+
+    @Override
+    public ParticipantNodeState getParticipantNodeState() {
+        return participantNodeState;
+    }
+
+    @Override
+    public String getCertificate() {
+        return certificate;
+    }
+
+	public void setCertificate(String certificate) {
+		this.certificate = certificate;
 	}
 
-	    public void setParticipantState(ParticipantNodeState participantNodeState) {
-			this.participantNodeState = participantNodeState;
-		}
+	public void setParticipantState(ParticipantNodeState participantNodeState) {
+        this.participantNodeState = participantNodeState;
+    }
 
-	}
+}

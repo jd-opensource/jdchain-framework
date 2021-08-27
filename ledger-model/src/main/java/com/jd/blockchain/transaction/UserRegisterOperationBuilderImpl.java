@@ -15,8 +15,8 @@ public class UserRegisterOperationBuilderImpl implements UserRegisterOperationBu
 	}
 
 	@Override
-	public UserRegisterOperation register(X509Certificate certificate) {
-		return new UserRegisterOpTemplate(new BlockchainIdentityData(X509Utils.resolvePubKey(certificate)));
+	public UserRegisterOperation register(X509Certificate cert) {
+		return new UserRegisterOpTemplate(new BlockchainIdentityData(X509Utils.resolvePubKey(cert)), X509Utils.toPEMString(cert));
 	}
 
 

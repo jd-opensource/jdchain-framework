@@ -18,14 +18,13 @@ import com.jd.blockchain.ledger.Operation;
 import com.jd.blockchain.ledger.ParticipantNodeState;
 import com.jd.blockchain.ledger.ParticipantRegisterOperation;
 import com.jd.blockchain.ledger.ParticipantStateUpdateOperation;
-import com.jd.blockchain.ledger.RootCaUpdateOperation;
+import com.jd.blockchain.ledger.RootCAUpdateOperation;
+import com.jd.blockchain.ledger.UserCAUpdateOperation;
 import com.jd.blockchain.ledger.UserRegisterOperation;
 
 import com.jd.blockchain.ledger.UserRevokeOperation;
-import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 import utils.Bytes;
 import utils.Property;
-import utils.codec.Base58Utils;
 
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -245,7 +244,9 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 		@Override
 		public UserRegisterOperation register(X509Certificate certificate) {
-			return register(new BlockchainIdentityData(X509Utils.resolvePubKey(certificate)));
+			UserRegisterOperation op = USER_REG_OP_BUILDER.register(certificate);
+			operationList.add(op);
+			return op;
 		}
 
 	}
@@ -261,6 +262,13 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		@Override
 		public UserRevokeOperation revoke() {
 			UserRevokeOperation op = new UserRevokeOpTemplate(address);
+			operationList.add(op);
+			return op;
+		}
+
+		@Override
+		public UserCAUpdateOperation ca(X509Certificate cert) {
+			UserCAUpdateOperation op = new UserCAUpdateOpTemplate(address, cert);
 			operationList.add(op);
 			return op;
 		}
@@ -314,7 +322,7 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 				operationList.add(op);
 			}
 		}
-		
+
 		@Override
 		public DataAccountKVSetOperationBuilder set(String key, BytesValue value, long expVersion) {
 			innerBuilder.set(key, value, expVersion);
@@ -457,10 +465,15 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 	private class MetaInfoUpdateOperationBuilderFilter implements MetaInfoUpdateOperationBuilder {
 
 		@Override
-		public RootCaUpdateOperation ca(String cert) {
-			RootCaUpdateOperation op = META_INFO_UPDATE_OPERATION_BUILDER.ca(cert);
+		public RootCAUpdateOperation ca(String cert) {
+			RootCAUpdateOperation op = META_INFO_UPDATE_OPERATION_BUILDER.ca(cert);
 			operationList.add(op);
 			return op;
+		}
+
+		@Override
+		public RootCAUpdateOperation ca(X509Certificate cert) {
+			return ca(X509Utils.toPEMString(cert));
 		}
 	}
 

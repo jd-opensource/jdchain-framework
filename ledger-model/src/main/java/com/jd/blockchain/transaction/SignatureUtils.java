@@ -9,8 +9,6 @@ import com.jd.blockchain.crypto.SignatureDigest;
 import com.jd.blockchain.ledger.DigitalSignature;
 import com.jd.blockchain.ledger.TransactionContent;
 
-import java.security.cert.X509Certificate;
-
 public class SignatureUtils {
 
     public static DigitalSignature sign(short hashAlgorithm, TransactionContent txContent, AsymmetricKeypair keyPair) {
@@ -21,11 +19,6 @@ public class SignatureUtils {
     public static DigitalSignature sign(HashDigest hash, AsymmetricKeypair keyPair) {
     	SignatureDigest signatureDigest = sign(hash, keyPair.getPrivKey());
     	return new DigitalSignatureBlob(keyPair.getPubKey(), signatureDigest);
-    }
-
-    public static DigitalSignature sign(HashDigest hash, X509Certificate certificate, PrivKey privKey) {
-        SignatureDigest signatureDigest = sign(hash, privKey);
-        return new DigitalSignatureBlob(certificate, signatureDigest);
     }
 
     public static SignatureDigest sign(short hashAlgorithm, TransactionContent txContent, PrivKey privKey) {

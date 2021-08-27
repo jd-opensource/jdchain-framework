@@ -1,11 +1,9 @@
 package com.jd.blockchain.ledger;
 
 import java.io.Closeable;
-import java.security.cert.X509Certificate;
 
 import com.jd.blockchain.crypto.AsymmetricKeypair;
 import com.jd.blockchain.crypto.HashDigest;
-import com.jd.blockchain.crypto.PrivKey;
 
 /**
  * 已就绪的交易；
@@ -35,24 +33,17 @@ public interface PreparedTransaction extends Closeable {
 	/**
 	 * 对交易进行签名；
 	 * 
-	 * @param keyPair 签名账户公私钥对；
+	 * @param address 签名账户的地址；
+	 * @param privKey 签名账户的私钥；
 	 * @return
 	 */
 	DigitalSignature sign(AsymmetricKeypair keyPair);
 
 	/**
-	 * 对交易进行签名；
-	 *
-	 * @param certificate 签名账户X509证书；
-	 * @param privKey 签名账户私钥；
-	 * @return
-	 */
-	DigitalSignature sign(X509Certificate certificate, PrivKey privKey);
-
-	/**
 	 * 加入签名；
 	 * 
-	 * @param signature 签名信息；
+	 * @param address 签名账户的地址；
+	 * @param digest  Base64格式的签名摘要；
 	 * @return
 	 */
 	void addSignature(DigitalSignature signature);

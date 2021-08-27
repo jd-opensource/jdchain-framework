@@ -30,7 +30,6 @@ import utils.io.ByteArray;
 import utils.net.NetworkAddress;
 
 import java.io.Closeable;
-import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,7 +55,7 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 		this.peerServiceProxy = new PeerServiceProxy(accessableLedgers);
 	}
 
-	public static PeerBlockchainServiceFactory create(AsymmetricKeypair gatewayKey, X509Certificate certificate, NetworkAddress peerAddr, LedgerIncomingSettings[] ledgerSettingsArray,
+	public static PeerBlockchainServiceFactory create(AsymmetricKeypair gatewayKey, NetworkAddress peerAddr, LedgerIncomingSettings[] ledgerSettingsArray,
 													  SessionCredentialProvider credentialProvider, ConsensusClientManager clientManager) {
 		HashDigest[] ledgers = new HashDigest[ledgerSettingsArray.length];
 		if (ledgerSettingsArray.length > 0) {
@@ -90,7 +89,7 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 
 				MonitorService monitorService = null;
 
-				TransactionService autoSigningTxProcService = enableGatewayAutoSigning(gatewayKey, certificate,
+				TransactionService autoSigningTxProcService = enableGatewayAutoSigning(gatewayKey,
 						ledgerSetting.getCryptoSetting(), consensusClient);
 				if (autoSigningTxProcService instanceof NodeSigningAppender) {
 					monitorService = new PeerMonitorHandler((((NodeSigningAppender) autoSigningTxProcService)));
@@ -133,25 +132,18 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 	 * 连接到指定的共识节点
 	 *
 	 * @param gatewayKey         提供对网关接入认证的共识节点身份信息； <br>
-	 * @param certificate        提供对网关接入认证的节点的证书信息； <br>
 	 * @param peerAddr           提供对网关接入认证的节点的认证地址列表； <br>
 	 * @param credentialProvider 共识客户端在接入认证过程中使用的凭证的来源
 	 * @param clientManager      账本对应的共识客户端管理
 	 * @return 区块链服务工厂实例
 	 */
-	public static PeerBlockchainServiceFactory connect(AsymmetricKeypair gatewayKey, X509Certificate certificate, NetworkAddress peerAddr,
-													   SessionCredentialProvider credentialProvider, ConsensusClientManager clientManager) {
-		// 认证，返回账本列表及配置相关信息
-		PeerAuthenticator authenticator = new PeerAuthenticator(peerAddr, gatewayKey, certificate, credentialProvider);
-		GatewayAuthResponse gatewayAuthResponse = authenticator.request();
-
-		return create(gatewayKey, certificate, peerAddr, gatewayAuthResponse.getLedgers(), credentialProvider, clientManager);
-	}
-
 	public static PeerBlockchainServiceFactory connect(AsymmetricKeypair gatewayKey, NetworkAddress peerAddr,
 													   SessionCredentialProvider credentialProvider, ConsensusClientManager clientManager) {
+		// 认证，返回账本列表及配置相关信息
+		PeerAuthenticator authenticator = new PeerAuthenticator(peerAddr, gatewayKey, credentialProvider);
+		GatewayAuthResponse gatewayAuthResponse = authenticator.request();
 
-		return connect(gatewayKey, null, peerAddr, credentialProvider, clientManager);
+		return create(gatewayKey, peerAddr, gatewayAuthResponse.getLedgers(), credentialProvider, clientManager);
 	}
 
 
@@ -174,18 +166,16 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 	}
 
 	/**
-	 * 启用网关自动签名
+	 * 启用网关自动签名；
 	 *
 	 * @param nodeKeyPair
-	 * @param certificate
 	 * @param cryptoSetting
-	 * @param consensusClient
 	 * @return
 	 */
-	private static TransactionService enableGatewayAutoSigning(AsymmetricKeypair nodeKeyPair, X509Certificate certificate,
+	private static TransactionService enableGatewayAutoSigning(AsymmetricKeypair nodeKeyPair,
 															   CryptoSetting cryptoSetting, ConsensusClient consensusClient) {
 		NodeSigningAppender signingAppender = new NodeSigningAppender(cryptoSetting.getHashAlgorithm(), nodeKeyPair,
-				certificate, consensusClient);
+				consensusClient);
 		return signingAppender.init();
 	}
 
