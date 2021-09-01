@@ -5,7 +5,7 @@ package com.jd.blockchain.ca;
  * @author: imuge
  * @date: 2021/8/24
  **/
-public enum CaType {
+public enum CertificateType {
     // 账本证书
     LEDGER,
     // 节点证书

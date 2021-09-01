@@ -183,7 +183,7 @@ public class X509Utils {
      * @param certificate
      * @param caType
      */
-    public static void checkCaType(X509Certificate certificate, CaType caType) {
+    public static void checkCertificateType(X509Certificate certificate, CertificateType caType) {
         if (!getSubject(certificate, BCStyle.OU).contains(caType.name())) {
             throw new CryptoException(caType.name() + " ca invalid!");
         }
@@ -196,8 +196,8 @@ public class X509Utils {
      * @param certificates
      * @param caType
      */
-    public static void checkCaType(X509Certificate[] certificates, CaType caType) {
-        Arrays.stream(certificates).forEach(cert -> checkCaType(cert, caType));
+    public static void checkCertificateType(X509Certificate[] certificates, CertificateType caType) {
+        Arrays.stream(certificates).forEach(cert -> checkCertificateType(cert, caType));
     }
 
     /**
@@ -206,10 +206,10 @@ public class X509Utils {
      * @param certificate
      * @param caTypes
      */
-    public static void checkCaTypesAny(X509Certificate certificate, CaType... caTypes) {
+    public static void checkCertificateTypesAny(X509Certificate certificate, CertificateType... caTypes) {
         Set<String> ous = getSubject(certificate, BCStyle.OU);
         boolean contains = false;
-        for (CaType caType : caTypes) {
+        for (CertificateType caType : caTypes) {
             if (ous.contains(caType.name())) {
                 contains = true;
                 break;
@@ -226,9 +226,9 @@ public class X509Utils {
      * @param certificate
      * @param caTypes
      */
-    public static void checkCaTypesAll(X509Certificate certificate, CaType... caTypes) {
+    public static void checkCertificateTypesAll(X509Certificate certificate, CertificateType... caTypes) {
         Set<String> ous = getSubject(certificate, BCStyle.OU);
-        for (CaType caType : caTypes) {
+        for (CertificateType caType : caTypes) {
             if (!ous.contains(caType.name())) {
                 throw new CryptoException(caTypes.toString() + " ca invalid!");
             }
