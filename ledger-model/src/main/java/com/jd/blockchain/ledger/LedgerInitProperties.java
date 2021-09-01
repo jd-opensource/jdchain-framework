@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
-import com.jd.blockchain.ca.CertificateType;
+import com.jd.blockchain.ca.CertificateRole;
 import com.jd.blockchain.ca.X509Utils;
 import com.jd.blockchain.consts.Global;
 import com.jd.blockchain.crypto.AddressEncoding;
@@ -258,7 +258,7 @@ public class LedgerInitProperties implements Serializable {
 				// 时间有效性校验
 				X509Utils.checkValidity(ledgerCerts[i]);
 				// 证书类型校验
-				X509Utils.checkCertificateType(ledgerCerts[i], CertificateType.LEDGER);
+				X509Utils.checkCertificateRole(ledgerCerts[i], CertificateRole.LEDGER);
 			}
 			initProps.ledgerCAs = ledgersCAs;
 		}
@@ -349,7 +349,7 @@ public class LedgerInitProperties implements Serializable {
 				X509Certificate cert = X509Utils.resolveCertificate(ca);
 				X509Utils.checkValidity(cert);
 				// CA模式下，初始化的节点证书必须同时包含 PEER 和 GW 两种角色类型
-				X509Utils.checkCertificateTypesAll(cert, CertificateType.PEER, CertificateType.GW);
+				X509Utils.checkCertificateRolesAll(cert, CertificateRole.PEER, CertificateRole.GW);
 				X509Utils.verifyAny(cert, ledgerCerts);
 				parti.setCertificate(ca);
 				pubKey = X509Utils.resolvePubKey(cert);

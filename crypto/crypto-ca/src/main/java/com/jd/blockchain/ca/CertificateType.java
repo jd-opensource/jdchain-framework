@@ -3,15 +3,12 @@ package com.jd.blockchain.ca;
 /**
  * @description: 证书类型
  * @author: imuge
- * @date: 2021/8/24
+ * @date: 2021/9/1
  **/
 public enum CertificateType {
-    // 账本证书
-    LEDGER,
-    // 节点证书
-    PEER,
-    // 网关证书
-    GW,
-    // 普通用户证书
-    USER;
+
+    // 签名证书
+    SIGN,
+    // TLS证书
+    TLS
 }

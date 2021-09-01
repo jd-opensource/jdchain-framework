@@ -7,14 +7,17 @@ import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.crypto.PubKey;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 import com.jd.blockchain.crypto.service.classic.ClassicAlgorithm;
-import com.jd.blockchain.crypto.service.sm.SMAlgorithm;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.DEROctetString;
+import org.bouncycastle.asn1.edec.EdECObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x500.style.IETFUtils;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
+import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
@@ -24,13 +27,19 @@ import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;
 import org.bouncycastle.crypto.util.PrivateKeyFactory;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
+import org.bouncycastle.jce.spec.ECNamedCurveSpec;
+import org.bouncycastle.jce.spec.ECPublicKeySpec;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import sun.misc.BASE64Encoder;
 import sun.security.provider.X509Factory;
+import sun.security.x509.X509CertImpl;
 import utils.crypto.classic.ECDSAUtils;
 import utils.crypto.classic.RSAUtils;
+import utils.crypto.sm.SM2Utils;
 import utils.io.FileUtils;
 
 import java.io.ByteArrayInputStream;
@@ -39,7 +48,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
+import java.math.BigInteger;
 import java.security.InvalidKeyException;
+import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
@@ -52,11 +63,18 @@ import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
+import java.security.spec.ECPrivateKeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.RSAPrivateCrtKeySpec;
+import java.security.spec.RSAPublicKeySpec;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static com.jd.blockchain.crypto.service.classic.ClassicAlgorithm.*;
+import static com.jd.blockchain.crypto.service.sm.SMAlgorithm.SM2;
 
 /**
  * @description: X509 证书工具
@@ -96,6 +114,21 @@ public class X509Utils {
     }
 
     /**
+     * 解析 certification request
+     *
+     * @param csr
+     * @return
+     */
+    public static PKCS10CertificationRequest resolveCertificationRequest(String csr) {
+        try (PEMParser pemParser = new PEMParser(new StringReader(csr))) {
+            Object pemObj = pemParser.readObject();
+            return (PKCS10CertificationRequest) pemObj;
+        } catch (IOException e) {
+            throw new CryptoException(e.getMessage(), e);
+        }
+    }
+
+    /**
      * 解析 X509 证书
      *
      * @param certificate
@@ -103,7 +136,7 @@ public class X509Utils {
      */
     public static X509Certificate resolveCertificate(String certificate) {
         try {
-            CertificateFactory certificateFactory = CertificateFactory.getInstance("X509", BouncyCastleProvider.PROVIDER_NAME);
+            CertificateFactory certificateFactory = CertificateFactory.getInstance(X509CertImpl.NAME, BouncyCastleProvider.PROVIDER_NAME);
             return (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(certificate.getBytes()));
         } catch (CertificateException | NoSuchProviderException e) {
             throw new CryptoException(e.getMessage(), e);
@@ -118,7 +151,7 @@ public class X509Utils {
      */
     public static X509Certificate[] resolveCertificates(String[] certificates) {
         try {
-            CertificateFactory certificateFactory = CertificateFactory.getInstance("X509", BouncyCastleProvider.PROVIDER_NAME);
+            CertificateFactory certificateFactory = CertificateFactory.getInstance(X509CertImpl.NAME, BouncyCastleProvider.PROVIDER_NAME);
             X509Certificate[] certs = new X509Certificate[certificates.length];
             for (int i = 0; i < certificates.length; i++) {
                 certs[i] = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(certificates[i].getBytes()));
@@ -137,7 +170,7 @@ public class X509Utils {
      */
     public static X509Certificate resolveCertificate(File certificate) {
         try {
-            CertificateFactory certificateFactory = CertificateFactory.getInstance("X509", BouncyCastleProvider.PROVIDER_NAME);
+            CertificateFactory certificateFactory = CertificateFactory.getInstance(X509CertImpl.NAME, BouncyCastleProvider.PROVIDER_NAME);
             return (X509Certificate) certificateFactory.generateCertificate(new FileInputStream(certificate));
         } catch (CertificateException | NoSuchProviderException | FileNotFoundException e) {
             throw new CryptoException(e.getMessage(), e);
@@ -183,7 +216,7 @@ public class X509Utils {
      * @param certificate
      * @param caType
      */
-    public static void checkCertificateType(X509Certificate certificate, CertificateType caType) {
+    public static void checkCertificateRole(X509Certificate certificate, CertificateRole caType) {
         if (!getSubject(certificate, BCStyle.OU).contains(caType.name())) {
             throw new CryptoException(caType.name() + " ca invalid!");
         }
@@ -196,8 +229,8 @@ public class X509Utils {
      * @param certificates
      * @param caType
      */
-    public static void checkCertificateType(X509Certificate[] certificates, CertificateType caType) {
-        Arrays.stream(certificates).forEach(cert -> checkCertificateType(cert, caType));
+    public static void checkCertificateRole(X509Certificate[] certificates, CertificateRole caType) {
+        Arrays.stream(certificates).forEach(cert -> checkCertificateRole(cert, caType));
     }
 
     /**
@@ -206,10 +239,10 @@ public class X509Utils {
      * @param certificate
      * @param caTypes
      */
-    public static void checkCertificateTypesAny(X509Certificate certificate, CertificateType... caTypes) {
+    public static void checkCertificateRolesAny(X509Certificate certificate, CertificateRole... caTypes) {
         Set<String> ous = getSubject(certificate, BCStyle.OU);
         boolean contains = false;
-        for (CertificateType caType : caTypes) {
+        for (CertificateRole caType : caTypes) {
             if (ous.contains(caType.name())) {
                 contains = true;
                 break;
@@ -226,9 +259,9 @@ public class X509Utils {
      * @param certificate
      * @param caTypes
      */
-    public static void checkCertificateTypesAll(X509Certificate certificate, CertificateType... caTypes) {
+    public static void checkCertificateRolesAll(X509Certificate certificate, CertificateRole... caTypes) {
         Set<String> ous = getSubject(certificate, BCStyle.OU);
-        for (CertificateType caType : caTypes) {
+        for (CertificateRole caType : caTypes) {
             if (!ous.contains(caType.name())) {
                 throw new CryptoException(caTypes.toString() + " ca invalid!");
             }
@@ -301,15 +334,15 @@ public class X509Utils {
             String algorithmName = publicKey.getAlgorithm();
             String sigAlgName = certificate.getSigAlgName();
             CryptoAlgorithm algorithm = !algorithmName.equals(EC_ALGORITHM) ? Crypto.getAlgorithm(algorithmName.toUpperCase()) :
-                    (sigAlgName.equals(SIGALG_SM3WITHSM2) ? SMAlgorithm.SM2 : ClassicAlgorithm.ECDSA);
+                    (sigAlgName.equals(SIGALG_SM3WITHSM2) ? SM2 : ClassicAlgorithm.ECDSA);
             byte[] encoded;
-            if (algorithm.equals(ClassicAlgorithm.ED25519)) {
+            if (algorithm.equals(ED25519)) {
                 encoded = ((Ed25519PublicKeyParameters) pubkeyParam).getEncoded();
             } else if (algorithm.equals(ClassicAlgorithm.RSA)) {
                 encoded = RSAUtils.pubKey2Bytes_RawKey(((RSAKeyParameters) pubkeyParam));
             } else if (algorithm.equals(ClassicAlgorithm.ECDSA)) {
                 encoded = ((ECPublicKeyParameters) pubkeyParam).getQ().getEncoded(false);
-            } else if (algorithm.equals(SMAlgorithm.SM2)) {
+            } else if (algorithm.equals(SM2)) {
                 encoded = ((ECPublicKeyParameters) pubkeyParam).getQ().getEncoded(false);
             } else {
                 throw new CryptoException("Unsupported crypto algorithm : " + algorithm.name());
@@ -337,31 +370,32 @@ public class X509Utils {
                 if (privkey.contains(SECP256K1)) {
                     algorithm = ClassicAlgorithm.ECDSA;
                 } else if (privkey.contains(SM2ECC)) {
-                    algorithm = SMAlgorithm.SM2;
+                    algorithm = SM2;
                 } else {
                     throw new CryptoException("Unsupported ec algorithm");
                 }
                 privkey = privkey.substring(privkey.indexOf(END_PARAMS) + END_PARAMS.length());
             }
-            PEMParser pemParser = new PEMParser(new StringReader(privkey));
-            Object object = pemParser.readObject();
             PrivateKeyInfo pemKeyPair;
-            if (object instanceof PrivateKeyInfo) {
-                pemKeyPair = (PrivateKeyInfo) object;
-            } else {
-                pemKeyPair = ((PEMKeyPair) object).getPrivateKeyInfo();
+            try (PEMParser pemParser = new PEMParser(new StringReader(privkey))) {
+                Object object = pemParser.readObject();
+                if (object instanceof PrivateKeyInfo) {
+                    pemKeyPair = (PrivateKeyInfo) object;
+                } else {
+                    pemKeyPair = ((PEMKeyPair) object).getPrivateKeyInfo();
+                }
             }
             PrivateKey aPrivate = converter.getPrivateKey(pemKeyPair);
             AsymmetricKeyParameter privkeyParam = PrivateKeyFactory.createKey(pemKeyPair);
             algorithm = null == algorithm ? Crypto.getAlgorithm(aPrivate.getAlgorithm().toUpperCase()) : algorithm;
             byte[] encoded;
-            if (algorithm.equals(ClassicAlgorithm.ED25519)) {
+            if (algorithm.equals(ED25519)) {
                 encoded = ((Ed25519PrivateKeyParameters) privkeyParam).getEncoded();
             } else if (algorithm.equals(ClassicAlgorithm.RSA)) {
                 encoded = RSAUtils.privKey2Bytes_RawKey((RSAPrivateCrtKeyParameters) privkeyParam);
             } else if (algorithm.equals(ClassicAlgorithm.ECDSA)) {
                 encoded = ECDSAUtils.trimBigIntegerTo32Bytes(((ECPrivateKeyParameters) privkeyParam).getD());
-            } else if (algorithm.equals(SMAlgorithm.SM2)) {
+            } else if (algorithm.equals(SM2)) {
                 encoded = ECDSAUtils.trimBigIntegerTo32Bytes(((ECPrivateKeyParameters) privkeyParam).getD());
             } else {
                 throw new CryptoException("Unsupported crypto algorithm : " + algorithm.name());
@@ -400,5 +434,75 @@ public class X509Utils {
         });
 
         return certs.toArray(new X509Certificate[certs.size()]);
+    }
+
+    /**
+     * Resolve PrivateKey from JD Chain PrivKey
+     *
+     * @param privKey
+     * @return
+     */
+    public static PrivateKey resolvePrivateKey(PrivKey privKey) {
+        try {
+            short algorithm = privKey.getAlgorithm();
+            if (algorithm == ED25519.code()) {
+                PrivateKeyInfo privKeyInfo = new PrivateKeyInfo(new AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed25519), new DEROctetString(privKey.getRawKeyBytes()));
+                return KeyFactory.getInstance("Ed25519").generatePrivate(new PKCS8EncodedKeySpec(privKeyInfo.getEncoded()));
+            } else if (algorithm == RSA.code()) {
+                RSAPrivateCrtKeyParameters pk = RSAUtils.bytes2PrivKey_RawKey(privKey.getRawKeyBytes());
+                return KeyFactory.getInstance("RSA").generatePrivate(
+                        new RSAPrivateCrtKeySpec(pk.getModulus(), pk.getPublicExponent(),
+                                pk.getExponent(), pk.getP(), pk.getQ(),
+                                pk.getDP(), pk.getDQ(), pk.getQInv()));
+            } else if (algorithm == ECDSA.code()) {
+                ECPrivateKeyParameters pk = new ECPrivateKeyParameters(new BigInteger(1, privKey.getRawKeyBytes()), ECDSAUtils.DOMAIN_PARAMS);
+                ECDomainParameters domainParams = ECDSAUtils.getDomainParams();
+                return KeyFactory.getInstance("ECDSA").generatePrivate(
+                        new ECPrivateKeySpec(pk.getD(), new ECNamedCurveSpec("secp256k1", ECDSAUtils.getCurve(), domainParams.getG(), domainParams.getN(), domainParams.getH())));
+            } else if (algorithm == SM2.code()) {
+                ECPrivateKeyParameters pk = new ECPrivateKeyParameters(new BigInteger(1, privKey.getRawKeyBytes()), SM2Utils.DOMAIN_PARAMS);
+                ECDomainParameters domainParams = SM2Utils.getDomainParams();
+                return KeyFactory.getInstance("EC").generatePrivate(
+                        new ECPrivateKeySpec(pk.getD(), new ECNamedCurveSpec("sm2p256v1", SM2Utils.getCurve(), domainParams.getG(), domainParams.getN(), domainParams.getH())));
+            } else {
+                throw new CryptoException("unresolvable private key");
+            }
+        } catch (Exception e) {
+            throw new CryptoException("unresolvable private key", e);
+        }
+    }
+
+    /**
+     * Resolve PublicKey from JD Chain PubKey
+     *
+     * @param pubKey
+     * @return
+     */
+    public static PublicKey resolvePublicKey(PubKey pubKey) {
+        try {
+            short algorithm = pubKey.getAlgorithm();
+            if (algorithm == ED25519.code()) {
+                Ed25519PublicKeyParameters parameters = new Ed25519PublicKeyParameters(pubKey.getRawKeyBytes(), 0);
+                return KeyFactory.getInstance("Ed25519").generatePublic(new PKCS8EncodedKeySpec(parameters.getEncoded()));
+            } else if (algorithm == RSA.code()) {
+                RSAKeyParameters pk = RSAUtils.bytes2PubKey_RawKey(pubKey.getRawKeyBytes());
+                return KeyFactory.getInstance("RSA").generatePublic(
+                        new RSAPublicKeySpec(pk.getModulus(), pk.getExponent()));
+            } else if (algorithm == ECDSA.code()) {
+                ECPublicKeyParameters pk = new ECPublicKeyParameters(ECDSAUtils.getCurve().decodePoint(pubKey.getRawKeyBytes()), ECDSAUtils.DOMAIN_PARAMS);
+                ECDomainParameters domainParams = ECDSAUtils.getDomainParams();
+                return KeyFactory.getInstance("ECDSA").generatePublic(
+                        new ECPublicKeySpec(pk.getQ(), new ECNamedCurveParameterSpec("secp256k1", ECDSAUtils.getCurve(), domainParams.getG(), domainParams.getN(), domainParams.getH())));
+            } else if (algorithm == SM2.code()) {
+                ECPublicKeyParameters pk = new ECPublicKeyParameters(SM2Utils.getCurve().decodePoint(pubKey.getRawKeyBytes()), SM2Utils.DOMAIN_PARAMS);
+                ECDomainParameters domainParams = SM2Utils.getDomainParams();
+                return KeyFactory.getInstance("EC").generatePublic(
+                        new ECPublicKeySpec(pk.getQ(), new ECNamedCurveParameterSpec("sm2p256v1", SM2Utils.getCurve(), domainParams.getG(), domainParams.getN(), domainParams.getH())));
+            } else {
+                throw new CryptoException("unresolvable public key");
+            }
+        } catch (Exception e) {
+            throw new CryptoException("unresolvable public key", e);
+        }
     }
 }
