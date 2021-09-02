@@ -4,6 +4,7 @@ package com.jd.blockchain.sdk;
 import com.jd.blockchain.consensus.ConsensusViewSettings;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.CryptoSetting;
+import com.jd.blockchain.ledger.IdentityMode;
 import com.jd.blockchain.ledger.ParticipantNode;
 
 /**
@@ -16,6 +17,16 @@ public class LedgerInitAttributes  {
      * 账本初始化种子
      */
     private String seed;
+
+    /**
+     * 身份认证模式
+     */
+    private IdentityMode identityMode;
+
+    /**
+     * 账本证书
+     */
+    private String[] ledgerCertificates;
 
     /**
      * 共识参与方的默克尔树的根；
@@ -101,5 +112,21 @@ public class LedgerInitAttributes  {
 
     public void setLedgerStructureVersion(long ledgerStructureVersion) {
         this.ledgerStructureVersion = ledgerStructureVersion;
+    }
+
+    public IdentityMode getIdentityMode() {
+        return identityMode;
+    }
+
+    public void setIdentityMode(IdentityMode identityMode) {
+        this.identityMode = identityMode;
+    }
+
+    public String[] getLedgerCertificates() {
+        return ledgerCertificates;
+    }
+
+    public void setLedgerCertificates(String[] ledgerCertificates) {
+        this.ledgerCertificates = ledgerCertificates;
     }
 }

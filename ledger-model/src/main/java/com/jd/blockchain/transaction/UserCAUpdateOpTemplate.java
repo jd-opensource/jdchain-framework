@@ -21,6 +21,10 @@ public class UserCAUpdateOpTemplate implements UserCAUpdateOperation {
         this.cert = X509Utils.toPEMString(cert);
     }
 
+    public UserCAUpdateOpTemplate(Bytes address, String cert) {
+        this.address = address;
+        this.cert = cert;
+    }
 
     @Override
     public Bytes getUserAddress() {
