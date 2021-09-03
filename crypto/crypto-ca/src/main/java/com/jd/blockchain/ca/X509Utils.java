@@ -15,6 +15,7 @@ import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x500.style.IETFUtils;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.crypto.params.ECDomainParameters;
@@ -69,8 +70,10 @@ import java.security.spec.RSAPrivateCrtKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static com.jd.blockchain.crypto.service.classic.ClassicAlgorithm.*;
@@ -88,14 +91,22 @@ public class X509Utils {
     static final String SIGALG_SM3WITHSM2 = "SM3WITHSM2";
     static final String SECP256K1 = "BgUrgQQACg==";
     static final String SM2ECC = "BggqgRzPVQGCLQ==";
+
     static final String BEGIN_PARAMS = "-----BEGIN EC PARAMETERS-----";
     static final String END_PARAMS = "-----END EC PARAMETERS-----";
+
+    static Map<String, String> identifierMap = new HashMap<>();
 
     static JcaPEMKeyConverter converter;
 
     static {
+        Security.removeProvider("SunEC");
         Security.addProvider(new BouncyCastleProvider());
         converter = new JcaPEMKeyConverter();
+        identifierMap.put("1.2.840.10045.2.1" + "1.3.132.0.10", "ECDSA");
+        identifierMap.put("1.3.101.112", "ED25519");
+        identifierMap.put("1.2.840.113549.1.1.1", "RSA");
+        identifierMap.put("1.2.840.10045.2.1" + "1.2.156.10197.1.301", "SM2");
     }
 
     public static String toPEMString(X509Certificate certificate) {
@@ -126,6 +137,41 @@ public class X509Utils {
         } catch (IOException e) {
             throw new CryptoException(e.getMessage(), e);
         }
+    }
+
+    /**
+     * Resolve PubKey from certification request
+     *
+     * @param csr
+     * @return
+     */
+    public static PubKey resolvePubKey(PKCS10CertificationRequest csr) {
+        SubjectPublicKeyInfo pkInfo = csr.getSubjectPublicKeyInfo();
+        CryptoAlgorithm algorithm = Crypto.getAlgorithm(identifierMap.get(
+                pkInfo.getAlgorithm().getAlgorithm().getId() + (
+                        null != pkInfo.getAlgorithm().getParameters() && !"NULL".equals(pkInfo.getAlgorithm().getParameters().toString())
+                                ? pkInfo.getAlgorithm().getParameters().toString()
+                                : "")
+        ));
+        byte[] encoded;
+        try {
+            AsymmetricKeyParameter pubkeyParam = PublicKeyFactory.createKey(pkInfo);
+            if (algorithm.equals(ED25519)) {
+                encoded = ((Ed25519PublicKeyParameters) pubkeyParam).getEncoded();
+            } else if (algorithm.equals(ClassicAlgorithm.RSA)) {
+                encoded = RSAUtils.pubKey2Bytes_RawKey(((RSAKeyParameters) pubkeyParam));
+            } else if (algorithm.equals(ClassicAlgorithm.ECDSA)) {
+                encoded = ((ECPublicKeyParameters) pubkeyParam).getQ().getEncoded(false);
+            } else if (algorithm.equals(SM2)) {
+                encoded = ((ECPublicKeyParameters) pubkeyParam).getQ().getEncoded(false);
+            } else {
+                throw new CryptoException("Unsupported crypto algorithm : " + algorithm.name());
+            }
+        } catch (Exception e) {
+            throw new CryptoException(e.toString());
+        }
+
+        return DefaultCryptoEncoding.encodePubKey(algorithm, encoded);
     }
 
     /**

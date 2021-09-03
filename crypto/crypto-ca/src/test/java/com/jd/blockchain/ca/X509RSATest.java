@@ -41,6 +41,23 @@ public class X509RSATest {
             "1Xw1mamxWKAI3e8logOARGFIKmo+0ArWGyPi4Mp+4vDu0l8V/UKqMkUicoJm0V8N\n" +
             "y9qMgFpI/yE9aFYBIWyd+yzDE3VN\n" +
             "-----END CERTIFICATE-----";
+    private static String peerCertificationRequest = "-----BEGIN CERTIFICATE REQUEST-----\n" +
+            "MIICuzCCAaMCAQAwdjELMAkGA1UEBhMCQ04xCzAJBgNVBAgMAkJKMQswCQYDVQQH\n" +
+            "DAJCSjEMMAoGA1UECgwDSkRUMQ0wCwYDVQQLDARQRUVSMREwDwYDVQQDDAhKRCBD\n" +
+            "aGFpbjEdMBsGCSqGSIb3DQEJARYOamRjaGFpbkBqZC5jb20wggEiMA0GCSqGSIb3\n" +
+            "DQEBAQUAA4IBDwAwggEKAoIBAQCqD/66foy0/OI4BRxh85S7z7QE5ZuiP+rRwXcL\n" +
+            "1fqPZRWkXbCLXWGhuci58gn0ailX4WLy6Ggw2XnhZXypRFlea0smRiLAe3Rehk03\n" +
+            "OJUgy1uNQZ2imKe02JyLq+d9IZrslWIdPmYQRJwDv8pQ3napGParVeAWal3nCxec\n" +
+            "UnTq8F+HU2ZUV3zy20eGDaMGQ8ed4Px4KahAIWFE1oQ4Fzpdgg8DXciXiRYZEAGw\n" +
+            "ZuUm9jwYh5QMI/2laxc24icRRG3jJjBp/vmIL8qmmyqwMJ+/L7Gh4clAm4ek2GYU\n" +
+            "lZRgd3+7XbfzlLMgKvsoGkvkOCzSlVQAbOgKxL5iPIO0aLKxAgMBAAGgADANBgkq\n" +
+            "hkiG9w0BAQsFAAOCAQEAJqc2l5oiXbtfrSeCJXXC4ThiFaMl2nPJWzJDvJDDn4lT\n" +
+            "1OA+6XBLiRUgQwIoDJuxtsLPcWBtNtvQ09VXaTUDE/oJSUcz0jcw+/QhMwV9jEIG\n" +
+            "n+wUxHR9EOEFc6oM8RBPm0Z4W0xn+/pdsApGOvefUe58D7inB77s9nLPUAhyXWQB\n" +
+            "mbyklXHiArGdefBfDFaQxWPFoOmf1hVWPKXLT0ubxc6Nf/IVfLuG+q9EDrGPiLo9\n" +
+            "s8ku7zk9HpIpEP5gtERQfou/ADIBGOgpfZ4rTkdn2iwUK2ENpQm89GQCm+N13FEh\n" +
+            "0CfhAHca8MMxMsS9VpVdXHO/GUXek2qvi2rqQNWAhQ==\n" +
+            "-----END CERTIFICATE REQUEST-----";
     private static String peerCertificate = "-----BEGIN CERTIFICATE-----\n" +
             "MIIDdTCCAl0CFBStC6Wel/S5C+8ze2ouf+11SQxnMA0GCSqGSIb3DQEBCwUAMHgx\n" +
             "CzAJBgNVBAYTAkNOMQswCQYDVQQIDAJCSjELMAkGA1UEBwwCQkoxDDAKBgNVBAoM\n" +
@@ -123,6 +140,8 @@ public class X509RSATest {
         PrivKey privKey = X509Utils.resolvePrivKey(peerPrivateKey);
         SignatureDigest sign = Crypto.getSignatureFunction(privKey.getAlgorithm()).sign(privKey, "imuge".getBytes());
         PubKey pubKey = X509Utils.resolvePubKey(X509Utils.resolveCertificate(peerCertificate));
+        Assert.assertTrue(Crypto.getSignatureFunction(pubKey.getAlgorithm()).verify(sign, pubKey, "imuge".getBytes()));
+        pubKey = X509Utils.resolvePubKey(X509Utils.resolveCertificationRequest(peerCertificationRequest));
         Assert.assertTrue(Crypto.getSignatureFunction(pubKey.getAlgorithm()).verify(sign, pubKey, "imuge".getBytes()));
     }
 }

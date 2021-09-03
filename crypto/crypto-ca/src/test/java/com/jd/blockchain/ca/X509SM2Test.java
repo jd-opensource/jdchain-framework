@@ -33,6 +33,15 @@ public class X509SM2Test {
             "YYoP8xuC74yG4GfvXLqLzU+1L56FyQIhAMROqu2DGm7jXayAq+I1luQpxXKOwDQV\n" +
             "CbGXyKGRD3pN\n" +
             "-----END CERTIFICATE-----";
+    private static String peerCertificationRequest = "-----BEGIN CERTIFICATE REQUEST-----\n" +
+            "MIIBMTCB2AIBADB2MQswCQYDVQQGEwJDTjELMAkGA1UECAwCQkoxCzAJBgNVBAcM\n" +
+            "AkJKMQwwCgYDVQQKDANKRFQxDTALBgNVBAsMBFBFRVIxETAPBgNVBAMMCEpEIENo\n" +
+            "YWluMR0wGwYJKoZIhvcNAQkBFg5qZGNoYWluQGpkLmNvbTBZMBMGByqGSM49AgEG\n" +
+            "CCqBHM9VAYItA0IABAEZ4CJ+eV7AeNJsEIO6gkEzhE1kyLdfzImx673h+Nu8WaDZ\n" +
+            "MaIS0nv0BkiVcMpbpfxOaTND3pN6zJRfDQZ2atSgADAKBggqgRzPVQGDdQNIADBF\n" +
+            "AiBg+0Ecz72+y4Gji2DpmUTucoEbBfX86nOfqNI38gHkuwIhAMQUXg8hxw5LgkMo\n" +
+            "wiVABBpJhAQQmfqvrBQI4B//WUDs\n" +
+            "-----END CERTIFICATE REQUEST-----";
     private static String peerCertificate = "-----BEGIN CERTIFICATE-----\n" +
             "MIIB6DCCAY8CFAWgiVfx42U7iqnigj0kdcXLdn6BMAoGCCqBHM9VAYN1MHgxCzAJ\n" +
             "BgNVBAYTAkNOMQswCQYDVQQIDAJCSjELMAkGA1UEBwwCQkoxDDAKBgNVBAoMA0pE\n" +
@@ -88,6 +97,8 @@ public class X509SM2Test {
         PrivKey privKey = X509Utils.resolvePrivKey(peerPrivateKey);
         SignatureDigest sign = Crypto.getSignatureFunction(privKey.getAlgorithm()).sign(privKey, "imuge".getBytes());
         PubKey pubKey = X509Utils.resolvePubKey(X509Utils.resolveCertificate(peerCertificate));
+        Assert.assertTrue(Crypto.getSignatureFunction(pubKey.getAlgorithm()).verify(sign, pubKey, "imuge".getBytes()));
+        pubKey = X509Utils.resolvePubKey(X509Utils.resolveCertificationRequest(peerCertificationRequest));
         Assert.assertTrue(Crypto.getSignatureFunction(pubKey.getAlgorithm()).verify(sign, pubKey, "imuge".getBytes()));
     }
 }
