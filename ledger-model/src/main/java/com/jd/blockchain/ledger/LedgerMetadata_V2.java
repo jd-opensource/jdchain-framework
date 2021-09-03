@@ -55,6 +55,6 @@ public interface LedgerMetadata_V2 extends LedgerMetadata {
 	 * @return
 	 */
 	@DataField(order = 8, list = true, primitiveType = PrimitiveType.TEXT)
-	String[] getLedgerCAs();
+	String[] getLedgerCertificates();
 
 }

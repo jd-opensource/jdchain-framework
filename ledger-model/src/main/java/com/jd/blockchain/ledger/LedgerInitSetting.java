@@ -84,5 +84,5 @@ public interface LedgerInitSetting {
      * @return
      */
     @DataField(order = 9, list = true, primitiveType = PrimitiveType.TEXT)
-    String[] getLedgerCAs();
+    String[] getLedgerCertificates();
 }

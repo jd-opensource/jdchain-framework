@@ -18,7 +18,7 @@ public class LedgerInitData implements LedgerInitSetting {
 
 	private IdentityMode identityMode;
 
-	private String[] ledgerCAs;
+	private String[] ledgerCertificates;
 
 	private ParticipantNode[] consensusParticipants;
 
@@ -95,8 +95,8 @@ public class LedgerInitData implements LedgerInitSetting {
 		this.identityMode = identityMode;
 	}
 
-	public void setLedgerCAs(String... ledgerCAs) {
-		this.ledgerCAs = ledgerCAs;
+	public void setLedgerCertificates(String... ledgerCertificates) {
+		this.ledgerCertificates = ledgerCertificates;
 	}
 
 	@Override
@@ -105,8 +105,8 @@ public class LedgerInitData implements LedgerInitSetting {
 	}
 
 	@Override
-	public String[] getLedgerCAs() {
-		return ledgerCAs;
+	public String[] getLedgerCertificates() {
+		return ledgerCertificates;
 	}
 
 	public void setLedgerStructureVersion(long ledgerStructureVersion) {

@@ -99,7 +99,7 @@ public class LedgerInitProperties implements Serializable {
 
 	private IdentityMode identityMode;
 
-	private String[] ledgerCAs;
+	private String[] ledgerCertificates;
 
 	private String ledgerName;
 
@@ -123,8 +123,8 @@ public class LedgerInitProperties implements Serializable {
 		return identityMode;
 	}
 
-	public String[] getLedgerCAs() {
-		return ledgerCAs;
+	public String[] getLedgerCertificates() {
+		return ledgerCertificates;
 	}
 
 	public String getLedgerName() {
@@ -260,7 +260,7 @@ public class LedgerInitProperties implements Serializable {
 				// 证书类型校验
 				X509Utils.checkCertificateRole(ledgerCerts[i], CertificateRole.LEDGER);
 			}
-			initProps.ledgerCAs = ledgersCAs;
+			initProps.ledgerCertificates = ledgersCAs;
 		}
 
 		// 解析账本信息；
