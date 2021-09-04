@@ -300,6 +300,50 @@ public class X509Utils {
     }
 
     /**
+     * Checks that any type is valid
+     *
+     * @param certificate
+     * @param caTypes
+     */
+    public static boolean checkCertificateRolesAnyNoException(X509Certificate certificate, CertificateRole... caTypes) {
+        Set<String> ous = getSubject(certificate, BCStyle.OU);
+        boolean contains = false;
+        for (CertificateRole caType : caTypes) {
+            if (ous.contains(caType.name())) {
+                contains = true;
+                break;
+            }
+        }
+        if (!contains) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks that any type is valid
+     *
+     * @param csr
+     * @param caTypes
+     */
+    public static boolean checkCertificateRolesAnyNoException(PKCS10CertificationRequest csr, CertificateRole... caTypes) {
+        Set<String> ous = getSubject(csr, BCStyle.OU);
+        boolean contains = false;
+        for (CertificateRole caType : caTypes) {
+            if (ous.contains(caType.name())) {
+                contains = true;
+                break;
+            }
+        }
+        if (!contains) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Checks that all types are valid
      *
      * @param certificate
@@ -365,6 +409,20 @@ public class X509Utils {
         } catch (CertificateEncodingException e) {
             throw new CryptoException(e.getMessage(), e);
         }
+    }
+
+    /**
+     * Get the specified subject item.
+     *
+     * @param csr
+     * @param identifier
+     * @return
+     */
+    public static Set<String> getSubject(PKCS10CertificationRequest csr, ASN1ObjectIdentifier identifier) {
+        Set<String> values = new HashSet<>();
+        RDN[] rdNs = csr.getSubject().getRDNs(identifier);
+        Arrays.stream(rdNs).forEach(rdn -> values.add(IETFUtils.valueToString(rdn.getFirst().getValue())));
+        return values;
     }
 
     /**
