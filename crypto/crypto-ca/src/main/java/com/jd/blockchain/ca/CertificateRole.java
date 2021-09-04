@@ -10,8 +10,6 @@ public enum CertificateRole {
     ROOT,
     // 中间证书
     CA,
-    // 账本证书
-    LEDGER,
     // 节点证书
     PEER,
     // 网关证书

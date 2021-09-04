@@ -8,6 +8,7 @@ import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -258,7 +259,7 @@ public class LedgerInitProperties implements Serializable {
 				// 时间有效性校验
 				X509Utils.checkValidity(ledgerCerts[i]);
 				// 证书类型校验
-				X509Utils.checkCertificateRole(ledgerCerts[i], CertificateRole.LEDGER);
+				X509Utils.checkCertificateRolesAny(ledgerCerts[i], CertificateRole.ROOT, CertificateRole.CA);
 			}
 			initProps.ledgerCertificates = ledgersCAs;
 		}
