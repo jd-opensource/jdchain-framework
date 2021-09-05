@@ -28,6 +28,8 @@ public class LedgerInitData implements LedgerInitSetting {
 
 	private long ledgerStructureVersion = -1L;
 
+	private String anchorType;
+
 	@Override
 	public byte[] getLedgerSeed() {
 		return ledgerSeed;
@@ -87,11 +89,20 @@ public class LedgerInitData implements LedgerInitSetting {
 		return this.ledgerStructureVersion;
 	}
 
+	@Override
+	public String getAnchorType() {
+		return anchorType;
+	}
+
 	public void setLedgerStructureVersion(long ledgerStructureVersion) {
 		this.ledgerStructureVersion = ledgerStructureVersion;
 	}
 
 	public void setCreatedTime(long createdTime) {
 		this.createdTime = createdTime;
+	}
+
+	public void setAnchorType(String anchorType) {
+		this.anchorType = anchorType;
 	}
 }

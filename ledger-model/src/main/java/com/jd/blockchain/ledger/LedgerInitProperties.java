@@ -83,6 +83,8 @@ public class LedgerInitProperties implements Serializable {
 	// 哈希算法；
 	public static final String CRYPTO_HASH_ALGORITHM = "crypto.hash-algorithm";
 
+	public static final String LEDGER_DATABASE_ANCHOR_TYPE = "ledger.database.anchor";
+
 	public static final String CRYPTO_SERVICE_PROVIDERS_SPLITTER = ",";
 
 	private byte[] ledgerSeed;
@@ -103,6 +105,8 @@ public class LedgerInitProperties implements Serializable {
 
 	private long createdTime;
 
+	private String anchorType;
+
 	public byte[] getLedgerSeed() {
 		return ledgerSeed.clone();
 	}
@@ -113,6 +117,10 @@ public class LedgerInitProperties implements Serializable {
 
 	public long getCreatedTime() {
 		return createdTime;
+	}
+
+	public String getAnchorType() {
+		return anchorType;
 	}
 
 	public Properties getConsensusConfig() {
@@ -183,11 +191,12 @@ public class LedgerInitProperties implements Serializable {
 		return String.format("%s.%s", partAddrStr, partPropKey);
 	}
 
-	public static LedgerInitProperties createDefault(byte[] ledgerSeed, String ledgerName, Date createdTime,
+	public static LedgerInitProperties createDefault(byte[] ledgerSeed, String ledgerName, Date createdTime, String anchorType,
 			Properties consensusConfig, CryptoProperties cryptoProperties) {
 		LedgerInitProperties initProps = new LedgerInitProperties(ledgerSeed);
 		initProps.ledgerName = ledgerName;
 		initProps.createdTime = createdTime.getTime();
+		initProps.anchorType = anchorType;
 		initProps.consensusProvider = "com.jd.blockchain.consensus.bftsmart.BftsmartConsensusProvider";
 		initProps.consensusConfig = consensusConfig;
 		initProps.cryptoProperties = cryptoProperties.clone();
@@ -233,6 +242,9 @@ public class LedgerInitProperties implements Serializable {
 		} catch (ParseException ex) {
 			throw new IllegalArgumentException(ex.getMessage(), ex);
 		}
+
+		String anchorType = PropertiesUtils.getRequiredProperty(props, LEDGER_DATABASE_ANCHOR_TYPE);
+		initProps.anchorType = anchorType;
 
 		// 解析角色清单；
 		String strRoleNames = PropertiesUtils.getOptionalProperty(props, ROLES);

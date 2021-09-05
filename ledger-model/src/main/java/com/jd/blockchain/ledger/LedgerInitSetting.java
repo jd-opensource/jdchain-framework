@@ -71,4 +71,12 @@ public interface LedgerInitSetting {
 	 */
 	@DataField(order = 7, primitiveType = PrimitiveType.INT64)
 	long getLedgerStructureVersion();
+
+	/**
+	 * 账本数据库的锚定方式
+	 *
+	 * @return
+	 */
+	String getAnchorType();
+
 }
