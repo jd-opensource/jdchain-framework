@@ -1,7 +1,8 @@
 package com.jd.blockchain.transaction;
 
 import com.jd.blockchain.ledger.UserCAUpdateOperation;
-import com.jd.blockchain.ledger.UserRevokeOperation;
+import com.jd.blockchain.ledger.UserState;
+import com.jd.blockchain.ledger.UserStateUpdateOperation;
 
 import java.security.cert.X509Certificate;
 
@@ -15,7 +16,28 @@ public interface UserUpdateOperationBuilder {
      *
      * @return
      */
-    UserRevokeOperation revoke();
+    UserStateUpdateOperation revoke();
+
+    /**
+     * 冻结证书/冻结用户
+     *
+     * @return
+     */
+    UserStateUpdateOperation freeze();
+
+    /**
+     * 恢复证书/恢复用户
+     *
+     * @return
+     */
+    UserStateUpdateOperation restore();
+
+    /**
+     * 更新证书/用户状态
+     *
+     * @return
+     */
+    UserStateUpdateOperation state(UserState state);
 
     /**
      * 更新证书

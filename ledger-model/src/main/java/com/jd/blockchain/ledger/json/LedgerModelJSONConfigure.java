@@ -19,7 +19,7 @@ import com.jd.blockchain.ledger.UserAuthorizeOperation;
 import com.jd.blockchain.ledger.UserCAUpdateOperation;
 import com.jd.blockchain.ledger.UserInfoSetOperation;
 import com.jd.blockchain.ledger.UserRegisterOperation;
-import com.jd.blockchain.ledger.UserRevokeOperation;
+import com.jd.blockchain.ledger.UserStateUpdateOperation;
 import utils.Bytes;
 import utils.io.BytesSlice;
 import utils.serialize.json.JSONAutoConfigure;
@@ -45,7 +45,7 @@ public class LedgerModelJSONConfigure implements JSONAutoConfigure {
 		configurator.configProxyInterfaces(UserInfoSetOperation.class);
 		configurator.configProxyInterfaces(UserRegisterOperation.class);
 		configurator.configProxyInterfaces(UserCAUpdateOperation.class);
-		configurator.configProxyInterfaces(UserRevokeOperation.class);
+		configurator.configProxyInterfaces(UserStateUpdateOperation.class);
 		configurator.configProxyInterfaces(RootCAUpdateOperation.class);
 
 		// BytesValue

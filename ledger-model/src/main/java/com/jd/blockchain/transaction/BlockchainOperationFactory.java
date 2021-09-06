@@ -22,7 +22,8 @@ import com.jd.blockchain.ledger.RootCAUpdateOperation;
 import com.jd.blockchain.ledger.UserCAUpdateOperation;
 import com.jd.blockchain.ledger.UserRegisterOperation;
 
-import com.jd.blockchain.ledger.UserRevokeOperation;
+import com.jd.blockchain.ledger.UserState;
+import com.jd.blockchain.ledger.UserStateUpdateOperation;
 import utils.Bytes;
 import utils.Property;
 
@@ -260,8 +261,29 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		}
 
 		@Override
-		public UserRevokeOperation revoke() {
-			UserRevokeOperation op = new UserRevokeOpTemplate(address);
+		public UserStateUpdateOperation revoke() {
+			UserStateUpdateOperation op = new UserStateUpdateOpTemplate(address, UserState.REVOKE);
+			operationList.add(op);
+			return op;
+		}
+
+		@Override
+		public UserStateUpdateOperation freeze() {
+			UserStateUpdateOperation op = new UserStateUpdateOpTemplate(address, UserState.FREEZE);
+			operationList.add(op);
+			return op;
+		}
+
+		@Override
+		public UserStateUpdateOperation restore() {
+			UserStateUpdateOperation op = new UserStateUpdateOpTemplate(address, UserState.NORMAL);
+			operationList.add(op);
+			return op;
+		}
+
+		@Override
+		public UserStateUpdateOperation state(UserState state) {
+			UserStateUpdateOperation op = new UserStateUpdateOpTemplate(address, state);
 			operationList.add(op);
 			return op;
 		}

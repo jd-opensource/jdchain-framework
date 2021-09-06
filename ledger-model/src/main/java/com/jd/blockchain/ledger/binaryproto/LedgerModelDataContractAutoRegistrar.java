@@ -58,7 +58,7 @@ import com.jd.blockchain.ledger.UserCAUpdateOperation;
 import com.jd.blockchain.ledger.UserInfo;
 import com.jd.blockchain.ledger.UserInfoSetOperation;
 import com.jd.blockchain.ledger.UserRegisterOperation;
-import com.jd.blockchain.ledger.UserRevokeOperation;
+import com.jd.blockchain.ledger.UserStateUpdateOperation;
 
 public class LedgerModelDataContractAutoRegistrar implements DataContractAutoRegistrar{
 
@@ -128,6 +128,6 @@ public class LedgerModelDataContractAutoRegistrar implements DataContractAutoReg
 		DataContractRegistry.register(LedgerTransactions.class);
 		DataContractRegistry.register(UserCAUpdateOperation.class);
 		DataContractRegistry.register(RootCAUpdateOperation.class);
-		DataContractRegistry.register(UserRevokeOperation.class);
+		DataContractRegistry.register(UserStateUpdateOperation.class);
 	}
 }

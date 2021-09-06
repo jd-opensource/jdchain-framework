@@ -100,9 +100,9 @@ public enum LedgerPermission implements Int8Code{
 	WRITE_EVENT_ACCOUNT((byte) 0x0E),
 
 	/**
-	 * 撤销证书/禁用用户
+	 * 更新用户状态
 	 */
-	REVOKE_USER((byte) 0x0F),
+	UPDATE_USER_STATE((byte) 0x0F),
 
 	/**
 	 * 更新根证书
