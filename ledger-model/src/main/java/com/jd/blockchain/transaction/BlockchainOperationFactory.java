@@ -19,6 +19,8 @@ import com.jd.blockchain.ledger.ParticipantNodeState;
 import com.jd.blockchain.ledger.ParticipantRegisterOperation;
 import com.jd.blockchain.ledger.ParticipantStateUpdateOperation;
 import com.jd.blockchain.ledger.RootCAUpdateOperation;
+import com.jd.blockchain.ledger.RootCAUpdateOperationBuilder;
+import com.jd.blockchain.ledger.RootCAUpdateOperationBuilderImpl;
 import com.jd.blockchain.ledger.UserCAUpdateOperation;
 import com.jd.blockchain.ledger.UserRegisterOperation;
 
@@ -58,8 +60,6 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 	private static final ConsensusSettingsUpdateOperationBuilderImpl CONSENSUS_SETTINGS_UPDATE_OPERATION_BUILDER = new ConsensusSettingsUpdateOperationBuilderImpl();
 
 	private static final EventAccountRegisterOperationBuilderImpl EVENT_ACC_REG_OP_BUILDER = new EventAccountRegisterOperationBuilderImpl();
-
-	private static final MetaInfoUpdateOperationBuilderImpl META_INFO_UPDATE_OPERATION_BUILDER = new MetaInfoUpdateOperationBuilderImpl();
 
 	private LedgerInitOperationBuilder ledgerInitOpBuilder = new LedgerInitOperationBuilderFilter();
 
@@ -487,15 +487,67 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 	private class MetaInfoUpdateOperationBuilderFilter implements MetaInfoUpdateOperationBuilder {
 
 		@Override
-		public RootCAUpdateOperation ca(String cert) {
-			RootCAUpdateOperation op = META_INFO_UPDATE_OPERATION_BUILDER.ca(cert);
-			operationList.add(op);
-			return op;
+		public RootCAUpdateOperationBuilder ca() {
+			return new RootCAUpdateOperationBuilderFilter();
+		}
+	}
+
+	private class RootCAUpdateOperationBuilderFilter implements RootCAUpdateOperationBuilder {
+
+		private RootCAUpdateOperationBuilderImpl innerBuilder;
+		private RootCAUpdateOperation op;
+
+		private void addOperation() {
+			if (op == null) {
+				op = innerBuilder.getOperation();
+				operationList.add(op);
+			}
+		}
+
+		RootCAUpdateOperationBuilderFilter() {
+			this.innerBuilder = new RootCAUpdateOperationBuilderImpl();
 		}
 
 		@Override
-		public RootCAUpdateOperation ca(X509Certificate cert) {
-			return ca(X509Utils.toPEMString(cert));
+		public RootCAUpdateOperationBuilder add(String certificate) {
+			innerBuilder.add(certificate);
+			addOperation();
+			return this;
+		}
+
+		@Override
+		public RootCAUpdateOperationBuilder add(X509Certificate certificate) {
+			innerBuilder.add(certificate);
+			addOperation();
+			return this;
+		}
+
+		@Override
+		public RootCAUpdateOperationBuilder update(String certificate) {
+			innerBuilder.update(certificate);
+			addOperation();
+			return this;
+		}
+
+		@Override
+		public RootCAUpdateOperationBuilder update(X509Certificate certificate) {
+			innerBuilder.update(certificate);
+			addOperation();
+			return this;
+		}
+
+		@Override
+		public RootCAUpdateOperationBuilder remove(String certificate) {
+			innerBuilder.remove(certificate);
+			addOperation();
+			return this;
+		}
+
+		@Override
+		public RootCAUpdateOperationBuilder remove(X509Certificate certificate) {
+			innerBuilder.remove(certificate);
+			addOperation();
+			return this;
 		}
 	}
 
