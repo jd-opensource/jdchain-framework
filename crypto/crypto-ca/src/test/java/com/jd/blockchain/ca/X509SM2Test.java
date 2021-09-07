@@ -19,15 +19,19 @@ import java.util.Set;
 public class X509SM2Test {
 
     private static String ledgerCertificate = "-----BEGIN CERTIFICATE-----\n" +
-            "MIIB5jCCAYygAwIBAgIEEIwPdTAKBggqgRzPVQGDdTByMQwwCgYDVQQKDANKRFQxDTALBgNVBAsM\n" +
-            "BFJPT1QxCzAJBgNVBAYTAkNOMQswCQYDVQQIDAJCSjELMAkGA1UEBwwCQkoxDTALBgNVBAMMBHJv\n" +
-            "b3QxHTAbBgkqhkiG9w0BCQEWDmpkY2hhaW5AamQuY29tMB4XDTIxMDkwNDEwMDY0M1oXDTI0MDUz\n" +
-            "MTEwMDY0M1owcjEMMAoGA1UECgwDSkRUMQ0wCwYDVQQLDARST09UMQswCQYDVQQGEwJDTjELMAkG\n" +
-            "A1UECAwCQkoxCzAJBgNVBAcMAkJKMQ0wCwYDVQQDDARyb290MR0wGwYJKoZIhvcNAQkBFg5qZGNo\n" +
-            "YWluQGpkLmNvbTBZMBMGByqGSM49AgEGCCqBHM9VAYItA0IABPHaED0CuusMOn8hc2t7i0qobD7l\n" +
-            "8d394etYyretFUnnYastUl3211T4Cpzw9ZzOV47LtTgNpjSz+OKYKZvrzu6jEDAOMAwGA1UdEwQF\n" +
-            "MAMBAf8wCgYIKoEcz1UBg3UDSAAwRQIhAPenS/UAzAR7aV+7/LMtsn72+PRNeiuQE4V4VFsKLfia\n" +
-            "AiAgNlmNP4nbgj12H38zMrCUJHioqYU9646dWlgEhEf2PA==\n" +
+            "MIICRTCCAeugAwIBAgIUNaTTIRs+HYfY62dfNCxeIebOdBIwCgYIKoEcz1UBg3Uw\n" +
+            "eDELMAkGA1UEBhMCQ04xCzAJBgNVBAgMAkJKMQswCQYDVQQHDAJCSjEMMAoGA1UE\n" +
+            "CgwDSkRUMQ8wDQYDVQQLDAZMRURHRVIxETAPBgNVBAMMCEpEIENoYWluMR0wGwYJ\n" +
+            "KoZIhvcNAQkBFg5qZGNoYWluQGpkLmNvbTAeFw0yMTA4MjYwOTE0MThaFw0zMTA4\n" +
+            "MjQwOTE0MThaMHgxCzAJBgNVBAYTAkNOMQswCQYDVQQIDAJCSjELMAkGA1UEBwwC\n" +
+            "QkoxDDAKBgNVBAoMA0pEVDEPMA0GA1UECwwGTEVER0VSMREwDwYDVQQDDAhKRCBD\n" +
+            "aGFpbjEdMBsGCSqGSIb3DQEJARYOamRjaGFpbkBqZC5jb20wWTATBgcqhkjOPQIB\n" +
+            "BggqgRzPVQGCLQNCAARD0Ssd2p3gNE6Lpbs5KpQatd5082NcYGkAiNw3jnqc5C2K\n" +
+            "5Q0oLBwDG8Sv6/wDmTNiSUNpZGeZEZxeLAkKuwL8o1MwUTAdBgNVHQ4EFgQUE7dN\n" +
+            "8SoJ9wCl5Go21L0YdFWAF8YwHwYDVR0jBBgwFoAUE7dN8SoJ9wCl5Go21L0YdFWA\n" +
+            "F8YwDwYDVR0TAQH/BAUwAwEB/zAKBggqgRzPVQGDdQNIADBFAiAg7ok1ukH7MQxa\n" +
+            "YYoP8xuC74yG4GfvXLqLzU+1L56FyQIhAMROqu2DGm7jXayAq+I1luQpxXKOwDQV\n" +
+            "CbGXyKGRD3pN\n" +
             "-----END CERTIFICATE-----";
     private static String peerCertificationRequest = "-----BEGIN CERTIFICATE REQUEST-----\n" +
             "MIIBMTCB2AIBADB2MQswCQYDVQQGEwJDTjELMAkGA1UECAwCQkoxCzAJBgNVBAcM\n" +
@@ -39,16 +43,17 @@ public class X509SM2Test {
             "wiVABBpJhAQQmfqvrBQI4B//WUDs\n" +
             "-----END CERTIFICATE REQUEST-----";
     private static String peerCertificate = "-----BEGIN CERTIFICATE-----\n" +
-            "MIICADCCAaagAwIBAgIEREzJajAKBggqgRzPVQGDdTBuMQwwCgYDVQQKDANKRFQxCzAJBgNVBAsM\n" +
-            "AkNBMQswCQYDVQQGEwJDTjELMAkGA1UECAwCQkoxCzAJBgNVBAcMAkJKMQswCQYDVQQDDAJjYTEd\n" +
-            "MBsGCSqGSIb3DQEJARYOamRjaGFpbkBqZC5jb20wHhcNMjEwOTA0MTAwNzA1WhcNMjQwNTMxMTAw\n" +
-            "NzA1WjByMQwwCgYDVQQKDANKRFQxDTALBgNVBAsMBFBFRVIxCzAJBgNVBAYTAkNOMQswCQYDVQQI\n" +
-            "DAJCSjELMAkGA1UEBwwCQkoxDTALBgNVBAMMBHBlZXIxHTAbBgkqhkiG9w0BCQEWDmpkY2hhaW5A\n" +
-            "amQuY29tMFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAE0jZ1KHjXiKsmE+6aXV+P3rdFb82PtsoB\n" +
-            "H9SLijIgV5L5iFSdX+JbjQJKheEhGR7ElKkNCQwCAjEuXbhuwvUywqMuMCwwHwYDVR0jBBgwFoAU\n" +
-            "UF1+eF2mrbTPNlBpHVCUKUJI8jMwCQYDVR0TBAIwADAKBggqgRzPVQGDdQNIADBFAiANBGiBepP+\n" +
-            "yf/CR5C+Jqh4amb/p4kHI5nVb6dOMgk2SgIhAOGfeXLgBE+IvgKobWZlKZ5vet0oUTzK2kke8NyD\n" +
-            "Frp+\n" +
+            "MIIB6DCCAY8CFAWgiVfx42U7iqnigj0kdcXLdn6BMAoGCCqBHM9VAYN1MHgxCzAJ\n" +
+            "BgNVBAYTAkNOMQswCQYDVQQIDAJCSjELMAkGA1UEBwwCQkoxDDAKBgNVBAoMA0pE\n" +
+            "VDEPMA0GA1UECwwGTEVER0VSMREwDwYDVQQDDAhKRCBDaGFpbjEdMBsGCSqGSIb3\n" +
+            "DQEJARYOamRjaGFpbkBqZC5jb20wHhcNMjEwODI2MDkxNDM2WhcNMzEwODI0MDkx\n" +
+            "NDM2WjB2MQswCQYDVQQGEwJDTjELMAkGA1UECAwCQkoxCzAJBgNVBAcMAkJKMQww\n" +
+            "CgYDVQQKDANKRFQxDTALBgNVBAsMBFBFRVIxETAPBgNVBAMMCEpEIENoYWluMR0w\n" +
+            "GwYJKoZIhvcNAQkBFg5qZGNoYWluQGpkLmNvbTBZMBMGByqGSM49AgEGCCqBHM9V\n" +
+            "AYItA0IABAEZ4CJ+eV7AeNJsEIO6gkEzhE1kyLdfzImx673h+Nu8WaDZMaIS0nv0\n" +
+            "BkiVcMpbpfxOaTND3pN6zJRfDQZ2atQwCgYIKoEcz1UBg3UDRwAwRAIgfmUiwLW2\n" +
+            "JIDUGXy1i4ESKhCED2vh/FRvnQg3CFi6hr4CIBJAMJoSTVbMkRiajfTk90AeZBds\n" +
+            "6DvXDp++uzxcIBKZ\n" +
             "-----END CERTIFICATE-----";
     private static String peerPrivateKey = "-----BEGIN EC PARAMETERS-----\n" +
             "BggqgRzPVQGCLQ==\n" +

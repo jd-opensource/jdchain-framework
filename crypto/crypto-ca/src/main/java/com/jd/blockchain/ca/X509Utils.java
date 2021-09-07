@@ -68,6 +68,7 @@ import java.security.spec.ECPrivateKeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPrivateCrtKeySpec;
 import java.security.spec.RSAPublicKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -586,8 +587,8 @@ public class X509Utils {
         try {
             short algorithm = pubKey.getAlgorithm();
             if (algorithm == ED25519.code()) {
-                Ed25519PublicKeyParameters parameters = new Ed25519PublicKeyParameters(pubKey.getRawKeyBytes(), 0);
-                return KeyFactory.getInstance("Ed25519").generatePublic(new PKCS8EncodedKeySpec(parameters.getEncoded()));
+                SubjectPublicKeyInfo pubKeyInfo = new SubjectPublicKeyInfo(new AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed25519), pubKey.getRawKeyBytes());
+                return KeyFactory.getInstance("Ed25519").generatePublic(new X509EncodedKeySpec(pubKeyInfo.getEncoded()));
             } else if (algorithm == RSA.code()) {
                 RSAKeyParameters pk = RSAUtils.bytes2PubKey_RawKey(pubKey.getRawKeyBytes());
                 return KeyFactory.getInstance("RSA").generatePublic(
