@@ -40,7 +40,10 @@ public class LedgerInitProperties implements Serializable {
 	public static final String IDENTITY_MODE = "identity-mode";
 
 	// 根证书路径，CA_MODE 为 true 时，此选项不能为空，支持多个，半角逗号相隔
-	public static final String CA_PATH = "ca-path";
+	public static final String CA_PATH = "root-ca-path";
+
+	// 用户证书路径，CA_MODE 为 true 时，此选项不能为空，且至少包含一个GW类型证书，支持多个，半角逗号相隔
+	public static final String USER_CA_PATH = "user-ca-path";
 
 	// 账本名称
 	public static final String LEDGER_NAME = "ledger.name";
@@ -102,6 +105,8 @@ public class LedgerInitProperties implements Serializable {
 
 	private String[] ledgerCertificates;
 
+	private X509Certificate[] genesisUserCertificates;
+
 	private String ledgerName;
 
 	private RoleInitData[] roles;
@@ -126,6 +131,14 @@ public class LedgerInitProperties implements Serializable {
 
 	public String[] getLedgerCertificates() {
 		return ledgerCertificates;
+	}
+
+	public X509Certificate[] getGenesisUserCertificates() {
+		return genesisUserCertificates;
+	}
+
+	public void setGenesisUserCertificates(X509Certificate[] genesisUserCertificates) {
+		this.genesisUserCertificates = genesisUserCertificates;
 	}
 
 	public String getLedgerName() {
@@ -246,10 +259,12 @@ public class LedgerInitProperties implements Serializable {
 		String identityMode = PropertiesUtils.getOptionalProperty(props, IDENTITY_MODE, IdentityMode.KEYPAIR.name());
 		initProps.identityMode = IdentityMode.valueOf(identityMode);
 		X509Certificate[] ledgerCerts = null;
+		X509Certificate[] userCerts = null;
 		if(initProps.identityMode == IdentityMode.CA) {
+			// 根证书
 			String[] ledgerCAPaths = PropertiesUtils.getRequiredProperty(props, CA_PATH).split(",");
 			if(ledgerCAPaths.length == 0) {
-				throw new LedgerInitException("ca-path is empty");
+				throw new LedgerInitException("root-ca-path is empty");
 			}
 			ledgerCerts = new X509Certificate[ledgerCAPaths.length];
 			String[] ledgersCAs = new String[ledgerCAPaths.length];
@@ -262,6 +277,31 @@ public class LedgerInitProperties implements Serializable {
 				X509Utils.checkCertificateRolesAny(ledgerCerts[i], CertificateRole.ROOT, CertificateRole.CA);
 			}
 			initProps.ledgerCertificates = ledgersCAs;
+
+			// 用户证书
+			String[] userCAPaths = PropertiesUtils.getRequiredProperty(props, USER_CA_PATH).split(",");
+			if(ledgerCAPaths.length == 0) {
+				throw new LedgerInitException("user-ca-path is empty");
+			}
+			userCerts = new X509Certificate[userCAPaths.length];
+			boolean containsGW = false;
+			for(int i = 0; i<userCAPaths.length; i++) {
+				X509Certificate cert = X509Utils.resolveCertificate(FileUtils.readText(userCAPaths[i]));
+				// 证书类型校验
+				if(!containsGW && X509Utils.checkCertificateRolesAnyNoException(cert, CertificateRole.GW)) {
+					containsGW = true;
+				}
+				X509Utils.checkCertificateRolesAny(cert, CertificateRole.PEER, CertificateRole.USER, CertificateRole.GW);
+				// 根证书签名验证
+				X509Utils.verifyAny(cert, ledgerCerts);
+				// 时间有效性校验
+				X509Utils.checkValidity(cert);
+				userCerts[i] = cert;
+			}
+			if(!containsGW) {
+				throw new LedgerInitException("user-ca-path must contains at least one GW certificate");
+			}
+			initProps.genesisUserCertificates = userCerts;
 		}
 
 		// 解析账本信息；
@@ -349,8 +389,8 @@ public class LedgerInitProperties implements Serializable {
 				String ca = FileUtils.readText(PropertiesUtils.getRequiredProperty(props, partCAPathKey));
 				X509Certificate cert = X509Utils.resolveCertificate(ca);
 				X509Utils.checkValidity(cert);
-				// CA模式下，初始化的节点证书必须同时包含 PEER 和 GW 两种角色类型
-				X509Utils.checkCertificateRolesAll(cert, CertificateRole.PEER, CertificateRole.GW);
+				// CA模式下，初始化的节点证书必须是 PEER 角色类型
+				X509Utils.checkCertificateRolesAll(cert, CertificateRole.PEER);
 				X509Utils.verifyAny(cert, ledgerCerts);
 				parti.setCertificate(ca);
 				pubKey = X509Utils.resolvePubKey(cert);

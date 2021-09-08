@@ -436,7 +436,9 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 		@Override
 		public ParticipantRegisterOperation register(String participantName, X509Certificate certificate) {
-			return register(participantName, new BlockchainIdentityData(X509Utils.resolvePubKey(certificate)));
+			ParticipantRegisterOperation op = PARTICIPANT_REG_OP_BUILDER.register(participantName, certificate);
+			operationList.add(op);
+			return op;
 		}
 	}
 

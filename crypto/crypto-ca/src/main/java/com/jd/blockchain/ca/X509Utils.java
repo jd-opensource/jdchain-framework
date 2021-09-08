@@ -315,11 +315,8 @@ public class X509Utils {
                 break;
             }
         }
-        if (!contains) {
-            return false;
-        }
 
-        return true;
+        return contains;
     }
 
     /**
@@ -337,11 +334,8 @@ public class X509Utils {
                 break;
             }
         }
-        if (!contains) {
-            return false;
-        }
 
-        return true;
+        return contains;
     }
 
     /**
