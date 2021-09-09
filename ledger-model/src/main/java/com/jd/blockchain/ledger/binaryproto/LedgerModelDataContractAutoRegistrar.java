@@ -23,6 +23,7 @@ import com.jd.blockchain.ledger.Event;
 import com.jd.blockchain.ledger.EventAccountInfo;
 import com.jd.blockchain.ledger.EventAccountRegisterOperation;
 import com.jd.blockchain.ledger.EventPublishOperation;
+import com.jd.blockchain.ledger.GenesisUser;
 import com.jd.blockchain.ledger.HashObject;
 import com.jd.blockchain.ledger.LedgerAdminInfo;
 import com.jd.blockchain.ledger.LedgerBlock;
@@ -129,5 +130,6 @@ public class LedgerModelDataContractAutoRegistrar implements DataContractAutoReg
 		DataContractRegistry.register(UserCAUpdateOperation.class);
 		DataContractRegistry.register(RootCAUpdateOperation.class);
 		DataContractRegistry.register(UserStateUpdateOperation.class);
+		DataContractRegistry.register(GenesisUser.class);
 	}
 }

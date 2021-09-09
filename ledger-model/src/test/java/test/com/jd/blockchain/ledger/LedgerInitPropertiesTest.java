@@ -162,26 +162,18 @@ public class LedgerInitPropertiesTest {
 			assertEquals("127.0.0.1", part0.getInitializerAddress().getHost());
 			assertEquals(8800, part0.getInitializerAddress().getPort());
 			assertEquals(true, part0.getInitializerAddress().isSecure());
-			assertArrayEquals(new String[] { "ADMIN", "MANAGER" }, part0.getRoles());
-			assertEquals(RolesPolicy.UNION, part0.getRolesPolicy());
 
 			ParticipantProperties part1 = initProps.getConsensusParticipant(1);
 			assertEquals(false, part1.getInitializerAddress().isSecure());
 			PubKey pubKey1 = KeyGenUtils.decodePubKey("7VeRBsHM2nsGwP8b2ufRxz36hhNtSqjKTquzoa4WVKWty5sD");
 			assertEquals(pubKey1, part1.getPubKey());
-			assertArrayEquals(new String[] { "MANAGER" }, part1.getRoles());
-			assertEquals(RolesPolicy.UNION, part1.getRolesPolicy());
 
 			ParticipantProperties part2 = initProps.getConsensusParticipant(2);
 			assertEquals("7VeRAr3dSbi1xatq11ZcF7sEPkaMmtZhV9shonGJWk9T4pLe", part2.getPubKey().toBase58());
-			assertArrayEquals(new String[] { "MANAGER" }, part2.getRoles());
-			assertEquals(RolesPolicy.UNION, part2.getRolesPolicy());
 
 			ParticipantProperties part3 = initProps.getConsensusParticipant(3);
 			PubKey pubKey3 = KeyGenUtils.decodePubKey("7VeRKoM5RE6iFXr214Hsiic2aoqCQ7MEU1dHQFRnjXQcReAS");
 			assertEquals(pubKey3, part3.getPubKey());
-			assertArrayEquals(new String[] { "GUEST" }, part3.getRoles());
-			assertEquals(RolesPolicy.INTERSECT, part3.getRolesPolicy());
 
 		} finally {
 			in.close();

@@ -79,10 +79,18 @@ public interface LedgerInitSetting {
     IdentityMode getIdentityMode();
 
     /**
-     * 根证书
+     * 用户证书
      *
      * @return
      */
     @DataField(order = 9, list = true, primitiveType = PrimitiveType.TEXT)
     String[] getLedgerCertificates();
+
+    /**
+     * 根证书
+     *
+     * @return
+     */
+    @DataField(order = 10, list = true, refContract = true)
+    GenesisUser[] getGenesisUsers();
 }

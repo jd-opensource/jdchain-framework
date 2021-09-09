@@ -57,4 +57,12 @@ public interface LedgerMetadata_V2 extends LedgerMetadata {
 	@DataField(order = 8, list = true, primitiveType = PrimitiveType.TEXT)
 	String[] getLedgerCertificates();
 
+	/**
+	 * 初始用户信息
+	 *
+	 * @return
+	 */
+	@DataField(order = 9, list = true, refContract = true)
+	GenesisUser[] getGenesisUsers();
+
 }

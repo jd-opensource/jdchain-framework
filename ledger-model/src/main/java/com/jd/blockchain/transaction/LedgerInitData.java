@@ -2,6 +2,7 @@ package com.jd.blockchain.transaction;
 
 import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.ledger.CryptoSetting;
+import com.jd.blockchain.ledger.GenesisUser;
 import com.jd.blockchain.ledger.IdentityMode;
 import com.jd.blockchain.ledger.LedgerInitSetting;
 import com.jd.blockchain.ledger.ParticipantNode;
@@ -19,6 +20,8 @@ public class LedgerInitData implements LedgerInitSetting {
 	private IdentityMode identityMode;
 
 	private String[] ledgerCertificates;
+
+	private GenesisUser[] genesisUsers;
 
 	private ParticipantNode[] consensusParticipants;
 
@@ -99,6 +102,10 @@ public class LedgerInitData implements LedgerInitSetting {
 		this.ledgerCertificates = ledgerCertificates;
 	}
 
+	public void setGenesisUsers(GenesisUser[] genesisUsers) {
+		this.genesisUsers = genesisUsers;
+	}
+
 	@Override
 	public IdentityMode getIdentityMode() {
 		return identityMode;
@@ -107,6 +114,11 @@ public class LedgerInitData implements LedgerInitSetting {
 	@Override
 	public String[] getLedgerCertificates() {
 		return ledgerCertificates;
+	}
+
+	@Override
+	public GenesisUser[] getGenesisUsers() {
+		return genesisUsers;
 	}
 
 	public void setLedgerStructureVersion(long ledgerStructureVersion) {

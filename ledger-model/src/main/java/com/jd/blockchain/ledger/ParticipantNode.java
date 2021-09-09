@@ -58,12 +58,4 @@ public interface ParticipantNode {
 	 */
 	@DataField(order = 4, refEnum = true)
 	ParticipantNodeState getParticipantNodeState();
-
-	/**
-	 * 节点证书
-	 *
-	 * @return
-	 */
-	@DataField(order = 5, primitiveType = PrimitiveType.TEXT)
-	String getCertificate();
 }

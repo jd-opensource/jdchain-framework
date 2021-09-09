@@ -163,6 +163,8 @@ public interface DataCodes {
 
 	public static final int METADATA_IDENTITY_MODE = 0x644;
 
+	public static final int METADATA_GENESIS_USER = 0x645;
+
 //	public static final int ACCOUNT = 0x700;
 
 	public static final int ACCOUNT_SNAPSHOT = 0x701;
