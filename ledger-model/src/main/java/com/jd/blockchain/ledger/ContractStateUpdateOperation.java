@@ -6,11 +6,11 @@ import com.jd.binaryproto.PrimitiveType;
 import com.jd.blockchain.consts.DataCodes;
 import utils.Bytes;
 
-@DataContract(code = DataCodes.TX_OP_USER_STATE)
-public interface UserStateUpdateOperation extends Operation {
+@DataContract(code = DataCodes.TX_OP_CONTRACT_STATE)
+public interface ContractStateUpdateOperation extends Operation {
 
     @DataField(order = 1, primitiveType = PrimitiveType.BYTES)
-    Bytes getUserAddress();
+    Bytes getContractAddress();
 
     @DataField(order = 2, refEnum = true)
     AccountState getState();

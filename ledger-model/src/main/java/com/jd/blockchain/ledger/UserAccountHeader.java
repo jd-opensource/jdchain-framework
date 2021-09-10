@@ -9,7 +9,7 @@ public interface UserAccountHeader extends BlockchainIdentity {
 	
 	PubKey getDataPubKey();
 
-	UserState getState();
+	AccountState getState();
 
 	String getCertificate();
 }

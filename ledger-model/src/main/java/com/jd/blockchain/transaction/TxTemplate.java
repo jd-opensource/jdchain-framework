@@ -92,6 +92,18 @@ public class TxTemplate implements TransactionTemplate {
 	}
 
 	@Override
+	public ContractUpdateOperationBuilder contract(String address) {
+		stateManager.operate();
+		return txBuilder.contract(address);
+	}
+
+	@Override
+	public ContractUpdateOperationBuilder contract(Bytes address) {
+		stateManager.operate();
+		return txBuilder.contract(address);
+	}
+
+	@Override
 	public ParticipantRegisterOperationBuilder participants() {
 		stateManager.operate();
 		return txBuilder.participants();

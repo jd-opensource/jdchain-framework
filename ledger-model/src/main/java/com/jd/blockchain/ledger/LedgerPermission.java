@@ -112,7 +112,12 @@ public enum LedgerPermission implements Int8Code{
 	/**
 	 * 更新用户证书
 	 */
-	UPDATE_USER_CA((byte) 0x11);
+	UPDATE_USER_CA((byte) 0x11),
+
+	/**
+	 * 更新合约状态
+	 */
+	UPDATE_CONTRACT_STATE((byte) 0x12);
 
 	@EnumField(type = PrimitiveType.INT8)
 	public final byte CODE;

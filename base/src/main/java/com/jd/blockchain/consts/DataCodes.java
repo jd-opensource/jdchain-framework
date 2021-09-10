@@ -74,8 +74,9 @@ public interface DataCodes {
 	public static final int TX_OP_USER_INFO_SET = 0x311;
 	public static final int TX_OP_USER_INFO_SET_KV = 0x312;
 	public static final int TX_OP_USER_STATE = 0x313;
-	public static final int ENUM_USER_STATE = 0x314;
+	public static final int ENUM_ACCOUNT_STATE = 0x314;
 	public static final int TX_OP_USER_CA_UPDATE = 0x315;
+	public static final int TX_OP_CONTRACT_STATE = 0x316;
 
 	public static final int TX_OP_DATA_ACC_REG = 0x320;
 	public static final int TX_OP_DATA_ACC_SET = 0x321;

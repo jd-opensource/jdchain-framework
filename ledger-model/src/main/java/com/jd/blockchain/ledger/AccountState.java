@@ -5,8 +5,8 @@ import com.jd.binaryproto.EnumField;
 import com.jd.binaryproto.PrimitiveType;
 import com.jd.blockchain.consts.DataCodes;
 
-@EnumContract(code = DataCodes.ENUM_USER_STATE)
-public enum UserState {
+@EnumContract(code = DataCodes.ENUM_ACCOUNT_STATE)
+public enum AccountState {
 
     NORMAL((byte) 0x01),
 
@@ -17,7 +17,7 @@ public enum UserState {
     @EnumField(type = PrimitiveType.INT8)
     public final byte CODE;
 
-    UserState(byte code) {
+    AccountState(byte code) {
         this.CODE = code;
     }
 

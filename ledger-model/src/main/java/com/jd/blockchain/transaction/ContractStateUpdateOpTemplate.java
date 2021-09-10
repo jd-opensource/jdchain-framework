@@ -2,25 +2,25 @@ package com.jd.blockchain.transaction;
 
 import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.ledger.AccountState;
-import com.jd.blockchain.ledger.UserStateUpdateOperation;
+import com.jd.blockchain.ledger.ContractStateUpdateOperation;
 import utils.Bytes;
 
-public class UserStateUpdateOpTemplate implements UserStateUpdateOperation {
+public class ContractStateUpdateOpTemplate implements ContractStateUpdateOperation {
 
     static {
-        DataContractRegistry.register(UserStateUpdateOperation.class);
+        DataContractRegistry.register(ContractStateUpdateOperation.class);
     }
 
     private Bytes address;
     private AccountState state;
 
-    public UserStateUpdateOpTemplate(Bytes address, AccountState state) {
+    public ContractStateUpdateOpTemplate(Bytes address, AccountState state) {
         this.address = address;
         this.state = state;
     }
 
     @Override
-    public Bytes getUserAddress() {
+    public Bytes getContractAddress() {
         return address;
     }
 

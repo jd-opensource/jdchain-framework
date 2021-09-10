@@ -174,6 +174,16 @@ public class TxBuilder implements TransactionBuilder {
 		return opFactory.contracts();
 	}
 
+	@Override
+	public ContractUpdateOperationBuilder contract(String address) {
+		return opFactory.contract(address);
+	}
+
+	@Override
+	public ContractUpdateOperationBuilder contract(Bytes address) {
+		return opFactory.contract(address);
+	}
+
 	public ContractEventSendOperationBuilder contractEvents() {
 		return opFactory.contractEvents();
 	}

@@ -1,7 +1,7 @@
 package com.jd.blockchain.transaction;
 
 import com.jd.blockchain.ledger.UserCAUpdateOperation;
-import com.jd.blockchain.ledger.UserState;
+import com.jd.blockchain.ledger.AccountState;
 import com.jd.blockchain.ledger.UserStateUpdateOperation;
 
 import java.security.cert.X509Certificate;
@@ -37,7 +37,7 @@ public interface UserUpdateOperationBuilder {
      *
      * @return
      */
-    UserStateUpdateOperation state(UserState state);
+    UserStateUpdateOperation state(AccountState state);
 
     /**
      * 更新证书

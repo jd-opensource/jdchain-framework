@@ -3,6 +3,8 @@ package com.jd.blockchain.sdk;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.crypto.PubKey;
 
+import com.jd.blockchain.ledger.AccountState;
+import com.jd.blockchain.ledger.ContractInfo;
 import utils.Bytes;
 
 /**
@@ -23,24 +25,19 @@ public class DecompliedContractInfo {
 
 	private String chainCode;
 	private long chainCodeVersion;
+	private AccountState state;
 
 	public DecompliedContractInfo() {
 	}
 
-	public DecompliedContractInfo(Bytes address, PubKey pubKey, HashDigest headerRootHash, HashDigest dataRootHash) {
-		this.address = address;
-		this.pubKey = pubKey;
-		this.headerRootHash = headerRootHash;
-		this.dataRootHash = dataRootHash;
-	}
-
-	public DecompliedContractInfo(Bytes address, PubKey pubKey, HashDigest headerRootHash, HashDigest dataRootHash,
-			String chainCode) {
-		this.address = address;
-		this.pubKey = pubKey;
-		this.headerRootHash = headerRootHash;
-		this.dataRootHash = dataRootHash;
-		this.chainCode = chainCode;
+	public DecompliedContractInfo(ContractInfo contractInfo) {
+		this.address = contractInfo.getAddress();
+		this.pubKey = contractInfo.getPubKey();
+		this.headerRootHash = contractInfo.getHeaderRootHash();
+		this.dataRootHash = contractInfo.getDataRootHash();
+		this.chainCode = new String(contractInfo.getChainCode());
+		this.chainCodeVersion = contractInfo.getChainCodeVersion();
+		this.state = contractInfo.getState();
 	}
 
 	/**
@@ -104,5 +101,13 @@ public class DecompliedContractInfo {
 
 	public void setChainCodeVersion(long chainCodeVersion) {
 		this.chainCodeVersion = chainCodeVersion;
+	}
+
+	public AccountState getState() {
+		return state;
+	}
+
+	public void setState(AccountState state) {
+		this.state = state;
 	}
 }

@@ -13,6 +13,7 @@ import com.jd.blockchain.ledger.ConsensusSettingsUpdateOperation;
 import com.jd.blockchain.ledger.ContractCodeDeployOperation;
 import com.jd.blockchain.ledger.ContractEventSendOperation;
 import com.jd.blockchain.ledger.ContractInfo;
+import com.jd.blockchain.ledger.ContractStateUpdateOperation;
 import com.jd.blockchain.ledger.CryptoSetting;
 import com.jd.blockchain.ledger.DataAccountInfo;
 import com.jd.blockchain.ledger.DataAccountKVSetOperation;
@@ -131,5 +132,6 @@ public class LedgerModelDataContractAutoRegistrar implements DataContractAutoReg
 		DataContractRegistry.register(RootCAUpdateOperation.class);
 		DataContractRegistry.register(UserStateUpdateOperation.class);
 		DataContractRegistry.register(GenesisUser.class);
+		DataContractRegistry.register(ContractStateUpdateOperation.class);
 	}
 }

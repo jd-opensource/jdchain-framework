@@ -1,13 +1,12 @@
 package com.jd.blockchain.transaction;
 
-import com.jd.blockchain.ca.X509Utils;
 import com.jd.blockchain.ledger.BlockchainIdentity;
-import com.jd.blockchain.ledger.BlockchainIdentityData;
 import com.jd.blockchain.ledger.BytesValue;
 import com.jd.blockchain.ledger.BytesValueList;
 import com.jd.blockchain.ledger.ConsensusSettingsUpdateOperation;
 import com.jd.blockchain.ledger.ContractCodeDeployOperation;
 import com.jd.blockchain.ledger.ContractEventSendOperation;
+import com.jd.blockchain.ledger.ContractStateUpdateOperation;
 import com.jd.blockchain.ledger.DataAccountKVSetOperation;
 import com.jd.blockchain.ledger.DataAccountRegisterOperation;
 import com.jd.blockchain.ledger.EventAccountRegisterOperation;
@@ -24,7 +23,7 @@ import com.jd.blockchain.ledger.RootCAUpdateOperationBuilderImpl;
 import com.jd.blockchain.ledger.UserCAUpdateOperation;
 import com.jd.blockchain.ledger.UserRegisterOperation;
 
-import com.jd.blockchain.ledger.UserState;
+import com.jd.blockchain.ledger.AccountState;
 import com.jd.blockchain.ledger.UserStateUpdateOperation;
 import utils.Bytes;
 import utils.Property;
@@ -129,6 +128,16 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 	@Override
 	public ContractCodeDeployOperationBuilder contracts() {
 		return contractCodeDeployOpBuilder;
+	}
+
+	@Override
+	public ContractUpdateOperationBuilder contract(String address) {
+		return contract(Bytes.fromBase58(address));
+	}
+
+	@Override
+	public ContractUpdateOperationBuilder contract(Bytes address) {
+		return new ContractUpdateOperationBuilderFilter(address);
 	}
 
 	public ContractEventSendOperationBuilder contractEvents() {
@@ -262,27 +271,27 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 		@Override
 		public UserStateUpdateOperation revoke() {
-			UserStateUpdateOperation op = new UserStateUpdateOpTemplate(address, UserState.REVOKE);
+			UserStateUpdateOperation op = new UserStateUpdateOpTemplate(address, AccountState.REVOKE);
 			operationList.add(op);
 			return op;
 		}
 
 		@Override
 		public UserStateUpdateOperation freeze() {
-			UserStateUpdateOperation op = new UserStateUpdateOpTemplate(address, UserState.FREEZE);
+			UserStateUpdateOperation op = new UserStateUpdateOpTemplate(address, AccountState.FREEZE);
 			operationList.add(op);
 			return op;
 		}
 
 		@Override
 		public UserStateUpdateOperation restore() {
-			UserStateUpdateOperation op = new UserStateUpdateOpTemplate(address, UserState.NORMAL);
+			UserStateUpdateOperation op = new UserStateUpdateOpTemplate(address, AccountState.NORMAL);
 			operationList.add(op);
 			return op;
 		}
 
 		@Override
-		public UserStateUpdateOperation state(UserState state) {
+		public UserStateUpdateOperation state(AccountState state) {
 			UserStateUpdateOperation op = new UserStateUpdateOpTemplate(address, state);
 			operationList.add(op);
 			return op;
@@ -291,6 +300,43 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		@Override
 		public UserCAUpdateOperation ca(X509Certificate cert) {
 			UserCAUpdateOperation op = new UserCAUpdateOpTemplate(address, cert);
+			operationList.add(op);
+			return op;
+		}
+	}
+
+	private class ContractUpdateOperationBuilderFilter implements ContractUpdateOperationBuilder {
+
+		private Bytes address;
+
+		public ContractUpdateOperationBuilderFilter(Bytes address) {
+			this.address = address;
+		}
+
+		@Override
+		public ContractStateUpdateOperation revoke() {
+			ContractStateUpdateOperation op = new ContractStateUpdateOpTemplate(address, AccountState.REVOKE);
+			operationList.add(op);
+			return op;
+		}
+
+		@Override
+		public ContractStateUpdateOperation freeze() {
+			ContractStateUpdateOperation op = new ContractStateUpdateOpTemplate(address, AccountState.FREEZE);
+			operationList.add(op);
+			return op;
+		}
+
+		@Override
+		public ContractStateUpdateOperation restore() {
+			ContractStateUpdateOperation op = new ContractStateUpdateOpTemplate(address, AccountState.NORMAL);
+			operationList.add(op);
+			return op;
+		}
+
+		@Override
+		public ContractStateUpdateOperation state(AccountState state) {
+			ContractStateUpdateOperation op = new ContractStateUpdateOpTemplate(address, state);
 			operationList.add(op);
 			return op;
 		}
