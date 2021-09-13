@@ -11,6 +11,7 @@ import com.jd.blockchain.ledger.BytesValue;
 import com.jd.blockchain.ledger.BytesValueList;
 import com.jd.blockchain.ledger.ConsensusSettingsUpdateOperation;
 import com.jd.blockchain.ledger.ContractCodeDeployOperation;
+import com.jd.blockchain.ledger.ContractCrossEventSendOperation;
 import com.jd.blockchain.ledger.ContractEventSendOperation;
 import com.jd.blockchain.ledger.ContractInfo;
 import com.jd.blockchain.ledger.ContractStateUpdateOperation;
@@ -95,6 +96,7 @@ public class LedgerModelDataContractAutoRegistrar implements DataContractAutoReg
 		DataContractRegistry.register(DataAccountKVSetOperation.KVWriteEntry.class);
 		DataContractRegistry.register(ContractCodeDeployOperation.class);
 		DataContractRegistry.register(ContractEventSendOperation.class);
+		DataContractRegistry.register(ContractCrossEventSendOperation.class);
 		DataContractRegistry.register(ParticipantRegisterOperation.class);
 		DataContractRegistry.register(ParticipantStateUpdateOperation.class);
 		DataContractRegistry.register(TransactionResponse.class);

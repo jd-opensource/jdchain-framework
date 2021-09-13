@@ -86,6 +86,7 @@ public interface DataCodes {
 	public static final int TX_OP_CONTRACT_UPDATE = 0x331;
 
 	public static final int TX_OP_CONTRACT_EVENT_SEND = 0x340;
+	public static final int TX_OP_CONTRACT_CROSS_EVENT_SEND = 0x341;
 
 	public static final int TX_OP_PARTICIPANT_REG = 0x350;
 	public static final int TX_OP_PARTICIPANT_STATE_UPDATE = 0x351;
