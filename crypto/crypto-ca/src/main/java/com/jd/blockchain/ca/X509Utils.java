@@ -27,6 +27,8 @@ import org.bouncycastle.crypto.params.RSAKeyParameters;
 import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;
 import org.bouncycastle.crypto.util.PrivateKeyFactory;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
+import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
@@ -34,6 +36,7 @@ import org.bouncycastle.jce.spec.ECPublicKeySpec;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import sun.misc.BASE64Encoder;
 import sun.security.provider.X509Factory;
@@ -49,6 +52,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -495,7 +499,7 @@ public class X509Utils {
             } else if (algorithm.equals(ClassicAlgorithm.ECDSA)) {
                 encoded = ECDSAUtils.trimBigIntegerTo32Bytes(((ECPrivateKeyParameters) privkeyParam).getD());
             } else if (algorithm.equals(SM2)) {
-                encoded = ECDSAUtils.trimBigIntegerTo32Bytes(((ECPrivateKeyParameters) privkeyParam).getD());
+                encoded = SM2Utils.trimBigIntegerTo32Bytes(((ECPrivateKeyParameters) privkeyParam).getD());
             } else {
                 throw new CryptoException("Unsupported crypto algorithm : " + algorithm.name());
             }
@@ -568,6 +572,66 @@ public class X509Utils {
             }
         } catch (Exception e) {
             throw new CryptoException("unresolvable private key", e);
+        }
+    }
+
+    public static PrivateKey resolvePrivateKey(PrivKey privKey, PubKey pubKey) {
+        try {
+            short algorithm = privKey.getAlgorithm();
+            if (algorithm == ED25519.code()) {
+                PrivateKeyInfo privKeyInfo = new PrivateKeyInfo(new AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed25519), new DEROctetString(privKey.getRawKeyBytes()));
+                return KeyFactory.getInstance("Ed25519").generatePrivate(new PKCS8EncodedKeySpec(privKeyInfo.getEncoded()));
+            } else if (algorithm == RSA.code()) {
+                RSAPrivateCrtKeyParameters pk = RSAUtils.bytes2PrivKey_RawKey(privKey.getRawKeyBytes());
+                return KeyFactory.getInstance("RSA").generatePrivate(
+                        new RSAPrivateCrtKeySpec(pk.getModulus(), pk.getPublicExponent(),
+                                pk.getExponent(), pk.getP(), pk.getQ(),
+                                pk.getDP(), pk.getDQ(), pk.getQInv()));
+            } else if (algorithm == ECDSA.code()) {
+                ECPrivateKeyParameters pk = new ECPrivateKeyParameters(new BigInteger(1, privKey.getRawKeyBytes()), ECDSAUtils.DOMAIN_PARAMS);
+                ECDomainParameters domainParams = ECDSAUtils.getDomainParams();
+                return new BCECPrivateKey(EC_ALGORITHM, pk, (BCECPublicKey) resolvePublicKey(pubKey),
+                        new ECPrivateKeySpec(pk.getD(), new ECNamedCurveSpec("sm2p256v1", ECDSAUtils.getCurve(), domainParams.getG(), domainParams.getN(), domainParams.getH())).getParams(),
+                        BouncyCastleProvider.CONFIGURATION);
+            } else if (algorithm == SM2.code()) {
+                ECPrivateKeyParameters pk = new ECPrivateKeyParameters(new BigInteger(1, privKey.getRawKeyBytes()), SM2Utils.DOMAIN_PARAMS);
+                ECDomainParameters domainParams = SM2Utils.getDomainParams();
+                return new BCECPrivateKey(EC_ALGORITHM, pk, (BCECPublicKey) resolvePublicKey(pubKey),
+                        new ECPrivateKeySpec(pk.getD(), new ECNamedCurveSpec("sm2p256v1", SM2Utils.getCurve(), domainParams.getG(), domainParams.getN(), domainParams.getH())).getParams(),
+                        BouncyCastleProvider.CONFIGURATION);
+            } else {
+                throw new CryptoException("unresolvable private key");
+            }
+        } catch (Exception e) {
+            throw new CryptoException("unresolvable private key", e);
+        }
+    }
+
+    /**
+     * PrivateKey to PEM String
+     *
+     * @param algorithm
+     * @param privateKey
+     * @return
+     */
+    public static String toPEMString(String algorithm, PrivateKey privateKey) {
+        try {
+            StringWriter sw = new StringWriter();
+            if (algorithm.equals("SM2")) {
+                sw.append(BEGIN_PARAMS + "\n" +
+                        SM2ECC + "\n" +
+                        END_PARAMS + "\n");
+            } else if (algorithm.equals("ECDSA")) {
+                sw.append(BEGIN_PARAMS + "\n" +
+                        SECP256K1 + "\n" +
+                        END_PARAMS + "\n");
+            }
+            JcaPEMWriter writer = new JcaPEMWriter(sw);
+            writer.writeObject(privateKey);
+            writer.close();
+            return sw.getBuffer().toString();
+        } catch (Exception e) {
+            throw new IllegalStateException("private key to string error", e);
         }
     }
 
