@@ -131,15 +131,10 @@ public class X509RSATest {
     }
 
     @Test
-    public void testResolvePrivKey() {
-        X509Utils.resolvePrivKey(peerPrivateKey);
-    }
-
-    @Test
     public void testResolvePubKey() {
-        PrivKey privKey = X509Utils.resolvePrivKey(peerPrivateKey);
-        SignatureDigest sign = Crypto.getSignatureFunction(privKey.getAlgorithm()).sign(privKey, "imuge".getBytes());
         PubKey pubKey = X509Utils.resolvePubKey(X509Utils.resolveCertificate(peerCertificate));
+        PrivKey privKey = X509Utils.resolvePrivKey(pubKey.getAlgorithm(), peerPrivateKey);
+        SignatureDigest sign = Crypto.getSignatureFunction(privKey.getAlgorithm()).sign(privKey, "imuge".getBytes());
         Assert.assertTrue(Crypto.getSignatureFunction(pubKey.getAlgorithm()).verify(sign, pubKey, "imuge".getBytes()));
         pubKey = X509Utils.resolvePubKey(X509Utils.resolveCertificationRequest(peerCertificationRequest));
         Assert.assertTrue(Crypto.getSignatureFunction(pubKey.getAlgorithm()).verify(sign, pubKey, "imuge".getBytes()));

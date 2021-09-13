@@ -33,14 +33,18 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 import org.bouncycastle.jce.spec.ECPublicKeySpec;
+import org.bouncycastle.openssl.PEMDecryptorProvider;
+import org.bouncycastle.openssl.PEMEncryptedKeyPair;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.bouncycastle.openssl.jcajce.JcePEMDecryptorProviderBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import sun.misc.BASE64Encoder;
 import sun.security.provider.X509Factory;
 import sun.security.x509.X509CertImpl;
+import utils.StringUtils;
 import utils.crypto.classic.ECDSAUtils;
 import utils.crypto.classic.RSAUtils;
 import utils.crypto.sm.SM2Utils;
@@ -85,6 +89,7 @@ import static com.jd.blockchain.crypto.service.classic.ClassicAlgorithm.*;
 import static com.jd.blockchain.crypto.service.sm.SMAlgorithm.SM2;
 
 /**
+ * TODO 重构 将对应方法挪到实际算法实现中
  * @description: X509 证书工具
  * @author: imuge
  * @date: 2021/8/23
@@ -94,7 +99,7 @@ public class X509Utils {
     // EC 相关算法参数
     static final String EC_ALGORITHM = "EC";
     static final String SIGALG_SM3WITHSM2 = "SM3WITHSM2";
-    static final String SECP256K1 = "BgUrgQQACg==";
+    static final String SECP256R1 = "BggqhkjOPQMBBw==";
     static final String SM2ECC = "BggqgRzPVQGCLQ==";
 
     static final String BEGIN_PARAMS = "-----BEGIN EC PARAMETERS-----";
@@ -457,20 +462,26 @@ public class X509Utils {
         }
     }
 
+    public static PrivKey resolvePrivKey(short algorithmId, String privkey) {
+        return resolvePrivKey(algorithmId, privkey, null);
+    }
+
     /**
      * Get PrivKey in JD Chain crypto framework.
      *
+     * @param algorithmId
+     * @param privkey
      * @param privkey
      * @return
      */
-    public static PrivKey resolvePrivKey(String privkey) {
+    public static PrivKey resolvePrivKey(short algorithmId, String privkey, String password) {
         try {
             CryptoAlgorithm algorithm = null;
 
             // EC 相关算法
             if (privkey.startsWith(BEGIN_PARAMS)) {
                 // 解析具体算法
-                if (privkey.contains(SECP256K1)) {
+                if (privkey.contains(SECP256R1)) {
                     algorithm = ClassicAlgorithm.ECDSA;
                 } else if (privkey.contains(SM2ECC)) {
                     algorithm = SM2;
@@ -484,13 +495,17 @@ public class X509Utils {
                 Object object = pemParser.readObject();
                 if (object instanceof PrivateKeyInfo) {
                     pemKeyPair = (PrivateKeyInfo) object;
+                } else if (object instanceof PEMEncryptedKeyPair) {
+                    password = !StringUtils.isEmpty(password) ? password : "";
+                    PEMEncryptedKeyPair ckp = (PEMEncryptedKeyPair) object;
+                    PEMDecryptorProvider decProv = new JcePEMDecryptorProviderBuilder().build(password.toCharArray());
+                    pemKeyPair = ckp.decryptKeyPair(decProv).getPrivateKeyInfo();
                 } else {
                     pemKeyPair = ((PEMKeyPair) object).getPrivateKeyInfo();
                 }
             }
-            PrivateKey aPrivate = converter.getPrivateKey(pemKeyPair);
             AsymmetricKeyParameter privkeyParam = PrivateKeyFactory.createKey(pemKeyPair);
-            algorithm = null == algorithm ? Crypto.getAlgorithm(aPrivate.getAlgorithm().toUpperCase()) : algorithm;
+            algorithm = null == algorithm ? Crypto.getAlgorithm(algorithmId) : algorithm;
             byte[] encoded;
             if (algorithm.equals(ED25519)) {
                 encoded = ((Ed25519PrivateKeyParameters) privkeyParam).getEncoded();
@@ -512,11 +527,24 @@ public class X509Utils {
     /**
      * Load PrivKey in JD Chain crypto framework.
      *
+     * @param algorithmId
      * @param privkey
      * @return
      */
-    public static PrivKey resolvePrivKey(File privkey) {
-        return resolvePrivKey(FileUtils.readText(privkey));
+    public static PrivKey resolvePrivKey(short algorithmId, File privkey) {
+        return resolvePrivKey(algorithmId, privkey, null);
+    }
+
+    /**
+     * Load PrivKey in JD Chain crypto framework.
+     *
+     * @param algorithmId
+     * @param privkey
+     * @param password
+     * @return
+     */
+    public static PrivKey resolvePrivKey(short algorithmId, File privkey, String password) {
+        return resolvePrivKey(algorithmId, FileUtils.readText(privkey), password);
     }
 
     /**
@@ -561,7 +589,7 @@ public class X509Utils {
                 ECPrivateKeyParameters pk = new ECPrivateKeyParameters(new BigInteger(1, privKey.getRawKeyBytes()), ECDSAUtils.DOMAIN_PARAMS);
                 ECDomainParameters domainParams = ECDSAUtils.getDomainParams();
                 return KeyFactory.getInstance("ECDSA").generatePrivate(
-                        new ECPrivateKeySpec(pk.getD(), new ECNamedCurveSpec("secp256k1", ECDSAUtils.getCurve(), domainParams.getG(), domainParams.getN(), domainParams.getH())));
+                        new ECPrivateKeySpec(pk.getD(), new ECNamedCurveSpec("secp256r1", ECDSAUtils.getCurve(), domainParams.getG(), domainParams.getN(), domainParams.getH())));
             } else if (algorithm == SM2.code()) {
                 ECPrivateKeyParameters pk = new ECPrivateKeyParameters(new BigInteger(1, privKey.getRawKeyBytes()), SM2Utils.DOMAIN_PARAMS);
                 ECDomainParameters domainParams = SM2Utils.getDomainParams();
@@ -591,7 +619,7 @@ public class X509Utils {
                 ECPrivateKeyParameters pk = new ECPrivateKeyParameters(new BigInteger(1, privKey.getRawKeyBytes()), ECDSAUtils.DOMAIN_PARAMS);
                 ECDomainParameters domainParams = ECDSAUtils.getDomainParams();
                 return new BCECPrivateKey(EC_ALGORITHM, pk, (BCECPublicKey) resolvePublicKey(pubKey),
-                        new ECPrivateKeySpec(pk.getD(), new ECNamedCurveSpec("sm2p256v1", ECDSAUtils.getCurve(), domainParams.getG(), domainParams.getN(), domainParams.getH())).getParams(),
+                        new ECPrivateKeySpec(pk.getD(), new ECNamedCurveSpec("secp256r1", ECDSAUtils.getCurve(), domainParams.getG(), domainParams.getN(), domainParams.getH())).getParams(),
                         BouncyCastleProvider.CONFIGURATION);
             } else if (algorithm == SM2.code()) {
                 ECPrivateKeyParameters pk = new ECPrivateKeyParameters(new BigInteger(1, privKey.getRawKeyBytes()), SM2Utils.DOMAIN_PARAMS);
@@ -623,7 +651,7 @@ public class X509Utils {
                         END_PARAMS + "\n");
             } else if (algorithm.equals("ECDSA")) {
                 sw.append(BEGIN_PARAMS + "\n" +
-                        SECP256K1 + "\n" +
+                        SECP256R1 + "\n" +
                         END_PARAMS + "\n");
             }
             JcaPEMWriter writer = new JcaPEMWriter(sw);
@@ -655,7 +683,7 @@ public class X509Utils {
                 ECPublicKeyParameters pk = new ECPublicKeyParameters(ECDSAUtils.getCurve().decodePoint(pubKey.getRawKeyBytes()), ECDSAUtils.DOMAIN_PARAMS);
                 ECDomainParameters domainParams = ECDSAUtils.getDomainParams();
                 return KeyFactory.getInstance("ECDSA").generatePublic(
-                        new ECPublicKeySpec(pk.getQ(), new ECNamedCurveParameterSpec("secp256k1", ECDSAUtils.getCurve(), domainParams.getG(), domainParams.getN(), domainParams.getH())));
+                        new ECPublicKeySpec(pk.getQ(), new ECNamedCurveParameterSpec("secp256r1", ECDSAUtils.getCurve(), domainParams.getG(), domainParams.getN(), domainParams.getH())));
             } else if (algorithm == SM2.code()) {
                 ECPublicKeyParameters pk = new ECPublicKeyParameters(SM2Utils.getCurve().decodePoint(pubKey.getRawKeyBytes()), SM2Utils.DOMAIN_PARAMS);
                 ECDomainParameters domainParams = SM2Utils.getDomainParams();
