@@ -43,7 +43,7 @@ public class BufferedKVStorageTest {
 			}
 		});
 
-		BufferedKVStorage bufStorage = new BufferedKVStorage(exStorage, verStorage, false);
+		BufferedKVStorage bufStorage = new BufferedKVStorage(null, exStorage, verStorage, false);
 
 		byte[] data = "ABC".getBytes("UTF-8");
 		long v = bufStorage.set(Bytes.fromString("A"), data, -1);

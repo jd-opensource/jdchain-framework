@@ -6,6 +6,8 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 
+import com.jd.blockchain.crypto.HashDigest;
+import com.jd.blockchain.crypto.HashFunction;
 import com.jd.blockchain.storage.service.ExPolicy;
 import com.jd.blockchain.storage.service.ExPolicyKVStorage;
 import com.jd.blockchain.storage.service.VersioningKVStorage;
@@ -23,6 +25,8 @@ import utils.Transactional;
 public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage, Transactional {
 
 	private static int MAX_PARALLEL_DB_WRITE_SIZE = 500;
+    private HashFunction hashFunction;
+
 	static {
 		String strSize = System.getProperty("max-parallel-dbwrite-size");
 		if (strSize != null) {
@@ -61,8 +65,9 @@ public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage
 	 * @param origVersioningStorage 原始的存储；
 	 * @param parallel              是否并行写入；
 	 */
-	public BufferedKVStorage(ExPolicyKVStorage origExPolicyStorage, VersioningKVStorage origVersioningStorage,
-			boolean parallel) {
+	public BufferedKVStorage(HashFunction hashFunction, ExPolicyKVStorage origExPolicyStorage, VersioningKVStorage origVersioningStorage,
+                             boolean parallel) {
+	    this.hashFunction = hashFunction;
 		this.origExistanceStorage = origExPolicyStorage;
 		this.origVersioningStorage = origVersioningStorage;
 		this.parallel = parallel;
@@ -181,6 +186,27 @@ public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage
 			existanceWritingTask.join();
 		}
 	}
+
+	public ArrayList<HashDigest> getCachedKvList() {
+
+	    ArrayList<HashDigest> cachedKvList = new ArrayList<>();
+
+	    if (versioningCache != null && versioningCache.size() != 0) {
+	        for (Bytes key : versioningCache.keySet()) {
+	            for (byte[] value : versioningCache.get(key).values) {
+	                cachedKvList.add(hashFunction.hash(value));
+                }
+            }
+        }
+
+        if (existanceCache != null && existanceCache.size() != 0) {
+            for (Bytes key : existanceCache.keySet()) {
+                cachedKvList.add(hashFunction.hash(key.toBytes()));
+            }
+        }
+
+        return cachedKvList;
+    }
 
 	@Override
 	public void batchBegin() {
