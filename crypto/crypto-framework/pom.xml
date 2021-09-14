@@ -27,5 +27,9 @@
 			<groupId>com.jd.binaryproto</groupId>
 			<artifactId>binary-proto</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk15on</artifactId>
+		</dependency>
 	</dependencies>
 </project>

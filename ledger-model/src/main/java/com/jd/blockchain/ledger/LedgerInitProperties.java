@@ -8,7 +8,6 @@ import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,7 @@ import java.util.Properties;
 import java.util.TreeMap;
 
 import com.jd.blockchain.ca.CertificateRole;
-import com.jd.blockchain.ca.X509Utils;
+import com.jd.blockchain.ca.CertificateUtils;
 import com.jd.blockchain.consts.Global;
 import com.jd.blockchain.crypto.AddressEncoding;
 import com.jd.blockchain.crypto.KeyGenUtils;
@@ -268,11 +267,11 @@ public class LedgerInitProperties implements Serializable {
 			String[] ledgersCAs = new String[ledgerCAPaths.length];
 			for(int i = 0; i<ledgerCAPaths.length; i++) {
 				ledgersCAs[i] = FileUtils.readText(ledgerCAPaths[i]);
-				ledgerCerts[i] = X509Utils.resolveCertificate(ledgersCAs[i]);
+				ledgerCerts[i] = CertificateUtils.parseCertificate(ledgersCAs[i]);
 				// 时间有效性校验
-				X509Utils.checkValidity(ledgerCerts[i]);
+				CertificateUtils.checkValidity(ledgerCerts[i]);
 				// 证书类型校验
-				X509Utils.checkCertificateRolesAny(ledgerCerts[i], CertificateRole.ROOT, CertificateRole.CA);
+				CertificateUtils.checkCACertificate(ledgerCerts[i]);
 			}
 			initProps.ledgerCertificates = ledgersCAs;
 		}
@@ -364,13 +363,13 @@ public class LedgerInitProperties implements Serializable {
 			boolean isGw = false;
 			if(initProps.identityMode == IdentityMode.CA) {
 				ca = FileUtils.readText(PropertiesUtils.getRequiredProperty(props, partCAPathKey));
-				X509Certificate cert = X509Utils.resolveCertificate(ca);
-				X509Utils.checkValidity(cert);
+				X509Certificate cert = CertificateUtils.parseCertificate(ca);
+				CertificateUtils.checkValidity(cert);
 				// CA模式下，初始化的节点证书必须是 PEER 和 GW 角色类型
-				X509Utils.checkCertificateRolesAny(cert, CertificateRole.PEER, CertificateRole.GW);
-				isGw = X509Utils.checkCertificateRolesAnyNoException(cert, CertificateRole.GW);
-				X509Utils.verifyAny(cert, ledgerCerts);
-				pubKey = X509Utils.resolvePubKey(cert);
+				CertificateUtils.checkCertificateRolesAny(cert, CertificateRole.PEER, CertificateRole.GW);
+				isGw = CertificateUtils.checkCertificateRolesAnyNoException(cert, CertificateRole.GW);
+				CertificateUtils.verifyAny(cert, ledgerCerts);
+				pubKey = CertificateUtils.resolvePubKey(cert);
 			} else {
 				String base58PubKey = PropertiesUtils.getProperty(props, pubkeyKey, false);
 				String pubkeyPath = PropertiesUtils.getProperty(props, pubkeyPathKey, false);
@@ -380,7 +379,7 @@ public class LedgerInitProperties implements Serializable {
 				} else if (pubkeyPath != null) {
 					pubKey = KeyGenUtils.readPubKey(pubkeyPath);
 				} else if (pCA != null) {
-					pubKey = X509Utils.resolvePubKey(X509Utils.resolveCertificate(FileUtils.readText(pCA)));
+					pubKey = CertificateUtils.resolvePubKey(CertificateUtils.parseCertificate(FileUtils.readText(pCA)));
 				} else {
 					throw new IllegalArgumentException(
 							String.format("Property[%s] and property[%s] are all empty!", pubkeyKey, pubkeyPathKey));

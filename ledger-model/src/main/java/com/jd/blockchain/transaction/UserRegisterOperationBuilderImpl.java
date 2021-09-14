@@ -1,6 +1,6 @@
 package com.jd.blockchain.transaction;
 
-import com.jd.blockchain.ca.X509Utils;
+import com.jd.blockchain.ca.CertificateUtils;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.BlockchainIdentityData;
 import com.jd.blockchain.ledger.UserRegisterOperation;
@@ -16,7 +16,7 @@ public class UserRegisterOperationBuilderImpl implements UserRegisterOperationBu
 
 	@Override
 	public UserRegisterOperation register(X509Certificate cert) {
-		return new UserRegisterOpTemplate(new BlockchainIdentityData(X509Utils.resolvePubKey(cert)), X509Utils.toPEMString(cert));
+		return new UserRegisterOpTemplate(new BlockchainIdentityData(CertificateUtils.resolvePubKey(cert)), CertificateUtils.toPEMString(cert));
 	}
 
 

@@ -292,6 +292,28 @@ public final class Crypto {
 		return getSignatureFunction(algorithm);
 	}
 
+	public static CASignatureFunction getCASignatureFunction(Short algorithmCode) {
+		CryptoAlgorithm algorithm = getAlgorithm(algorithmCode);
+		if (algorithm == null) {
+			throw new CryptoException("Algorithm [code:" + algorithmCode + "] has no service provider!");
+		}
+		return getCASignatureFunction(algorithm);
+	}
+
+	public static CASignatureFunction getCASignatureFunction(CryptoAlgorithm algorithm) {
+		if (!encoding.isSignatureAlgorithm(algorithm)) {
+			throw new CryptoException("The specified algorithm " + algorithm.name() + "[" + algorithm.code()
+					+ "] is not a signature function!");
+		}
+		CryptoFunction func = functions.get(algorithm.code());
+		if (func == null) {
+			throw new CryptoException(
+					"Algorithm " + algorithm.name() + "[" + algorithm.code() + "] has no service provider!");
+		}
+
+		return (CASignatureFunction) func;
+	}
+
 	public static SignatureFunction getSignatureFunction(String algorithmName) {
 		CryptoAlgorithm algorithm = getAlgorithm(algorithmName);
 		if (algorithm == null) {

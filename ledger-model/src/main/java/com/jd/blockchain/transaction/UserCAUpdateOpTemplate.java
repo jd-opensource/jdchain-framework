@@ -1,7 +1,7 @@
 package com.jd.blockchain.transaction;
 
 import com.jd.binaryproto.DataContractRegistry;
-import com.jd.blockchain.ca.X509Utils;
+import com.jd.blockchain.ca.CertificateUtils;
 import com.jd.blockchain.ledger.UserCAUpdateOperation;
 import utils.Bytes;
 
@@ -18,7 +18,7 @@ public class UserCAUpdateOpTemplate implements UserCAUpdateOperation {
 
     public UserCAUpdateOpTemplate(Bytes address, X509Certificate cert) {
         this.address = address;
-        this.cert = X509Utils.toPEMString(cert);
+        this.cert = CertificateUtils.toPEMString(cert);
     }
 
     public UserCAUpdateOpTemplate(Bytes address, String cert) {

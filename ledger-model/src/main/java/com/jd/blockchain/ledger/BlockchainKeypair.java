@@ -1,6 +1,6 @@
 package com.jd.blockchain.ledger;
 
-import com.jd.blockchain.ca.X509Utils;
+import com.jd.blockchain.ca.CertificateUtils;
 import com.jd.blockchain.crypto.AsymmetricKeypair;
 import com.jd.blockchain.crypto.PrivKey;
 import com.jd.blockchain.crypto.PubKey;
@@ -34,11 +34,11 @@ public class BlockchainKeypair extends AsymmetricKeypair {
     }
 
     public BlockchainKeypair(String certificate, PrivKey privKey) {
-        this(X509Utils.resolveCertificate(certificate), privKey);
+        this(CertificateUtils.parseCertificate(certificate), privKey);
     }
 
     public BlockchainKeypair(X509Certificate certificate, PrivKey privKey) {
-        super(X509Utils.resolvePubKey(certificate), privKey);
+        super(CertificateUtils.resolvePubKey(certificate), privKey);
         if (getPubKey().getAlgorithm() != privKey.getAlgorithm()) {
             throw new IllegalArgumentException("The Certificate's algorithm is different from the PrivateKey's!");
         }

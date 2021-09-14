@@ -66,40 +66,40 @@ public class X509SM2Test {
 
     @Test
     public void testResolveCertificate() {
-        X509Certificate certificate = X509Utils.resolveCertificate(ledgerCertificate);
-        X509Utils.checkValidity(certificate);
-        Set<String> ou = X509Utils.getSubject(certificate, BCStyle.EmailAddress);
+        X509Certificate certificate = CertificateUtils.parseCertificate(ledgerCertificate);
+        CertificateUtils.checkValidity(certificate);
+        Set<String> ou = CertificateUtils.getSubject(certificate, BCStyle.EmailAddress);
         Assert.assertTrue(ou.contains("jdchain@jd.com"));
-        System.out.println(X509Utils.toPEMString(certificate));
+        System.out.println(CertificateUtils.toPEMString(certificate));
     }
 
     @Test
     public void testToPEMString() {
-        X509Certificate certificate1 = X509Utils.resolveCertificate(ledgerCertificate);
-        X509Certificate certificate2 = X509Utils.resolveCertificate(X509Utils.toPEMString(certificate1));
+        X509Certificate certificate1 = CertificateUtils.parseCertificate(ledgerCertificate);
+        X509Certificate certificate2 = CertificateUtils.parseCertificate(CertificateUtils.toPEMString(certificate1));
         Assert.assertEquals(certificate1, certificate2);
     }
 
     @Test
     public void testSubject() {
-        X509Certificate certificate1 = X509Utils.resolveCertificate(ledgerCertificate);
-        System.out.println(X509Utils.checkCertificateRolesAnyNoException(certificate1, CertificateRole.PEER));
+        X509Certificate certificate1 = CertificateUtils.parseCertificate(ledgerCertificate);
+        System.out.println(CertificateUtils.checkCertificateRolesAnyNoException(certificate1, CertificateRole.PEER));
     }
 
     @Test
     public void testVerify() {
-        X509Certificate ledgerCert = X509Utils.resolveCertificate(ledgerCertificate);
-        X509Certificate peerCert = X509Utils.resolveCertificate(peerCertificate);
-        X509Utils.verify(peerCert, ledgerCert.getPublicKey());
+        X509Certificate ledgerCert = CertificateUtils.parseCertificate(ledgerCertificate);
+        X509Certificate peerCert = CertificateUtils.parseCertificate(peerCertificate);
+        CertificateUtils.verify(peerCert, ledgerCert.getPublicKey());
     }
 
     @Test
     public void testResolvePubKey() {
-        PubKey pubKey = X509Utils.resolvePubKey(X509Utils.resolveCertificate(peerCertificate));
-        PrivKey privKey = X509Utils.resolvePrivKey(pubKey.getAlgorithm(), peerPrivateKey);
+        PubKey pubKey = CertificateUtils.resolvePubKey(CertificateUtils.parseCertificate(peerCertificate));
+        PrivKey privKey = CertificateUtils.parsePrivKey(pubKey.getAlgorithm(), peerPrivateKey);
         SignatureDigest sign = Crypto.getSignatureFunction(privKey.getAlgorithm()).sign(privKey, "imuge".getBytes());
         Assert.assertTrue(Crypto.getSignatureFunction(pubKey.getAlgorithm()).verify(sign, pubKey, "imuge".getBytes()));
-        pubKey = X509Utils.resolvePubKey(X509Utils.resolveCertificationRequest(peerCertificationRequest));
+        pubKey = CertificateUtils.resolvePubKey(CertificateUtils.parseCertificationRequest(peerCertificationRequest));
         Assert.assertTrue(Crypto.getSignatureFunction(pubKey.getAlgorithm()).verify(sign, pubKey, "imuge".getBytes()));
     }
 }

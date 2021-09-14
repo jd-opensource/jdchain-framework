@@ -19,6 +19,9 @@
 			<groupId>com.jd.utils</groupId>
 			<artifactId>utils-crypto-sm</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk15on</artifactId>
+		</dependency>
 	</dependencies>
 </project>

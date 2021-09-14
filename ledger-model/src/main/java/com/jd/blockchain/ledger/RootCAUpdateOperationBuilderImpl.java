@@ -1,6 +1,6 @@
 package com.jd.blockchain.ledger;
 
-import com.jd.blockchain.ca.X509Utils;
+import com.jd.blockchain.ca.CertificateUtils;
 import com.jd.blockchain.transaction.RootCAUpdateOpTemplate;
 
 import java.security.cert.X509Certificate;
@@ -25,7 +25,7 @@ public class RootCAUpdateOperationBuilderImpl implements RootCAUpdateOperationBu
 
     @Override
     public RootCAUpdateOperationBuilder add(X509Certificate certificate) {
-        operation.addCertificate(X509Utils.toPEMString(certificate));
+        operation.addCertificate(CertificateUtils.toPEMString(certificate));
         return this;
     }
 
@@ -37,7 +37,7 @@ public class RootCAUpdateOperationBuilderImpl implements RootCAUpdateOperationBu
 
     @Override
     public RootCAUpdateOperationBuilder update(X509Certificate certificate) {
-        operation.updateCertificate(X509Utils.toPEMString(certificate));
+        operation.updateCertificate(CertificateUtils.toPEMString(certificate));
         return this;
     }
 
@@ -49,7 +49,7 @@ public class RootCAUpdateOperationBuilderImpl implements RootCAUpdateOperationBu
 
     @Override
     public RootCAUpdateOperationBuilder remove(X509Certificate certificate) {
-        operation.removeCertificate(X509Utils.toPEMString(certificate));
+        operation.removeCertificate(CertificateUtils.toPEMString(certificate));
         return this;
     }
 }
