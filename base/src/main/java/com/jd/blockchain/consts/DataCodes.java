@@ -15,17 +15,17 @@ public interface DataCodes {
 	public static final int MERKLE_TRIE_LEAF = 0x072;
 
 	public static final int MERKLE_TRIE_PATH = 0x073;
-	
+
 	public static final int MERKLE_TRIE_KEY = 0x074;
-	
+
 //	public static final int MERKLE_SORTED_TREE_DATA = 0x075;
-	
+
 	public static final int MERKLE_SORTED_TREE_INDEX = 0x076;
-	
+
 //	public static final int  MERKLE_HASH_SORTED_TREE_KV_ENTRY = 0x077;
-	
+
 	public static final int  MERKLE_HASH_SORTED_TREE_KEY_INDEX = 0x078;
-	
+
 	public static final int  MERKLE_HASH_SORTED_TREE_KEY_HASH_BUCKET = 0x079;
 
 
@@ -53,13 +53,13 @@ public interface DataCodes {
 //	public static final int TX_LEDGER = 0x201;
 
 	public static final int TX_CONTENT = 0x200;
-	
+
 	public static final int TX_REQUEST = 0x202;
-	
+
 	public static final int TX_RESULT = 0x203;
 
 //	public static final int TX_CONTENT_BODY = 0x220;
-	
+
 	public static final int TX_RECORD = 0x206;
 
 	public static final int TX_RECORDS = 0x207;
@@ -73,6 +73,10 @@ public interface DataCodes {
 	public static final int TX_OP_USER_REG = 0x310;
 	public static final int TX_OP_USER_INFO_SET = 0x311;
 	public static final int TX_OP_USER_INFO_SET_KV = 0x312;
+	public static final int TX_OP_USER_STATE = 0x313;
+	public static final int ENUM_ACCOUNT_STATE = 0x314;
+	public static final int TX_OP_USER_CA_UPDATE = 0x315;
+	public static final int TX_OP_CONTRACT_STATE = 0x316;
 
 	public static final int TX_OP_DATA_ACC_REG = 0x320;
 	public static final int TX_OP_DATA_ACC_SET = 0x321;
@@ -82,6 +86,7 @@ public interface DataCodes {
 	public static final int TX_OP_CONTRACT_UPDATE = 0x331;
 
 	public static final int TX_OP_CONTRACT_EVENT_SEND = 0x340;
+	public static final int TX_OP_CONTRACT_CROSS_EVENT_SEND = 0x341;
 
 	public static final int TX_OP_PARTICIPANT_REG = 0x350;
 	public static final int TX_OP_PARTICIPANT_STATE_UPDATE = 0x351;
@@ -103,6 +108,7 @@ public interface DataCodes {
 	public static final int TX_OP_EVENT_PUBLISH_ENTITY = 0x382;
 
 	public static final int TX_OP_CONSENSUS_SETTINGS_UPDATE = 0x390;
+	public static final int TX_OP_META_CA_UPDATE = 0x391;
 
 	// enum types of permissions;
 	public static final int ENUM_TX_PERMISSION = 0x401;
@@ -157,12 +163,16 @@ public interface DataCodes {
 
 	public static final int METADATA_CRYPTO_SETTING_PROVIDER = 0x643;
 
+	public static final int METADATA_IDENTITY_MODE = 0x644;
+
+	public static final int METADATA_GENESIS_USER = 0x645;
+
 //	public static final int ACCOUNT = 0x700;
-	
+
 	public static final int ACCOUNT_SNAPSHOT = 0x701;
-	
+
 	public static final int DATA_ACCOUNT_INFO = 0x710;
-	
+
 	public static final int EVENT_ACCOUNT_INFO = 0x740;
 
 	public static final int USER_ACCOUNT_HEADER = 0x800;
@@ -196,7 +206,7 @@ public interface DataCodes {
 	public static final int DIGITALSIGNATURE_BODY = 0xB31;
 
 	public static final int CLIENT_CREDENTIAL = 0xC00;
-	
+
 	public static final int CLIENT_SESSION_CREDENTIAL = 0xC01;
 
 	public static final int CLIENT_IDENTIFICATIONS = 0xC10;
@@ -231,11 +241,11 @@ public interface DataCodes {
 	public static final int CONSENSUS_BFTSMART_VIEW_SETTINGS = CONSENSUS_BFTSMART | 0x01;
 
 	public static final int CONSENSUS_BFTSMART_NODE_SETTINGS = CONSENSUS_BFTSMART | 0x02;
-	
+
 	public static final int CONSENSUS_BFTSMART_CLI_INCOMING_SETTINGS = CONSENSUS_BFTSMART | 0x03;
-	
+
 	public static final int CONSENSUS_BFTSMART_CLI_SESSION_CREDENTIAL = CONSENSUS_BFTSMART | 0x04;
-	
+
 
 	// ------------------ 共识相关（MSGQUEUE） ----------------
 	public static final int CONSENSUS_MSGQUEUE = 0x1200;
@@ -249,7 +259,7 @@ public interface DataCodes {
 	public static final int CONSENSUS_MSGQUEUE_NETWORK_SETTINGS = CONSENSUS_MSGQUEUE | 0x04;
 
 	public static final int CONSENSUS_MSGQUEUE_BLOCK_SETTINGS = CONSENSUS_MSGQUEUE | 0x05;
-	
+
 	public static final int CONSENSUS_MSGQUEUE_CLIENT_CREDENTIAL_INFO = CONSENSUS_MSGQUEUE | 0x06;
 
 }

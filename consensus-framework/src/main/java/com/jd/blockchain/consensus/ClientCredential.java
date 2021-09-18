@@ -47,4 +47,12 @@ public interface ClientCredential {
 	 */
 	@DataField(order = 3, primitiveType = PrimitiveType.TEXT)
 	String getProviderName();
+
+	/**
+	 * 客户端的证书；
+	 *
+	 * @return
+	 */
+	@DataField(order = 4, primitiveType = PrimitiveType.TEXT)
+	String getCertificate();
 }

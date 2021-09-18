@@ -97,7 +97,27 @@ public enum LedgerPermission implements Int8Code{
 	/**
 	 * 发布事件；<br>
 	 */
-	WRITE_EVENT_ACCOUNT((byte) 0x0E);
+	WRITE_EVENT_ACCOUNT((byte) 0x0E),
+
+	/**
+	 * 更新用户状态
+	 */
+	UPDATE_USER_STATE((byte) 0x0F),
+
+	/**
+	 * 更新根证书
+	 */
+	UPDATE_ROOT_CA((byte) 0x10),
+
+	/**
+	 * 更新用户证书
+	 */
+	UPDATE_USER_CA((byte) 0x11),
+
+	/**
+	 * 更新合约状态
+	 */
+	UPDATE_CONTRACT_STATE((byte) 0x12);
 
 	@EnumField(type = PrimitiveType.INT8)
 	public final byte CODE;

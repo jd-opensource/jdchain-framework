@@ -13,4 +13,7 @@ public interface ContractInfo extends BlockchainIdentity, AccountSnapshot {
 
     @DataField(order=5, primitiveType= PrimitiveType.INT64)
     long getChainCodeVersion();
+
+    @DataField(order=6, refEnum = true)
+    AccountState getState();
 }

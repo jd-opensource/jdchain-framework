@@ -11,17 +11,25 @@ public class UserRegisterOpTemplate implements UserRegisterOperation {
 	}
 
 	private BlockchainIdentity userID;
-
-	public UserRegisterOpTemplate() {
-	}
+	private String cert;
 
 	public UserRegisterOpTemplate(BlockchainIdentity userID) {
 		this.userID = userID;
 	}
 
+	public UserRegisterOpTemplate(BlockchainIdentity userID, String cert) {
+		this.userID = userID;
+		this.cert = cert;
+	}
+
 	@Override
 	public BlockchainIdentity getUserID() {
 		return userID;
+	}
+
+	@Override
+	public String getCertificate() {
+		return cert;
 	}
 
 }

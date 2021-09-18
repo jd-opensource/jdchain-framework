@@ -145,6 +145,16 @@ public class TxBuilder implements TransactionBuilder {
 	}
 
 	@Override
+	public UserUpdateOperationBuilder user(String address) {
+		return opFactory.user(address);
+	}
+
+	@Override
+	public UserUpdateOperationBuilder user(Bytes address) {
+		return opFactory.user(address);
+	}
+
+	@Override
 	public DataAccountRegisterOperationBuilder dataAccounts() {
 		return opFactory.dataAccounts();
 	}
@@ -162,6 +172,16 @@ public class TxBuilder implements TransactionBuilder {
 	@Override
 	public ContractCodeDeployOperationBuilder contracts() {
 		return opFactory.contracts();
+	}
+
+	@Override
+	public ContractUpdateOperationBuilder contract(String address) {
+		return opFactory.contract(address);
+	}
+
+	@Override
+	public ContractUpdateOperationBuilder contract(Bytes address) {
+		return opFactory.contract(address);
 	}
 
 	public ContractEventSendOperationBuilder contractEvents() {
@@ -211,5 +231,10 @@ public class TxBuilder implements TransactionBuilder {
 	@Override
 	public <T> T contract(String address, Class<T> contractIntf) {
 		return opFactory.contract(address, contractIntf);
+	}
+
+	@Override
+	public MetaInfoUpdateOperationBuilder metaInfo() {
+		return opFactory.metaInfo();
 	}
 }

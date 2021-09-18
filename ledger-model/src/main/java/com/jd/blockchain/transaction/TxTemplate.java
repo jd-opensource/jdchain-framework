@@ -56,6 +56,18 @@ public class TxTemplate implements TransactionTemplate {
 	}
 
 	@Override
+	public UserUpdateOperationBuilder user(String address) {
+		stateManager.operate();
+		return txBuilder.user(address);
+	}
+
+	@Override
+	public UserUpdateOperationBuilder user(Bytes address) {
+		stateManager.operate();
+		return txBuilder.user(address);
+	}
+
+	@Override
 	public DataAccountRegisterOperationBuilder dataAccounts() {
 		stateManager.operate();
 		return txBuilder.dataAccounts();
@@ -77,6 +89,18 @@ public class TxTemplate implements TransactionTemplate {
 	public ContractCodeDeployOperationBuilder contracts() {
 		stateManager.operate();
 		return txBuilder.contracts();
+	}
+
+	@Override
+	public ContractUpdateOperationBuilder contract(String address) {
+		stateManager.operate();
+		return txBuilder.contract(address);
+	}
+
+	@Override
+	public ContractUpdateOperationBuilder contract(Bytes address) {
+		stateManager.operate();
+		return txBuilder.contract(address);
 	}
 
 	@Override
@@ -145,5 +169,11 @@ public class TxTemplate implements TransactionTemplate {
 				}
 			}
 		}
+	}
+
+	@Override
+	public MetaInfoUpdateOperationBuilder metaInfo() {
+		stateManager.operate();
+		return txBuilder.metaInfo();
 	}
 }

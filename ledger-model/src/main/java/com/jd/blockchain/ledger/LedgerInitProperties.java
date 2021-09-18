@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,11 +14,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import com.jd.blockchain.ca.CertificateRole;
+import com.jd.blockchain.ca.CertificateUtils;
 import com.jd.blockchain.consts.Global;
 import com.jd.blockchain.crypto.AddressEncoding;
 import com.jd.blockchain.crypto.KeyGenUtils;
 import com.jd.blockchain.crypto.PubKey;
-import com.jd.blockchain.ledger.LedgerInitProperties.CryptoProperties;
 
 import utils.Bytes;
 import utils.PropertiesUtils;
@@ -32,6 +34,12 @@ public class LedgerInitProperties implements Serializable {
 
 	// 账本种子；
 	public static final String LEDGER_SEED = "ledger.seed";
+
+	// 证书模式，默认 false
+	public static final String IDENTITY_MODE = "identity-mode";
+
+	// 根证书路径，CA_MODE 为 true 时，此选项不能为空，支持多个，半角逗号相隔
+	public static final String CA_PATH = "root-ca-path";
 
 	// 账本名称
 	public static final String LEDGER_NAME = "ledger.name";
@@ -58,6 +66,8 @@ public class LedgerInitProperties implements Serializable {
 	public static final String PART_PUBKEY_PATH = "pubkey-path";
 	// 参与方的公钥文件路径；
 	public static final String PART_PUBKEY = "pubkey";
+	// 参与方证书文件路径
+	public static final String PART_CA_PATH = "ca-path";
 	// 参与方的角色清单；
 	public static final String PART_ROLES = "roles";
 	// 参与方的角色权限策略；
@@ -69,6 +79,8 @@ public class LedgerInitProperties implements Serializable {
 	public static final String PART_INITIALIZER_PORT = "initializer.port";
 	// 共识参与方的账本初始服务是否开启安全连接；
 	public static final String PART_INITIALIZER_SECURE = "initializer.secure";
+	// 共识参与方的状态；
+	public static final String PART_INITIALIZER_STATE = "initializer.state";
 
 	// 共识服务的参数配置；必须；
 	public static final String CONSENSUS_CONFIG = "consensus.conf";
@@ -87,17 +99,21 @@ public class LedgerInitProperties implements Serializable {
 
 	private byte[] ledgerSeed;
 
+	private IdentityMode identityMode;
+
+	private String[] ledgerCertificates;
+
 	private String ledgerName;
 
 	private RoleInitData[] roles;
 
 	private List<ParticipantProperties> consensusParticipants = new ArrayList<>();
 
+	private GenesisUser[] genesisUsers;
+
 	private String consensusProvider;
 
 	private Properties consensusConfig;
-
-//	private String[] cryptoProviders;
 
 	private CryptoProperties cryptoProperties = new CryptoProperties();
 
@@ -105,6 +121,22 @@ public class LedgerInitProperties implements Serializable {
 
 	public byte[] getLedgerSeed() {
 		return ledgerSeed.clone();
+	}
+
+	public IdentityMode getIdentityMode() {
+		return identityMode;
+	}
+
+	public String[] getLedgerCertificates() {
+		return ledgerCertificates;
+	}
+
+	public GenesisUser[] getGenesisUsers() {
+		return genesisUsers;
+	}
+
+	public void setGenesisUsers(GenesisUser[] genesisUsers) {
+		this.genesisUsers = genesisUsers;
 	}
 
 	public String getLedgerName() {
@@ -221,6 +253,29 @@ public class LedgerInitProperties implements Serializable {
 		byte[] ledgerSeed = HexUtils.decode(hexLedgerSeed);
 		LedgerInitProperties initProps = new LedgerInitProperties(ledgerSeed);
 
+		// 证书配置
+		String identityMode = PropertiesUtils.getOptionalProperty(props, IDENTITY_MODE, IdentityMode.KEYPAIR.name());
+		initProps.identityMode = IdentityMode.valueOf(identityMode);
+		X509Certificate[] ledgerCerts = null;
+		if(initProps.identityMode == IdentityMode.CA) {
+			// 根证书
+			String[] ledgerCAPaths = PropertiesUtils.getRequiredProperty(props, CA_PATH).split(",");
+			if(ledgerCAPaths.length == 0) {
+				throw new LedgerInitException("root-ca-path is empty");
+			}
+			ledgerCerts = new X509Certificate[ledgerCAPaths.length];
+			String[] ledgersCAs = new String[ledgerCAPaths.length];
+			for(int i = 0; i<ledgerCAPaths.length; i++) {
+				ledgersCAs[i] = FileUtils.readText(ledgerCAPaths[i]);
+				ledgerCerts[i] = CertificateUtils.parseCertificate(ledgersCAs[i]);
+				// 时间有效性校验
+				CertificateUtils.checkValidity(ledgerCerts[i]);
+				// 证书类型校验
+				CertificateUtils.checkCACertificate(ledgerCerts[i]);
+			}
+			initProps.ledgerCertificates = ledgersCAs;
+		}
+
 		// 解析账本信息；
 		// 账本名称
 		String ledgerName = PropertiesUtils.getRequiredProperty(props, LEDGER_NAME);
@@ -290,6 +345,8 @@ public class LedgerInitProperties implements Serializable {
 		if (partCount < 4) {
 			throw new IllegalArgumentException(String.format("Property[%s] is less than 4!", PART_COUNT));
 		}
+		GenesisUser[] genesisUsers = new GenesisUserConfig[partCount];
+		int consensusNodeCount = 0;
 		for (int i = 0; i < partCount; i++) {
 			ParticipantProperties parti = new ParticipantProperties();
 
@@ -299,49 +356,73 @@ public class LedgerInitProperties implements Serializable {
 			parti.setName(PropertiesUtils.getRequiredProperty(props, nameKey));
 
 			String pubkeyPathKey = getKeyOfParticipant(i, PART_PUBKEY_PATH);
-			String pubkeyPath = PropertiesUtils.getProperty(props, pubkeyPathKey, false);
-
 			String pubkeyKey = getKeyOfParticipant(i, PART_PUBKEY);
-			String base58PubKey = PropertiesUtils.getProperty(props, pubkeyKey, false);
-			if (base58PubKey != null) {
-				PubKey pubKey = KeyGenUtils.decodePubKey(base58PubKey);
-				parti.setPubKey(pubKey);
-			} else if (pubkeyPath != null) {
-				PubKey pubKey = KeyGenUtils.readPubKey(pubkeyPath);
-				parti.setPubKey(pubKey);
+			String partCAPathKey =getKeyOfParticipant(i, PART_CA_PATH);
+			PubKey pubKey;
+			String ca = null;
+			boolean isGw = false;
+			if(initProps.identityMode == IdentityMode.CA) {
+				ca = FileUtils.readText(PropertiesUtils.getRequiredProperty(props, partCAPathKey));
+				X509Certificate cert = CertificateUtils.parseCertificate(ca);
+				CertificateUtils.checkValidity(cert);
+				// CA模式下，初始化的节点证书必须是 PEER 和 GW 角色类型
+				CertificateUtils.checkCertificateRolesAny(cert, CertificateRole.PEER, CertificateRole.GW);
+				isGw = CertificateUtils.checkCertificateRolesAnyNoException(cert, CertificateRole.GW);
+				CertificateUtils.verifyAny(cert, ledgerCerts);
+				pubKey = CertificateUtils.resolvePubKey(cert);
 			} else {
-				throw new IllegalArgumentException(
-						String.format("Property[%s] and property[%s] are all empty!", pubkeyKey, pubkeyPathKey));
+				String base58PubKey = PropertiesUtils.getProperty(props, pubkeyKey, false);
+				String pubkeyPath = PropertiesUtils.getProperty(props, pubkeyPathKey, false);
+				String pCA = PropertiesUtils.getProperty(props, partCAPathKey, false);
+				if (base58PubKey != null) {
+					pubKey = KeyGenUtils.decodePubKey(base58PubKey);
+				} else if (pubkeyPath != null) {
+					pubKey = KeyGenUtils.readPubKey(pubkeyPath);
+				} else if (pCA != null) {
+					pubKey = CertificateUtils.resolvePubKey(CertificateUtils.parseCertificate(FileUtils.readText(pCA)));
+				} else {
+					throw new IllegalArgumentException(
+							String.format("Property[%s] and property[%s] are all empty!", pubkeyKey, pubkeyPathKey));
+				}
 			}
+			parti.setPubKey(pubKey);
 
 			// 解析参与方的角色权限配置；
 			String partiRolesKey = getKeyOfParticipant(i, PART_ROLES);
 			String strPartiRoles = PropertiesUtils.getOptionalProperty(props, partiRolesKey);
 			String[] partiRoles = StringUtils.splitToArray(strPartiRoles, ",");
-			parti.setRoles(partiRoles);
 
 			String partiRolePolicyKey = getKeyOfParticipant(i, PART_ROLES_POLICY);
 			String strPartiPolicy = PropertiesUtils.getOptionalProperty(props, partiRolePolicyKey);
 			RolesPolicy policy = strPartiPolicy == null ? RolesPolicy.UNION
 					: RolesPolicy.valueOf(strPartiPolicy.trim());
 			policy = policy == null ? RolesPolicy.UNION : policy;
-			parti.setRolesPolicy(policy);
 
-			// 解析参与方的网络配置参数；
-			String initializerHostKey = getKeyOfParticipant(i, PART_INITIALIZER_HOST);
-			String initializerHost = PropertiesUtils.getRequiredProperty(props, initializerHostKey);
+			if(!isGw) {
+				consensusNodeCount ++;
+				// 解析参与方的网络配置参数；
+				String initializerHostKey = getKeyOfParticipant(i, PART_INITIALIZER_HOST);
+				String initializerHost = PropertiesUtils.getRequiredProperty(props, initializerHostKey);
 
-			String initializerPortKey = getKeyOfParticipant(i, PART_INITIALIZER_PORT);
-			int initializerPort = getInt(PropertiesUtils.getRequiredProperty(props, initializerPortKey));
+				String initializerPortKey = getKeyOfParticipant(i, PART_INITIALIZER_PORT);
+				int initializerPort = getInt(PropertiesUtils.getRequiredProperty(props, initializerPortKey));
 
-			String initializerSecureKey = getKeyOfParticipant(i, PART_INITIALIZER_SECURE);
-			boolean initializerSecure = Boolean
-					.parseBoolean(PropertiesUtils.getRequiredProperty(props, initializerSecureKey));
-			NetworkAddress initializerAddress = new NetworkAddress(initializerHost, initializerPort, initializerSecure);
-			parti.setInitializerAddress(initializerAddress);
-			parti.setParticipantNodeState(ParticipantNodeState.CONSENSUS);
+				String initializerSecureKey = getKeyOfParticipant(i, PART_INITIALIZER_SECURE);
+				boolean initializerSecure = Boolean
+						.parseBoolean(PropertiesUtils.getRequiredProperty(props, initializerSecureKey));
+				NetworkAddress initializerAddress = new NetworkAddress(initializerHost, initializerPort, initializerSecure);
+				parti.setInitializerAddress(initializerAddress);
+			} else {
+				parti.setInitializerAddress(new NetworkAddress("127.0.0.1", 8080));
+			}
+			parti.setParticipantNodeState(isGw ? ParticipantNodeState.READY : ParticipantNodeState.CONSENSUS);
 			initProps.addConsensusParticipant(parti);
+			genesisUsers[i] = new GenesisUserConfig(pubKey, ca, partiRoles, policy);
 		}
+		if (consensusNodeCount < 4) {
+			throw new IllegalArgumentException(String.format("Consensus peer nodes size [%s] is less than 4!", consensusNodeCount));
+		}
+		initProps.setGenesisUsers(genesisUsers);
 
 		return initProps;
 	}
@@ -456,12 +537,6 @@ public class LedgerInitProperties implements Serializable {
 
 		private PubKey pubKey;
 
-		private String[] roles;
-
-		private RolesPolicy rolesPolicy;
-
-		// private NetworkAddress consensusAddress;
-
 		private ParticipantNodeState participantNodeState;
 
 		private NetworkAddress initializerAddress;
@@ -489,14 +564,6 @@ public class LedgerInitProperties implements Serializable {
 			this.name = name;
 		}
 
-//		public String getPubKeyPath() {
-//			return pubKeyPath;
-//		}
-//
-//		public void setPubKeyPath(String pubKeyPath) {
-//			this.pubKeyPath = pubKeyPath;
-//		}
-
 		@Override
 		public ParticipantNodeState getParticipantNodeState() {
 			return participantNodeState;
@@ -523,23 +590,6 @@ public class LedgerInitProperties implements Serializable {
 			this.pubKey = pubKey;
 			this.address = AddressEncoding.generateAddress(pubKey);
 		}
-
-		public String[] getRoles() {
-			return roles;
-		}
-
-		public void setRoles(String[] roles) {
-			this.roles = roles;
-		}
-
-		public RolesPolicy getRolesPolicy() {
-			return rolesPolicy;
-		}
-
-		public void setRolesPolicy(RolesPolicy rolesPolicy) {
-			this.rolesPolicy = rolesPolicy;
-		}
-
 	}
 
 }
