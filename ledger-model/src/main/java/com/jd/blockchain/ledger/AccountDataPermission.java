@@ -9,11 +9,11 @@ public class AccountDataPermission implements DataPermission {
     private String role;
 
     public AccountDataPermission(AccountType accountType, Bytes[] owners) {
-        this(new AccountModeBits(accountType), owners, null);
+        this(new AccountModeBits(accountType, 777), owners, null);
     }
 
     public AccountDataPermission(AccountType accountType, Bytes[] owners, String role) {
-        this(new AccountModeBits(accountType), owners, role);
+        this(new AccountModeBits(accountType, 777), owners, role);
     }
 
     public AccountDataPermission(AccountModeBits modeBits, Bytes[] owners, String role) {
