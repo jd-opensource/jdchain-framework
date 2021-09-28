@@ -3,8 +3,10 @@ package com.jd.blockchain.sdk;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.crypto.PubKey;
 
+import com.jd.blockchain.ledger.AccountDataPermission;
 import com.jd.blockchain.ledger.AccountState;
 import com.jd.blockchain.ledger.ContractInfo;
+import com.jd.blockchain.ledger.DataPermission;
 import utils.Bytes;
 
 /**
@@ -26,6 +28,7 @@ public class DecompliedContractInfo {
 	private String chainCode;
 	private long chainCodeVersion;
 	private AccountState state;
+	private DataPermission permission;
 
 	public DecompliedContractInfo() {
 	}
@@ -38,6 +41,7 @@ public class DecompliedContractInfo {
 		this.chainCode = new String(contractInfo.getChainCode());
 		this.chainCodeVersion = contractInfo.getChainCodeVersion();
 		this.state = contractInfo.getState();
+		this.permission = contractInfo.getPermission();
 	}
 
 	/**
@@ -109,5 +113,9 @@ public class DecompliedContractInfo {
 
 	public void setState(AccountState state) {
 		this.state = state;
+	}
+
+	public DataPermission getPermission() {
+		return permission;
 	}
 }
