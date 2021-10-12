@@ -597,4 +597,11 @@ public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage
 
 	}
 
+	public long getVerKvSize() {
+		return versioningCache.size();
+	}
+
+	public long getExistKvSize() {
+		return existanceCache.size();
+	}
 }
