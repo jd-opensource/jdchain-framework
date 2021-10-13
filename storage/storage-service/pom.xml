@@ -20,5 +20,11 @@
 			<version>1.5.0.RELEASE</version>
 			<scope>compile</scope>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>com.jd.blockchain</groupId>
+            <artifactId>crypto-framework</artifactId>
+            <version>1.5.0.RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 </project>
