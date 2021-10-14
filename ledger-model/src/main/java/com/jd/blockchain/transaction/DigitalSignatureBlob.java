@@ -42,7 +42,7 @@ public class DigitalSignatureBlob implements DigitalSignature, Serializable {
 	public SignatureDigest getDigest() {
 		return digest;
 	}
-	
+
 	public DigitalSignatureBlob() {
 	}
 	
@@ -50,7 +50,7 @@ public class DigitalSignatureBlob implements DigitalSignature, Serializable {
 		this.pubKey = pubKey;
 		this.digest = digest;
 	}
-	
+
 
 //	@Override
 //	public void resolvFrom(InputStream in) {

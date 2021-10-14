@@ -8,9 +8,9 @@ import utils.Bytes;
 import utils.net.NetworkAddress;
 
 public class ConsensusParticipantData implements ParticipantNode {
-	
+
 		private int id;
-		
+
 		private Bytes address;
 
 		private String name;

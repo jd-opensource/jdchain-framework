@@ -6,6 +6,7 @@ import com.jd.blockchain.ledger.ContractInfo;
 import com.jd.blockchain.ledger.CryptoSetting;
 import com.jd.blockchain.ledger.DataAccountInfo;
 import com.jd.blockchain.ledger.Event;
+import com.jd.blockchain.ledger.EventAccountInfo;
 import com.jd.blockchain.ledger.KVInfoVO;
 import com.jd.blockchain.ledger.LedgerAdminInfo;
 import com.jd.blockchain.ledger.LedgerBlock;
@@ -291,7 +292,7 @@ public abstract class BlockchainServiceProxy implements BlockchainService {
 	}
 
 	@Override
-	public BlockchainIdentity getUserEventAccount(HashDigest ledgerHash, String address) {
+	public EventAccountInfo getUserEventAccount(HashDigest ledgerHash, String address) {
 		return getQueryService(ledgerHash).getUserEventAccount(ledgerHash, address);
 	}
 

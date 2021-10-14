@@ -56,19 +56,31 @@ public class TxTemplate implements TransactionTemplate {
 	}
 
 	@Override
+	public UserUpdateOperationBuilder user(String address) {
+		stateManager.operate();
+		return txBuilder.user(address);
+	}
+
+	@Override
+	public UserUpdateOperationBuilder user(Bytes address) {
+		stateManager.operate();
+		return txBuilder.user(address);
+	}
+
+	@Override
 	public DataAccountRegisterOperationBuilder dataAccounts() {
 		stateManager.operate();
 		return txBuilder.dataAccounts();
 	}
 
 	@Override
-	public DataAccountKVSetOperationBuilder dataAccount(String accountAddress) {
+	public DataAccountOperationBuilder dataAccount(String accountAddress) {
 		stateManager.operate();
 		return txBuilder.dataAccount(accountAddress);
 	}
 
 	@Override
-	public DataAccountKVSetOperationBuilder dataAccount(Bytes accountAddress) {
+	public DataAccountOperationBuilder dataAccount(Bytes accountAddress) {
 		stateManager.operate();
 		return txBuilder.dataAccount(accountAddress);
 	}
@@ -104,9 +116,14 @@ public class TxTemplate implements TransactionTemplate {
 	}
 
 	@Override
-	public ContractEventSendOperationBuilder contract() {
+	public ContractOperationBuilder contract(Bytes address) {
 		stateManager.operate();
-		return txBuilder.contract();
+		return txBuilder.contract(address);
+	}
+
+	@Override
+	public ContractOperationBuilder contract(String address) {
+		return contract(Bytes.fromBase58(address));
 	}
 
 	@Override
@@ -116,13 +133,13 @@ public class TxTemplate implements TransactionTemplate {
 	}
 
 	@Override
-	public EventPublishOperationBuilder eventAccount(String accountAddress) {
+	public EventOperationBuilder eventAccount(String accountAddress) {
 		stateManager.operate();
 		return txBuilder.eventAccount(accountAddress);
 	}
 
 	@Override
-	public EventPublishOperationBuilder eventAccount(Bytes accountAddress) {
+	public EventOperationBuilder eventAccount(Bytes accountAddress) {
 		stateManager.operate();
 		return txBuilder.eventAccount(accountAddress);
 	}
@@ -145,5 +162,11 @@ public class TxTemplate implements TransactionTemplate {
 				}
 			}
 		}
+	}
+
+	@Override
+	public MetaInfoUpdateOperationBuilder metaInfo() {
+		stateManager.operate();
+		return txBuilder.metaInfo();
 	}
 }

@@ -49,21 +49,6 @@ public enum TransactionState {
 	 */
 	PARTICIPANT_DOES_NOT_EXIST((byte) 0x06),
 
-//	/**
-//	 * 激活新参与方时的视图更新错误
-//	 */
-//	VIEW_UPDATE_ERROR((byte) 0x07),
-//
-//	/**
-//	 * 激活新的参与方时的节点启动失败
-//	 */
-//	START_SERVER_ERROR((byte) 0x08),
-//
-//	/**
-//	 * 参与方重复激活错误
-//	 */
-//	PARTICIPANT_REPEATLY_ACTIVATE_ERROR((byte) 0x09),
-
 	/**
 	 * 合约执行错误；
 	 */
@@ -99,11 +84,6 @@ public enum TransactionState {
 	 */
 	IGNORED_BY_INCONSISTENT_CONTENT_HASH((byte) 0x42),
 
-//	/**
-//	 * 由于交易内容的验签失败而丢弃；
-//	 */
-//	IGNORED_BY_CONFLICTING_STATE((byte) 0x42),
-
 	/**
 	 * 由于交易的整体回滚而丢弃；
 	 * <p>
@@ -122,13 +102,6 @@ public enum TransactionState {
 	 * “部分回滚”是指把交易引入的数据更改回滚了，但是交易记录本身以及相应的“交易结果({@link TransactionState})”都会提交；<br>
 	 */
 	IGNORED_BY_BLOCK_FULL_ROLLBACK((byte) 0x44),
-
-//	/**
-//	 *
-//	 * 共识阶段加入新区块哈希预计算功能, 如果来自其他Peer的新区块哈希值不一致，本批次整体回滚
-//	 *
-//	 */
-//	IGNORED_BY_CONSENSUS_PHASE_PRECOMPUTE_ROLLBACK((byte) 0x45),
 
 	/**
 	 * 系统错误；
@@ -164,7 +137,38 @@ public enum TransactionState {
 	 * 共识时间戳错误
 	 *
 	 */
-	CONSENSUS_TIMESTAMP_ERROR((byte) 0x86);
+	CONSENSUS_TIMESTAMP_ERROR((byte) 0x86),
+
+// ------------------------------ 以下是参数校验相关错误码 -----------------
+	/**
+	 * 账本参数丢失
+	 *
+	 */
+	LEDGER_HASH_EMPTY((byte) 0xd0),
+
+	/**
+	 * 不合法的合约包
+	 *
+	 */
+	ILLEGAL_CONTRACT_CAR((byte) 0xd1),
+
+	/**
+	 * 不合法的节点签名
+	 *
+	 */
+	ILLEGAL_NODE_SIGNATURE((byte) 0xd2),
+
+	/**
+	 * 没有终端签名
+	 *
+	 */
+	NO_ENDPOINT_SIGNATURE((byte) 0xd3),
+
+	/**
+	 * 终端签名验证不通过
+	 *
+	 */
+	INVALID_ENDPOINT_SIGNATURE((byte) 0xd4);
 
 
 	@EnumField(type = PrimitiveType.INT8)

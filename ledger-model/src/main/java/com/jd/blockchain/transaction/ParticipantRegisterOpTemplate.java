@@ -15,10 +15,17 @@ public class ParticipantRegisterOpTemplate implements ParticipantRegisterOperati
 
     private String participantName;
     private BlockchainIdentity participantId;
+    private String cert;
 
     public ParticipantRegisterOpTemplate(String participantName, BlockchainIdentity participantId) {
         this.participantName = participantName;
         this.participantId = participantId;
+    }
+
+    public ParticipantRegisterOpTemplate(String participantName, BlockchainIdentity participantId, String cert) {
+        this.participantName = participantName;
+        this.participantId = participantId;
+        this.cert = cert;
     }
 
     @Override
@@ -29,6 +36,11 @@ public class ParticipantRegisterOpTemplate implements ParticipantRegisterOperati
     @Override
     public BlockchainIdentity getParticipantID() {
         return participantId;
+    }
+
+    @Override
+    public String getCertificate() {
+        return cert;
     }
 
 }

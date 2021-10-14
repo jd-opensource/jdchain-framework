@@ -1,5 +1,6 @@
 package com.jd.blockchain.transaction;
 
+import com.jd.blockchain.ledger.EventAccountInfo;
 import org.springframework.cglib.core.Block;
 
 import com.jd.blockchain.crypto.HashDigest;
@@ -457,7 +458,7 @@ public interface BlockchainQueryService {
 	 * @param address
 	 * @return
 	 */
-	BlockchainIdentity getUserEventAccount(HashDigest ledgerHash, String address);
+	EventAccountInfo getUserEventAccount(HashDigest ledgerHash, String address);
 
 	/**
 	 * 返回事件账户总数； <br>

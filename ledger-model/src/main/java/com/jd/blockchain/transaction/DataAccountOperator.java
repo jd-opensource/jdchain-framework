@@ -4,27 +4,27 @@ import utils.Bytes;
 
 public interface DataAccountOperator {
 
-	/**
-	 * 数据账户；
-	 * 
-	 * @return
-	 */
+    /**
+     * 数据账户；
+     *
+     * @return
+     */
 
-	DataAccountRegisterOperationBuilder dataAccounts();
+    DataAccountRegisterOperationBuilder dataAccounts();
 
-	/**
-	 * 写入数据； <br>
-	 * 
-	 * @param accountAddress
-	 * @return
-	 */
-	DataAccountKVSetOperationBuilder dataAccount(String accountAddress);
+    /**
+     * 写入数据； <br>
+     *
+     * @param accountAddress
+     * @return
+     */
+    DataAccountOperationBuilder dataAccount(String accountAddress);
 
-	/**
-	 * 写入数据；
-	 * 
-	 * @param accountAddress
-	 * @return
-	 */
-	DataAccountKVSetOperationBuilder dataAccount(Bytes accountAddress);
+    /**
+     * 写入数据；
+     *
+     * @param accountAddress
+     * @return
+     */
+    DataAccountOperationBuilder dataAccount(Bytes accountAddress);
 }

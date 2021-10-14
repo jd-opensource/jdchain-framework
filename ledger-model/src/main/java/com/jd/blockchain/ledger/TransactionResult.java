@@ -59,4 +59,12 @@ public interface TransactionResult {
 	 */
 	@DataField(order = 5, refContract = true)
 	LedgerDataSnapshot getDataSnapshot();
+
+	/**
+	 * 合约中衍生的操作列表
+	 *
+	 * @return
+	 */
+	@DataField(order = 6, list = true, refContract = true, genericContract = true)
+	Operation[] getDerivedOperations();
 }

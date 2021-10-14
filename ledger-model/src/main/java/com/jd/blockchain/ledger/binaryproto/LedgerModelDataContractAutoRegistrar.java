@@ -4,6 +4,7 @@ import com.jd.binaryproto.DataContractAutoRegistrar;
 import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.crypto.CryptoAlgorithm;
 import com.jd.blockchain.crypto.CryptoProvider;
+import com.jd.blockchain.ledger.AccountPermissionSetOperation;
 import com.jd.blockchain.ledger.AccountSnapshot;
 import com.jd.blockchain.ledger.BlockBody;
 import com.jd.blockchain.ledger.BlockchainIdentity;
@@ -11,8 +12,10 @@ import com.jd.blockchain.ledger.BytesValue;
 import com.jd.blockchain.ledger.BytesValueList;
 import com.jd.blockchain.ledger.ConsensusSettingsUpdateOperation;
 import com.jd.blockchain.ledger.ContractCodeDeployOperation;
+import com.jd.blockchain.ledger.ContractCrossEventSendOperation;
 import com.jd.blockchain.ledger.ContractEventSendOperation;
 import com.jd.blockchain.ledger.ContractInfo;
+import com.jd.blockchain.ledger.ContractStateUpdateOperation;
 import com.jd.blockchain.ledger.CryptoSetting;
 import com.jd.blockchain.ledger.DataAccountInfo;
 import com.jd.blockchain.ledger.DataAccountKVSetOperation;
@@ -23,6 +26,7 @@ import com.jd.blockchain.ledger.Event;
 import com.jd.blockchain.ledger.EventAccountInfo;
 import com.jd.blockchain.ledger.EventAccountRegisterOperation;
 import com.jd.blockchain.ledger.EventPublishOperation;
+import com.jd.blockchain.ledger.GenesisUser;
 import com.jd.blockchain.ledger.HashObject;
 import com.jd.blockchain.ledger.LedgerAdminInfo;
 import com.jd.blockchain.ledger.LedgerBlock;
@@ -45,6 +49,7 @@ import com.jd.blockchain.ledger.PrivilegeSet;
 import com.jd.blockchain.ledger.RoleInitSettings;
 import com.jd.blockchain.ledger.RoleSet;
 import com.jd.blockchain.ledger.RolesConfigureOperation;
+import com.jd.blockchain.ledger.RootCAUpdateOperation;
 import com.jd.blockchain.ledger.SecurityInitSettings;
 import com.jd.blockchain.ledger.TransactionContent;
 import com.jd.blockchain.ledger.TransactionRequest;
@@ -53,9 +58,11 @@ import com.jd.blockchain.ledger.TransactionResult;
 import com.jd.blockchain.ledger.UserAccountHeader;
 import com.jd.blockchain.ledger.UserAuthInitSettings;
 import com.jd.blockchain.ledger.UserAuthorizeOperation;
+import com.jd.blockchain.ledger.UserCAUpdateOperation;
 import com.jd.blockchain.ledger.UserInfo;
 import com.jd.blockchain.ledger.UserInfoSetOperation;
 import com.jd.blockchain.ledger.UserRegisterOperation;
+import com.jd.blockchain.ledger.UserStateUpdateOperation;
 
 public class LedgerModelDataContractAutoRegistrar implements DataContractAutoRegistrar{
 
@@ -90,6 +97,7 @@ public class LedgerModelDataContractAutoRegistrar implements DataContractAutoReg
 		DataContractRegistry.register(DataAccountKVSetOperation.KVWriteEntry.class);
 		DataContractRegistry.register(ContractCodeDeployOperation.class);
 		DataContractRegistry.register(ContractEventSendOperation.class);
+		DataContractRegistry.register(ContractCrossEventSendOperation.class);
 		DataContractRegistry.register(ParticipantRegisterOperation.class);
 		DataContractRegistry.register(ParticipantStateUpdateOperation.class);
 		DataContractRegistry.register(TransactionResponse.class);
@@ -123,5 +131,11 @@ public class LedgerModelDataContractAutoRegistrar implements DataContractAutoReg
 		DataContractRegistry.register(DigitalSignature.class);
 		DataContractRegistry.register(DigitalSignatureBody.class);
 		DataContractRegistry.register(LedgerTransactions.class);
+		DataContractRegistry.register(UserCAUpdateOperation.class);
+		DataContractRegistry.register(RootCAUpdateOperation.class);
+		DataContractRegistry.register(UserStateUpdateOperation.class);
+		DataContractRegistry.register(GenesisUser.class);
+		DataContractRegistry.register(ContractStateUpdateOperation.class);
+		DataContractRegistry.register(AccountPermissionSetOperation.class);
 	}
 }

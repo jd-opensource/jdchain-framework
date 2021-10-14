@@ -173,7 +173,7 @@ public interface LedgerQueryService {
      * @param address
      * @return
      */
-    BlockchainIdentity getUserEventAccount(String address);
+    EventAccountInfo getUserEventAccount(String address);
 
     /**
      * 返回事件账户总数

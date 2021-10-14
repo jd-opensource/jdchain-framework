@@ -8,5 +8,8 @@ import com.jd.blockchain.crypto.PubKey;
 public interface UserAccountHeader extends BlockchainIdentity {
 	
 	PubKey getDataPubKey();
-	
+
+	AccountState getState();
+
+	String getCertificate();
 }

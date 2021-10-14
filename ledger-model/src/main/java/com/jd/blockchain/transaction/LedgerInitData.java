@@ -2,9 +2,10 @@ package com.jd.blockchain.transaction;
 
 import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.ledger.CryptoSetting;
+import com.jd.blockchain.ledger.GenesisUser;
+import com.jd.blockchain.ledger.IdentityMode;
 import com.jd.blockchain.ledger.LedgerInitSetting;
 import com.jd.blockchain.ledger.ParticipantNode;
-import com.jd.blockchain.ledger.UserAuthInitSettings;
 
 import utils.Bytes;
 
@@ -15,6 +16,12 @@ public class LedgerInitData implements LedgerInitSetting {
 	}
 
 	private byte[] ledgerSeed;
+
+	private IdentityMode identityMode;
+
+	private String[] ledgerCertificates;
+
+	private GenesisUser[] genesisUsers;
 
 	private ParticipantNode[] consensusParticipants;
 
@@ -89,9 +96,33 @@ public class LedgerInitData implements LedgerInitSetting {
 		return this.ledgerStructureVersion;
 	}
 
+
+	public void setIdentityMode(IdentityMode identityMode) {
+		this.identityMode = identityMode;
+	}
+
+	public void setLedgerCertificates(String... ledgerCertificates) {
+		this.ledgerCertificates = ledgerCertificates;
+	}
+
+	public void setGenesisUsers(GenesisUser[] genesisUsers) {
+		this.genesisUsers = genesisUsers;
+	}
+
 	@Override
-	public String getAnchorType() {
-		return anchorType;
+	public IdentityMode getIdentityMode() {
+		return identityMode;
+	}
+
+	@Override
+	public String[] getLedgerCertificates() {
+		return ledgerCertificates;
+	}
+
+	@Override
+	public GenesisUser[] getGenesisUsers() {
+		return genesisUsers;
+
 	}
 
 	public void setLedgerStructureVersion(long ledgerStructureVersion) {
@@ -102,7 +133,4 @@ public class LedgerInitData implements LedgerInitSetting {
 		this.createdTime = createdTime;
 	}
 
-	public void setAnchorType(String anchorType) {
-		this.anchorType = anchorType;
-	}
 }

@@ -126,7 +126,7 @@ public class TxBuilder implements TransactionBuilder {
 	}
 
 	public Collection<OperationResultHandle> getReturnValuehandlers() {
-		return opFactory.getReturnValuetHandlers();
+		return opFactory.getReturnValueHandlers();
 	}
 
 	@Override
@@ -145,27 +145,33 @@ public class TxBuilder implements TransactionBuilder {
 	}
 
 	@Override
+	public UserUpdateOperationBuilder user(String address) {
+		return opFactory.user(address);
+	}
+
+	@Override
+	public UserUpdateOperationBuilder user(Bytes address) {
+		return opFactory.user(address);
+	}
+
+	@Override
 	public DataAccountRegisterOperationBuilder dataAccounts() {
 		return opFactory.dataAccounts();
 	}
 
 	@Override
-	public DataAccountKVSetOperationBuilder dataAccount(String accountAddress) {
+	public DataAccountOperationBuilder dataAccount(String accountAddress) {
 		return opFactory.dataAccount(accountAddress);
 	}
 
 	@Override
-	public DataAccountKVSetOperationBuilder dataAccount(Bytes accountAddress) {
+	public DataAccountOperationBuilder dataAccount(Bytes accountAddress) {
 		return opFactory.dataAccount(accountAddress);
 	}
 
 	@Override
 	public ContractCodeDeployOperationBuilder contracts() {
 		return opFactory.contracts();
-	}
-
-	public ContractEventSendOperationBuilder contractEvents() {
-		return opFactory.contractEvents();
 	}
 
 	@Override
@@ -189,8 +195,13 @@ public class TxBuilder implements TransactionBuilder {
 	}
 
 	@Override
-	public ContractEventSendOperationBuilder contract() {
-		return opFactory.contract();
+	public ContractOperationBuilder contract(Bytes address) {
+		return opFactory.contract(address);
+	}
+
+	@Override
+	public ContractOperationBuilder contract(String address) {
+		return opFactory.contract(address);
 	}
 
 	@Override
@@ -199,17 +210,22 @@ public class TxBuilder implements TransactionBuilder {
 	}
 
 	@Override
-	public EventPublishOperationBuilder eventAccount(String accountAddress) {
+	public EventOperationBuilder eventAccount(String accountAddress) {
 		return opFactory.eventAccount(accountAddress);
 	}
 
 	@Override
-	public EventPublishOperationBuilder eventAccount(Bytes accountAddress) {
+	public EventOperationBuilder eventAccount(Bytes accountAddress) {
 		return opFactory.eventAccount(accountAddress);
 	}
 
 	@Override
 	public <T> T contract(String address, Class<T> contractIntf) {
 		return opFactory.contract(address, contractIntf);
+	}
+
+	@Override
+	public MetaInfoUpdateOperationBuilder metaInfo() {
+		return opFactory.metaInfo();
 	}
 }

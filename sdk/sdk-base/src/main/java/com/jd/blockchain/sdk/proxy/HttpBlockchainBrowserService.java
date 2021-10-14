@@ -5,6 +5,7 @@ import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.ContractInfo;
 import com.jd.blockchain.ledger.DataAccountInfo;
 import com.jd.blockchain.ledger.Event;
+import com.jd.blockchain.ledger.EventAccountInfo;
 import com.jd.blockchain.ledger.KVInfoVO;
 import com.jd.blockchain.ledger.LedgerAdminInfo;
 import com.jd.blockchain.ledger.LedgerBlock;
@@ -848,7 +849,7 @@ public interface HttpBlockchainBrowserService extends BlockchainBrowserService {
 //	@HttpAction(method = HttpMethod.GET, path = "ledgers/{ledgerHash}/events/user/accounts/{address}")
 	@HttpAction(method = HttpMethod.GET, path = GET_EVENT_ACCOUNT)
 	@Override
-	BlockchainIdentity getUserEventAccount(
+	EventAccountInfo getUserEventAccount(
 			@PathParam(name = "ledgerHash", converter = HashDigestToStringConverter.class) HashDigest ledgerHash,
 			@PathParam(name = "address") String address);
 
