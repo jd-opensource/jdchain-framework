@@ -125,6 +125,11 @@ public class LedgerInitData implements LedgerInitSetting {
 
 	}
 
+	@Override
+	public String getAnchorType() {
+		return anchorType;
+	}
+
 	public void setLedgerStructureVersion(long ledgerStructureVersion) {
 		this.ledgerStructureVersion = ledgerStructureVersion;
 	}
@@ -133,4 +138,7 @@ public class LedgerInitData implements LedgerInitSetting {
 		this.createdTime = createdTime;
 	}
 
+	public void setAnchorType(String anchorType) {
+		this.anchorType = anchorType;
+	}
 }
