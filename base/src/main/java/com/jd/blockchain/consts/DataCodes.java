@@ -142,6 +142,8 @@ public interface DataCodes {
 
     int METADATA_GENESIS_USER = 0x645;
 
+    int METADATA_LEDGER_DATA_STRUCTURE = 0x646;
+
     int ACCOUNT_SNAPSHOT = 0x701;
 
     int DATA_ACCOUNT_INFO = 0x710;

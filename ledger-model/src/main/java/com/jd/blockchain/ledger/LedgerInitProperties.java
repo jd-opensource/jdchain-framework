@@ -95,7 +95,7 @@ public class LedgerInitProperties implements Serializable {
 	// 哈希算法；
 	public static final String CRYPTO_HASH_ALGORITHM = "crypto.hash-algorithm";
 
-	public static final String LEDGER_DATABASE_ANCHOR_TYPE = "ledger.database.anchor";
+	public static final String LEDGER_DATA_STRUCTURE = "ledger.data.structure";
 
 	public static final String CRYPTO_SERVICE_PROVIDERS_SPLITTER = ",";
 
@@ -121,7 +121,7 @@ public class LedgerInitProperties implements Serializable {
 
 	private long createdTime;
 
-	private String anchorType;
+	private LedgerDataStructure ledgerDataStructure;
 
 	public byte[] getLedgerSeed() {
 		return ledgerSeed.clone();
@@ -151,8 +151,8 @@ public class LedgerInitProperties implements Serializable {
 		return createdTime;
 	}
 
-	public String getAnchorType() {
-		return anchorType;
+	public LedgerDataStructure getLedgerDataStructure() {
+		return ledgerDataStructure;
 	}
 
 	public Properties getConsensusConfig() {
@@ -223,12 +223,12 @@ public class LedgerInitProperties implements Serializable {
 		return String.format("%s.%s", partAddrStr, partPropKey);
 	}
 
-	public static LedgerInitProperties createDefault(byte[] ledgerSeed, String ledgerName, Date createdTime, String anchorType,
+	public static LedgerInitProperties createDefault(byte[] ledgerSeed, String ledgerName, Date createdTime, LedgerDataStructure ledgerDataStructure,
 			Properties consensusConfig, CryptoProperties cryptoProperties) {
 		LedgerInitProperties initProps = new LedgerInitProperties(ledgerSeed);
 		initProps.ledgerName = ledgerName;
 		initProps.createdTime = createdTime.getTime();
-		initProps.anchorType = anchorType;
+		initProps.ledgerDataStructure = ledgerDataStructure;
 		initProps.consensusProvider = "com.jd.blockchain.consensus.bftsmart.BftsmartConsensusProvider";
 		initProps.consensusConfig = consensusConfig;
 		initProps.cryptoProperties = cryptoProperties.clone();
@@ -298,8 +298,8 @@ public class LedgerInitProperties implements Serializable {
 			throw new IllegalArgumentException(ex.getMessage(), ex);
 		}
 
-		String anchorType = PropertiesUtils.getRequiredProperty(props, LEDGER_DATABASE_ANCHOR_TYPE);
-		initProps.anchorType = anchorType;
+		String dataStructure = PropertiesUtils.getOptionalProperty(props, LEDGER_DATA_STRUCTURE, LedgerDataStructure.MERKLE_TREE.name());
+		initProps.ledgerDataStructure = LedgerDataStructure.valueOf(dataStructure);
 
 		// 解析角色清单；
 		String strRoleNames = PropertiesUtils.getOptionalProperty(props, ROLES);

@@ -4,6 +4,7 @@ import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.ledger.CryptoSetting;
 import com.jd.blockchain.ledger.GenesisUser;
 import com.jd.blockchain.ledger.IdentityMode;
+import com.jd.blockchain.ledger.LedgerDataStructure;
 import com.jd.blockchain.ledger.LedgerInitSetting;
 import com.jd.blockchain.ledger.ParticipantNode;
 
@@ -35,7 +36,7 @@ public class LedgerInitData implements LedgerInitSetting {
 
 	private long ledgerStructureVersion = -1L;
 
-	private String anchorType;
+	private LedgerDataStructure ledgerDataStructure;
 
 	@Override
 	public byte[] getLedgerSeed() {
@@ -126,8 +127,8 @@ public class LedgerInitData implements LedgerInitSetting {
 	}
 
 	@Override
-	public String getAnchorType() {
-		return anchorType;
+	public LedgerDataStructure getLedgerDataStructure() {
+		return ledgerDataStructure;
 	}
 
 	public void setLedgerStructureVersion(long ledgerStructureVersion) {
@@ -138,7 +139,7 @@ public class LedgerInitData implements LedgerInitSetting {
 		this.createdTime = createdTime;
 	}
 
-	public void setAnchorType(String anchorType) {
-		this.anchorType = anchorType;
+	public void setLedgerDataStructure(LedgerDataStructure ledgerDataStructure) {
+		this.ledgerDataStructure = ledgerDataStructure;
 	}
 }

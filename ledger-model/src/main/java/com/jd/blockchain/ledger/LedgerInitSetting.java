@@ -95,11 +95,11 @@ public interface LedgerInitSetting {
     GenesisUser[] getGenesisUsers();
 
 	/**
-	 * 账本数据库的锚定方式
+	 * 账本数据结构
 	 *
 	 * @return
 	 */
-    @DataField(order = 11, primitiveType = PrimitiveType.TEXT)
-	String getAnchorType();
+    @DataField(order = 11, refEnum = true)
+	LedgerDataStructure getLedgerDataStructure();
 
 }
