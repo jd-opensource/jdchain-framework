@@ -175,6 +175,11 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		return new ContractOperationBuilderFilter(Bytes.fromBase58(address));
 	}
 
+	@Override
+	public ContractOperationBuilder contract() {
+		return new ContractOperationBuilderFilter();
+	}
+
 	/**
 	 * 返回已经定义的操作列表；
 	 *
@@ -304,6 +309,9 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 			this.address = address;
 		}
 
+		public ContractOperationBuilderFilter() {
+		}
+
 		@Override
 		public ContractStateUpdateOperation revoke() {
 			ContractStateUpdateOperation op = new ContractStateUpdateOpTemplate(address, AccountState.REVOKE);
@@ -335,6 +343,17 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		@Override
 		public AccountPermissionSetOperationBuilder permission() {
 			return new AccountPermissionSetOperationBuilderFilter(address, AccountType.CONTRACT);
+		}
+
+		@Override
+		public ContractEventSendOperation send(String address, String event, BytesValueList args) {
+			return send(Bytes.fromBase58(address), event, args);
+		}
+
+		@Override
+		public ContractEventSendOperation send(Bytes address, String event, BytesValueList args) {
+			this.address = address;
+			return invoke(event, args);
 		}
 
 		@Override

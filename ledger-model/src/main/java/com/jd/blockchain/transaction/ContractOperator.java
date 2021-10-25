@@ -1,5 +1,6 @@
 package com.jd.blockchain.transaction;
 
+import com.jd.blockchain.ledger.BytesValueList;
 import utils.Bytes;
 
 public interface ContractOperator {
@@ -42,4 +43,16 @@ public interface ContractOperator {
      * @return
      */
     ContractOperationBuilder contract(String address);
+
+    /**
+     * 合约权限修改，状态修改等更新操作
+     * 废弃此方法，替代方法为 {@link #contract(String address)};
+     * 保留此方法仅为兼容1.6.0之前版本，此方法调用配合
+     * {@link ContractEventSendOperationBuilder#send(String address, String event, BytesValueList args)}
+     * {@link ContractEventSendOperationBuilder#send(Bytes address, String event, BytesValueList args)}
+     *
+     * @return
+     */
+    @Deprecated
+    ContractOperationBuilder contract();
 }
