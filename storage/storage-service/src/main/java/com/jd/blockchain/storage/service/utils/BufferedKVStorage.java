@@ -128,21 +128,13 @@ public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage
 		}
 		VersioningWritingSet ws = versioningCache.get(key);
 		if (ws == null) {
-			long latestVersion = origVersioningStorage.getVersion(key);
-			if (version < latestVersion) {
-				return -1;
-			}
 			synchronized (versioningMutex) {
 				ws = versioningCache.get(key);
 				if (ws == null) {
-					if (version == latestVersion) {
-						ws = new VersioningWritingSet(key, latestVersion, value);
-						versioningCache.put(key, ws);
+					ws = new VersioningWritingSet(key, version, value);
+					versioningCache.put(key, ws);
 
-						return version + 1;
-					}
-					// 指定的版本不是最新版本；
-					return -1;
+					return version + 1;
 				}
 				// 存在并发写，退出同步之后由该 key 的 VersioningWritingSet 来控制写入；
 			}
