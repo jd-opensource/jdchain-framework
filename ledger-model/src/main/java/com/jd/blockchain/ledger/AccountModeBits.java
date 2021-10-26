@@ -3,7 +3,6 @@ package com.jd.blockchain.ledger;
 import utils.io.BytesSerializable;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.BitSet;
 
 /**
@@ -122,7 +121,12 @@ public class AccountModeBits implements BytesSerializable, Serializable {
 
     @Override
     public byte[] toBytes() {
-        return modeBits.toByteArray();
+        byte[] bytes = modeBits.toByteArray();
+        if (bytes.length > 0) {
+            return bytes;
+        } else {
+            return new byte[]{0};
+        }
     }
 
     public boolean get(BitGroup group, int index) {
