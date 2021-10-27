@@ -6,6 +6,7 @@ import com.jd.blockchain.ledger.BytesValue;
 import com.jd.blockchain.ledger.ConsensusSettingsUpdateOperation;
 import com.jd.blockchain.ledger.ContractCodeDeployOperation;
 import com.jd.blockchain.ledger.ContractEventSendOperation;
+import com.jd.blockchain.ledger.ContractStateUpdateOperation;
 import com.jd.blockchain.ledger.DataAccountKVSetOperation;
 import com.jd.blockchain.ledger.DataAccountRegisterOperation;
 import com.jd.blockchain.ledger.EventAccountRegisterOperation;
@@ -50,6 +51,7 @@ public class LedgerModelJSONConfigure implements JSONAutoConfigure {
 		configurator.configProxyInterfaces(UserStateUpdateOperation.class);
 		configurator.configProxyInterfaces(RootCAUpdateOperation.class);
 		configurator.configProxyInterfaces(AccountPermissionSetOperation.class);
+		configurator.configProxyInterfaces(ContractStateUpdateOperation.class);
 
 		// BytesValue
 		configurator.configSuperSerializer(BytesValue.class, BytesValueSerializer.INSTANCE);
