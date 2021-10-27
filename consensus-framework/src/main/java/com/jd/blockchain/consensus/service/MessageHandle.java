@@ -75,4 +75,8 @@ public interface MessageHandle {
 	 */
 	StateSnapshot getGenesisStateSnapshot(ConsensusContext consensusContext);
 
+	int getCommandsNumByCid(String realName, int cid);
+
+	byte[][] getCommandsByCid(String realName, int cid, int currCidCommandsSize);
+
 }
