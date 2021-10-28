@@ -12,9 +12,9 @@ import java.util.BitSet;
  * <p>
  * owners – The Owners permissions apply only the owners of the Dataset, they will not impact the actions of other users.
  * role – The Role permissions apply only to the role that has been assigned to the Dataset, they will not effect the actions of other users.
- * all users – The All Users permissions apply to all other users on the system, this is the permission group that you want to watch the most.
+ * all other users – The All Users permissions apply to all other users on the system, this is the permission group that you want to watch the most.
  * <p>
- * data type  owners' permissions  role's permissions  all users' permissions
+ * data type  owners' permissions  role's group permissions  all other users' permissions
  * 0            1   2   3           4   5   6           7   8   9
  * -/c         -/r -/w -/x         -/r -/w -/x         -/r -/w -/x
  * 0/1         0/1 0/1 0/1         0/1 0/1 0/1         0/1 0/1 0/1
@@ -86,9 +86,9 @@ public class AccountModeBits implements BytesSerializable, Serializable {
         if (type == AccountType.CONTRACT) {
             modeBits.set(0);
         }
-        setGroupBits(BitGroup.OWNERS, mode / 100);
-        setGroupBits(BitGroup.ROLE, mode % 100 / 10);
-        setGroupBits(BitGroup.ALL, mode % 10);
+        setGroupBits(BitGroup.OWNER, mode / 100);
+        setGroupBits(BitGroup.GROUP, mode % 100 / 10);
+        setGroupBits(BitGroup.OTHERS, mode % 10);
     }
 
     private void setGroupBits(BitGroup group, int value) {
@@ -152,9 +152,9 @@ public class AccountModeBits implements BytesSerializable, Serializable {
 
     public enum BitGroup {
         ZERO(0),
-        OWNERS(1),
-        ROLE(4),
-        ALL(7);
+        OWNER(1),
+        GROUP(4),
+        OTHERS(7);
 
         int offset;
 
