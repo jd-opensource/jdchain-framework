@@ -50,14 +50,24 @@ public enum TransactionState {
 	PARTICIPANT_DOES_NOT_EXIST((byte) 0x06),
 
 	/**
-	 * 合约执行错误；
+	 * 事件账户不存在；
 	 */
-	CONTRACT_EXECUTE_ERROR((byte) 0x10),
+	EVENT_ACCOUNT_DOES_NOT_EXIST((byte) 0x07),
 
 	/**
 	 * 合约部署时版本冲突；
 	 */
 	CONTRACT_VERSION_CONFLICT((byte) 0x08),
+
+	/**
+	 * 账户状态错误；
+	 */
+	ILLEGAL_ACCOUNT_STATE((byte) 0x09),
+
+	/**
+	 * 合约执行错误；
+	 */
+	CONTRACT_EXECUTE_ERROR((byte) 0x10),
 
 	/**
 	 * 被安全策略拒绝；
