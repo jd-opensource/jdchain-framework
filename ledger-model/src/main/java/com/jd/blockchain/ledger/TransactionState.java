@@ -80,6 +80,11 @@ public enum TransactionState {
 	ACCOUNT_REGISTER_CONFLICT((byte) 0x12),
 
 	/**
+	 * 角色不存在
+	 */
+	ROLE_DOES_NOT_EXIST((byte) 0x13),
+
+	/**
 	 * 由于在错误的账本上执行交易而被忽略；
 	 */
 	IGNORED_BY_WRONG_LEDGER((byte) 0x40),
