@@ -110,6 +110,12 @@ public class TxTemplate implements TransactionTemplate {
 	}
 
 	@Override
+	public ConsensusReconfigOperationBuilder reconfigs() {
+		stateManager.operate();
+		return txBuilder.reconfigs();
+	}
+
+	@Override
 	public <T> T contract(Bytes address, Class<T> contractIntf) {
 		stateManager.operate();
 		return txBuilder.contract(address, contractIntf);
