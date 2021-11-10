@@ -101,4 +101,12 @@ public interface MessageHandle {
 	 */
 	byte[] getSnapshotByHeight(String realName, int cid);
 
+	/**
+	 * 根据cid获取对应高度区块的时间戳，cid+1 <--> blockheight
+	 * @param realName
+	 * @param cid
+	 * @return
+	 */
+	long getTimestampByCid(String realName, int cid);
+
 }
