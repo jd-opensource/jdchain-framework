@@ -17,4 +17,7 @@ public interface NodeNetworkAddress {
 
     @DataField(order = 2, primitiveType = PrimitiveType.INT32)
     int getMonitorPort();
+
+    @DataField(order = 3, primitiveType = PrimitiveType.BOOLEAN)
+    boolean isSecure();
 }

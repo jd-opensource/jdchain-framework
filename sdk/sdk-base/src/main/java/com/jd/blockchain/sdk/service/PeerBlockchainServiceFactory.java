@@ -24,6 +24,7 @@ import com.jd.httpservice.agent.HttpServiceAgent;
 import com.jd.httpservice.agent.ServiceConnection;
 import com.jd.httpservice.agent.ServiceConnectionManager;
 import com.jd.httpservice.agent.ServiceEndpoint;
+import com.jd.httpservice.auth.SSLSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.io.ByteArray;
@@ -55,11 +56,11 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 		this.peerServiceProxy = new PeerServiceProxy(accessableLedgers);
 	}
 
-	public static PeerBlockchainServiceFactory create(AsymmetricKeypair gatewayKey, NetworkAddress peerAddr, LedgerIncomingSettings[] ledgerSettingsArray,
+	public static PeerBlockchainServiceFactory create(AsymmetricKeypair gatewayKey, NetworkAddress peerAddr, SSLSecurity sslSecurity, LedgerIncomingSettings[] ledgerSettingsArray,
 													  SessionCredentialProvider credentialProvider, ConsensusClientManager clientManager) {
 		HashDigest[] ledgers = new HashDigest[ledgerSettingsArray.length];
 		if (ledgerSettingsArray.length > 0) {
-			ServiceConnectionManager httpConnectionManager = new ServiceConnectionManager();
+			ServiceConnectionManager httpConnectionManager = new ServiceConnectionManager(sslSecurity);
 			ServiceConnection httpConnection = httpConnectionManager.create(new ServiceEndpoint(peerAddr));
 			PeerBlockchainQueryService peerManageService = new PeerBlockchainQueryService(httpConnection,
 					HttpServiceAgent.createService(HttpBlockchainBrowserService.class, httpConnection, null));
@@ -133,17 +134,32 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 	 *
 	 * @param gatewayKey         提供对网关接入认证的共识节点身份信息； <br>
 	 * @param peerAddr           提供对网关接入认证的节点的认证地址列表； <br>
+	 * @param sslSecurity        提供对网关接入认证的节点的认证TLS证书相关信息； <br>
+	 * @param credentialProvider 共识客户端在接入认证过程中使用的凭证的来源
+	 * @param clientManager      账本对应的共识客户端管理
+	 * @return 区块链服务工厂实例
+	 */
+	public static PeerBlockchainServiceFactory connect(AsymmetricKeypair gatewayKey, NetworkAddress peerAddr, SSLSecurity sslSecurity,
+													   SessionCredentialProvider credentialProvider, ConsensusClientManager clientManager) {
+		// 认证，返回账本列表及配置相关信息
+		PeerAuthenticator authenticator = new PeerAuthenticator(peerAddr, sslSecurity, gatewayKey, credentialProvider);
+		GatewayAuthResponse gatewayAuthResponse = authenticator.request();
+
+		return create(gatewayKey, peerAddr, sslSecurity, gatewayAuthResponse.getLedgers(), credentialProvider, clientManager);
+	}
+
+	/**
+	 * 连接到指定的共识节点
+	 *
+	 * @param gatewayKey         提供对网关接入认证的共识节点身份信息； <br>
+	 * @param peerAddr           提供对网关接入认证的节点的认证地址列表； <br>
 	 * @param credentialProvider 共识客户端在接入认证过程中使用的凭证的来源
 	 * @param clientManager      账本对应的共识客户端管理
 	 * @return 区块链服务工厂实例
 	 */
 	public static PeerBlockchainServiceFactory connect(AsymmetricKeypair gatewayKey, NetworkAddress peerAddr,
 													   SessionCredentialProvider credentialProvider, ConsensusClientManager clientManager) {
-		// 认证，返回账本列表及配置相关信息
-		PeerAuthenticator authenticator = new PeerAuthenticator(peerAddr, gatewayKey, credentialProvider);
-		GatewayAuthResponse gatewayAuthResponse = authenticator.request();
-
-		return create(gatewayKey, peerAddr, gatewayAuthResponse.getLedgers(), credentialProvider, clientManager);
+		return connect(gatewayKey, peerAddr, new SSLSecurity(), credentialProvider, clientManager);
 	}
 
 

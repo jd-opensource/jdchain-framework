@@ -17,6 +17,7 @@ import com.jd.blockchain.setting.GatewayAuthResponse;
 import com.jd.httpservice.agent.HttpServiceAgent;
 import com.jd.httpservice.agent.ServiceEndpoint;
 
+import com.jd.httpservice.auth.SSLSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.net.NetworkAddress;
@@ -28,6 +29,7 @@ public class PeerAuthenticator {
 
 	private AsymmetricKeypair gatewayKey;
 	private NetworkAddress peerAddr;
+	private SSLSecurity sslSecurity;
 	private SessionCredentialProvider credentialProvider;
 
 	public PeerAuthenticator(NetworkAddress peerAddr, AsymmetricKeypair gatewayKey,
@@ -37,9 +39,17 @@ public class PeerAuthenticator {
 		this.credentialProvider = credentialProvider;
 	}
 
+	public PeerAuthenticator(NetworkAddress peerAddr, SSLSecurity sslSecurity, AsymmetricKeypair gatewayKey,
+							 SessionCredentialProvider credentialProvider) {
+		this.peerAddr = peerAddr;
+		this.sslSecurity = sslSecurity;
+		this.gatewayKey = gatewayKey;
+		this.credentialProvider = credentialProvider;
+	}
+
 	public GatewayAuthResponse request() {
 		try {
-			ManagementHttpService gatewayMngService = getManageService(peerAddr);
+			ManagementHttpService gatewayMngService = getManageService(peerAddr, sslSecurity);
 
 			// 获得节点的信息；
 			AccessSpecification accSpec = gatewayMngService.getAccessSpecification();
@@ -70,8 +80,9 @@ public class PeerAuthenticator {
 		}
 	}
 
-	private static ManagementHttpService getManageService(NetworkAddress peer) {
-		ServiceEndpoint peerServer = new ServiceEndpoint(peer.getHost(), peer.getPort(), false);
+	private static ManagementHttpService getManageService(NetworkAddress peer, SSLSecurity sslSecurity) {
+		ServiceEndpoint peerServer = new ServiceEndpoint(peer.getHost(), peer.getPort(), peer.isSecure());
+		peerServer.setSslSecurity(sslSecurity);
 		ManagementHttpService manageService = HttpServiceAgent.createService(ManagementHttpService.class, peerServer);
 		return manageService;
 	}
