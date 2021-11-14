@@ -3,6 +3,7 @@ package com.jd.blockchain.consensus.service;
 import com.jd.blockchain.consensus.ConsensusViewSettings;
 
 import utils.io.Storage;
+import utils.net.SSLSecurity;
 
 /**
  * 共识节点服务器的工厂；
@@ -22,6 +23,18 @@ public interface NodeServerFactory {
 	 * @return 共识节点的参数配置；
 	 */
 	ServerSettings buildServerSettings(String realmName, ConsensusViewSettings viewSettings, String nodeAddress);
+
+	/**
+	 * 构建一个共识节点的参数配置；
+	 *
+	 * @param realmName          共识域的名称；
+	 * @param viewSettings       共识配置；
+	 * @param nodeAddress		 共识节点的虚拟地址；必须是
+	 *                           {@link ConsensusViewSettings#getNodes()} 中的一项；
+	 * @param sslSecurity		 nodeAddress节点SSL通信配置
+	 * @return 共识节点的参数配置；
+	 */
+	ServerSettings buildServerSettings(String realmName, ConsensusViewSettings viewSettings, String nodeAddress, SSLSecurity sslSecurity);
 
 	/**
 	 * 创建一个节点服务器；

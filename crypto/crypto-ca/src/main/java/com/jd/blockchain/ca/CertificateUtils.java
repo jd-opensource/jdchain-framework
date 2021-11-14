@@ -20,8 +20,6 @@ import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
-import sun.misc.BASE64Encoder;
-import sun.security.provider.X509Factory;
 import sun.security.x509.X509CertImpl;
 import utils.io.FileUtils;
 
@@ -85,15 +83,13 @@ public class CertificateUtils {
 
     public static String toPEMString(X509Certificate certificate) {
         try {
-            StringBuilder builder = new StringBuilder();
-            BASE64Encoder encoder = new BASE64Encoder();
-            builder.append(X509Factory.BEGIN_CERT);
-            builder.append("\n");
-            builder.append(encoder.encodeBuffer(certificate.getEncoded()));
-            builder.append(X509Factory.END_CERT);
-
-            return builder.toString();
-        } catch (CertificateEncodingException e) {
+            final StringWriter writer = new StringWriter();
+            final JcaPEMWriter pemWriter = new JcaPEMWriter(writer);
+            pemWriter.writeObject(certificate);
+            pemWriter.flush();
+            pemWriter.close();
+            return writer.toString();
+        } catch (IOException e) {
             throw new CryptoException(e.getMessage(), e);
         }
     }

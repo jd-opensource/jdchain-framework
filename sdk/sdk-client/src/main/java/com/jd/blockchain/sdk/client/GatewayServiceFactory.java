@@ -16,7 +16,7 @@ import com.jd.httpservice.agent.HttpServiceAgent;
 import com.jd.httpservice.agent.ServiceConnection;
 import com.jd.httpservice.agent.ServiceConnectionManager;
 import com.jd.httpservice.agent.ServiceEndpoint;
-import com.jd.httpservice.auth.SSLSecurity;
+import utils.net.SSLSecurity;
 import utils.net.NetworkAddress;
 
 import java.io.Closeable;

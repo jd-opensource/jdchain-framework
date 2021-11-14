@@ -17,7 +17,7 @@ import com.jd.blockchain.setting.GatewayAuthResponse;
 import com.jd.httpservice.agent.HttpServiceAgent;
 import com.jd.httpservice.agent.ServiceEndpoint;
 
-import com.jd.httpservice.auth.SSLSecurity;
+import utils.net.SSLSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.net.NetworkAddress;
