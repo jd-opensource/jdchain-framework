@@ -30,7 +30,7 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
     private BlockchainService blockchainService;
 
     protected GatewayServiceFactory(ServiceEndpoint gatewayEndpoint, BlockchainKeypair userKey) {
-        httpConnectionManager = new ServiceConnectionManager(gatewayEndpoint.getSslSecurity());
+        httpConnectionManager = new ServiceConnectionManager(gatewayEndpoint.isSecure(), gatewayEndpoint.getSslSecurity());
         this.userKey = userKey;
 
         HttpBlockchainBrowserService queryService = createQueryService(gatewayEndpoint);

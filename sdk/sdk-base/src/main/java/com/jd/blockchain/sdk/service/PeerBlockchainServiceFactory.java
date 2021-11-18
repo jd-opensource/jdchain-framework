@@ -55,7 +55,7 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
                                                       LedgerIncomingSettings[] ledgerSettingsArray, SessionCredentialProvider credentialProvider, ConsensusClientManager clientManager) {
         HashDigest[] ledgers = new HashDigest[ledgerSettingsArray.length];
         if (ledgerSettingsArray.length > 0) {
-            ServiceConnectionManager httpConnectionManager = new ServiceConnectionManager(manageSslSecurity);
+            ServiceConnectionManager httpConnectionManager = new ServiceConnectionManager(peerAddr.isSecure(), manageSslSecurity);
             ServiceConnection httpConnection = httpConnectionManager.create(new ServiceEndpoint(peerAddr));
             PeerBlockchainQueryService peerManageService = new PeerBlockchainQueryService(httpConnection,
                     HttpServiceAgent.createService(HttpBlockchainBrowserService.class, httpConnection, null));
