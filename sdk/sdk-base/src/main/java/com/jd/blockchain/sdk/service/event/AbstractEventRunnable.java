@@ -5,8 +5,6 @@ import com.jd.blockchain.ledger.Event;
 import com.jd.blockchain.sdk.EventContext;
 import com.jd.blockchain.sdk.EventListenerHandle;
 import com.jd.blockchain.sdk.EventPoint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -21,8 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @param <E>
  */
 public abstract class AbstractEventRunnable<E extends EventPoint> implements Runnable {
-
-    private static Logger LOGGER = LoggerFactory.getLogger(AbstractEventRunnable.class);
 
     private static final int MAX_COUNT = 100;
 
@@ -55,8 +51,6 @@ public abstract class AbstractEventRunnable<E extends EventPoint> implements Run
         try {
             loadEventsByHttpProtocol();
         } catch (Throwable t) {
-            // 打印错误信息即可
-            LOGGER.error("load event error !!!", t);
         }
     }
 

@@ -7,16 +7,11 @@ import com.jd.blockchain.consensus.service.MonitorService;
 
 import utils.concurrent.AsyncFuture;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class PeerMonitorHandler implements MonitorService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PeerMonitorHandler.class);
 
     private static final long MAX_WAIT_MILL_SECONDS = 10000;
 
@@ -34,13 +29,9 @@ public class PeerMonitorHandler implements MonitorService {
         try {
             MessageService messageService = nodeSigningAppender.getMessageService();
             if (messageService != null) {
-                try {
-                    AsyncFuture<byte[]> future = messageService.sendUnordered(LOAD_MONITOR);
-                    byte[] bytes = future.get(MAX_WAIT_MILL_SECONDS, TimeUnit.MILLISECONDS);
-                    return convert(bytes);
-                } catch (Exception e) {
-                    LOGGER.warn("Load monitors error !!!", e);
-                }
+                AsyncFuture<byte[]> future = messageService.sendUnordered(LOAD_MONITOR);
+                byte[] bytes = future.get(MAX_WAIT_MILL_SECONDS, TimeUnit.MILLISECONDS);
+                return convert(bytes);
             }
             return null;
         } finally {

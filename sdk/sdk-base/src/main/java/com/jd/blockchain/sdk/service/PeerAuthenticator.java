@@ -18,14 +18,10 @@ import com.jd.httpservice.agent.HttpServiceAgent;
 import com.jd.httpservice.agent.ServiceEndpoint;
 
 import utils.net.SSLSecurity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import utils.net.NetworkAddress;
 import utils.security.AuthenticationException;
 
 public class PeerAuthenticator {
-
-	private static Logger LOGGER = LoggerFactory.getLogger(PeerAuthenticator.class);
 
 	private AsymmetricKeypair gatewayKey;
 	private NetworkAddress peerAddr;
@@ -75,8 +71,7 @@ public class PeerAuthenticator {
 		} catch (Exception e) {
 			String errorMessage = String.format("Gateway authentication fail! --[peer=%s] %s", peerAddr.toString(),
 					e.getMessage());
-			LOGGER.warn(errorMessage, e);
-			throw new AuthenticationException(errorMessage);
+			throw new AuthenticationException(errorMessage, e);
 		}
 	}
 

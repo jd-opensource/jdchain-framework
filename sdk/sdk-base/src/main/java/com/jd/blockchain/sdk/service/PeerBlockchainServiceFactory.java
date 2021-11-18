@@ -5,7 +5,6 @@ import com.jd.blockchain.consensus.ConsensusProvider;
 import com.jd.blockchain.consensus.ConsensusProviders;
 import com.jd.blockchain.consensus.SessionCredential;
 import com.jd.blockchain.consensus.client.ClientFactory;
-import com.jd.blockchain.consensus.client.ClientSettings;
 import com.jd.blockchain.consensus.client.ConsensusClient;
 import com.jd.blockchain.consensus.service.MonitorService;
 import com.jd.blockchain.crypto.AsymmetricKeypair;
@@ -24,8 +23,6 @@ import com.jd.httpservice.agent.HttpServiceAgent;
 import com.jd.httpservice.agent.ServiceConnection;
 import com.jd.httpservice.agent.ServiceConnectionManager;
 import com.jd.httpservice.agent.ServiceEndpoint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import utils.io.ByteArray;
 import utils.net.NetworkAddress;
 import utils.net.SSLSecurity;
@@ -35,8 +32,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, Closeable {
-
-    private static Logger LOGGER = LoggerFactory.getLogger(PeerBlockchainServiceFactory.class);
 
     private ServiceConnectionManager httpConnectionManager;
     private PeerServiceProxy peerServiceProxy;
@@ -115,12 +110,6 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
             factory.accessContextMap.putAll(tempAccessCtxs);
             factory.monitorServiceMap.putAll(tempMonitors);
             factory.ledgers = ledgers;
-            if (!tempAccessCtxs.isEmpty()) {
-                for (HashDigest hash : tempAccessCtxs.keySet()) {
-                    LOGGER.info("Connect, peer[{}] init new ledger[{}] OK !!!", peerAddr, hash.toBase58());
-                }
-            }
-
             return factory;
         } else {
             throw new IllegalStateException("No ledger accessible!");
@@ -169,8 +158,6 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
             credentialProvider.setCredential(ledgerHash.toBase58(), sessionCredential);
         } catch (Exception e) {
             // 如果出错不影响后续执行；
-            LOGGER.warn("Error occurred while update consensus session credential of ledger[" + ledgerHash.toBase58()
-                    + "]! ", e);
         }
     }
 

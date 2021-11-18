@@ -8,9 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import utils.provider.Provider;
 import utils.provider.ProviderManager;
 
@@ -21,8 +18,6 @@ import utils.provider.ProviderManager;
  *
  */
 public final class Crypto {
-
-	private static Logger LOGGER = LoggerFactory.getLogger(Crypto.class);
 
 	private static Map<Short, CryptoFunction> functions = new ConcurrentHashMap<>();
 
@@ -54,35 +49,20 @@ public final class Crypto {
 		for (CryptoFunction cryptoFunction : provider.getService().getFunctions()) {
 			CryptoAlgorithm algorithm = cryptoFunction.getAlgorithm();
 			if (providedEncoding.isRandomAlgorithm(algorithm) && !(cryptoFunction instanceof RandomFunction)) {
-				LOGGER.error(String.format(
-						"The random algorithm \"%s\" declared by provider[%s] does not implement the interface \"%s\"!",
-						algorithm.toString(), provider.getFullName(), RandomFunction.class.getName()));
 				continue;
 			}
 			if (providedEncoding.isAsymmetricEncryptionAlgorithm(algorithm)
 					&& !(cryptoFunction instanceof AsymmetricEncryptionFunction)) {
-				LOGGER.error(String.format(
-						"The asymmetric encryption algorithm \"%s\" declared by the provider[%s] does not implement the interface \"%s\"!",
-						algorithm.toString(), provider.getFullName(), AsymmetricEncryptionFunction.class.getName()));
 				continue;
 			}
 			if (providedEncoding.isSignatureAlgorithm(algorithm) && !(cryptoFunction instanceof SignatureFunction)) {
-				LOGGER.error(String.format(
-						"The signature algorithm \"%s\" declared by the provider[%s] does not implement the interface \"%s\"!",
-						algorithm.toString(), provider.getFullName(), SignatureFunction.class.getName()));
 				continue;
 			}
 			if (providedEncoding.isSymmetricEncryptionAlgorithm(algorithm)
 					&& !(cryptoFunction instanceof SymmetricEncryptionFunction)) {
-				LOGGER.error(String.format(
-						"The symmetric encryption algorithm \"%s\" declared by the provider[%s] does not implement the interface \"%s\"!",
-						algorithm.toString(), provider.getFullName(), SymmetricEncryptionFunction.class.getName()));
 				continue;
 			}
 			if (providedEncoding.isHashAlgorithm(algorithm) && !(cryptoFunction instanceof HashFunction)) {
-				LOGGER.error(String.format(
-						"The hash encryption algorithm \"%s\" declared by the provider[%s] does not implement the interface \"%s\"!",
-						algorithm.toString(), provider.getFullName(), HashFunction.class.getName()));
 				continue;
 			}
 			if (providedEncoding.isExtAlgorithm(algorithm) && (cryptoFunction instanceof RandomFunction
@@ -90,15 +70,10 @@ public final class Crypto {
 					|| cryptoFunction instanceof SignatureFunction
 					|| cryptoFunction instanceof SymmetricEncryptionFunction
 					|| cryptoFunction instanceof HashFunction)) {
-				LOGGER.error(String.format(
-						"The ext algorithm \"%s\" declared by the provider[%s] can not implement the standard algorithm interface!",
-						algorithm.toString(), provider.getFullName()));
 				continue;
 			}
 
 			if (functions.containsKey(algorithm.code()) || names.containsKey(algorithm.name())) {
-				LOGGER.error(String.format("The algorithm \"%s\" declared by the provider[%s] already exists!",
-						algorithm.toString(), provider.getFullName()));
 				continue;
 			}
 
@@ -109,8 +84,6 @@ public final class Crypto {
 					&& (!providedEncoding.isSymmetricEncryptionAlgorithm(algorithm))//
 					&& (!providedEncoding.isExtAlgorithm(algorithm))) {
 				// 算法类型不属于任何预设的分类，算法定义无效；
-				LOGGER.error(String.format("The algorithm \"%s\" declared by the provider[%s] is out of range!",
-						algorithm.toString(), provider.getFullName()));
 				continue;
 			}
 
