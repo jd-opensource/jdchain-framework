@@ -52,7 +52,7 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
      * @return 网关服务工厂的实例；
      */
     public static GatewayServiceFactory connect(NetworkAddress gatewayAddress) {
-        return connect(gatewayAddress.getHost(), gatewayAddress.getPort(), gatewayAddress.isSecure(), null);
+        return connect(gatewayAddress.getHost(), gatewayAddress.getPort(), gatewayAddress.isSecure(), null, new SSLSecurity());
     }
 
     /**
@@ -75,7 +75,7 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
      * @return 网关服务工厂的实例；
      */
     public static GatewayServiceFactory connect(String gatewayHost, int gatewayPort, boolean secure) {
-        return connect(gatewayHost, gatewayPort, secure, null);
+        return connect(gatewayHost, gatewayPort, secure, null, new SSLSecurity());
     }
 
     /**
@@ -90,6 +90,19 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
     public static GatewayServiceFactory connect(String gatewayHost, int gatewayPort, boolean secure,
                                                 BlockchainKeypair userKey) {
         return connect(gatewayHost, gatewayPort, secure, userKey, new SSLSecurity());
+    }
+
+    /**
+     * 连接网关节点；
+     *
+     * @param gatewayHost 网关节点的地址；
+     * @param gatewayPort 网关节点的端口；
+     * @param secure      是否采用安全的通讯协议(HTTPS)；
+     * @param security    SSL配置
+     * @return 网关服务工厂的实例；
+     */
+    public static GatewayServiceFactory connect(String gatewayHost, int gatewayPort, boolean secure, SSLSecurity security) {
+        return connect(gatewayHost, gatewayPort, secure, null, security);
     }
 
     /**
