@@ -942,7 +942,7 @@ public interface HttpBlockchainBrowserService extends BlockchainBrowserService {
 
 	@HttpAction(method = HttpMethod.POST, path = POST_GET_TRANSACTIONS_IN_BLOCK_HEIGHT)
 	LedgerTransactions getAdditionalTransactionsInBinary(
-			@PathParam(name = "ledgerHash") HashDigest ledgerHash,
+			@PathParam(name = "ledgerHash", converter = HashDigestToStringConverter.class) HashDigest ledgerHash,
 			@PathParam(name = "blockHeight") long blockHeight,
 			@RequestParam(name = "fromIndex", required = false) int fromIndex,
 			@RequestParam(name = "count", required = false) int count);
