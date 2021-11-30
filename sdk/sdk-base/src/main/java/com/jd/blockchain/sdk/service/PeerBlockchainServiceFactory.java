@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, Closeable {
-
+	
     private ServiceConnectionManager httpConnectionManager;
     private PeerServiceProxy peerServiceProxy;
     // 当前连接可访问账本列表
