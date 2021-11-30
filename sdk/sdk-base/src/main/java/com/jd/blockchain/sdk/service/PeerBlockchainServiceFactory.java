@@ -287,4 +287,5 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
             this.queryService = queryService;
         }
     }
+
 }
