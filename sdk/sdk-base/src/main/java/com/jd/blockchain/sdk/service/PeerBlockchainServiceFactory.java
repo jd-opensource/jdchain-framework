@@ -84,7 +84,7 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
 							ClientFactory clientFactory = provider.getClientFactory();
 							ClientSettings clientSettings = clientFactory
 									.buildClientSettings(clientIncomingSettings);
-							return clientFactory.setupClient(clientSettings);
+							return clientFactory.setupClient(clientSettings, ledgerSetting.getLedgerHash().toBase58());
 						});
 
 				MonitorService monitorService = null;

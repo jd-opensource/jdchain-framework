@@ -60,4 +60,7 @@ public interface ClientFactory {
 	 */
 	ConsensusClient setupClient(ClientSettings settings);
 
+	default ConsensusClient setupClient(ClientSettings settings, String ledgerHash){
+		return setupClient(settings);
+	}
 }
