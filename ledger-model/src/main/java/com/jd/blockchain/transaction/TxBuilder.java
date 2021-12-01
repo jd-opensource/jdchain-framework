@@ -190,6 +190,11 @@ public class TxBuilder implements TransactionBuilder {
 	}
 
 	@Override
+	public ConsensusTypeUpdateOperationBuilder switchSettings() {
+		return opFactory.switchSettings();
+	}
+
+	@Override
 	public <T> T contract(Bytes address, Class<T> contractIntf) {
 		return opFactory.contract(address, contractIntf);
 	}

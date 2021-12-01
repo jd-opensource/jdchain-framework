@@ -6,6 +6,7 @@ import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.BytesValue;
 import com.jd.blockchain.ledger.BytesValueList;
 import com.jd.blockchain.ledger.ConsensusSettingsUpdateOperation;
+import com.jd.blockchain.ledger.ConsensusTypeUpdateOperation;
 import com.jd.blockchain.ledger.ContractCodeDeployOperation;
 import com.jd.blockchain.ledger.ContractEventSendOperation;
 import com.jd.blockchain.ledger.ContractStateUpdateOperation;
@@ -61,6 +62,8 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	private static final ConsensusSettingsUpdateOperationBuilderImpl CONSENSUS_SETTINGS_UPDATE_OPERATION_BUILDER = new ConsensusSettingsUpdateOperationBuilderImpl();
 
+	private static final ConsensusTypeUpdateOperationBuilderImpl CONSENSUS_TYPE_UPDATE_OPERATION_BUILDER = new ConsensusTypeUpdateOperationBuilderImpl();
+
 	private static final EventAccountRegisterOperationBuilderImpl EVENT_ACC_REG_OP_BUILDER = new EventAccountRegisterOperationBuilderImpl();
 
 	private LedgerInitOperationBuilder ledgerInitOpBuilder = new LedgerInitOperationBuilderFilter();
@@ -78,6 +81,8 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 	private ParticipantStateUpdateOperationBuilder participantStateModifyOpBuilder = new ParticipantStateUpdateOperationBuilderFilter();
 
 	private ConsensusSettingsUpdateOperationBuilder consensusSettingsUpdateOperationBuilder = new ConsensusSettingsUpdateOperationBuilderFilter();
+
+	private ConsensusTypeUpdateOperationBuilder consensusTypeUpdateOperationBuilder = new ConsensusTypeUpdateOperationBuilderFilter();
 
 	private EventAccountRegisterOperationBuilder eventAccRegOpBuilder = new EventAccountRegisterOperationBuilderFilter();
 
@@ -139,6 +144,9 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	@Override
 	public ConsensusSettingsUpdateOperationBuilder settings() {return consensusSettingsUpdateOperationBuilder;}
+
+	@Override
+	public ConsensusTypeUpdateOperationBuilder switchSettings() {return consensusTypeUpdateOperationBuilder;}
 
 	@Override
 	public EventAccountRegisterOperationBuilder eventAccounts() {
@@ -529,6 +537,15 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		@Override
 		public ConsensusSettingsUpdateOperation update(Property[] properties) {
 			ConsensusSettingsUpdateOperation op = CONSENSUS_SETTINGS_UPDATE_OPERATION_BUILDER.update(properties);
+			operationList.add(op);
+			return op;
+		}
+	}
+
+	private class ConsensusTypeUpdateOperationBuilderFilter implements ConsensusTypeUpdateOperationBuilder {
+		@Override
+		public ConsensusTypeUpdateOperation update(String providerName, Property[] properties) {
+			ConsensusTypeUpdateOperation op = CONSENSUS_TYPE_UPDATE_OPERATION_BUILDER.update(providerName, properties);
 			operationList.add(op);
 			return op;
 		}

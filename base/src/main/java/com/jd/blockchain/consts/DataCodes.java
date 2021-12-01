@@ -95,6 +95,9 @@ public interface DataCodes {
     int TX_OP_CONSENSUS_SETTINGS_UPDATE = 0x390;
     int TX_OP_META_CA_UPDATE = 0x391;
 
+    // switch consensus type
+    int TX_OP_CONSENSUS_TYPE_UPDATE = 0x392;
+
     // enum types of permissions;
     int ENUM_TX_PERMISSION = 0x401;
     int ENUM_LEDGER_PERMISSION = 0x402;
