@@ -31,6 +31,7 @@ public class BlockStateSnapshot implements StateSnapshot {
         return snapshotBytes;
     }
 
+    @Override
     public long getTimestamp() {
         return timestamp;
     }

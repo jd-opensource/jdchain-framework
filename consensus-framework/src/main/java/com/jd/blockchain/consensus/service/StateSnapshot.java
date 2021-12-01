@@ -2,23 +2,29 @@ package com.jd.blockchain.consensus.service;
 
 /**
  * 状态快照；
- * 
- * @author huanghaiquan
  *
+ * @author huanghaiquan
  */
 public interface StateSnapshot {
 
-	/**
-	 * 状态的唯一编号；
-	 * 
-	 * @return
-	 */
-	long getId();
+    /**
+     * 状态的唯一编号；
+     *
+     * @return
+     */
+    long getId();
 
-	/**
-	 * 状态的快照数据；
-	 * 
-	 * @return
-	 */
-	byte[] getSnapshot();
+    /**
+     * 状态的快照数据；
+     *
+     * @return
+     */
+    byte[] getSnapshot();
+
+    /**
+     * 时间
+     *
+     * @return
+     */
+    long getTimestamp();
 }
