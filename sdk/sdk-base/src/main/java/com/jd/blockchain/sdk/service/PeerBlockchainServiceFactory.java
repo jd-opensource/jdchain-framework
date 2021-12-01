@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, Closeable {
-	
+
     private ServiceConnectionManager httpConnectionManager;
     private PeerServiceProxy peerServiceProxy;
     // 当前连接可访问账本列表
@@ -78,7 +78,10 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
                 ConsensusClient consensusClient = clientManager.getConsensusClient(ledgerSetting.getLedgerHash(),
                         sessionCredential, () -> {
                             ClientFactory clientFactory = provider.getClientFactory();
-                            return clientFactory.setupClient(clientFactory.buildClientSettings(clientIncomingSettings, consensusSslSecurity));
+                            return clientFactory.setupClient(
+                                    clientFactory.buildClientSettings(clientIncomingSettings, consensusSslSecurity),
+                                    ledgerSetting.getLedgerHash().toBase58()
+                                    );
                         });
 
                 MonitorService monitorService = null;
