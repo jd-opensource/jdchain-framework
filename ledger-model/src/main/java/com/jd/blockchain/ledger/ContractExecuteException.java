@@ -20,6 +20,11 @@ public class ContractExecuteException extends ContractException {
         this.state = state;
     }
 
+    public ContractExecuteException(String message, Throwable cause) {
+        super(message, cause);
+        this.state = TransactionState.CONTRACT_EXECUTE_ERROR;
+    }
+
     public TransactionState getState() {
         return state;
     }

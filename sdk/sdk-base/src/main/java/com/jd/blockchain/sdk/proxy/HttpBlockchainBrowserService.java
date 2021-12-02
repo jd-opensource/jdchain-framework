@@ -12,6 +12,7 @@ import com.jd.blockchain.ledger.LedgerBlock;
 import com.jd.blockchain.ledger.LedgerInfo;
 import com.jd.blockchain.ledger.LedgerMetadata;
 import com.jd.blockchain.ledger.LedgerTransaction;
+import com.jd.blockchain.ledger.LedgerTransactions;
 import com.jd.blockchain.ledger.ParticipantNode;
 import com.jd.blockchain.ledger.PrivilegeSet;
 import com.jd.blockchain.ledger.TransactionState;
@@ -30,6 +31,10 @@ import com.jd.httpservice.PathParam;
 import com.jd.httpservice.RequestBody;
 import com.jd.httpservice.RequestParam;
 import com.jd.httpservice.utils.agent.WebResponseConverterFactory;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 作为内部使用的适配接口，用于声明 HTTP 协议的服务请求；
@@ -934,4 +939,11 @@ public interface HttpBlockchainBrowserService extends BlockchainBrowserService {
 	UserPrivilegeSet getUserPrivileges(
 			@PathParam(name = "ledgerHash", converter = HashDigestToStringConverter.class) HashDigest ledgerHash,
 			@PathParam(name = "userAddress") String userAddress);
+
+	@HttpAction(method = HttpMethod.POST, path = POST_GET_TRANSACTIONS_IN_BLOCK_HEIGHT)
+	LedgerTransactions getAdditionalTransactionsInBinary(
+			@PathParam(name = "ledgerHash", converter = HashDigestToStringConverter.class) HashDigest ledgerHash,
+			@PathParam(name = "blockHeight") long blockHeight,
+			@RequestParam(name = "fromIndex", required = false) int fromIndex,
+			@RequestParam(name = "count", required = false) int count);
 }

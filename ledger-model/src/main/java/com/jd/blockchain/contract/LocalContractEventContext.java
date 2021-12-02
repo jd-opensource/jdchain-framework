@@ -5,8 +5,10 @@ import java.util.Set;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.BytesValueList;
+import com.jd.blockchain.ledger.Operation;
 import com.jd.blockchain.ledger.TransactionRequest;
 import com.jd.blockchain.ledger.LedgerQueryService;
+import utils.Bytes;
 
 /**
  * @Author zhaogw
@@ -14,6 +16,7 @@ import com.jd.blockchain.ledger.LedgerQueryService;
  */
 public class LocalContractEventContext implements ContractEventContext,Cloneable {
     private HashDigest ledgeHash;
+    private Bytes contractAddress;
     private String event;
     private BytesValueList args;
     private TransactionRequest transactionRequest;
@@ -23,8 +26,9 @@ public class LocalContractEventContext implements ContractEventContext,Cloneable
     // 包含未提交区块数据账本查询
     private LedgerQueryService uncommittedLedgerQuery;
 
-    public LocalContractEventContext(HashDigest ledgeHash, String event){
+    public LocalContractEventContext(HashDigest ledgeHash, Bytes contractAddress, String event){
         this.ledgeHash = ledgeHash;
+        this.contractAddress = contractAddress;
         this.event = event;
     }
 
@@ -110,6 +114,11 @@ public class LocalContractEventContext implements ContractEventContext,Cloneable
     @Override
     public LedgerQueryService getUncommittedLedger() {
         return uncommittedLedgerQuery;
+    }
+
+    @Override
+    public Bytes getCurrentContractAddress() {
+        return contractAddress;
     }
 
 }

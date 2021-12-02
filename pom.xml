@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>jdchain-framework</artifactId>
-	<version>1.6.0.RELEASE</version>
+	<version>1.6.1.RELEASE</version>
 	<packaging>pom</packaging>
 	<description>Root project of jdchain framewrok.</description>
 
@@ -29,9 +29,9 @@
 	</modules>
 
 	<properties>
-		<utils.version>2.1.0.RELEASE</utils.version>
-		<httpservice.version>2.0.3.RELEASE</httpservice.version>
-		<binaryproto.version>1.6.2.RELEASE</binaryproto.version>
+		<utils.version>2.2.0.RELEASE</utils.version>
+		<httpservice.version>2.1.0.RELEASE</httpservice.version>
+		<binaryproto.version>1.6.3.RELEASE</binaryproto.version>
 	</properties>
 
 	<dependencyManagement>

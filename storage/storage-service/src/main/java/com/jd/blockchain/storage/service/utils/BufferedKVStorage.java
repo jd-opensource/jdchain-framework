@@ -12,6 +12,9 @@ import com.jd.blockchain.storage.service.ExPolicy;
 import com.jd.blockchain.storage.service.ExPolicyKVStorage;
 import com.jd.blockchain.storage.service.VersioningKVStorage;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.Bytes;
 import utils.DataEntry;
 import utils.Transactional;
@@ -23,7 +26,7 @@ import utils.Transactional;
  *
  */
 public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage, Transactional {
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(BufferedKVStorage.class);
 	private static int MAX_PARALLEL_DB_WRITE_SIZE = 500;
     private HashFunction hashFunction;
 
@@ -33,11 +36,9 @@ public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage
 			try {
 				MAX_PARALLEL_DB_WRITE_SIZE = Integer.parseInt(strSize);
 			} catch (NumberFormatException e) {
-				// 忽略格式错误；
-				e.printStackTrace();
+				LOGGER.error("MAX_PARALLEL_DB_WRITE_SIZE", e);
 			}
 		}
-		System.out.println("------ [[ max-parallel-dbwrite-size=" + MAX_PARALLEL_DB_WRITE_SIZE + " ]] ------");
 	}
 
 	private boolean parallel;

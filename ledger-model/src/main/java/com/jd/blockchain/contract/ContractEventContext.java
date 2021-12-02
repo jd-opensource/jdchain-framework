@@ -5,8 +5,10 @@ import java.util.Set;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.BytesValueList;
+import com.jd.blockchain.ledger.Operation;
 import com.jd.blockchain.ledger.TransactionRequest;
 import com.jd.blockchain.ledger.LedgerQueryService;
+import utils.Bytes;
 
 /**
  * 合约事件上下文；
@@ -81,4 +83,10 @@ public interface ContractEventContext {
 	 */
 	LedgerQueryService getUncommittedLedger();
 
+	/**
+	 * 当前合约地址
+	 *
+	 * @return
+	 */
+	Bytes getCurrentContractAddress();
 }

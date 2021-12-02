@@ -1,8 +1,5 @@
 package com.jd.blockchain.sdk.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.jd.binaryproto.BinaryProtocol;
 import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.consensus.MessageService;
@@ -28,8 +25,6 @@ import utils.exception.ViewObsoleteException;
  *
  */
 public class NodeSigningAppender implements TransactionService {
-
-	private static Logger LOGGER = LoggerFactory.getLogger(NodeSigningAppender.class);
 
 	static {
 		DataContractRegistry.register(TransactionRequest.class);
@@ -75,15 +70,12 @@ public class NodeSigningAppender implements TransactionService {
 			AsyncFuture<byte[]> asyncFuture =  messageService.sendOrdered(BinaryProtocol.encode(txMessage, TransactionRequest.class));
 			byte[] result = asyncFuture.get();
 			if (result == null) {
-				LOGGER.error("Gateway receive [{}]'s result is null!", txRequest.getTransactionHash());
 				return new ErrorTransactionResponse(txRequest.getTransactionHash());
 			}
 			return BinaryProtocol.decode(result);
 		} catch (ViewObsoleteException voe) {
 			throw voe;
 		} catch (Exception e) {
-			e.printStackTrace();
-			LOGGER.error("Gateway send tx [{}] error {} !", txRequest.getTransactionHash(), e);
 			return new ErrorTransactionResponse(txRequest.getTransactionHash());
 		}
 	}

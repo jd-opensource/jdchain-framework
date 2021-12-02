@@ -17,17 +17,15 @@ import com.jd.blockchain.setting.GatewayAuthResponse;
 import com.jd.httpservice.agent.HttpServiceAgent;
 import com.jd.httpservice.agent.ServiceEndpoint;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import utils.net.SSLSecurity;
 import utils.net.NetworkAddress;
 import utils.security.AuthenticationException;
 
 public class PeerAuthenticator {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(PeerAuthenticator.class);
-
 	private AsymmetricKeypair gatewayKey;
 	private NetworkAddress peerAddr;
+	private SSLSecurity sslSecurity;
 	private SessionCredentialProvider credentialProvider;
 
 	public PeerAuthenticator(NetworkAddress peerAddr, AsymmetricKeypair gatewayKey,
@@ -37,9 +35,17 @@ public class PeerAuthenticator {
 		this.credentialProvider = credentialProvider;
 	}
 
+	public PeerAuthenticator(NetworkAddress peerAddr, SSLSecurity sslSecurity, AsymmetricKeypair gatewayKey,
+							 SessionCredentialProvider credentialProvider) {
+		this.peerAddr = peerAddr;
+		this.sslSecurity = sslSecurity;
+		this.gatewayKey = gatewayKey;
+		this.credentialProvider = credentialProvider;
+	}
+
 	public GatewayAuthResponse request() {
 		try {
-			ManagementHttpService gatewayMngService = getManageService(peerAddr);
+			ManagementHttpService gatewayMngService = getManageService(peerAddr, sslSecurity);
 
 			// 获得节点的信息；
 			AccessSpecification accSpec = gatewayMngService.getAccessSpecification();
@@ -65,13 +71,13 @@ public class PeerAuthenticator {
 		} catch (Exception e) {
 			String errorMessage = String.format("Gateway authentication fail! --[peer=%s] %s", peerAddr.toString(),
 					e.getMessage());
-			LOGGER.warn(errorMessage, e);
-			throw new AuthenticationException(errorMessage);
+			throw new AuthenticationException(errorMessage, e);
 		}
 	}
 
-	private static ManagementHttpService getManageService(NetworkAddress peer) {
-		ServiceEndpoint peerServer = new ServiceEndpoint(peer.getHost(), peer.getPort(), false);
+	private static ManagementHttpService getManageService(NetworkAddress peer, SSLSecurity sslSecurity) {
+		ServiceEndpoint peerServer = new ServiceEndpoint(peer.getHost(), peer.getPort(), peer.isSecure());
+		peerServer.setSslSecurity(sslSecurity);
 		ManagementHttpService manageService = HttpServiceAgent.createService(ManagementHttpService.class, peerServer);
 		return manageService;
 	}
