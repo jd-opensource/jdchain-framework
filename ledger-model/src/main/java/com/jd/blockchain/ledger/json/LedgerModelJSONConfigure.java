@@ -4,6 +4,7 @@ import com.jd.blockchain.ledger.AccountModeBits;
 import com.jd.blockchain.ledger.AccountPermissionSetOperation;
 import com.jd.blockchain.ledger.BytesValue;
 import com.jd.blockchain.ledger.ConsensusSettingsUpdateOperation;
+import com.jd.blockchain.ledger.ConsensusTypeUpdateOperation;
 import com.jd.blockchain.ledger.ContractCodeDeployOperation;
 import com.jd.blockchain.ledger.ContractEventSendOperation;
 import com.jd.blockchain.ledger.ContractStateUpdateOperation;
@@ -34,6 +35,7 @@ public class LedgerModelJSONConfigure implements JSONAutoConfigure {
 	public void configure(JSONConfigurator configurator) {
 		//以下配置针对 TransactionContent.getOperations() 方法定义的 Operation 
 		configurator.configProxyInterfaces(ConsensusSettingsUpdateOperation.class);
+		configurator.configProxyInterfaces(ConsensusTypeUpdateOperation.class);
 		configurator.configProxyInterfaces(ContractCodeDeployOperation.class);
 		configurator.configProxyInterfaces(ContractEventSendOperation.class);
 		configurator.configProxyInterfaces(DataAccountKVSetOperation.class);
