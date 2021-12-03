@@ -1,7 +1,5 @@
 package com.jd.blockchain.transaction;
 
-import java.util.Collection;
-
 import com.jd.binaryproto.BinaryProtocol;
 import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.crypto.Crypto;
@@ -11,8 +9,9 @@ import com.jd.blockchain.ledger.Operation;
 import com.jd.blockchain.ledger.TransactionBuilder;
 import com.jd.blockchain.ledger.TransactionContent;
 import com.jd.blockchain.ledger.TransactionRequestBuilder;
-
 import utils.Bytes;
+
+import java.util.Collection;
 
 public class TxBuilder implements TransactionBuilder {
 
@@ -192,6 +191,11 @@ public class TxBuilder implements TransactionBuilder {
 	@Override
 	public ConsensusTypeUpdateOperationBuilder switchSettings() {
 		return opFactory.switchSettings();
+	}
+
+	@Override
+	public ConsensusReconfigOperationBuilder reconfigs() {
+		return opFactory.reconfigs();
 	}
 
 	@Override
