@@ -115,6 +115,12 @@ public class TxTemplate implements TransactionTemplate {
 		return txBuilder.switchSettings();
 	}
 
+	@Override
+	public CryptoHashAlgoUpdateOperationBuilder switchHashAlgo() {
+		stateManager.operate();
+		return txBuilder.switchHashAlgo();
+	}
+
 	public ConsensusReconfigOperationBuilder reconfigs() {
 		stateManager.operate();
 		return txBuilder.reconfigs();

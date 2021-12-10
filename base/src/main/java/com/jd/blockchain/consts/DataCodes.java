@@ -99,6 +99,9 @@ public interface DataCodes {
     // switch consensus type
     int TX_OP_CONSENSUS_TYPE_UPDATE = 0x393;
 
+    // switch crypto algo
+    int TX_OP_CRYPTO_ALGO_UPDATE = 0x394;
+
     // enum types of permissions;
     int ENUM_TX_PERMISSION = 0x401;
     int ENUM_LEDGER_PERMISSION = 0x402;

@@ -12,6 +12,7 @@ import com.jd.blockchain.ledger.ConsensusTypeUpdateOperation;
 import com.jd.blockchain.ledger.ContractCodeDeployOperation;
 import com.jd.blockchain.ledger.ContractEventSendOperation;
 import com.jd.blockchain.ledger.ContractStateUpdateOperation;
+import com.jd.blockchain.ledger.CryptoHashAlgoUpdateOperation;
 import com.jd.blockchain.ledger.DataAccountKVSetOperation;
 import com.jd.blockchain.ledger.DataAccountRegisterOperation;
 import com.jd.blockchain.ledger.EventAccountRegisterOperation;
@@ -65,6 +66,8 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	private static final ConsensusReconfigOperationBuilderImpl CONSENSUS_RECONFIG_OPERATION_BUILDER = new ConsensusReconfigOperationBuilderImpl();
 
+	private static final CryptoHashAlgoUpdateOperationBuilderImpl CRYPTO_HASH_ALGO_UPDATE_OPERATION_BUILDER = new CryptoHashAlgoUpdateOperationBuilderImpl();
+
 	private static final EventAccountRegisterOperationBuilderImpl EVENT_ACC_REG_OP_BUILDER = new EventAccountRegisterOperationBuilderImpl();
 
 	private LedgerInitOperationBuilder ledgerInitOpBuilder = new LedgerInitOperationBuilderFilter();
@@ -86,6 +89,8 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 	private ConsensusTypeUpdateOperationBuilder consensusTypeUpdateOperationBuilder = new ConsensusTypeUpdateOperationBuilderFilter();
 
 	private ConsensusReconfigOperationBuilder consensusReconfigOperationBuilder = new ConsensusReconfigOperationBuilderFilter();
+
+	private CryptoHashAlgoUpdateOperationBuilder cryptoHashAlgoUpdateOperationBuilder = new CryptoHashAlgoUpdateOperationBuilderFilter();
 
 	private EventAccountRegisterOperationBuilder eventAccRegOpBuilder = new EventAccountRegisterOperationBuilderFilter();
 
@@ -153,6 +158,9 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	@Override
 	public ConsensusReconfigOperationBuilder reconfigs() {return consensusReconfigOperationBuilder;}
+
+	@Override
+	public CryptoHashAlgoUpdateOperationBuilder switchHashAlgo() {return cryptoHashAlgoUpdateOperationBuilder;}
 
 	@Override
 	public EventAccountRegisterOperationBuilder eventAccounts() {
@@ -561,6 +569,15 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		@Override
 		public ConsensusReconfigOperation record() {
 			ConsensusReconfigOperation op = CONSENSUS_RECONFIG_OPERATION_BUILDER.record();
+			operationList.add(op);
+			return op;
+		}
+	}
+
+	private class CryptoHashAlgoUpdateOperationBuilderFilter implements CryptoHashAlgoUpdateOperationBuilder {
+		@Override
+		public CryptoHashAlgoUpdateOperation update(String hashAlgoName) {
+			CryptoHashAlgoUpdateOperation op = CRYPTO_HASH_ALGO_UPDATE_OPERATION_BUILDER.update(hashAlgoName);
 			operationList.add(op);
 			return op;
 		}
