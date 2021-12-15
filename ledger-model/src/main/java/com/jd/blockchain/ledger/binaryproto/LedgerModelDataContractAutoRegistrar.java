@@ -10,6 +10,7 @@ import com.jd.blockchain.ledger.BlockBody;
 import com.jd.blockchain.ledger.BlockchainIdentity;
 import com.jd.blockchain.ledger.BytesValue;
 import com.jd.blockchain.ledger.BytesValueList;
+import com.jd.blockchain.ledger.ConsensusReconfigOperation;
 import com.jd.blockchain.ledger.ConsensusSettingsUpdateOperation;
 import com.jd.blockchain.ledger.ConsensusTypeUpdateOperation;
 import com.jd.blockchain.ledger.ContractCodeDeployOperation;
@@ -112,6 +113,7 @@ public class LedgerModelDataContractAutoRegistrar implements DataContractAutoReg
 		DataContractRegistry.register(EventPublishOperation.class);
 		DataContractRegistry.register(EventPublishOperation.EventEntry.class);
 		DataContractRegistry.register(ConsensusSettingsUpdateOperation.class);
+		DataContractRegistry.register(ConsensusReconfigOperation.class);
 		DataContractRegistry.register(ConsensusTypeUpdateOperation.class);
 		DataContractRegistry.register(CryptoHashAlgoUpdateOperation.class);
 		DataContractRegistry.register(PrivilegeSet.class);

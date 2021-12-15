@@ -567,8 +567,8 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	private class ConsensusReconfigOperationBuilderFilter implements ConsensusReconfigOperationBuilder {
 		@Override
-		public ConsensusReconfigOperation record() {
-			ConsensusReconfigOperation op = CONSENSUS_RECONFIG_OPERATION_BUILDER.record();
+		public ConsensusReconfigOperation record(String reconfigType) {
+			ConsensusReconfigOperation op = CONSENSUS_RECONFIG_OPERATION_BUILDER.record(reconfigType);
 			operationList.add(op);
 			return op;
 		}

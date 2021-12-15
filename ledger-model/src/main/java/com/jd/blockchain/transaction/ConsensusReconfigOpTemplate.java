@@ -8,4 +8,15 @@ public class ConsensusReconfigOpTemplate implements ConsensusReconfigOperation {
     static {
         DataContractRegistry.register(ConsensusReconfigOperation.class);
     }
+
+    private String reconfigType;
+
+    public ConsensusReconfigOpTemplate(String reconfigType) {
+        this.reconfigType = reconfigType;
+    }
+
+    @Override
+    public String getReconfigType() {
+        return reconfigType;
+    }
 }
