@@ -26,7 +26,7 @@ public class AccountPermissionSetOperationBuilderImpl implements AccountPermissi
 
     @Override
     public AccountPermissionSetOperationBuilder role(String role) {
-        operation.setRole(role);
+        operation.setRole(role.toUpperCase());
 
         return this;
     }
