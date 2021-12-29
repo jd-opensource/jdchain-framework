@@ -30,6 +30,8 @@ import utils.net.NetworkAddress;
 
 public class LedgerInitProperties implements Serializable {
 
+	private static final String MQ_PROVIDER = "com.jd.blockchain.consensus.mq.MsgQueueConsensusProvider";
+
 	private static final long serialVersionUID = 6261483113521649870L;
 
 	// 账本种子；
@@ -192,7 +194,7 @@ public class LedgerInitProperties implements Serializable {
 
 	/**
 	 * 返回参与者；
-	 * 
+	 *
 	 * @param id 从 1 开始； 小于等于 {@link #getConsensusParticipantCount()};
 	 * @return
 	 */
@@ -207,7 +209,7 @@ public class LedgerInitProperties implements Serializable {
 
 	/**
 	 * 私有的构造器；
-	 * 
+	 *
 	 * @param ledgerSeed
 	 */
 	private LedgerInitProperties(byte[] ledgerSeed) {
@@ -252,7 +254,7 @@ public class LedgerInitProperties implements Serializable {
 
 	/**
 	 * 从属性表解析账本初始化参数；
-	 * 
+	 *
 	 * @param baseDirectory 基础路径；属性中涉及文件位置的相对路径以此参数指定的目录为父目录；
 	 * @param props         要解析的属性表；
 	 * @return
@@ -354,7 +356,7 @@ public class LedgerInitProperties implements Serializable {
 		if (partCount < 0) {
 			throw new IllegalArgumentException(String.format("Property[%s] is negative!", PART_COUNT));
 		}
-		if (partCount < 4) {
+		if(!initProps.consensusProvider.equals(MQ_PROVIDER) && partCount < 4) {
 			throw new IllegalArgumentException(String.format("Property[%s] is less than 4!", PART_COUNT));
 		}
 		GenesisUser[] genesisUsers = new GenesisUserConfig[partCount];
@@ -431,7 +433,7 @@ public class LedgerInitProperties implements Serializable {
 			initProps.addConsensusParticipant(parti);
 			genesisUsers[i] = new GenesisUserConfig(pubKey, ca, partiRoles, policy);
 		}
-		if (consensusNodeCount < 4) {
+		if (!initProps.consensusProvider.equals(MQ_PROVIDER) && consensusNodeCount < 4) {
 			throw new IllegalArgumentException(String.format("Consensus peer nodes size [%s] is less than 4!", consensusNodeCount));
 		}
 		initProps.setGenesisUsers(genesisUsers);
@@ -533,7 +535,7 @@ public class LedgerInitProperties implements Serializable {
 
 	/**
 	 * 参与方配置信息；
-	 * 
+	 *
 	 * @author huanghaiquan
 	 *
 	 */
