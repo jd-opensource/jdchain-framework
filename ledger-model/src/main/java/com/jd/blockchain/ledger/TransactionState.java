@@ -85,6 +85,11 @@ public enum TransactionState {
 	ROLE_DOES_NOT_EXIST((byte) 0x13),
 
 	/**
+	 * 不支持的HASH算法
+	 * */
+	HASH_ALGO_NOT_SUPPORT((byte)0x14),
+
+	/**
 	 * 由于在错误的账本上执行交易而被忽略；
 	 */
 	IGNORED_BY_WRONG_LEDGER((byte) 0x40),
