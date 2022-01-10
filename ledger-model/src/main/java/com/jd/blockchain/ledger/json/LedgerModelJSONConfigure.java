@@ -14,6 +14,7 @@ public class LedgerModelJSONConfigure implements JSONAutoConfigure {
 		configurator.configProxyInterfaces(ConsensusSettingsUpdateOperation.class);
 		configurator.configProxyInterfaces(ConsensusTypeUpdateOperation.class);
 		configurator.configProxyInterfaces(ContractCodeDeployOperation.class);
+		configurator.configProxyInterfaces(ConsensusReconfigOperation.class);
 		configurator.configProxyInterfaces(ContractEventSendOperation.class);
 		configurator.configProxyInterfaces(DataAccountKVSetOperation.class);
 		configurator.configProxyInterfaces(DataAccountRegisterOperation.class);
