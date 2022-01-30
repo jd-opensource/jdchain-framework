@@ -9,7 +9,7 @@ import com.jd.blockchain.crypto.HashDigest;
 /**
  * {@link LedgerMetadata_V2} 是 {@link LedgerMetadata} 的升级版本，新增加了
  * {@link #getRolePrivilegesHash()} 属性；
- * 
+ *
  * @author huanghaiquan
  *
  */
@@ -18,7 +18,7 @@ public interface LedgerMetadata_V2 extends LedgerMetadata {
 
 	/**
 	 * 角色权限集合的根哈希；；
-	 * 
+	 *
 	 * @return
 	 */
 	@DataField(order = 4, primitiveType = PrimitiveType.BYTES)
@@ -26,7 +26,7 @@ public interface LedgerMetadata_V2 extends LedgerMetadata {
 
 	/**
 	 * 用户角色授权集合的根哈希；
-	 * 
+	 *
 	 * @return
 	 */
 	@DataField(order = 5, primitiveType = PrimitiveType.BYTES)
@@ -64,5 +64,12 @@ public interface LedgerMetadata_V2 extends LedgerMetadata {
 	 */
 	@DataField(order = 9, list = true, refContract = true)
 	GenesisUser[] getGenesisUsers();
+
+	/**
+	 * 合约运行时配置
+	 * @return
+	 */
+	@DataField(order = 10,  refContract = true)
+	ContractRuntimeConfig getContractRuntimeConfig();
 
 }

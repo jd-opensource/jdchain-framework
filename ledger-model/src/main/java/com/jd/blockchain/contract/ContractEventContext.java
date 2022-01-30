@@ -3,11 +3,7 @@ package com.jd.blockchain.contract;
 import java.util.Set;
 
 import com.jd.blockchain.crypto.HashDigest;
-import com.jd.blockchain.ledger.BlockchainIdentity;
-import com.jd.blockchain.ledger.BytesValueList;
-import com.jd.blockchain.ledger.Operation;
-import com.jd.blockchain.ledger.TransactionRequest;
-import com.jd.blockchain.ledger.LedgerQueryService;
+import com.jd.blockchain.ledger.*;
 import utils.Bytes;
 
 /**
@@ -89,4 +85,11 @@ public interface ContractEventContext {
 	 * @return
 	 */
 	Bytes getCurrentContractAddress();
+
+	/**
+	 * 合约运行时配置
+	 *
+	 * @return
+	 */
+	ContractRuntimeConfig getContractRuntimeConfig();
 }

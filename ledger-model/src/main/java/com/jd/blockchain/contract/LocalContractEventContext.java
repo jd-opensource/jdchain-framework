@@ -3,11 +3,7 @@ package com.jd.blockchain.contract;
 import java.util.Set;
 
 import com.jd.blockchain.crypto.HashDigest;
-import com.jd.blockchain.ledger.BlockchainIdentity;
-import com.jd.blockchain.ledger.BytesValueList;
-import com.jd.blockchain.ledger.Operation;
-import com.jd.blockchain.ledger.TransactionRequest;
-import com.jd.blockchain.ledger.LedgerQueryService;
+import com.jd.blockchain.ledger.*;
 import utils.Bytes;
 
 /**
@@ -25,9 +21,11 @@ public class LocalContractEventContext implements ContractEventContext,Cloneable
     private long version;
     // 包含未提交区块数据账本查询
     private LedgerQueryService uncommittedLedgerQuery;
+    private ContractRuntimeConfig runtimeConfig;
 
-    public LocalContractEventContext(HashDigest ledgeHash, Bytes contractAddress, String event){
+    public LocalContractEventContext(HashDigest ledgeHash, ContractRuntimeConfig runtimeConfig, Bytes contractAddress, String event){
         this.ledgeHash = ledgeHash;
+        this.runtimeConfig = runtimeConfig;
         this.contractAddress = contractAddress;
         this.event = event;
     }
@@ -119,6 +117,11 @@ public class LocalContractEventContext implements ContractEventContext,Cloneable
     @Override
     public Bytes getCurrentContractAddress() {
         return contractAddress;
+    }
+
+    @Override
+    public ContractRuntimeConfig getContractRuntimeConfig() {
+        return runtimeConfig;
     }
 
 }
