@@ -27,6 +27,11 @@ public class PeerMonitorHandler implements MonitorService {
     public NodeNetworkAddresses loadMonitors() {
         lock.lock();
         try {
+
+            if(nodeSigningAppender.getConsensusClient().getMessageService() == null){
+                nodeSigningAppender.init();
+            }
+
             MessageService messageService = nodeSigningAppender.getMessageService();
             if (messageService != null) {
                 AsyncFuture<byte[]> future = messageService.sendUnordered(LOAD_MONITOR);
