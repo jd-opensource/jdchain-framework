@@ -73,7 +73,6 @@ public class CertificateUtils {
     static JcaPEMKeyConverter converter;
 
     static {
-        Security.removeProvider("SunEC");
         Security.addProvider(new BouncyCastleProvider());
         converter = new JcaPEMKeyConverter();
         identifierMap.put("1.2.840.10045.2.1" + "1.2.840.10045.3.1.7", "ECDSA");
