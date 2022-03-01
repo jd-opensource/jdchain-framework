@@ -1,35 +1,9 @@
 package com.jd.blockchain.transaction;
 
-import com.jd.blockchain.ledger.AccountPermissionSetOperation;
-import com.jd.blockchain.ledger.AccountType;
-import com.jd.blockchain.ledger.BlockchainIdentity;
-import com.jd.blockchain.ledger.BytesValue;
-import com.jd.blockchain.ledger.BytesValueList;
-import com.jd.blockchain.ledger.ConsensusSettingsUpdateOperation;
-import com.jd.blockchain.ledger.ContractCodeDeployOperation;
-import com.jd.blockchain.ledger.ContractEventSendOperation;
-import com.jd.blockchain.ledger.ContractStateUpdateOperation;
-import com.jd.blockchain.ledger.DataAccountKVSetOperation;
-import com.jd.blockchain.ledger.DataAccountRegisterOperation;
-import com.jd.blockchain.ledger.EventAccountRegisterOperation;
-import com.jd.blockchain.ledger.EventPublishOperation;
-import com.jd.blockchain.ledger.LedgerInitOperation;
-import com.jd.blockchain.ledger.LedgerInitSetting;
-import com.jd.blockchain.ledger.Operation;
-import com.jd.blockchain.ledger.ParticipantNodeState;
-import com.jd.blockchain.ledger.ParticipantRegisterOperation;
-import com.jd.blockchain.ledger.ParticipantStateUpdateOperation;
-import com.jd.blockchain.ledger.RootCAUpdateOperation;
-import com.jd.blockchain.ledger.RootCAUpdateOperationBuilder;
-import com.jd.blockchain.ledger.RootCAUpdateOperationBuilderImpl;
-import com.jd.blockchain.ledger.UserCAUpdateOperation;
-import com.jd.blockchain.ledger.UserRegisterOperation;
+import com.jd.blockchain.ledger.*;
 
-import com.jd.blockchain.ledger.AccountState;
-import com.jd.blockchain.ledger.UserStateUpdateOperation;
 import utils.Bytes;
 import utils.Property;
-import utils.codec.Base58Utils;
 
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -493,8 +467,22 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		}
 
 		@Override
+		public ContractCodeDeployOperation deploy(BlockchainIdentity id, byte[] chainCode, ContractLang lang) {
+			ContractCodeDeployOperation op = CONTRACT_CODE_DEPLOY_OP_BUILDER.deploy(id, chainCode, lang);
+			operationList.add(op);
+			return op;
+		}
+
+		@Override
 		public ContractCodeDeployOperation deploy(BlockchainIdentity id, byte[] chainCode, long version) {
 			ContractCodeDeployOperation op = CONTRACT_CODE_DEPLOY_OP_BUILDER.deploy(id, chainCode, version);
+			operationList.add(op);
+			return op;
+		}
+
+		@Override
+		public ContractCodeDeployOperation deploy(BlockchainIdentity id, byte[] chainCode, long version, ContractLang lang) {
+			ContractCodeDeployOperation op = CONTRACT_CODE_DEPLOY_OP_BUILDER.deploy(id, chainCode, version, lang);
 			operationList.add(op);
 			return op;
 		}

@@ -1,5 +1,6 @@
 package com.jd.blockchain.contract;
 
+import com.jd.blockchain.ledger.ContractLang;
 import com.strobel.assembler.metadata.JarTypeLoader;
 import com.strobel.decompiler.Decompiler;
 import com.strobel.decompiler.DecompilerSettings;
@@ -103,10 +104,14 @@ public class OnLineContractProcessor implements ContractProcessor {
     }
 
     @Override
-    public String decompileEntranceClass(byte[] chainCode) {
+    public String decompileEntranceClass(byte[] chainCode, ContractLang lang) {
         try {
-            File carFile = tempCarFile(chainCode);
-            return decompileEntranceClass(carFile);
+            if(ContractLang.Java.equals(lang)) {
+                File carFile = tempCarFile(chainCode);
+                return decompileEntranceClass(carFile);
+            } else {
+                return new String(chainCode);
+            }
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
