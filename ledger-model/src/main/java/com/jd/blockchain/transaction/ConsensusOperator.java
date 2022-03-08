@@ -8,9 +8,23 @@ package com.jd.blockchain.transaction;
 public interface ConsensusOperator {
 
     /**
-     * 共识配置更新操作;
+     * 共识类型不变，共识配置更新操作;
      *
      * @return
      */
     ConsensusSettingsUpdateOperationBuilder settings();
+
+    /**
+     * 共识类型更新操作;
+     *
+     * @return
+     */
+    ConsensusTypeUpdateOperationBuilder switchSettings();
+
+    /**
+     * 运行时的共识网络拓扑环境更新操作
+     *
+     * @return
+     */
+    ConsensusReconfigOperationBuilder reconfigs();
 }

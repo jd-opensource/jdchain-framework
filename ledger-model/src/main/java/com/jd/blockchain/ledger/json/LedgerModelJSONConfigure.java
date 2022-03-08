@@ -1,28 +1,6 @@
 package com.jd.blockchain.ledger.json;
 
-import com.jd.blockchain.ledger.AccountModeBits;
-import com.jd.blockchain.ledger.AccountPermissionSetOperation;
-import com.jd.blockchain.ledger.BytesValue;
-import com.jd.blockchain.ledger.ConsensusSettingsUpdateOperation;
-import com.jd.blockchain.ledger.ContractCodeDeployOperation;
-import com.jd.blockchain.ledger.ContractEventSendOperation;
-import com.jd.blockchain.ledger.ContractStateUpdateOperation;
-import com.jd.blockchain.ledger.DataAccountKVSetOperation;
-import com.jd.blockchain.ledger.DataAccountRegisterOperation;
-import com.jd.blockchain.ledger.EventAccountRegisterOperation;
-import com.jd.blockchain.ledger.EventPublishOperation;
-import com.jd.blockchain.ledger.LedgerInitOperation;
-import com.jd.blockchain.ledger.LedgerPrivilegeBitset;
-import com.jd.blockchain.ledger.ParticipantRegisterOperation;
-import com.jd.blockchain.ledger.ParticipantStateUpdateOperation;
-import com.jd.blockchain.ledger.RolesConfigureOperation;
-import com.jd.blockchain.ledger.RootCAUpdateOperation;
-import com.jd.blockchain.ledger.TransactionPrivilegeBitset;
-import com.jd.blockchain.ledger.UserAuthorizeOperation;
-import com.jd.blockchain.ledger.UserCAUpdateOperation;
-import com.jd.blockchain.ledger.UserInfoSetOperation;
-import com.jd.blockchain.ledger.UserRegisterOperation;
-import com.jd.blockchain.ledger.UserStateUpdateOperation;
+import com.jd.blockchain.ledger.*;
 import utils.Bytes;
 import utils.io.BytesSlice;
 import utils.serialize.json.JSONAutoConfigure;
@@ -34,7 +12,9 @@ public class LedgerModelJSONConfigure implements JSONAutoConfigure {
 	public void configure(JSONConfigurator configurator) {
 		//以下配置针对 TransactionContent.getOperations() 方法定义的 Operation 
 		configurator.configProxyInterfaces(ConsensusSettingsUpdateOperation.class);
+		configurator.configProxyInterfaces(ConsensusTypeUpdateOperation.class);
 		configurator.configProxyInterfaces(ContractCodeDeployOperation.class);
+		configurator.configProxyInterfaces(ConsensusReconfigOperation.class);
 		configurator.configProxyInterfaces(ContractEventSendOperation.class);
 		configurator.configProxyInterfaces(DataAccountKVSetOperation.class);
 		configurator.configProxyInterfaces(DataAccountRegisterOperation.class);
@@ -52,6 +32,7 @@ public class LedgerModelJSONConfigure implements JSONAutoConfigure {
 		configurator.configProxyInterfaces(RootCAUpdateOperation.class);
 		configurator.configProxyInterfaces(AccountPermissionSetOperation.class);
 		configurator.configProxyInterfaces(ContractStateUpdateOperation.class);
+		configurator.configProxyInterfaces(CryptoHashAlgoUpdateOperation.class);
 
 		// BytesValue
 		configurator.configSuperSerializer(BytesValue.class, BytesValueSerializer.INSTANCE);

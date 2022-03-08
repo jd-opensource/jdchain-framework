@@ -1,6 +1,8 @@
 package com.jd.blockchain.consensus;
 
 import com.jd.binaryproto.DataContract;
+import com.jd.binaryproto.DataField;
+import com.jd.binaryproto.PrimitiveType;
 import com.jd.blockchain.consts.DataCodes;
 
 /**
@@ -13,4 +15,8 @@ import com.jd.blockchain.consts.DataCodes;
  */
 @DataContract(code = DataCodes.CLIENT_SESSION_CREDENTIAL)
 public interface SessionCredential {
+
+    @DataField(order = 0, primitiveType = PrimitiveType.INT32)
+    int consensusProviderType();
+
 }

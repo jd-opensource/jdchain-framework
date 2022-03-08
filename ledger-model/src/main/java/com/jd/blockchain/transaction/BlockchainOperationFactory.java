@@ -1,7 +1,6 @@
 package com.jd.blockchain.transaction;
 
 import com.jd.blockchain.ledger.*;
-
 import utils.Bytes;
 import utils.Property;
 
@@ -35,6 +34,12 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	private static final ConsensusSettingsUpdateOperationBuilderImpl CONSENSUS_SETTINGS_UPDATE_OPERATION_BUILDER = new ConsensusSettingsUpdateOperationBuilderImpl();
 
+	private static final ConsensusTypeUpdateOperationBuilderImpl CONSENSUS_TYPE_UPDATE_OPERATION_BUILDER = new ConsensusTypeUpdateOperationBuilderImpl();
+
+	private static final ConsensusReconfigOperationBuilderImpl CONSENSUS_RECONFIG_OPERATION_BUILDER = new ConsensusReconfigOperationBuilderImpl();
+
+	private static final CryptoHashAlgoUpdateOperationBuilderImpl CRYPTO_HASH_ALGO_UPDATE_OPERATION_BUILDER = new CryptoHashAlgoUpdateOperationBuilderImpl();
+
 	private static final EventAccountRegisterOperationBuilderImpl EVENT_ACC_REG_OP_BUILDER = new EventAccountRegisterOperationBuilderImpl();
 
 	private LedgerInitOperationBuilder ledgerInitOpBuilder = new LedgerInitOperationBuilderFilter();
@@ -52,6 +57,12 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 	private ParticipantStateUpdateOperationBuilder participantStateModifyOpBuilder = new ParticipantStateUpdateOperationBuilderFilter();
 
 	private ConsensusSettingsUpdateOperationBuilder consensusSettingsUpdateOperationBuilder = new ConsensusSettingsUpdateOperationBuilderFilter();
+
+	private ConsensusTypeUpdateOperationBuilder consensusTypeUpdateOperationBuilder = new ConsensusTypeUpdateOperationBuilderFilter();
+
+	private ConsensusReconfigOperationBuilder consensusReconfigOperationBuilder = new ConsensusReconfigOperationBuilderFilter();
+
+	private CryptoHashAlgoUpdateOperationBuilder cryptoHashAlgoUpdateOperationBuilder = new CryptoHashAlgoUpdateOperationBuilderFilter();
 
 	private EventAccountRegisterOperationBuilder eventAccRegOpBuilder = new EventAccountRegisterOperationBuilderFilter();
 
@@ -113,6 +124,15 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 	@Override
 	public ConsensusSettingsUpdateOperationBuilder settings() {return consensusSettingsUpdateOperationBuilder;}
+
+	@Override
+	public ConsensusTypeUpdateOperationBuilder switchSettings() {return consensusTypeUpdateOperationBuilder;}
+
+	@Override
+	public ConsensusReconfigOperationBuilder reconfigs() {return consensusReconfigOperationBuilder;}
+
+	@Override
+	public CryptoHashAlgoUpdateOperationBuilder switchHashAlgo() {return cryptoHashAlgoUpdateOperationBuilder;}
 
 	@Override
 	public EventAccountRegisterOperationBuilder eventAccounts() {
@@ -522,8 +542,34 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 		}
 	}
 
-	private class EventAccountRegisterOperationBuilderFilter implements EventAccountRegisterOperationBuilder{
+	private class ConsensusTypeUpdateOperationBuilderFilter implements ConsensusTypeUpdateOperationBuilder {
+		@Override
+		public ConsensusTypeUpdateOperation update(String providerName, Property[] properties) {
+			ConsensusTypeUpdateOperation op = CONSENSUS_TYPE_UPDATE_OPERATION_BUILDER.update(providerName, properties);
+			operationList.add(op);
+			return op;
+		}
+	}
 
+	private class ConsensusReconfigOperationBuilderFilter implements ConsensusReconfigOperationBuilder {
+		@Override
+		public ConsensusReconfigOperation record(String reconfigType) {
+			ConsensusReconfigOperation op = CONSENSUS_RECONFIG_OPERATION_BUILDER.record(reconfigType);
+			operationList.add(op);
+			return op;
+		}
+	}
+
+	private class CryptoHashAlgoUpdateOperationBuilderFilter implements CryptoHashAlgoUpdateOperationBuilder {
+		@Override
+		public CryptoHashAlgoUpdateOperation update(String hashAlgoName) {
+			CryptoHashAlgoUpdateOperation op = CRYPTO_HASH_ALGO_UPDATE_OPERATION_BUILDER.update(hashAlgoName);
+			operationList.add(op);
+			return op;
+		}
+	}
+
+	private class EventAccountRegisterOperationBuilderFilter implements EventAccountRegisterOperationBuilder {
 		@Override
 		public EventAccountRegisterOperation register(BlockchainIdentity accountID) {
 			EventAccountRegisterOperation op = EVENT_ACC_REG_OP_BUILDER.register(accountID);

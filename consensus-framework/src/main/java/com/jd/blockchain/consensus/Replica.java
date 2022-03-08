@@ -1,40 +1,42 @@
 package com.jd.blockchain.consensus;
 
 import com.jd.blockchain.crypto.PubKey;
-
 import utils.Bytes;
 
+/**
+ * @Author: zhangshuang
+ * @Date: 2021/12/1 2:20 PM
+ * Version 1.0
+ */
 public interface Replica {
+    /**
+     * 节点的顺序编号；<br>
+     *
+     * 注：此字段并非固定不变的；在序列化和反序列化时不包含此字段；
+     *
+     * @return
+     */
+    int getId();
 
+    /**
+     * 节点的虚拟地址；
+     *
+     * @return
+     */
+    Bytes getAddress();
 
-	/**
-	 * 节点的顺序编号；<br>
-	 * 
-	 * 注：此字段并非固定不变的；在序列化和反序列化时不包含此字段；
-	 * 
-	 * @return
-	 */
-	int getId();
+    /**
+     * 参与者名称；
+     *
+     * @return
+     */
+    String getName();
 
-	/**
-	 * 节点的虚拟地址；
-	 * 
-	 * @return
-	 */
-	Bytes getAddress();
-
-	/**
-	 * 参与者名称；
-	 * 
-	 * @return
-	 */
-	String getName();
-
-	/**
-	 * 节点消息认证的公钥；
-	 * 
-	 * @return
-	 */
-	PubKey getPubKey();
+    /**
+     * 节点消息认证的公钥；
+     *
+     * @return
+     */
+    PubKey getPubKey();
 
 }

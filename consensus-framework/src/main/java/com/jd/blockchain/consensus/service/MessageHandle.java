@@ -62,17 +62,51 @@ public interface MessageHandle {
 	/**
 	 * 获得当前最新区块的状态快照
 	 *
-	 * @param consensusContext
+	 * @param realName
 	 * @return 最新区块的状态快照
 	 */
-	StateSnapshot getStateSnapshot(ConsensusContext consensusContext);
+	StateSnapshot getLatestStateSnapshot(String realName);
 
 	/**
 	 * 获得创世区块的状态快照
 	 *
-	 * @param consensusContext
+	 * @param realName
 	 * @return 创世区块的状态快照
 	 */
-	StateSnapshot getGenesisStateSnapshot(ConsensusContext consensusContext);
+	StateSnapshot getGenesisStateSnapshot(String realName);
+
+	/**
+	 * 根据cid获取对应高度区块内的增量业务消息数
+	 * @param realName
+	 * @param cid
+	 * @return
+	 */
+	int getCommandsNumByCid(String realName, int cid);
+
+	/**
+	 * 根据cid获取对应高度区块内的增量业务消息内容
+	 *
+	 * @param realName
+	 * @param cid
+	 * @param currCidCommandsSize
+	 * @return
+	 */
+	byte[][] getCommandsByCid(String realName, int cid, int currCidCommandsSize);
+
+	/**
+	 * 根据cid获取对应高度区块哈希，cid+1 <--> blockheight
+	 * @param realName
+	 * @param cid
+	 * @return
+	 */
+	byte[] getSnapshotByHeight(String realName, int cid);
+
+	/**
+	 * 根据cid获取对应高度区块的时间戳，cid+1 <--> blockheight
+	 * @param realName
+	 * @param cid
+	 * @return
+	 */
+	long getTimestampByCid(String realName, int cid);
 
 }

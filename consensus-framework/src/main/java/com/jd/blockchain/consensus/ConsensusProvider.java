@@ -10,4 +10,5 @@ public interface ConsensusProvider extends ConsensusClientProvider, ConsensusSer
 
 	SettingsFactory getSettingsFactory();
 
+	ConsensusTypeEnum getConsensusType();
 }

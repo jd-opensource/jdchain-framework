@@ -78,7 +78,10 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
                 ConsensusClient consensusClient = clientManager.getConsensusClient(ledgerSetting.getLedgerHash(),
                         sessionCredential, () -> {
                             ClientFactory clientFactory = provider.getClientFactory();
-                            return clientFactory.setupClient(clientFactory.buildClientSettings(clientIncomingSettings, consensusSslSecurity));
+                            return clientFactory.setupClient(
+                                    clientFactory.buildClientSettings(clientIncomingSettings, consensusSslSecurity),
+                                    ledgerSetting.getLedgerHash().toBase58()
+                                    );
                         });
 
                 MonitorService monitorService = null;
@@ -287,4 +290,5 @@ public class PeerBlockchainServiceFactory implements BlockchainServiceFactory, C
             this.queryService = queryService;
         }
     }
+
 }
