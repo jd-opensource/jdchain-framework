@@ -91,6 +91,8 @@ public interface LedgerQueryService {
 
     TypedKVEntry[] getDataEntries(String address, KVInfoVO kvInfoVO);
 
+    TypedKVEntry getDataEntry(String address, String key, long version);
+
     /**
      * 返回指定数据账户中KV数据的总数
      *

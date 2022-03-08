@@ -158,8 +158,8 @@ public interface DataCodes {
 
     // contract related;
     int CONTRACT_ACCOUNT_HEADER = 0xA00;
-
-    int CONTRACT_INFO = 0xA01;
+    int CONTRACT_RUNTIME_TYPE = 0xA01;
+    int CONTRACT_LANG = 0xA01;
 
     // ...0xA19
     int HASH = 0xB00;

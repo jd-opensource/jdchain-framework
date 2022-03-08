@@ -1,5 +1,7 @@
 package com.jd.blockchain.contract;
 
+import com.jd.blockchain.ledger.ContractLang;
+
 import java.io.File;
 
 /**
@@ -56,7 +58,8 @@ public interface ContractProcessor {
      * 反编译入口类
      *
      * @param chainCode
+     * @param lang
      * @return
      */
-    String decompileEntranceClass(byte[] chainCode) throws Exception;
+    String decompileEntranceClass(byte[] chainCode, ContractLang lang) throws Exception;
 }
