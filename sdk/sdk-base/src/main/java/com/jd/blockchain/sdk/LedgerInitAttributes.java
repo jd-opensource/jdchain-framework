@@ -3,10 +3,7 @@ package com.jd.blockchain.sdk;
 
 import com.jd.blockchain.consensus.ConsensusViewSettings;
 import com.jd.blockchain.crypto.HashDigest;
-import com.jd.blockchain.ledger.CryptoSetting;
-import com.jd.blockchain.ledger.GenesisUser;
-import com.jd.blockchain.ledger.IdentityMode;
-import com.jd.blockchain.ledger.ParticipantNode;
+import com.jd.blockchain.ledger.*;
 
 /**
  * 账本初始化配置属性；
@@ -58,6 +55,11 @@ public class LedgerInitAttributes  {
      * 初始用户列表
      */
     private GenesisUser[] genesisUsers;
+
+    /**
+     * 合约运行时配置
+     */
+    private ContractRuntimeConfig contractRuntimeConfig;
 
     /**
      * 账本结构版本号
@@ -142,5 +144,13 @@ public class LedgerInitAttributes  {
 
     public void setGenesisUsers(GenesisUser[] genesisUsers) {
         this.genesisUsers = genesisUsers;
+    }
+
+    public ContractRuntimeConfig getContractRuntimeConfig() {
+        return contractRuntimeConfig;
+    }
+
+    public void setContractRuntimeConfig(ContractRuntimeConfig contractRuntimeConfig) {
+        this.contractRuntimeConfig = contractRuntimeConfig;
     }
 }

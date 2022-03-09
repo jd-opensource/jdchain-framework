@@ -1,12 +1,7 @@
 package com.jd.blockchain.transaction;
 
 import com.jd.binaryproto.DataContractRegistry;
-import com.jd.blockchain.ledger.CryptoSetting;
-import com.jd.blockchain.ledger.GenesisUser;
-import com.jd.blockchain.ledger.IdentityMode;
-import com.jd.blockchain.ledger.LedgerDataStructure;
-import com.jd.blockchain.ledger.LedgerInitSetting;
-import com.jd.blockchain.ledger.ParticipantNode;
+import com.jd.blockchain.ledger.*;
 
 import utils.Bytes;
 
@@ -37,6 +32,8 @@ public class LedgerInitData implements LedgerInitSetting {
 	private long ledgerStructureVersion = -1L;
 
 	private LedgerDataStructure ledgerDataStructure;
+
+	private ContractRuntimeConfig contractRuntimeConfig;
 
 	@Override
 	public byte[] getLedgerSeed() {
@@ -129,6 +126,15 @@ public class LedgerInitData implements LedgerInitSetting {
 	@Override
 	public LedgerDataStructure getLedgerDataStructure() {
 		return ledgerDataStructure;
+	}
+
+	public void setContractRuntimeConfig(ContractRuntimeConfig contractRuntimeConfig) {
+		this.contractRuntimeConfig = contractRuntimeConfig;
+	}
+
+	@Override
+	public ContractRuntimeConfig getContractRuntimeConfig() {
+		return contractRuntimeConfig;
 	}
 
 	public void setLedgerStructureVersion(long ledgerStructureVersion) {

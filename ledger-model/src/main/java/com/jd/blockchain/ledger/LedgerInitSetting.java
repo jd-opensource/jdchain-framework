@@ -102,4 +102,11 @@ public interface LedgerInitSetting {
     @DataField(order = 11, refEnum = true)
 	LedgerDataStructure getLedgerDataStructure();
 
+    /**
+     * 合约运行时配置
+     *
+     * @return
+     */
+    @DataField(order = 12, refContract = true)
+    ContractRuntimeConfig getContractRuntimeConfig();
 }

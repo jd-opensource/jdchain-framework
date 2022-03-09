@@ -51,6 +51,11 @@ public class LedgerInitProperties implements Serializable {
 	// 创建时间的格式；
 	public static final String CREATED_TIME_FORMAT = Global.DEFAULT_TIME_FORMAT;
 
+	// 合约运行超时配置
+	public static final String CONTRACT_TIMEOUT = "contract.timeout";
+	// 合约运行超时默认值：1分钟
+	public static final int DEFAULt_CONTRACT_TIMEOUT = 60000;
+
 	// 角色清单；
 	public static final String ROLES = "security.roles";
 	// 角色的账本权限；用角色名称替代占位符；
@@ -125,6 +130,8 @@ public class LedgerInitProperties implements Serializable {
 
 	private LedgerDataStructure ledgerDataStructure;
 
+	private long contractTimeout;
+
 	public byte[] getLedgerSeed() {
 		return ledgerSeed.clone();
 	}
@@ -155,6 +162,10 @@ public class LedgerInitProperties implements Serializable {
 
 	public LedgerDataStructure getLedgerDataStructure() {
 		return ledgerDataStructure;
+	}
+
+	public long getContractTimeout() {
+		return contractTimeout;
 	}
 
 	public Properties getConsensusConfig() {
@@ -299,6 +310,8 @@ public class LedgerInitProperties implements Serializable {
 		} catch (ParseException ex) {
 			throw new IllegalArgumentException(ex.getMessage(), ex);
 		}
+		// 合约运行时参数
+		initProps.contractTimeout = PropertiesUtils.getIntOptional(props, CONTRACT_TIMEOUT, DEFAULt_CONTRACT_TIMEOUT);
 
 		String dataStructure = PropertiesUtils.getOptionalProperty(props, LEDGER_DATA_STRUCTURE, LedgerDataStructure.MERKLE_TREE.name());
 		initProps.ledgerDataStructure = LedgerDataStructure.valueOf(dataStructure);

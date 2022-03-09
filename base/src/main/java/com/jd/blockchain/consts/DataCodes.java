@@ -168,6 +168,8 @@ public interface DataCodes {
     int CONTRACT_RUNTIME_TYPE = 0xA01;
     int CONTRACT_LANG = 0xA01;
 
+    int CONTRACT_RUNTIME_CONFIG = 0xA02;
+
     // ...0xA19
     int HASH = 0xB00;
 
