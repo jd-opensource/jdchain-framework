@@ -2,7 +2,6 @@ package com.jd.blockchain.transaction;
 
 import com.jd.binaryproto.DataContractRegistry;
 import com.jd.blockchain.ledger.ConsensusSettingsUpdateOperation;
-
 import utils.Property;
 
 /**
@@ -17,13 +16,24 @@ public class ConsensusSettingsUpdateOpTemplate implements ConsensusSettingsUpdat
     }
 
     private Property[] properties;
+    private String provider;
 
     public ConsensusSettingsUpdateOpTemplate(Property[] properties) {
-
         this.properties = properties;
     }
+
+    public ConsensusSettingsUpdateOpTemplate(String provider, Property[] properties) {
+        this.provider = provider;
+        this.properties = properties;
+    }
+
     @Override
     public Property[] getProperties() {
         return properties;
+    }
+
+    @Override
+    public String getProvider() {
+        return provider;
     }
 }

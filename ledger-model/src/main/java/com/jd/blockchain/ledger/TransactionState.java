@@ -87,7 +87,7 @@ public enum TransactionState {
 	/**
 	 * 不支持的HASH算法
 	 * */
-	HASH_ALGO_NOT_SUPPORT((byte)0x14),
+	UNSUPPORTED_HASH_ALGORITHM((byte)0x14),
 
 	/**
 	 * 合约方法不存在；

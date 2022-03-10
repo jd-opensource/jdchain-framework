@@ -12,7 +12,6 @@ public class LedgerModelJSONConfigure implements JSONAutoConfigure {
 	public void configure(JSONConfigurator configurator) {
 		//以下配置针对 TransactionContent.getOperations() 方法定义的 Operation 
 		configurator.configProxyInterfaces(ConsensusSettingsUpdateOperation.class);
-		configurator.configProxyInterfaces(ConsensusTypeUpdateOperation.class);
 		configurator.configProxyInterfaces(ContractCodeDeployOperation.class);
 		configurator.configProxyInterfaces(ConsensusReconfigOperation.class);
 		configurator.configProxyInterfaces(ContractEventSendOperation.class);
@@ -32,7 +31,7 @@ public class LedgerModelJSONConfigure implements JSONAutoConfigure {
 		configurator.configProxyInterfaces(RootCAUpdateOperation.class);
 		configurator.configProxyInterfaces(AccountPermissionSetOperation.class);
 		configurator.configProxyInterfaces(ContractStateUpdateOperation.class);
-		configurator.configProxyInterfaces(CryptoHashAlgoUpdateOperation.class);
+		configurator.configProxyInterfaces(HashAlgorithmUpdateOperation.class);
 
 		// BytesValue
 		configurator.configSuperSerializer(BytesValue.class, BytesValueSerializer.INSTANCE);

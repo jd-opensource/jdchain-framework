@@ -12,19 +12,5 @@ public interface ConsensusOperator {
      *
      * @return
      */
-    ConsensusSettingsUpdateOperationBuilder settings();
-
-    /**
-     * 共识类型更新操作;
-     *
-     * @return
-     */
-    ConsensusTypeUpdateOperationBuilder switchSettings();
-
-    /**
-     * 运行时的共识网络拓扑环境更新操作
-     *
-     * @return
-     */
-    ConsensusReconfigOperationBuilder reconfigs();
+    ConsensusSettingsUpdateOperationBuilder consensus();
 }

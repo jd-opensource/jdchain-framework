@@ -184,23 +184,13 @@ public class TxBuilder implements TransactionBuilder {
 	}
 
 	@Override
-	public ConsensusSettingsUpdateOperationBuilder settings() {
+	public ConsensusSettingsUpdateOperationBuilder consensus() {
+		return opFactory.consensus();
+	}
+
+	@Override
+	public SettingsOperationBuilder settings() {
 		return opFactory.settings();
-	}
-
-	@Override
-	public ConsensusTypeUpdateOperationBuilder switchSettings() {
-		return opFactory.switchSettings();
-	}
-
-	@Override
-	public CryptoHashAlgoUpdateOperationBuilder switchHashAlgo() {
-		return opFactory.switchHashAlgo();
-	}
-
-	@Override
-	public ConsensusReconfigOperationBuilder reconfigs() {
-		return opFactory.reconfigs();
 	}
 
 	@Override

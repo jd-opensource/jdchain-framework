@@ -5,15 +5,14 @@ package com.jd.blockchain.transaction;
  * @Date: 2021/12/8 11:09 AM
  * Version 1.0
  */
-public interface CryptoOperator {
+public interface SettingsOperator {
 
     /**
-     * 切换hash算法
+     * 系统配置相关操作
      *
      * @return
      */
-    CryptoHashAlgoUpdateOperationBuilder switchHashAlgo();
-
+    SettingsOperationBuilder settings();
 
 
 }

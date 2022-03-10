@@ -53,8 +53,7 @@ public class LedgerModelDataContractAutoRegistrar implements DataContractAutoReg
         DataContractRegistry.register(EventPublishOperation.EventEntry.class);
         DataContractRegistry.register(ConsensusSettingsUpdateOperation.class);
         DataContractRegistry.register(ConsensusReconfigOperation.class);
-        DataContractRegistry.register(ConsensusTypeUpdateOperation.class);
-        DataContractRegistry.register(CryptoHashAlgoUpdateOperation.class);
+        DataContractRegistry.register(HashAlgorithmUpdateOperation.class);
         DataContractRegistry.register(PrivilegeSet.class);
         DataContractRegistry.register(RoleSet.class);
         DataContractRegistry.register(SecurityInitSettings.class);

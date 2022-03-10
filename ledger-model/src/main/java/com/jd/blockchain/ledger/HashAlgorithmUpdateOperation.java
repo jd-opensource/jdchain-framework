@@ -10,10 +10,10 @@ import com.jd.blockchain.consts.DataCodes;
  * @Date: 2021/12/7 5:23 PM
  * Version 1.0
  */
-@DataContract(code= DataCodes.TX_OP_CRYPTO_ALGO_UPDATE)
-public interface CryptoHashAlgoUpdateOperation extends Operation {
+@DataContract(code = DataCodes.TX_OP_HASH_ALGORITHM_UPDATE)
+public interface HashAlgorithmUpdateOperation extends Operation {
 
     @DataField(order = 0, primitiveType = PrimitiveType.TEXT)
-    String getHashAlgoName();
+    String getAlgorithm();
 
 }
