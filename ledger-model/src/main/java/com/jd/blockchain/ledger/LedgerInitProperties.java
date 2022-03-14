@@ -30,7 +30,9 @@ import utils.net.NetworkAddress;
 
 public class LedgerInitProperties implements Serializable {
 
-	private static final String MQ_PROVIDER = "com.jd.blockchain.consensus.mq.MsgQueueConsensusProvider";
+	// TODO 这几个常量统一处理
+	private static final String BFT_PROVIDER = "com.jd.blockchain.consensus.bftsmart.BftsmartConsensusProvider";
+	private static final String RAFT_PROVIDER = "com.jd.blockchain.consensus.raft.RaftConsensusProvider";
 
 	private static final long serialVersionUID = 6261483113521649870L;
 
@@ -369,8 +371,13 @@ public class LedgerInitProperties implements Serializable {
 		if (partCount < 0) {
 			throw new IllegalArgumentException(String.format("Property[%s] is negative!", PART_COUNT));
 		}
-		if(!initProps.consensusProvider.equals(MQ_PROVIDER) && partCount < 4) {
+		// BFT至少四个节点
+		if(initProps.consensusProvider.equals(BFT_PROVIDER) && partCount < 4) {
 			throw new IllegalArgumentException(String.format("Property[%s] is less than 4!", PART_COUNT));
+		}
+		// Raft最少3个节点
+		if(initProps.consensusProvider.equals(RAFT_PROVIDER) && partCount < 3) {
+			throw new IllegalArgumentException(String.format("Property[%s] is less than 3!", PART_COUNT));
 		}
 		GenesisUser[] genesisUsers = new GenesisUserConfig[partCount];
 		int consensusNodeCount = 0;
@@ -446,8 +453,11 @@ public class LedgerInitProperties implements Serializable {
 			initProps.addConsensusParticipant(parti);
 			genesisUsers[i] = new GenesisUserConfig(pubKey, ca, partiRoles, policy);
 		}
-		if (!initProps.consensusProvider.equals(MQ_PROVIDER) && consensusNodeCount < 4) {
+		if (initProps.consensusProvider.equals(BFT_PROVIDER) && consensusNodeCount < 4) {
 			throw new IllegalArgumentException(String.format("Consensus peer nodes size [%s] is less than 4!", consensusNodeCount));
+		}
+		if (initProps.consensusProvider.equals(RAFT_PROVIDER) && consensusNodeCount < 3) {
+			throw new IllegalArgumentException(String.format("Consensus peer nodes size [%s] is less than 3!", consensusNodeCount));
 		}
 		initProps.setGenesisUsers(genesisUsers);
 
