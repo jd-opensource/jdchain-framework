@@ -118,6 +118,11 @@ public class OnLineContractProcessor implements ContractProcessor {
     }
 
     @Override
+    public String decompileEntranceClass(byte[] chainCode) {
+        return decompileEntranceClass(chainCode, ContractLang.Java);
+    }
+
+    @Override
     public String decompileEntranceClass(File carFile) {
         try (JarFile jarFile = new JarFile(carFile)) {
             Map<String, String> attributes = readAttributesFromCar(jarFile);

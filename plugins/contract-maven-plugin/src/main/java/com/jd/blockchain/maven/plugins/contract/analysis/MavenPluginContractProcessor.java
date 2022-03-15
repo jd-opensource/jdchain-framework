@@ -120,6 +120,11 @@ public class MavenPluginContractProcessor implements ContractProcessor {
     }
 
     @Override
+    public String decompileEntranceClass(byte[] chainCode) {
+        return null;
+    }
+
+    @Override
     public String decompileEntranceClass(File carFile) {
         return null;
     }

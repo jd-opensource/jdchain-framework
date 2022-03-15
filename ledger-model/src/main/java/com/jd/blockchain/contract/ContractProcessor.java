@@ -62,4 +62,12 @@ public interface ContractProcessor {
      * @return
      */
     String decompileEntranceClass(byte[] chainCode, ContractLang lang) throws Exception;
+
+    /**
+     * 反编译入口类，默认针对Java语言合约
+     *
+     * @param chainCode
+     * @return
+     */
+    String decompileEntranceClass(byte[] chainCode) throws Exception;
 }
