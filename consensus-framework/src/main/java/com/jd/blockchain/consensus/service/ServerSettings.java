@@ -2,16 +2,21 @@ package com.jd.blockchain.consensus.service;
 
 import com.jd.blockchain.consensus.NodeSettings;
 
+import java.util.Properties;
+
 /**
  * Replica 服务器的本地配置；
- * 
- * @author huanghaiquan
  *
+ * @author huanghaiquan
  */
 public interface ServerSettings {
 
-	String getRealmName();
+    String getRealmName();
 
-	NodeSettings getReplicaSettings();
+    NodeSettings getReplicaSettings();
+
+    default Properties getExtraProperties() {
+        return null;
+    }
 
 }

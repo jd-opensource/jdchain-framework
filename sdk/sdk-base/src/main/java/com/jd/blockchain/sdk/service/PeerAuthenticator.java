@@ -7,6 +7,7 @@ import com.jd.blockchain.consensus.*;
 import com.jd.blockchain.consensus.client.ClientFactory;
 import com.jd.blockchain.crypto.AsymmetricKeypair;
 import com.jd.blockchain.crypto.HashDigest;
+import com.jd.blockchain.ledger.ConsensusTypeEnum;
 import com.jd.blockchain.sdk.AccessSpecification;
 import com.jd.blockchain.sdk.GatewayAuthRequestConfig;
 import com.jd.blockchain.sdk.ManagementHttpService;
