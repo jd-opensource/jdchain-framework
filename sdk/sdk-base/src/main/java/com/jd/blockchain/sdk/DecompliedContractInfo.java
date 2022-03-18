@@ -117,4 +117,8 @@ public class DecompliedContractInfo {
 	public DataPermission getPermission() {
 		return permission;
 	}
+
+	public ContractLang getLang() {
+		return lang;
+	}
 }

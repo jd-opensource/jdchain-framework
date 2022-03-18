@@ -41,7 +41,9 @@ public class ContractCodeDeployOpTemplate implements ContractCodeDeployOperation
         this.contractID = contractID;
         this.chainCode = chainCode;
         this.chainCodeVersion = chainCodeVersion;
-        this.lang = lang;
+        if (null != lang) {
+            this.lang = lang;
+        }
     }
 
     @Override
