@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>com.jd.blockchain</groupId>
 		<artifactId>jdchain-parent</artifactId>
-		<version>1.1.7.RELEASE</version>
+		<version>1.1.8.RELEASE</version>
 		<relativePath>../project/parent</relativePath>
 	</parent>
 
 	<artifactId>jdchain-framework</artifactId>
-	<version>1.6.2.RELEASE</version>
+	<version>1.6.3.RELEASE</version>
 	<packaging>pom</packaging>
 	<description>Root project of jdchain framewrok.</description>
 
@@ -29,9 +29,9 @@
 	</modules>
 
 	<properties>
-		<utils.version>2.2.1.RELEASE</utils.version>
-		<httpservice.version>2.1.1.RELEASE</httpservice.version>
-		<binaryproto.version>1.6.4.RELEASE</binaryproto.version>
+		<utils.version>2.2.2.RELEASE</utils.version>
+		<httpservice.version>2.1.2.RELEASE</httpservice.version>
+		<binaryproto.version>1.6.5.RELEASE</binaryproto.version>
 	</properties>
 
 	<dependencyManagement>
