@@ -4,7 +4,7 @@ public enum ConsensusTypeEnum {
 
     BFTSMART(1, getBFTSMaRtProvider(), 4),
 
-    RAFT(2, getRaftProvider(), 3),
+    RAFT(2, getRaftProvider(), 1),
 
     MQ(3, getMQProvider(), 1),
 
