@@ -183,6 +183,8 @@ public interface DataCodes {
 
     int ENUM_TYPE_PARTICIPANT_NODE_STATE = 0xB24;
 
+    int ENUM_TYPE_DATASET_TYPE = 0xB25;
+
     int DIGITALSIGNATURE = 0xB30;
 
     int DIGITALSIGNATURE_BODY = 0xB31;
