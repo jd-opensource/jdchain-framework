@@ -14,7 +14,7 @@ public enum ContractLang {
     Java((byte) 0x01),
     JavaScript((byte) 0x02),
     Python((byte) 0x03),
-    Wasm((byte) 0x04);
+    Rust((byte) 0x04);
 
     @EnumField(type = PrimitiveType.INT8)
     public final byte CODE;
