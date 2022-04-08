@@ -18,4 +18,12 @@ public interface ContractRuntimeConfig {
      */
     @DataField(order = 1, primitiveType = PrimitiveType.INT64)
     long getTimeout();
+
+    /**
+     * 最大合约调用栈深
+     *
+     * @return
+     */
+    @DataField(order = 2, primitiveType = PrimitiveType.INT32)
+    int getMaxStackDepth();
 }
