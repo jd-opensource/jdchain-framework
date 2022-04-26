@@ -92,4 +92,35 @@ public interface ContractEventContext {
 	 * @return
 	 */
 	ContractRuntimeConfig getContractRuntimeConfig();
+
+	/**
+	 * JSON 序列化
+	 *
+	 * @param obj
+	 * @return
+	 */
+	String jsonSerialize(Object obj);
+
+	/**
+	 * JSON 反序列化
+	 *
+	 * @param json
+	 * @param dataClazz
+	 * @param <T>
+	 * @return
+	 */
+	<T> T jsonDeserialize(String json, Class<T> dataClazz);
+
+	/*  日志相关  */
+	void logInfo(String var1, Object... var2);
+
+	void logInfo(String var1, Throwable var2);
+
+	void logDebug(String var1, Object... var2);
+
+	void logDebug(String var1, Throwable var2);
+
+	void logError(String var1, Object... var2);
+
+	void logError(String var1, Throwable var2);
 }
