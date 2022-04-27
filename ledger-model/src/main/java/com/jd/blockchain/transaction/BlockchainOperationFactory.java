@@ -338,7 +338,12 @@ public class BlockchainOperationFactory implements ClientOperator, LedgerInitOpe
 
 		@Override
 		public ContractEventSendOperation invoke(String event, BytesValueList args) {
-			ContractEventSendOperation op = new ContractEventSendOpTemplate(address, event, args);
+			return invoke(event, args, -1);
+		}
+
+		@Override
+		public ContractEventSendOperation invoke(String event, BytesValueList args, long version) {
+			ContractEventSendOperation op = new ContractEventSendOpTemplate(address, event, args, version);
 			operationList.add(op);
 			return op;
 		}
