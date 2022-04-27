@@ -9,5 +9,10 @@ public enum CertificateUsage {
     // 身份签名认证
     SIGN,
     // SSL安全通信
-    TLS
+    TLS,
+    // SSL安全通信
+    TLS_SIGN,
+    // SSL安全通信
+    TLS_ENC,
+
 }
