@@ -1,10 +1,6 @@
 package com.jd.blockchain.ca;
 
-import com.jd.blockchain.crypto.Crypto;
-import com.jd.blockchain.crypto.CryptoAlgorithm;
-import com.jd.blockchain.crypto.CryptoException;
-import com.jd.blockchain.crypto.PrivKey;
-import com.jd.blockchain.crypto.PubKey;
+import com.jd.blockchain.crypto.*;
 import com.jd.blockchain.crypto.service.classic.ClassicAlgorithm;
 import com.jd.blockchain.crypto.service.sm.SMAlgorithm;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -20,37 +16,13 @@ import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
-import org.bouncycastle.util.io.pem.PemReader;
 import sun.security.x509.X509CertImpl;
 import utils.io.FileUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.Security;
-import java.security.SignatureException;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateExpiredException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.CertificateNotYetValidException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.*;
+import java.security.*;
+import java.security.cert.*;
+import java.util.*;
 
 /**
  * @description: X509 证书工具
@@ -117,6 +89,17 @@ public class CertificateUtils {
             writer.writeObject(privateKey);
             writer.close();
             return sw.getBuffer().toString();
+        } catch (Exception e) {
+            throw new IllegalStateException("private key to string error", e);
+        }
+    }
+
+    public static String toPEMString(PrivateKey privateKey) {
+        try {
+            String encodedString = "-----BEGIN PRIVATE KEY-----\n";
+            encodedString = encodedString + Base64.getEncoder().encodeToString(privateKey.getEncoded()) + "\n";
+            encodedString = encodedString + "-----END PRIVATE KEY-----\n";
+            return encodedString;
         } catch (Exception e) {
             throw new IllegalStateException("private key to string error", e);
         }

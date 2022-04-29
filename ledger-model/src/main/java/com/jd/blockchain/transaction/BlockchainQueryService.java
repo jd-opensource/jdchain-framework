@@ -1,25 +1,9 @@
 package com.jd.blockchain.transaction;
 
-import com.jd.blockchain.ledger.EventAccountInfo;
+import com.jd.blockchain.ledger.*;
 import org.springframework.cglib.core.Block;
 
 import com.jd.blockchain.crypto.HashDigest;
-import com.jd.blockchain.ledger.BlockchainIdentity;
-import com.jd.blockchain.ledger.ContractInfo;
-import com.jd.blockchain.ledger.DataAccountInfo;
-import com.jd.blockchain.ledger.Event;
-import com.jd.blockchain.ledger.KVInfoVO;
-import com.jd.blockchain.ledger.LedgerAdminInfo;
-import com.jd.blockchain.ledger.LedgerBlock;
-import com.jd.blockchain.ledger.LedgerInfo;
-import com.jd.blockchain.ledger.LedgerMetadata;
-import com.jd.blockchain.ledger.LedgerTransaction;
-import com.jd.blockchain.ledger.ParticipantNode;
-import com.jd.blockchain.ledger.PrivilegeSet;
-import com.jd.blockchain.ledger.TransactionState;
-import com.jd.blockchain.ledger.TypedKVEntry;
-import com.jd.blockchain.ledger.UserInfo;
-import com.jd.blockchain.ledger.UserPrivilegeSet;
 
 /**
  * 区块链查询服务；
@@ -29,68 +13,69 @@ import com.jd.blockchain.ledger.UserPrivilegeSet;
  */
 public interface BlockchainQueryService {
 
-	public static final String GET_LEGDER_HASH_LIST = "ledgers";
-	public static final String GET_LEDGER = "ledgers/{ledgerHash}";
-	public static final String GET_BLOCK_WITH_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}";
-	public static final String GET_BLOCK_WITH_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}";
-	
-	public static final String GET_LEDGER_ADMIN_INFO = "ledgers/{ledgerHash}/admininfo";
-	public static final String GET_LEDGER_METADATA = "ledgers/{ledgerHash}/metadata";
-	public static final String GET_CONSENSUS_PARTICIPANTS = "ledgers/{ledgerHash}/participants";
-	
-	public static final String GET_TRANSACTION_COUNT_ON_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/txs/count";
-	public static final String GET_TRANSACTION_COUNT_ON_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/txs/count";
-	public static final String GET_TOTAL_TRANSACTION_COUNT = "ledgers/{ledgerHash}/txs/count";
-	public static final String GET_DATA_ACCOUNT_COUNT_ON_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/accounts/count";
-	public static final String GET_DATA_ACCOUNT_COUNT_ON_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/accounts/count";
-	public static final String GET_TOTAL_DATA_ACCOUNT_COUNT = "ledgers/{ledgerHash}/accounts/count";
-	public static final String GET_USER_COUNT_ON_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/users/count";
-	public static final String GET_USER_COUNT_ON_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/users/count";
-	public static final String GET_TOTAL_USER_COUNT = "ledgers/{ledgerHash}/users/count";
-	public static final String GET_CONTRACT_COUNT_ON_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/contracts/count";
-	public static final String GET_CONTRACT_COUNT_ON_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/contracts/count";
-	public static final String GET_TOTAL_CONTRACT_COUNT = "ledgers/{ledgerHash}/contracts/count";
-	
-	public static final String GET_TRANSACTIONS_ON_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/txs";
-	public static final String GET_TRANSACTIONS_ON_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/txs";
-	public static final String GET_TRANSACTION = "ledgers/{ledgerHash}/txs/hash/{contentHash}";
-	public static final String GET_TRANSACTION_STATE = "ledgers/{ledgerHash}/txs/state/{contentHash}";
-	
-	public static final String GET_TRANSACTIONS_IN_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/txs/additional-txs";
-	public static final String GET_TRANSACTIONS_IN_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/txs/additional-txs";
-	public static final String POST_GET_TRANSACTIONS_IN_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/txs/additional-txs/binary";
-	
-	public static final String GET_USER = "ledgers/{ledgerHash}/users/address/{address}";
-	public static final String GET_USER_SEQUENCE =  "ledgers/{ledgerHash}/users";
-	
-	public static final String GET_DATA_ACCOUNT = "ledgers/{ledgerHash}/accounts/address/{address}";
-	public static final String GET_DATA_ACCOUNT_SEQUENCE =  "ledgers/{ledgerHash}/accounts";
-	public static final String GET_LATEST_KV_LIST = "ledgers/{ledgerHash}/accounts/{address}/entries";
-	public static final String GET_KV_VERSION_LIST = "ledgers/{ledgerHash}/accounts/{address}/entries-version";
-	public static final String GET_LATEST_KV_SEQUENCE = "ledgers/{ledgerHash}/accounts/address/{address}/entries";
-	public static final String GET_KV_COUNT = "ledgers/{ledgerHash}/accounts/address/{address}/entries/count";
-	
-	public static final String GET_LATEST_COMPILED_CONTRACT = "ledgers/{ledgerHash}/contracts/address/{address}/compiled";
-	public static final String GET_COMPILED_CONTRACT = "ledgers/{ledgerHash}/contracts/address/{address}/version/{version}/compiled";
-	public static final String GET_CONTRACT_ACCOUNT_SEQUENCE = "ledgers/{ledgerHash}/contracts";
-	
-	public static final String GET_ROLE_PRIVILEGES =   "ledgers/{ledgerHash}/authorization/role/{roleName}";
-	public static final String GET_USER_PRIVILEGES = "ledgers/{ledgerHash}/authorization/user/{userAddress}";
-	
-	public static final String GET_SYSTEM_EVENT_SEQUENCE = "ledgers/{ledgerHash}/events/system/names/{eventName}";
-	public static final String GET_SYSTEM_EVENT_SUBJECT_COUNT = "ledgers/{ledgerHash}/events/system/names/count";
-	public static final String GET_SYSTEM_EVENT_SUBJECTS = "ledgers/{ledgerHash}/events/system/names";
-	public static final String GET_LATEST_SYSTEM_EVENT = "ledgers/{ledgerHash}/events/system/names/{eventName}/latest";
-	public static final String GET_SYSTEM_EVENT_COUNT = "ledgers/{ledgerHash}/events/system/names/{eventName}/count";
-	
-	public static final String GET_EVENT_ACCOUNT_SEQUENCE = "ledgers/{ledgerHash}/events/user/accounts";
-	public static final String GET_EVENT_ACCOUNT = "ledgers/{ledgerHash}/events/user/accounts/{address}";
-	public static final String GET_TOTAL_EVENT_ACCOUNT_COUNT =  "ledgers/{ledgerHash}/events/user/accounts/count";
-	public static final String GET_EVENT_SUBJECT_COUNT = "ledgers/{ledgerHash}/events/user/accounts/{address}/names/count";
-	public static final String GET_EVENT_SUBJECTS =  "ledgers/{ledgerHash}/events/user/accounts/{address}/names";
-	public static final String GET_LATEST_EVENT =  "ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}/latest";
-	public static final String GET_EVENT_COUNT =  "ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}/count";
-	public static final String GET_EVENT_SEQUENCE =  "ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}";
+	String GET_LEGDER_HASH_LIST = "ledgers";
+	String GET_LEDGER = "ledgers/{ledgerHash}";
+	String GET_BLOCK_WITH_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}";
+	String GET_BLOCK_WITH_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}";
+
+	String GET_LEDGER_ADMIN_INFO = "ledgers/{ledgerHash}/admininfo";
+    String GET_LEDGER_SETTINGS_CRYPTO = "ledgers/{ledgerHash}/settings/crypto";
+	String GET_LEDGER_METADATA = "ledgers/{ledgerHash}/metadata";
+	String GET_CONSENSUS_PARTICIPANTS = "ledgers/{ledgerHash}/participants";
+
+	String GET_TRANSACTION_COUNT_ON_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/txs/count";
+	String GET_TRANSACTION_COUNT_ON_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/txs/count";
+	String GET_TOTAL_TRANSACTION_COUNT = "ledgers/{ledgerHash}/txs/count";
+	String GET_DATA_ACCOUNT_COUNT_ON_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/accounts/count";
+	String GET_DATA_ACCOUNT_COUNT_ON_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/accounts/count";
+	String GET_TOTAL_DATA_ACCOUNT_COUNT = "ledgers/{ledgerHash}/accounts/count";
+	String GET_USER_COUNT_ON_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/users/count";
+	String GET_USER_COUNT_ON_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/users/count";
+	String GET_TOTAL_USER_COUNT = "ledgers/{ledgerHash}/users/count";
+	String GET_CONTRACT_COUNT_ON_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/contracts/count";
+	String GET_CONTRACT_COUNT_ON_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/contracts/count";
+	String GET_TOTAL_CONTRACT_COUNT = "ledgers/{ledgerHash}/contracts/count";
+
+	String GET_TRANSACTIONS_ON_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/txs";
+	String GET_TRANSACTIONS_ON_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/txs";
+	String GET_TRANSACTION = "ledgers/{ledgerHash}/txs/hash/{contentHash}";
+	String GET_TRANSACTION_STATE = "ledgers/{ledgerHash}/txs/state/{contentHash}";
+
+	String GET_TRANSACTIONS_IN_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/txs/additional-txs";
+	String GET_TRANSACTIONS_IN_BLOCK_HASH = "ledgers/{ledgerHash}/blocks/hash/{blockHash}/txs/additional-txs";
+	String POST_GET_TRANSACTIONS_IN_BLOCK_HEIGHT = "ledgers/{ledgerHash}/blocks/height/{blockHeight}/txs/additional-txs/binary";
+
+	String GET_USER = "ledgers/{ledgerHash}/users/address/{address}";
+	String GET_USER_SEQUENCE =  "ledgers/{ledgerHash}/users";
+
+	String GET_DATA_ACCOUNT = "ledgers/{ledgerHash}/accounts/address/{address}";
+	String GET_DATA_ACCOUNT_SEQUENCE =  "ledgers/{ledgerHash}/accounts";
+	String GET_LATEST_KV_LIST = "ledgers/{ledgerHash}/accounts/{address}/entries";
+	String GET_KV_VERSION_LIST = "ledgers/{ledgerHash}/accounts/{address}/entries-version";
+	String GET_LATEST_KV_SEQUENCE = "ledgers/{ledgerHash}/accounts/address/{address}/entries";
+	String GET_KV_COUNT = "ledgers/{ledgerHash}/accounts/address/{address}/entries/count";
+
+	String GET_LATEST_COMPILED_CONTRACT = "ledgers/{ledgerHash}/contracts/address/{address}/compiled";
+	String GET_COMPILED_CONTRACT = "ledgers/{ledgerHash}/contracts/address/{address}/version/{version}/compiled";
+	String GET_CONTRACT_ACCOUNT_SEQUENCE = "ledgers/{ledgerHash}/contracts";
+
+	String GET_ROLE_PRIVILEGES =   "ledgers/{ledgerHash}/authorization/role/{roleName}";
+	String GET_USER_PRIVILEGES = "ledgers/{ledgerHash}/authorization/user/{userAddress}";
+
+	String GET_SYSTEM_EVENT_SEQUENCE = "ledgers/{ledgerHash}/events/system/names/{eventName}";
+	String GET_SYSTEM_EVENT_SUBJECT_COUNT = "ledgers/{ledgerHash}/events/system/names/count";
+	String GET_SYSTEM_EVENT_SUBJECTS = "ledgers/{ledgerHash}/events/system/names";
+	String GET_LATEST_SYSTEM_EVENT = "ledgers/{ledgerHash}/events/system/names/{eventName}/latest";
+	String GET_SYSTEM_EVENT_COUNT = "ledgers/{ledgerHash}/events/system/names/{eventName}/count";
+
+	String GET_EVENT_ACCOUNT_SEQUENCE = "ledgers/{ledgerHash}/events/user/accounts";
+	String GET_EVENT_ACCOUNT = "ledgers/{ledgerHash}/events/user/accounts/{address}";
+	String GET_TOTAL_EVENT_ACCOUNT_COUNT =  "ledgers/{ledgerHash}/events/user/accounts/count";
+	String GET_EVENT_SUBJECT_COUNT = "ledgers/{ledgerHash}/events/user/accounts/{address}/names/count";
+	String GET_EVENT_SUBJECTS =  "ledgers/{ledgerHash}/events/user/accounts/{address}/names";
+	String GET_LATEST_EVENT =  "ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}/latest";
+	String GET_EVENT_COUNT =  "ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}/count";
+	String GET_EVENT_SEQUENCE =  "ledgers/{ledgerHash}/events/user/accounts/{address}/names/{eventName}";
 
 	/**
 	 * 返回所有的账本的 hash 列表；<br>
@@ -116,6 +101,13 @@ public interface BlockchainQueryService {
 	 * @return 账本对象；如果不存在，则返回 null；
 	 */
 	LedgerAdminInfo getLedgerAdminInfo(HashDigest ledgerHash);
+
+    /**
+     * 获取账本密码算法配置
+     * @param ledgerHash
+     * @return
+     */
+    CryptoSetting getLedgerCryptoSetting(HashDigest ledgerHash);
 
 	/**
 	 * 返回当前账本的参与者信息列表

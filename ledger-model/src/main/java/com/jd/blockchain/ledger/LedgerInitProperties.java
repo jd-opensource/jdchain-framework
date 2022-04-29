@@ -46,7 +46,10 @@ public class LedgerInitProperties implements Serializable {
 	// 合约运行超时配置
 	public static final String CONTRACT_TIMEOUT = "contract.timeout";
 	// 合约运行超时默认值：1分钟
-	public static final int DEFAULt_CONTRACT_TIMEOUT = 60000;
+	public static final int DEFAULT_CONTRACT_TIMEOUT = 60000;
+	// 合约运行最大相互调用栈深
+	public static final String MAX_STACK_DEPTH = "contract.max-stack-depth";
+	public static final int DEFAULT_MAX_STACK_DEPTH = 100;
 
 	// 角色清单；
 	public static final String ROLES = "security.roles";
@@ -124,6 +127,8 @@ public class LedgerInitProperties implements Serializable {
 
 	private long contractTimeout;
 
+	private int maxStackDepth;
+
 	public byte[] getLedgerSeed() {
 		return ledgerSeed.clone();
 	}
@@ -158,6 +163,10 @@ public class LedgerInitProperties implements Serializable {
 
 	public long getContractTimeout() {
 		return contractTimeout;
+	}
+
+	public int getMaxStackDepth() {
+		return maxStackDepth;
 	}
 
 	public Properties getConsensusConfig() {
@@ -303,7 +312,8 @@ public class LedgerInitProperties implements Serializable {
 			throw new IllegalArgumentException(ex.getMessage(), ex);
 		}
 		// 合约运行时参数
-		initProps.contractTimeout = PropertiesUtils.getIntOptional(props, CONTRACT_TIMEOUT, DEFAULt_CONTRACT_TIMEOUT);
+		initProps.contractTimeout = PropertiesUtils.getIntOptional(props, CONTRACT_TIMEOUT, DEFAULT_CONTRACT_TIMEOUT);
+		initProps.maxStackDepth = PropertiesUtils.getIntOptional(props, MAX_STACK_DEPTH, DEFAULT_MAX_STACK_DEPTH);
 
 		String dataStructure = PropertiesUtils.getOptionalProperty(props, LEDGER_DATA_STRUCTURE, LedgerDataStructure.MERKLE_TREE.name());
 		initProps.ledgerDataStructure = LedgerDataStructure.valueOf(dataStructure);

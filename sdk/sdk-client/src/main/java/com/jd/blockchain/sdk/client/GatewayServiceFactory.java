@@ -39,7 +39,7 @@ public class GatewayServiceFactory implements BlockchainServiceFactory, Closeabl
         HashDigest[] ledgerHashs = queryService.getLedgerHashs();
         CryptoSetting[] cryptoSettings = new CryptoSetting[ledgerHashs.length];
         for (int i = 0; i < cryptoSettings.length; i++) {
-            cryptoSettings[i] = queryService.getLedgerAdminInfo(ledgerHashs[i]).getSettings().getCryptoSetting();
+            cryptoSettings[i] = queryService.getLedgerCryptoSetting(ledgerHashs[i]);
         }
         this.blockchainService = new GatewayBlockchainServiceProxy(ledgerHashs, cryptoSettings, txProcSrv,
                 queryService);

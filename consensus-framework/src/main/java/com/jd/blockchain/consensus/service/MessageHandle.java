@@ -99,7 +99,7 @@ public interface MessageHandle {
 	 * @param cid
 	 * @return
 	 */
-	byte[] getSnapshotByHeight(String realName, int cid);
+	byte[] getBlockHashByCid(String realName, int cid);
 
 	/**
 	 * 根据cid获取对应高度区块的时间戳，cid+1 <--> blockheight

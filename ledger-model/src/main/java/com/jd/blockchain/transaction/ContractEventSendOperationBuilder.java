@@ -30,4 +30,12 @@ public interface ContractEventSendOperationBuilder {
      * @return
      */
     ContractEventSendOperation invoke(String event, BytesValueList args);
+
+    /**
+     * @param event 合约方法名；
+     * @param args  合约参数；
+     * @param args  合约版本；
+     * @return
+     */
+    ContractEventSendOperation invoke(String event, BytesValueList args, long version);
 }
