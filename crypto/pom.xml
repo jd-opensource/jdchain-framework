@@ -15,6 +15,7 @@
 		<module>crypto-base</module>
 		<module>crypto-classic</module>
 		<module>crypto-sm</module>
+		<module>crypto-adv</module>
 		<module>crypto-binary-protocal</module>
 		<module>crypto-ca</module>
 	</modules>
