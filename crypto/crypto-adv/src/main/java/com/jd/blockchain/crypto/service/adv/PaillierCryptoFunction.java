@@ -4,8 +4,8 @@ import com.jd.blockchain.crypto.*;
 import com.jd.blockchain.crypto.base.AlgorithmUtils;
 import com.jd.blockchain.crypto.base.DefaultCryptoEncoding;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
-import utils.crypto.adv.PaillierPrivateKeyParameters;
-import utils.crypto.adv.PaillierPublicKeyParameters;
+import utils.crypto.adv.paillier.PaillierPrivateKeyParameters;
+import utils.crypto.adv.paillier.PaillierPublicKeyParameters;
 import utils.crypto.adv.PaillierUtils;
 
 import static com.jd.blockchain.crypto.CryptoKeyType.PRIVATE;
