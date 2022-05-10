@@ -11,7 +11,7 @@
 	<version>1.0.0.RELEASE</version>
 	
 	<properties>
-		<framework.version>1.6.3.RELEASE</framework.version>
+		<framework.version>1.6.4.RELEASE</framework.version>
 	</properties>
 
 	<dependencies>
