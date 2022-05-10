@@ -5,6 +5,7 @@ import java.util.Set;
 import com.jd.blockchain.crypto.HashDigest;
 import com.jd.blockchain.ledger.*;
 import utils.Bytes;
+import utils.serialize.json.GenericType;
 
 /**
  * 合约事件上下文；
@@ -101,6 +102,8 @@ public interface ContractEventContext {
 	 */
 	String jsonSerialize(Object obj);
 
+	String jsonSerialize(Object data, Class<?> serializedType);
+
 	/**
 	 * JSON 反序列化
 	 *
@@ -109,7 +112,11 @@ public interface ContractEventContext {
 	 * @param <T>
 	 * @return
 	 */
-	<T> T jsonDeserialize(String json, Class<T> dataClazz);
+	<T> T jsonDeserializeFromJSON(String json, Class<T> dataClazz);
+
+	<T> T jsonDeserializeFromJSON(String json, GenericType<T> type);
+
+	<T> T jsonDeserializeAs(String json, Class<T> dataClazz);
 
 	/*  日志相关  */
 	void logInfo(String var1, Object... var2);
