@@ -99,6 +99,8 @@ public class LedgerInitProperties implements Serializable {
 
 	public static final String LEDGER_DATA_STRUCTURE = "ledger.data.structure";
 
+	public static final String LEDGER_DATA_WRITE_MYSQL = "ledger.data.write.mysql";
+
 	public static final String CRYPTO_SERVICE_PROVIDERS_SPLITTER = ",";
 
 	private byte[] ledgerSeed;
@@ -124,6 +126,8 @@ public class LedgerInitProperties implements Serializable {
 	private long createdTime;
 
 	private LedgerDataStructure ledgerDataStructure;
+
+	private boolean ledgerDataWriteMysql;
 
 	private long contractTimeout;
 
@@ -159,6 +163,10 @@ public class LedgerInitProperties implements Serializable {
 
 	public LedgerDataStructure getLedgerDataStructure() {
 		return ledgerDataStructure;
+	}
+
+	public boolean isLedgerDataWriteMysql() {
+		return ledgerDataWriteMysql;
 	}
 
 	public long getContractTimeout() {
@@ -317,6 +325,9 @@ public class LedgerInitProperties implements Serializable {
 
 		String dataStructure = PropertiesUtils.getOptionalProperty(props, LEDGER_DATA_STRUCTURE, LedgerDataStructure.MERKLE_TREE.name());
 		initProps.ledgerDataStructure = LedgerDataStructure.valueOf(dataStructure);
+
+		boolean writeMysql = PropertiesUtils.getBooleanOptional(props, LEDGER_DATA_WRITE_MYSQL, false);
+		initProps.ledgerDataWriteMysql = writeMysql;
 
 		// 解析角色清单；
 		String strRoleNames = PropertiesUtils.getOptionalProperty(props, ROLES);
