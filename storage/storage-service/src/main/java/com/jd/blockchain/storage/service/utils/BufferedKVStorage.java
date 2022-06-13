@@ -143,6 +143,26 @@ public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage
 		return ws.set(value, version);
 	}
 
+	@Override
+	public byte[] archiveGet(Bytes key, long version) {
+		return new byte[0];
+	}
+
+	@Override
+	public long archiveRemove(Bytes key, long version) {
+		return 0;
+	}
+
+	@Override
+	public long archiveSet(Bytes key, byte[] value, long version) {
+		return 0;
+	}
+
+	@Override
+	public void iterateAllKeys() {
+
+	}
+
 	/**
 	 * 输出已缓冲的所有写入数据到原始存储，并清空缓冲区；
 	 */
@@ -588,13 +608,5 @@ public class BufferedKVStorage implements VersioningKVStorage, ExPolicyKVStorage
 			return value;
 		}
 
-	}
-
-	public long getVerKvSize() {
-		return versioningCache.size();
-	}
-
-	public long getExistKvSize() {
-		return existanceCache.size();
 	}
 }

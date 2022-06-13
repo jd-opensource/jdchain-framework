@@ -78,4 +78,49 @@ public interface VersioningKVStorage extends BatchStorageService {
 	 */
 	long set(Bytes key, byte[] value, long version);
 
+
+	/**
+	 * Get the value of the key and version, only used by kvdata archive and recovery
+	 *
+	 * Just get value data ,not get version data
+	 *
+	 * @param key
+	 *            the key;
+	 * @param version
+	 *            the version;
+	 * @return value
+	 */
+	byte[] archiveGet(Bytes key, long version);
+
+	/**
+	 * Remove the value of the key and version, only used by kvdata archive and recovery
+	 *
+	 * Just remove value data ,not remove version data
+	 *
+	 * @param key
+	 *            the key;
+	 * @param version
+	 *            the removed version;
+	 * @return 0(succ)
+	 */
+	long archiveRemove(Bytes key, long version);
+
+	/**
+	 * Set the value of the key and version, only used by kvdata archive and recovery
+	 *
+	 * Just set value data ,not set version data
+	 *
+	 * @param key
+	 *            the key;
+	 * @param version
+	 *            the value;
+	 * @return 0(succ)
+	 */
+	long archiveSet(Bytes key, byte[] value, long version);
+
+	/**
+	 *
+	 */
+	void iterateAllKeys();
+
 }

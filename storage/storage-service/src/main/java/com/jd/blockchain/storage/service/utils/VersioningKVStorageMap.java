@@ -105,6 +105,26 @@ public class VersioningKVStorageMap implements VersioningKVStorage, BytesMap<Byt
 	}
 
 	@Override
+	public byte[] archiveGet(Bytes key, long version) {
+		return new byte[0];
+	}
+
+	@Override
+	public long archiveRemove(Bytes key, long version) {
+		return 0;
+	}
+
+	@Override
+	public long archiveSet(Bytes key, byte[] value, long version) {
+		return 0;
+	}
+
+	@Override
+	public void iterateAllKeys() {
+
+	}
+
+	@Override
 	public Set<Bytes> keySet() {
 		return versioningCache.keySet();
 	}
