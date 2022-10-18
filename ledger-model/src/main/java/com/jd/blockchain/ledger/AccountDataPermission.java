@@ -19,7 +19,7 @@ public class AccountDataPermission implements DataPermission {
     public AccountDataPermission(AccountModeBits modeBits, Bytes[] owners, String role) {
         this.modeBits = modeBits;
         this.owners = owners;
-        this.role = role;
+        this.role = null != role ? role : "";
     }
 
     @Override
