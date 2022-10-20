@@ -18,6 +18,8 @@ import com.jd.blockchain.transaction.TxRequestMessage;
 import utils.concurrent.AsyncFuture;
 import utils.exception.ViewObsoleteException;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * {@link NodeSigningAppender} 以装饰者模式实现，为交易请求附加上节点签名；
  *
@@ -68,7 +70,7 @@ public class NodeSigningAppender implements TransactionService {
 
 		try {
 			AsyncFuture<byte[]> asyncFuture =  messageService.sendOrdered(BinaryProtocol.encode(txMessage, TransactionRequest.class));
-			byte[] result = asyncFuture.get();
+			byte[] result = asyncFuture.get(1, TimeUnit.MINUTES);
 			if (result == null) {
 				return new ErrorTransactionResponse(txRequest.getTransactionHash());
 			}
